@@ -1,0 +1,90 @@
+---
+// Mobile-only sticky bottom CTA. Appears after the primary buy panel
+// (#primary-buy-panel) scrolls out of view, disappears when it scrolls
+// back. Hidden on md+ (desktop already has a sticky aside).
+//
+// Click behavior: scroll back to the primary buy panel so the user
+// confirms the consent checkbox there. We deliberately do NOT include
+// a second consent checkbox in the sticky bar — Rule 4 requires one
+// canonical consent surface and we don't want two checkboxes drifting
+// out of sync.
+
+interface Props {
+  stateName: string;
+  price: number;
+  agencyAbbreviation: string;
+}
+
+const { stateName, price, agencyAbbreviation } = Astro.props;
+---
+
+<div
+  id="sticky-buy-bar"
+  class="no-print fixed bottom-0 left-0 right-0 z-40 hidden translate-y-full transform border-t border-border bg-surface-elevated shadow-lg transition-transform duration-200 ease-out md:!hidden"
+  role="region"
+  aria-label={`${stateName} kit — sticky purchase bar`}
+  data-visible="false"
+>
+  <div class="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom));">
+    <div class="min-w-0">
+      <p class="truncate text-sm font-semibold text-ink-heading">
+        {stateName} Kit — <span class="text-primary">${price}</span>
+      </p>
+      <p class="truncate text-xs text-ink-muted">
+        Instant download &middot; Refund if {agencyAbbreviation} rejects
+      </p>
+    </div>
+    <a
+      href="#primary-buy-panel"
+      class="flex-shrink-0 rounded-md bg-cta px-4 py-2.5 text-sm font-semibold text-white no-underline hover:bg-cta-hover"
+      data-sticky-cta-link
+    >
+      Get the kit
+    </a>
+  </div>
+</div>
+
+<script>
+  // Show the sticky bar only after the primary buy panel scrolls out of
+  // view. IntersectionObserver gives us this cheaply, with no scroll handler.
+  const bar = document.getElementById('sticky-buy-bar');
+  const target = document.getElementById('primary-buy-panel');
+  if (bar && target) {
+    // Default state: hidden, translated off-screen.
+    bar.classList.remove('hidden');
+    const setVisible = (visible: boolean) => {
+      if (visible) {
+        bar.dataset.visible = 'true';
+        bar.classList.remove('translate-y-full');
+      } else {
+        bar.dataset.visible = 'false';
+        bar.classList.add('translate-y-full');
+      }
+    };
+    setVisible(false);
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          // Show the sticky bar when the primary buy panel is OUT of view.
+          setVisible(!entry.isIntersecting);
+        }
+      },
+      { rootMargin: '0px 0px -20% 0px', threshold: 0 }
+    );
+    io.observe(target);
+
+    // Smooth-scroll the in-page anchor and put focus on the consent checkbox
+    // so a tap on the sticky CTA actually moves the user to the next action.
+    const link = bar.querySelector<HTMLAnchorElement>('[data-sticky-cta-link]');
+    link?.addEventListener('click', (e) => {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Defer focus until the scroll animation settles.
+      window.setTimeout(() => {
+        const checkbox = target.querySelector<HTMLInputElement>('input[type="checkbox"][name="consent"]');
+        checkbox?.focus({ preventScroll: true });
+      }, 450);
+    });
+  }
+</script>

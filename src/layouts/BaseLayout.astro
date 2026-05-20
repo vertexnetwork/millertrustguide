@@ -1,6 +1,7 @@
 ---
 import '~/styles/global.css';
 import DisclaimerBanner from '~/components/DisclaimerBanner.astro';
+import SiteHeader from '~/components/SiteHeader.astro';
 import Footer from '~/components/Footer.astro';
 import { organizationSchema, websiteSchema, personSchema } from '~/lib/schema';
 
@@ -131,6 +132,7 @@ const ldBlocks = [organizationSchema(), websiteSchema(), personSchema(), ...json
       Skip to content
     </a>
     <DisclaimerBanner />
+    <SiteHeader />
     <main id="main" class="flex-1">
       <slot />
     </main>

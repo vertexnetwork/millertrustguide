@@ -1,52 +1,70 @@
 ---
-// Placeholder grid for kit-page screenshots. The actual screenshots are
-// added to /public/kit-previews/{state-slug}/ post-PDF authoring. Until
-// then, this renders captioned placeholders so the conversion surface stays
-// intact and so the screenshot slots are reserved (avoids CLS when images
-// drop in later).
+// Text-based table of contents for the kit PDF. We deliberately avoid
+// placeholder "preview" image boxes — paid ad traffic reads them as an
+// unfinished site. When real PDF page screenshots are produced, swap this
+// component for an image grid (aspect-ratio reserved so CLS stays clean).
 
-interface Props {
-  stateSlug: string;
-}
-
-const { stateSlug } = Astro.props;
-
-const previews = [
-  { caption: 'Page 8: The bank-refusal script' },
-  { caption: 'Page 12: Your monthly funding worksheet' },
-  { caption: 'Page 17: The 7 most common denial reasons' },
-  { caption: 'Page 4: Plain-English glossary' },
-  { caption: 'Page 2: How to use this kit' },
-  { caption: 'Page 22: Trustee record-keeping checklist' },
+const sections = [
+  {
+    label: 'Section 1',
+    title: 'How a Miller Trust actually works',
+    body: 'Plain-English walkthrough of why income-cap states require a QIT, what gets diverted, and what stays with your parent.',
+  },
+  {
+    label: 'Section 2',
+    title: 'Download the official state template',
+    body: 'Direct .gov link, the version date to check for, and what to do if your state has just updated the template.',
+  },
+  {
+    label: 'Section 3',
+    title: 'Fill in the obvious fields',
+    body: 'Applicant, trustee, listed income sources, residual beneficiary clause — every field, with what the state actually wants in each blank.',
+  },
+  {
+    label: 'Section 4',
+    title: 'The monthly funding worksheet',
+    body: 'Pre-filled with the 2026 income cap so you know exactly how much income to redirect each month.',
+  },
+  {
+    label: 'Section 5',
+    title: 'The bank-account walkthrough',
+    body: 'Why most branches refuse on first request, the verbatim script citing state policy, five common refusals, and a printable resolution letter for the branch manager.',
+  },
+  {
+    label: 'Section 6',
+    title: 'Redirecting income, month by month',
+    body: 'Social Security, pension, annuity — the exact forms and the correct order of operations so nothing lands in the wrong account.',
+  },
+  {
+    label: 'Section 7',
+    title: 'The denial-avoidance checklist',
+    body: 'Every common denial reason the state agency cites, with the policy section behind each, in the order to verify before submitting the Medicaid application.',
+  },
+  {
+    label: 'Section 8',
+    title: 'What to say to family members',
+    body: 'A short script for the sibling who asks why you didn\'t just hire an attorney. Pre-empts the family fight.',
+  },
 ];
-
-const stateName = stateSlug.charAt(0).toUpperCase() + stateSlug.slice(1);
 ---
 
 <section aria-labelledby="preview-heading" class="my-12">
-  <h2 id="preview-heading">What you'll receive</h2>
+  <h2 id="preview-heading">What's inside the kit</h2>
   <p class="mt-2 text-ink-muted">
-    A 25-page operational PDF, delivered instantly after purchase. Sample pages below.
+    A focused operational PDF — instant download after purchase. Eight sections, in the order you'll use them.
   </p>
-  <div class="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
+  <ol class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
     {
-      previews.map((p) => (
-        <figure class="rounded-md border border-border bg-surface-elevated p-3">
-          {/* Aspect-ratio reservation prevents CLS when real images drop in. */}
-          <div
-            class="flex aspect-[3/4] w-full items-center justify-center rounded border border-border bg-primary-tint/30 text-xs text-ink-muted"
-            aria-hidden="true"
-            style="contain: layout paint; content-visibility: auto;"
-          >
-            <span>preview</span>
-          </div>
-          <figcaption class="mt-2 text-xs leading-snug text-ink-muted">{p.caption}</figcaption>
-        </figure>
+      sections.map((s) => (
+        <li class="rounded-md border border-border bg-surface-elevated p-4">
+          <p class="text-xs font-semibold uppercase tracking-wide text-primary">{s.label}</p>
+          <p class="mt-1 font-semibold text-ink-heading">{s.title}</p>
+          <p class="mt-1 text-sm leading-snug text-ink">{s.body}</p>
+        </li>
       ))
     }
-  </div>
+  </ol>
   <p class="mt-4 text-xs text-ink-muted">
-    Screenshots are sample pages from the {stateName} kit. Final preview images replace these placeholders once the
-    kit PDF is finalized.
+    PDF is print-friendly and readable on a phone, tablet, or printed and taken to the bank.
   </p>
 </section>

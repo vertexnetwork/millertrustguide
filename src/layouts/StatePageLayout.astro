@@ -5,6 +5,7 @@ import ComparisonTable from '~/components/ComparisonTable.astro';
 import ReassuranceBlock from '~/components/ReassuranceBlock.astro';
 import MoneyBackGuarantee from '~/components/MoneyBackGuarantee.astro';
 import PdfPreview from '~/components/PdfPreview.astro';
+import StickyBuyBar from '~/components/StickyBuyBar.astro';
 import {
   articleSchema,
   faqPageSchema,
@@ -35,7 +36,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 // assistants can lift it verbatim.
 const tldr = blocked
   ? `Miller Trust Guide does not currently publish a kit for ${state.name}. ${state.blockedReason ?? 'For advice on your situation, consult a licensed elder-law attorney in your state.'}`
-  : `A ${state.name} Miller Trust (Qualified Income Trust) is an irrevocable trust used to qualify a Medicaid applicant whose monthly income exceeds the ${state.asOf} ${state.name} long-term-care income cap of $${fmt(state.incomeCap2026)} per month. The trust must be drafted, signed, and funded in the same calendar month using the official ${state.agencyAbbreviation} template (${state.policyManualSection}). Medicaid eligibility begins the month the trust is funded; there is no retroactive effect. The ${state.name} Personal Needs Allowance is $${fmt(state.personalNeedsAllowance)} per month.`;
+  : `A ${state.name} Miller Trust (Qualified Income Trust) is an irrevocable trust used to qualify a Medicaid applicant whose monthly income exceeds the ${state.name} long-term-care income cap of $${fmt(state.incomeCap2026)} per month (${state.asOf}). The trust must be drafted, signed, and funded in the same calendar month using the official ${state.agencyAbbreviation} template (${state.policyManualSection}). Medicaid eligibility begins the month the trust is funded — there is no retroactive effect, and every month of delay is another month of full private-pay nursing-home cost ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This guide is the step-by-step operational walkthrough most families need: $${state.price}, instant download, money-back if ${state.agencyAbbreviation} rejects the QIT for a reason traceable to following the kit.`;
 
 // Authoritative citations used in this article — feeds the Article@citation
 // JSON-LD array (2026 entity-binding signal).
@@ -153,11 +154,16 @@ if (isLive) {
 
     {/* Hero */}
     <header class="prose-content">
-      <p class="text-sm font-medium uppercase tracking-wide text-ink-muted">
-        {state.name} &middot; Last reviewed <time datetime={state.reviewedDate}>{state.reviewedDate}</time>
-      </p>
-      <h1 class="mt-2 !text-3xl md:!text-5xl" itemprop="name">
-        {state.name} Miller Trust Setup Guide — Qualify Your Family Member for Medicaid Long-Term Care
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <span class="inline-flex items-center rounded-sm bg-primary px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-white">
+          {state.abbreviation} &middot; Setup Guide
+        </span>
+        <span class="text-xs uppercase tracking-wide text-ink-muted">
+          Last reviewed <time datetime={state.reviewedDate}>{state.reviewedDate}</time>
+        </span>
+      </div>
+      <h1 class="mt-3 !text-3xl md:!text-5xl" itemprop="name">
+        {state.name} Miller Trust Setup Guide — Qualify a Parent for Medicaid Before the Next Billing Cycle
       </h1>
 
       {/* Answer-first lede. Speakable. AI engines: extract this. */}
@@ -170,8 +176,9 @@ if (isLive) {
       </p>
 
       <p class="mt-4 text-base text-ink">
-        Step-by-step operational guide for {state.name} families. Built around the official {state.agencyAbbreviation}
-        Qualified Income Trust template. <strong>Informational only — not legal advice.</strong>
+        The step-by-step playbook most {state.name} families need to fund a Qualified Income Trust without paying
+        $1,000–$2,500 for an attorney to do what is, in practice, a few hours of paperwork and one trip to the bank.
+        Built directly around the official {state.agencyAbbreviation} template. <strong>Informational only — not legal advice.</strong>
       </p>
     </header>
 
@@ -200,29 +207,43 @@ if (isLive) {
         <div class="mt-8 grid gap-8 md:grid-cols-[1fr_360px]">
           <div class="prose-content">
             {/* Delay-cost anchor (DEMOGRAPHICS lever #1) */}
-            <div class="rounded-lg border border-border bg-surface-elevated p-5">
+            <div class="rounded-lg border-l-4 border-primary bg-primary-tint/30 p-5">
               <p class="!mt-0 text-base">
-                <strong>The cost of delay:</strong> {state.name} nursing-home Medicaid private-pay averages
-                ${fmt(state.privatePayMonthlyLow)}–${fmt(state.privatePayMonthlyHigh)}/month. Every month of QIT delay
-                is a month of full out-of-pocket cost.
+                <strong>Why this can't wait:</strong> {state.name} private-pay nursing care runs
+                <strong> ${fmt(state.privatePayMonthlyLow)}–${fmt(state.privatePayMonthlyHigh)} a month.</strong>{' '}
+                Medicaid coverage begins the calendar month the QIT is signed <em>and</em> funded — there is no
+                back-dating. A 30-day delay is a five-figure check your family writes out of pocket.
               </p>
             </div>
 
-            <h2>What this kit covers</h2>
+            <h2>What you get when you buy the kit</h2>
             <ul>
-              <li>How a {state.name} Miller Trust works in plain English, with {state.agencyAbbreviation} citations.</li>
-              <li>Where to download the official {state.agencyAbbreviation} template on the .gov site.</li>
-              <li>The fields you fill in yourself — and the clauses you don't.</li>
-              <li>The monthly funding worksheet, pre-filled with {state.asOf}.</li>
               <li>
-                <strong>The bank-account walkthrough.</strong> Why most banks refuse on first request, the verbatim script
-                citing {state.policyManualSection}, the five most common refusals and how to respond, and a sample
-                resolution letter for the branch manager.
+                <strong>The bank-refusal playbook.</strong> The single thing buyers tell other buyers about. Most
+                {' '}{state.name} branches have never opened a Miller Trust account and refuse on first request.
+                The kit includes a verbatim script citing {state.policyManualSection}, the five most common refusals
+                and how to respond to each, and a one-page resolution letter you can hand to the branch manager.
               </li>
-              <li>How to redirect income month by month after the account opens.</li>
               <li>
-                The {state.commonDenialReasons.length} most common {state.agencyAbbreviation} denial reasons, with the
-                specific {state.agencyAbbreviation} citation behind each.
+                <strong>The {state.commonDenialReasons.length} {state.agencyAbbreviation} denial traps and how to
+                avoid each one.</strong> Every trap cites the exact {state.agencyAbbreviation} policy section behind it,
+                so you can verify before you submit — not after the denial letter arrives.
+              </li>
+              <li>
+                <strong>A pre-filled monthly funding worksheet</strong> using the {state.asOf} income cap of
+                ${fmt(state.incomeCap2026)} so you know exactly how much income to redirect each month.
+              </li>
+              <li>
+                <strong>The direct link to the official {state.agencyAbbreviation} .gov template</strong> and a
+                plain-English walkthrough of every field you fill in yourself.
+              </li>
+              <li>
+                <strong>The "what to say to family" page</strong> — short script for when a sibling asks why you didn't
+                just hire an attorney. Pre-empts the family-conflict fight before it starts.
+              </li>
+              <li>
+                <strong>The month-by-month income redirect checklist</strong> for after the account opens, so the trust
+                stays compliant every month and Medicaid never has a reason to pull benefits.
               </li>
             </ul>
 
@@ -238,17 +259,20 @@ if (isLive) {
           </div>
 
           {/* Sticky buy panel on desktop */}
-          <aside class="md:sticky md:top-24 md:self-start">
-            <div class="rounded-lg border border-border bg-surface-elevated p-6 shadow-sm">
-              <p class="text-sm font-medium uppercase tracking-wide text-ink-muted">{state.name} Kit</p>
-              <p class="mt-2 text-4xl font-bold text-ink-heading">
-                <span aria-label={`${state.price} dollars`}>${state.price}</span>
-              </p>
-              <p class="mt-1 text-sm text-ink-muted">
-                Instant download. Money-back if {state.agencyAbbreviation} rejects.
-              </p>
-              <div class="mt-5">
-                <ConsentBuyButton stateSlug={state.slug} price={state.price} />
+          <aside class="md:sticky md:top-24 md:self-start" id="primary-buy-panel">
+            <div class="overflow-hidden rounded-lg border border-border bg-surface-elevated shadow-sm">
+              <div class="h-1 bg-primary" aria-hidden="true"></div>
+              <div class="p-6">
+                <p class="text-xs font-semibold uppercase tracking-wider text-primary">{state.name} Kit</p>
+                <p class="mt-2 text-4xl font-bold text-ink-heading">
+                  <span aria-label={`${state.price} dollars`}>${state.price}</span>
+                </p>
+                <p class="mt-1 text-sm text-ink-muted">
+                  Instant download &middot; Money-back if {state.agencyAbbreviation} rejects
+                </p>
+                <div class="mt-5">
+                  <ConsentBuyButton stateSlug={state.slug} price={state.price} />
+                </div>
               </div>
             </div>
           </aside>
@@ -256,7 +280,7 @@ if (isLive) {
       )
     }
 
-    {!blocked && <PdfPreview stateSlug={state.slug} />}
+    {!blocked && <PdfPreview />}
 
     {!blocked && <ComparisonTable stateName={state.name} price={state.price} />}
 
@@ -264,21 +288,31 @@ if (isLive) {
     {
       !blocked && (
         <section class="prose-content my-12" aria-labelledby="bank-heading">
-          <h2 id="bank-heading">The bank refusal — and what to say</h2>
+          <p class="text-xs font-semibold uppercase tracking-wider text-primary">The bank step</p>
+          <h2 id="bank-heading" class="!mt-1">The bank refusal nobody warns you about</h2>
           <p>
-            Most {state.name} bank branches have never opened a Miller Trust account. The first attempt is usually
-            refused. Branch managers ask for a tax ID. {state.agencyAbbreviation} explicitly states no separate EIN is
-            required. The kit includes the exact language to cite at the counter, plus a printable resolution letter for
-            the branch manager.
+            You walk into your branch with the signed trust. The teller calls a manager. The manager has never seen one.
+            They ask for an EIN. They tell you to come back with an attorney. You drive home with an empty trust account
+            and a Medicaid clock ticking.
           </p>
-          <p class="text-sm text-ink-muted">Sample objections handled in the kit:</p>
+          <p>
+            This is the single most common reason {state.name} families lose a month of benefits, and it has nothing to
+            do with the trust itself — it is a bank-procedure problem. The kit's bank section gives you the exact
+            language to cite at the counter, the {state.agencyAbbreviation} policy reference to read aloud, and a
+            printable resolution letter you can hand to the branch manager so they can escalate inside their own bank
+            instead of sending you away.
+          </p>
+          <p class="text-sm font-medium text-ink-muted">Refusals the kit walks you through:</p>
           <ul>
-            {state.bankRefusalNotes.slice(0, 3).map((note) => (
+            {state.bankRefusalNotes.map((note) => (
               <li>
-                <strong>{note.refusalType}.</strong> {note.response.slice(0, 140)}…
+                <strong>{note.refusalType}.</strong>
               </li>
             ))}
           </ul>
+          <p class="text-sm text-ink-muted">
+            Each refusal has a corresponding response in the kit, with the {state.agencyAbbreviation} citation behind it.
+          </p>
         </section>
       )
     }
@@ -291,7 +325,8 @@ if (isLive) {
     {
       !blocked && (
         <section class="prose-content my-12" aria-labelledby="denials-heading">
-          <h2 id="denials-heading">
+          <p class="text-xs font-semibold uppercase tracking-wider text-primary">Avoid these</p>
+          <h2 id="denials-heading" class="!mt-1">
             The {state.commonDenialReasons.length} most common {state.name} denial reasons
           </h2>
           <p>
@@ -312,13 +347,20 @@ if (isLive) {
 
     {/* About the kit author */}
     <section class="prose-content my-12" aria-labelledby="author-heading">
-      <h2 id="author-heading">About the author</h2>
+      <p class="text-xs font-semibold uppercase tracking-wider text-primary">The author</p>
+      <h2 id="author-heading" class="!mt-1">Why I wrote this</h2>
       <p>
         I'm <a href="/authors/james-whitfield" rel="author">James Whitfield</a>. I built this site after spending weeks
-        helping my own family member set up a Miller Trust. I'm not an attorney — I'm a researcher who has now read
-        every {state.agencyAbbreviation} policy manual section that covers Qualified Income Trusts. I publish what I
-        learned. I will not advise you on your specific situation; for that, you need a {state.name}-licensed
-        attorney. I work anonymously because the state agency manuals do the talking, not me.
+        helping a family member through a Miller Trust setup. The free state PDF told us what fields to fill in and
+        stopped there. The first attorney we called quoted $2,200. The second wanted $1,500 and a six-week wait.
+        The bank refused to open the account twice. Between the policy manual, the bank counter, and the Medicaid
+        application window, there was a real gap — and that gap is what this kit fills.
+      </p>
+      <p>
+        I'm not an attorney. I'm a researcher who has now read every {state.agencyAbbreviation} policy section that
+        covers Qualified Income Trusts. I publish what I learned. I will not advise you on your specific situation;
+        for that, you need a {state.name}-licensed attorney. I work anonymously because the state agency manuals are
+        the authority, not me.
       </p>
     </section>
 
@@ -326,7 +368,8 @@ if (isLive) {
     {
       !blocked && (
         <section class="prose-content my-12" aria-labelledby="faq-heading">
-          <h2 id="faq-heading">Frequently asked questions</h2>
+          <p class="text-xs font-semibold uppercase tracking-wider text-primary">Questions</p>
+          <h2 id="faq-heading" class="!mt-1">Frequently asked questions</h2>
           <dl>
             {state.faq.map((f) => (
               <div class="mt-6">
@@ -341,7 +384,8 @@ if (isLive) {
 
     {/* State agency citations panel */}
     <section class="prose-content my-12" aria-labelledby="sources-heading">
-      <h2 id="sources-heading">State agency sources</h2>
+      <p class="text-xs font-semibold uppercase tracking-wider text-primary">Primary sources</p>
+      <h2 id="sources-heading" class="!mt-1">State agency sources</h2>
       <p>
         Every operational claim in this kit cites a primary {state.agencyAbbreviation} document. Verify directly:
       </p>
@@ -386,4 +430,13 @@ if (isLive) {
       )
     }
   </article>
+  {
+    isLive && (
+      <StickyBuyBar
+        stateName={state.name}
+        price={state.price}
+        agencyAbbreviation={state.agencyAbbreviation}
+      />
+    )
+  }
 </BaseLayout>

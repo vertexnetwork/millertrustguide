@@ -2,42 +2,49 @@
 const year = new Date().getFullYear();
 ---
 
-<footer class="mt-16 border-t border-border bg-surface-elevated">
-  <div class="mx-auto max-w-5xl px-4 py-10 text-sm text-ink-muted">
-    <div class="prose-content mx-auto mb-8">
-      <p class="font-semibold text-ink">Disclaimer</p>
-      <p>
+<footer class="mt-16 border-t-4 border-primary bg-surface-elevated">
+  <div class="mx-auto max-w-5xl px-4 py-12 text-sm text-ink-muted">
+    <div class="prose-content mx-auto mb-10">
+      <p class="font-semibold uppercase tracking-wide text-xs text-primary">Disclaimer</p>
+      <p class="mt-2">
         This product is informational only. It is not legal advice and is not a substitute for consultation with a
         licensed attorney. We are not a law firm and we do not practice law. We do not draft legal documents. State
-        Medicaid rules vary and change; verify all information with your state Medicaid agency and an attorney licensed
-        in your state before acting.
+        Medicaid rules vary and change; verify all information with your state Medicaid agency and an attorney
+        licensed in your state before acting.
       </p>
     </div>
 
-    <nav aria-label="Footer" class="mb-6 grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-3 md:flex md:flex-wrap">
-      <a href="/about">About</a>
-      <a href="/authors/james-whitfield">Author</a>
-      <a href="/editorial-process">Editorial process</a>
-      <a href="/disclaimer">Disclaimer</a>
-      <a href="/privacy">Privacy</a>
-      <a href="/refund-policy">Refund policy</a>
-      <a href="/sitemap">Sitemap</a>
-      <a href="mailto:support@millertrustguide.com">Contact</a>
-    </nav>
+    <div class="grid grid-cols-2 gap-x-8 gap-y-8 border-t border-border pt-8 sm:grid-cols-3">
+      <nav aria-label="About">
+        <p class="text-xs font-semibold uppercase tracking-wide text-ink-heading">Publication</p>
+        <ul class="mt-3 space-y-2">
+          <li><a href="/about" class="no-underline hover:underline">About</a></li>
+          <li><a href="/authors/james-whitfield" class="no-underline hover:underline">Author</a></li>
+          <li><a href="/editorial-process" class="no-underline hover:underline">Editorial process</a></li>
+        </ul>
+      </nav>
 
-    <p class="text-xs text-ink-muted">
+      <nav aria-label="Legal">
+        <p class="text-xs font-semibold uppercase tracking-wide text-ink-heading">Legal</p>
+        <ul class="mt-3 space-y-2">
+          <li><a href="/disclaimer" class="no-underline hover:underline">Disclaimer</a></li>
+          <li><a href="/privacy" class="no-underline hover:underline">Privacy</a></li>
+          <li><a href="/refund-policy" class="no-underline hover:underline">Refund policy</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-label="Help">
+        <p class="text-xs font-semibold uppercase tracking-wide text-ink-heading">Help</p>
+        <ul class="mt-3 space-y-2">
+          <li><a href="mailto:support@millertrustguide.com" class="no-underline hover:underline">Contact support</a></li>
+          <li><a href="/sitemap" class="no-underline hover:underline">All pages</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <p class="mt-10 border-t border-border pt-6 text-xs text-ink-muted">
       &copy; {year} Miller Trust Guide. Researcher byline: James Whitfield. We are not attorneys. All trademarks and
       agency names referenced (Texas HHSC, CMS, etc.) belong to their respective owners.
-    </p>
-
-    {/* Machine-readable resource links — discoverable to AI agents that
-       traverse footers (and harmless for humans). */}
-    <p class="mt-4 text-xs text-ink-muted">
-      Machine-readable:{' '}
-      <a href="/llms.txt">llms.txt</a> &middot;{' '}
-      <a href="/llms-full.txt">llms-full.txt</a> &middot;{' '}
-      <a href="/sitemap-index.xml">sitemap.xml</a> &middot;{' '}
-      <a href="/.well-known/security.txt">security.txt</a>
     </p>
   </div>
 </footer>

@@ -39,10 +39,18 @@ if (sessionId) {
         <>
           <h1>Thank you{stateName ? ` — your ${stateName} kit is on the way` : ''}.</h1>
           <p>
-            Your payment is confirmed. The download link will arrive in your inbox within a few minutes from
-            <strong> support@millertrustguide.com</strong>.
+            Your payment is confirmed. The download link is on its way to your inbox from
+            <strong> support@millertrustguide.com</strong> — usually within a couple of minutes.
           </p>
-          <p>The link is valid for 7 days. If you don't see it, check spam — or just reply to any of our emails and we'll resend.</p>
+          <p>
+            The link is valid for 7 days. If you don't see it, check your spam folder, or just reply to any email from
+            us and we'll resend right away. Add <strong>support@millertrustguide.com</strong> to your contacts so the
+            next emails — the bank-step reminders, the income-cap updates — don't get filtered.
+          </p>
+          <p class="text-sm text-ink-muted">
+            One practical next step: open the PDF on the device you'll take to the bank. The bank-refusal script in
+            Section 5 is what you'll want at the counter.
+          </p>
         </>
       ) : lookupError || !sessionId ? (
         <>
@@ -60,9 +68,9 @@ if (sessionId) {
         <>
           <h1>Almost there</h1>
           <p>
-            Stripe is still processing your payment. The kit will be emailed once the payment confirms — usually within
-            a minute or two. If you haven't received it within 15 minutes, email
-            <a href="mailto:support@millertrustguide.com"> support@millertrustguide.com</a>.
+            Stripe is still confirming your payment. The kit will be emailed the moment it clears — usually within a
+            minute or two. If you haven't received it within 15 minutes, email
+            <a href="mailto:support@millertrustguide.com"> support@millertrustguide.com</a> and we'll resend.
           </p>
         </>
       )

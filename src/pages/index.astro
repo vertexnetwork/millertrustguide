@@ -20,8 +20,30 @@ const blocked = states.filter((s) => s.status === 'blocked');
 const SITE_URL = 'https://millertrustguide.com';
 
 // Homepage FAQ — generic QIT questions (separate from per-state FAQ).
-// These power the FAQPage schema and the visible accordion.
+// Ordered for the skim path: transactional questions first
+// (delivery, cost, refund), informational/explainer second, legal
+// disclaimer last. Powers the FAQPage schema and the visible accordion.
 const homeFaq = [
+  {
+    question: 'How fast do I get the kit and start the trust?',
+    answer:
+      'Instant. The download link arrives by email within minutes of payment. Most families have the trust signed, the bank account open, and the first month\'s income redirected within seven days — fast enough to qualify for the next Medicaid eligibility month and stop the private-pay clock.',
+  },
+  {
+    question: 'What does the kit cost and what\'s the guarantee?',
+    answer:
+      'A single-state digital download is $79. Two-state bundle is $149; three-state bundle is $199. If your state Medicaid agency rejects the Qualified Income Trust for any reason traceable to following the kit, we refund the full purchase price within one business day. No phone tag, no forms.',
+  },
+  {
+    question: 'When does Medicaid coverage actually begin?',
+    answer:
+      'Coverage begins the calendar month the QIT is signed AND funded — both in the same calendar month. There is no back-dating. Every month of delay is another month of full private-pay nursing-home cost ($7,500–$15,000 in most US markets). That is the single biggest reason to start now rather than at the next attorney consult opening.',
+  },
+  {
+    question: 'Why not just hire an elder-law attorney?',
+    answer:
+      'You can — and for complex estates (significant assets, prior gifting, second marriages, multi-state property) you probably should. But for the core Miller Trust setup, the work is following a state-published template and opening a specific kind of bank account. Attorneys typically charge $1,000–$2,500 for this. Our kit is $79 and includes the bank-refusal script most attorneys handle themselves but never write down.',
+  },
   {
     question: 'What is a Miller Trust?',
     answer:
@@ -30,7 +52,7 @@ const homeFaq = [
   {
     question: 'What is the 2026 Medicaid income limit?',
     answer:
-      'For 2026, the long-term-care Medicaid income limit is $2,982 per month for a single applicant and $5,964 per month for a couple where both spouses are applying. These figures derive from 300% of the 2026 Federal Benefit Rate, effective January 1, 2026.',
+      'For 2026, the long-term-care Medicaid income limit is $2,982 per month for a single applicant and $5,964 per month for a couple where both spouses are applying. These figures derive from 300% of the 2026 Federal Benefit Rate, effective January 1, 2026. If your parent\'s monthly income is above this, a Miller Trust is the standard mechanism to qualify.',
   },
   {
     question: 'Which states allow Miller Trusts?',
@@ -40,22 +62,12 @@ const homeFaq = [
   {
     question: 'Do you draft the trust document?',
     answer:
-      'No. We never author or host trust instrument text. The kit links you to your state\'s publicly-published Qualified Income Trust template on the state agency .gov website. You download the template directly from the agency. We explain how to use it.',
+      'No. We never author or host trust instrument text. The kit links you to your state\'s publicly-published Qualified Income Trust template on the state agency .gov website. You download the template directly from the agency. We explain how to use it, how to fund it, and how to keep it compliant month to month.',
   },
   {
     question: 'Is this legal advice?',
     answer:
-      'No. Miller Trust Guide is an informational publisher, not a law firm. We are not attorneys and we do not practice law. We do not customize the kit based on your situation. For advice on your specific situation, consult a licensed elder-law attorney in your state.',
-  },
-  {
-    question: 'What does a kit cost?',
-    answer:
-      'A single-state digital download is $79. A two-state bundle is $149 and a three-state bundle is $199. We offer a money-back guarantee: if your state Medicaid agency rejects the QIT for any reason traceable to following the kit, we issue a full refund.',
-  },
-  {
-    question: 'When does Medicaid coverage begin?',
-    answer:
-      'Medicaid long-term-care coverage begins the calendar month the QIT is signed AND funded. There is no retroactive effect. Every month of delay is a month of full private-pay liability ($7,500–$15,000 in most US markets).',
+      'No. Miller Trust Guide is an informational publisher, not a law firm. We are not attorneys and we do not practice law. We do not customize the kit based on your specific situation. For advice on your specific situation, consult a licensed elder-law attorney in your state.',
   },
 ];
 
@@ -87,7 +99,7 @@ const jsonLd = [
   <section class="mx-auto max-w-3xl px-4 pt-8 pb-4 md:pt-12">
     <p class="text-sm font-medium uppercase tracking-wide text-ink-muted">Miller Trust Guide</p>
     <h1 class="mt-2 !text-3xl md:!text-5xl">
-      State-specific setup guides for Medicaid Qualified Income Trusts.
+      Set up a Miller Trust before your parent loses a month of Medicaid coverage.
     </h1>
 
     {/* Answer-first lede. Speakable. */}
@@ -96,20 +108,21 @@ const jsonLd = [
       class="mt-5 rounded-lg border border-primary/20 bg-primary-tint/30 p-4 text-base leading-relaxed text-ink"
     >
       A Miller Trust (Qualified Income Trust, or QIT) is an irrevocable trust used in 24 US income-cap states to qualify
-      a Medicaid applicant whose monthly income exceeds the long-term-care threshold. The 2026 single-applicant cap is
-      $2,982 per month. Each state publishes its own QIT template on its Medicaid agency site. This guide is a
-      step-by-step operational walkthrough built around that template: how to fund it, how to open the bank account,
-      how to redirect income, and how to avoid the most common denial reasons. We are researchers, not attorneys.
+      a Medicaid applicant whose monthly income exceeds the long-term-care threshold (2026 cap: $2,982/month for a
+      single applicant). Each state publishes its own QIT template on its Medicaid agency site. Our state-specific kit
+      is the step-by-step playbook around that template — how to fund it, how to open the bank account when the branch
+      refuses, how to redirect Social Security and pension, and how to avoid the denial reasons most families trip on.
+      $79, instant download, money-back if the agency rejects the trust. We are researchers, not attorneys.
     </p>
 
     <p class="mt-4 text-sm text-ink-muted">
-      Last reviewed <time datetime="2026-05-20">2026-05-20</time>. {' '}
-      Annual update at January CMS Federal Benefit Rate publication.
+      Last reviewed <time datetime="2026-05-20">2026-05-20</time>. Annual update each January after CMS publishes the
+      new Federal Benefit Rate.
     </p>
   </section>
 
   <section id="states" class="mx-auto max-w-3xl px-4 py-6">
-    <h2>Available state guides</h2>
+    <h2>Pick your state to start</h2>
     {
       live.length === 0 ? (
         <p class="mt-2 text-ink-muted">
@@ -117,17 +130,28 @@ const jsonLd = [
           <a href="#email-signup" class="underline">Join the email list</a> to be notified when we launch.
         </p>
       ) : (
-        <ul class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+        <ul class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
           {live.map((s) => (
-            <li class="rounded-lg border border-border bg-surface-elevated p-4">
-              <a
-                href={`/states/${s.slug}`}
-                class="text-lg font-semibold no-underline hover:underline"
-                aria-label={`${s.name} Miller Trust Setup Guide — $${s.price}`}
-              >
-                {s.name} Miller Trust Guide — ${s.price}
-              </a>
-              <p class="mt-1 text-sm text-ink-muted">{s.metaDescription.slice(0, 130)}…</p>
+            <li class="rounded-lg border border-border bg-surface-elevated p-5">
+              <div class="flex items-baseline justify-between gap-3">
+                <a
+                  href={`/states/${s.slug}`}
+                  class="text-lg font-semibold no-underline hover:underline"
+                  aria-label={`${s.name} Miller Trust Setup Guide — $${s.price}`}
+                >
+                  {s.name} Miller Trust Kit
+                </a>
+                <span class="text-lg font-bold text-ink-heading">${s.price}</span>
+              </div>
+              <p class="mt-2 text-sm text-ink">
+                Built around the official {s.agencyAbbreviation} template. Bank-refusal script, monthly funding
+                worksheet, denial-avoidance checklist. Instant download, money-back if {s.agencyAbbreviation} rejects.
+              </p>
+              <p class="mt-3 text-sm">
+                <a href={`/states/${s.slug}`} class="font-medium text-primary">
+                  See what's in the {s.name} kit &rarr;
+                </a>
+              </p>
             </li>
           ))}
         </ul>

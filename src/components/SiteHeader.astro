@@ -1,0 +1,47 @@
+---
+// Quiet, gov-publication-style header. Two visual signals do the work:
+// (1) a thin teal top accent rule that reads as "official publication"
+//     (consumer.ftc.gov, state .gov sites, AARP guides all use this)
+// (2) a small wordmark with a single brand glyph — not an illustration,
+//     not an animation. Just enough chrome to anchor the page so the
+//     content doesn't read as a bare blog post on cream.
+---
+
+<header class="no-print border-b border-border bg-surface-elevated">
+  <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:py-4">
+    <a href="/" class="flex items-center gap-2.5 no-underline" aria-label="Miller Trust Guide — home">
+      {/* Mark: a stylized stacked "MT" inside a teal square. Inline SVG, no
+         network request, prints well, scales cleanly on a 360px viewport. */}
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 32 32"
+        class="h-7 w-7 flex-shrink-0"
+      >
+        <rect x="0" y="0" width="32" height="32" rx="4" fill="#115E59" />
+        <text
+          x="16"
+          y="22"
+          text-anchor="middle"
+          font-family="'Source Serif Pro', Georgia, serif"
+          font-weight="700"
+          font-size="18"
+          fill="#FFFFFF"
+        >MT</text>
+      </svg>
+      <span class="flex flex-col leading-tight">
+        <span class="font-heading text-base font-bold text-ink-heading sm:text-lg">Miller Trust Guide</span>
+        <span class="hidden text-[10px] uppercase tracking-wider text-ink-muted sm:block">
+          State-specific Medicaid QIT operational guides
+        </span>
+      </span>
+    </a>
+
+    <nav aria-label="Primary" class="hidden text-sm md:block">
+      <ul class="flex items-center gap-6">
+        <li><a href="/#states" class="no-underline hover:underline">State guides</a></li>
+        <li><a href="/editorial-process" class="no-underline hover:underline">Editorial</a></li>
+        <li><a href="/about" class="no-underline hover:underline">About</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
