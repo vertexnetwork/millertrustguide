@@ -10,7 +10,7 @@ import {
 export const prerender = true;
 
 const states = (await getCollection('states'))
-  .map((s) => s.data)
+  .map((s) => ({ ...s.data, slug: s.slug }))
   .sort((a, b) => a.name.localeCompare(b.name));
 
 const live = states.filter((s) => s.status === 'live');

@@ -62,11 +62,12 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   const states = await getCollection('states');
-  const state = states.find((s) => s.data.slug === stateSlug)?.data;
-  if (!state) {
+  const entry = states.find((s) => s.slug === stateSlug);
+  if (!entry) {
     console.error('[stripe-webhook] no state matching slug:', stateSlug);
     return new Response('State not found.', { status: 404 });
   }
+  const state = { ...entry.data, slug: entry.slug };
 
   // Generate signed Vercel Blob URL.
   let signed;

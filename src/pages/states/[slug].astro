@@ -7,7 +7,10 @@ export const prerender = true;
 
 export async function getStaticPaths() {
   const states = await getCollection('states');
-  return states.map((s) => ({ params: { slug: s.data.slug }, props: { state: s.data } }));
+  return states.map((s) => ({
+    params: { slug: s.slug },
+    props: { state: { ...s.data, slug: s.slug } },
+  }));
 }
 
 const { state } = Astro.props;

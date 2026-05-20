@@ -1,8 +1,11 @@
 import { defineCollection, z } from 'astro:content';
 
+// Note: `slug` is a reserved Astro frontmatter field — Astro strips it from
+// `data` before schema validation, so it cannot appear in this Zod object.
+// At runtime we inject `slug` from `entry.slug` wherever state data is used;
+// the StateData type below reflects that augmentation.
 const stateSchema = z.object({
   // identity
-  slug: z.string(),
   name: z.string(),
   abbreviation: z.string().length(2),
 
@@ -73,4 +76,4 @@ export const collections = {
   states: defineCollection({ type: 'content', schema: stateSchema }),
 };
 
-export type StateData = z.infer<typeof stateSchema>;
+export type StateData = z.infer<typeof stateSchema> & { slug: string };

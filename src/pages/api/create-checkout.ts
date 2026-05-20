@@ -38,10 +38,11 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   }
 
   const states = await getCollection('states');
-  const state = states.find((s) => s.data.slug === slug)?.data;
-  if (!state) {
+  const entry = states.find((s) => s.slug === slug);
+  if (!entry) {
     return jsonError(404, 'State not available.');
   }
+  const state = { ...entry.data, slug: entry.slug };
 
   if (state.status !== 'live') {
     return jsonError(
