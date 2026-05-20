@@ -1,0 +1,52 @@
+---
+// Placeholder grid for kit-page screenshots. The actual screenshots are
+// added to /public/kit-previews/{state-slug}/ post-PDF authoring. Until
+// then, this renders captioned placeholders so the conversion surface stays
+// intact and so the screenshot slots are reserved (avoids CLS when images
+// drop in later).
+
+interface Props {
+  stateSlug: string;
+}
+
+const { stateSlug } = Astro.props;
+
+const previews = [
+  { caption: 'Page 8: The bank-refusal script' },
+  { caption: 'Page 12: Your monthly funding worksheet' },
+  { caption: 'Page 17: The 7 most common denial reasons' },
+  { caption: 'Page 4: Plain-English glossary' },
+  { caption: 'Page 2: How to use this kit' },
+  { caption: 'Page 22: Trustee record-keeping checklist' },
+];
+
+const stateName = stateSlug.charAt(0).toUpperCase() + stateSlug.slice(1);
+---
+
+<section aria-labelledby="preview-heading" class="my-12">
+  <h2 id="preview-heading">What you'll receive</h2>
+  <p class="mt-2 text-ink-muted">
+    A 25-page operational PDF, delivered instantly after purchase. Sample pages below.
+  </p>
+  <div class="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
+    {
+      previews.map((p) => (
+        <figure class="rounded-md border border-border bg-surface-elevated p-3">
+          {/* Aspect-ratio reservation prevents CLS when real images drop in. */}
+          <div
+            class="flex aspect-[3/4] w-full items-center justify-center rounded border border-border bg-primary-tint/30 text-xs text-ink-muted"
+            aria-hidden="true"
+            style="contain: layout paint; content-visibility: auto;"
+          >
+            <span>preview</span>
+          </div>
+          <figcaption class="mt-2 text-xs leading-snug text-ink-muted">{p.caption}</figcaption>
+        </figure>
+      ))
+    }
+  </div>
+  <p class="mt-4 text-xs text-ink-muted">
+    Screenshots are sample pages from the {stateName} kit. Final preview images replace these placeholders once the
+    kit PDF is finalized.
+  </p>
+</section>

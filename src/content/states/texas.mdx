@@ -1,0 +1,102 @@
+---
+slug: "texas"
+name: "Texas"
+abbreviation: "TX"
+
+status: "live"
+
+stripePriceId: "price_REPLACE_ME_TEXAS_KIT"
+pdfBlobKey: "kits/texas/v1.pdf"
+price: 79
+multiStateBundleEligible: true
+
+agencyName: "Texas Health and Human Services Commission"
+agencyAbbreviation: "HHSC"
+officialTemplateUrl: "https://www.hhs.texas.gov/handbooks/medicaid-elderly-people-disabilities-handbook/appendix-xxxvi-qits-mepd-information"
+officialTemplateNote: "Appendix XXXVI of the MEPD Handbook contains the QIT template references and the F-6800 series covers the operational mechanics."
+policyManualUrl: "https://www.hhs.texas.gov/handbooks/medicaid-elderly-people-disabilities-handbook"
+policyManualSection: "Appendix XXXVI; F-6800"
+
+incomeCap2026: 2982
+personalNeedsAllowance: 75
+asOf: "CMS January 2026 figures"
+
+privatePayMonthlyLow: 7500
+privatePayMonthlyHigh: 11000
+
+commonDenialReasons:
+  - title: "Trust signed but never funded"
+    description: "The QIT must be funded in the same calendar month it is signed. A signed-but-unfunded trust does not change countable income for that month."
+    agencyCitation: "TX HHSC Appendix XXXVI"
+  - title: "Account opened with a non-zero balance"
+    description: "The trust account must be opened at a zero balance. Any opening deposit other than the redirected income causes denial of the income-diversion treatment."
+    agencyCitation: "TX HHSC F-6800"
+  - title: "Improper trustee selection"
+    description: "Certain individuals are prohibited from acting as trustee under Texas Medicaid policy. Selecting a prohibited trustee invalidates the QIT for eligibility purposes."
+    agencyCitation: "TX HHSC F-6800 series"
+  - title: "Missing residual beneficiary clause"
+    description: "The QIT must name the State of Texas (via Medicaid) as the residual beneficiary up to the amount of medical assistance paid. A missing clause causes denial."
+    agencyCitation: "TX HHSC Appendix XXXVI"
+  - title: "Income from non-listed sources deposited"
+    description: "Only income sources identified in the trust instrument can be deposited. Depositing a non-listed source can invalidate the diversion treatment for the month."
+    agencyCitation: "TX HHSC F-6800"
+  - title: "Trust funded after the Medicaid application date"
+    description: "Funding must occur on or before the first month for which Medicaid coverage is sought. Funding after the application date does not retroactively cure prior months."
+    agencyCitation: "TX HHSC Appendix XXXVI"
+
+bankRefusalNotes:
+  - refusalType: "Branch requests a tax ID for the trust"
+    response: "Texas Medicaid policy explicitly states a separate EIN is not required for a QIT used solely to divert the applicant's countable income. The account is titled in the name of the trust using the applicant's Social Security number."
+    documentNeeded: "Printed copy of the relevant HHSC F-6800 section"
+  - refusalType: "Branch requires escalation to internal legal"
+    response: "Request escalation in writing. Typical turnaround is 24 to 48 hours. Document the date and the name of the branch contact for follow-up."
+  - refusalType: "Branch refuses to open an account with a zero balance"
+    response: "HHSC requires the trust account to begin at zero balance. If the bank cannot accommodate, request the next-level branch (a full-service banking center) or escalate to the bank's trust department."
+  - refusalType: "Branch system does not recognize this trust type"
+    response: "Ask for the bank's trust department or a full-service branch. Many retail-only branches lack the account templates required."
+  - refusalType: "Branch instructs the customer to bring an attorney"
+    response: "This is a bank-policy stance, not a legal requirement. Either escalate to the bank's trust department or switch to a community bank or credit union with documented QIT experience."
+
+postDeathDistribution: "Upon the death of the Medicaid beneficiary, funds remaining in the QIT pass to the State of Texas (via Medicaid) up to the total amount of medical assistance paid on the beneficiary's behalf. Any remainder is distributed per the trust's residual beneficiary clause. The trustee should request a final accounting statement from the Medicaid program before disbursing any remaining funds."
+
+metaTitle: "Texas Miller Trust Setup Guide — $79 — Qualify a Parent for Medicaid LTC"
+metaDescription: "Step-by-step Texas Miller Trust operational guide. Built around the official HHSC QIT template. Bank-refusal script, funding worksheet, denial-avoidance. Informational, not legal advice."
+
+primaryKeyword: "texas miller trust"
+secondaryKeywords:
+  - "qualified income trust texas"
+  - "texas miller trust setup"
+  - "texas miller trust form"
+  - "texas medicaid income trust"
+  - "hhsc miller trust"
+  - "texas qit"
+
+reviewedDate: "2026-05-20"
+uplNotes: "Texas UPL law (per Fadia v. Unauthorized Practice of Law Committee) permits sale of forms absent personalized advice. Kit operates under all 4 hard rules: no drafted forms, no personalized intake, no email/chat advice, disclaimer + consent gate."
+
+faq:
+  - question: "Is the Texas Miller Trust Kit legal advice?"
+    answer: "No. This kit is informational only and is not legal advice. We are not attorneys and we do not practice law. The kit teaches you how to use the Texas HHSC publicly-published Qualified Income Trust template. For advice on your specific situation, consult a Texas-licensed elder-law attorney."
+  - question: "What does the kit include?"
+    answer: "A step-by-step operational guide covering the seven sections: plain-English explanation of how a Texas QIT works, a direct link to the official HHSC template, instructions for filling the obvious fields, a monthly funding worksheet, the bank-account walkthrough with the branch-manager script, the month-by-month funding process, and a Texas-specific list of common HHSC denial reasons. Delivered as a single PDF."
+  - question: "Do you provide the trust template itself?"
+    answer: "No. We never author or host trust instrument text. The kit links you to the HHSC-published template on the .gov website. You download the template directly from HHSC. We explain how to use it."
+  - question: "When does Medicaid eligibility begin?"
+    answer: "Texas Medicaid eligibility begins the month the QIT is signed AND funded. There is no retroactive effect. Per HHSC Appendix XXXVI, the trust must be properly drafted, signed, and funded in the same calendar month for that month to qualify."
+  - question: "What is the 2026 income limit?"
+    answer: "$2,982/month for a single applicant and $5,964/month for a couple where both are applying. These figures derive from 300% of the 2026 Federal Benefit Rate, effective January 1, 2026. Source: CMS, mirrored in TX HHSC handbook updates."
+  - question: "What if my bank refuses to open the trust account?"
+    answer: "Bank refusal is common on first attempt because most branch managers have never opened a Miller Trust account. The kit includes a verbatim script citing TX HHSC F-6800, the five most common refusal types and how to respond to each, and a sample resolution letter you can hand to the branch manager. If your bank cannot accommodate, the kit lists steps to escalate or switch banks."
+  - question: "Do you offer a refund?"
+    answer: "Yes — money back if HHSC rejects the QIT for any reason traceable to following the kit. Email support@millertrustguide.com with the agency's stated denial reason and we issue a full refund within one business day."
+  - question: "How is the kit delivered?"
+    answer: "Instant download. After purchase you receive an email from support@millertrustguide.com containing a signed download link to the PDF. The link is valid for seven days. Lost the link? Reply to the email and we resend."
+  - question: "Will you talk to me on the phone about my situation?"
+    answer: "No. We do not offer phone support and we do not advise on individual situations. For advice on your specific situation, please consult a Texas-licensed elder-law attorney — you can find one through the State Bar of Texas lawyer referral service."
+  - question: "Is my email shared or sold?"
+    answer: "Never. We do not sell email addresses to attorneys, Medicaid planners, lead-generation companies, or anyone else. The only emails you receive from us are the order receipt, the kit download link, refund confirmations, and (if you opted in for the lead magnet) the educational nurture sequence — which you can unsubscribe from at any time."
+---
+
+import StatePageLayout from '~/layouts/StatePageLayout.astro';
+
+This file's frontmatter is the canonical Texas data source. The body is intentionally minimal — all conversion-surface rendering happens in `StatePageLayout.astro` which reads from frontmatter. This keeps states homogeneous and prevents drift between states.

@@ -1,0 +1,230 @@
+# robots.txt for millertrustguide.com
+# Doctrine: allow the AI crawlers that cite us (training + retrieval); block
+# only crawlers with no citation upside or known abusive behavior.
+#
+# Last reviewed: 2026-05-20
+# Spec: https://www.rfc-editor.org/rfc/rfc9309 (Robots Exclusion Protocol)
+#
+# Crawler taxonomy:
+#   - Search index (Google, Bing, DDG, Brave): allow — primary traffic source.
+#   - Training corpora (GPTBot, ClaudeBot, Google-Extended, CCBot, Applebot-
+#     Extended, Meta-ExternalAgent): allow — being in the training distribution
+#     is how LLMs answer with us in mind even without retrieval.
+#   - Answer-engine retrieval (OAI-SearchBot, ChatGPT-User, Claude-User,
+#     Claude-SearchBot, PerplexityBot, Perplexity-User, DuckAssistBot,
+#     MistralAI-User, GoogleOther, Google-CloudVertexBot, Amazonbot, YouBot):
+#     allow — these cite us with click-through.
+#   - Disallowed: Bytespider (opaque, frequently ignores robots.txt, no
+#     citation upside for US YMYL content).
+#
+# Global never-crawl paths (apply to every UA):
+#   /api/, /thanks, /admin/, /.well-known/security.txt is allowed.
+
+# ---------- Global default ----------
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /thanks
+Disallow: /thanks/
+Disallow: /admin/
+Disallow: /*?utm_*
+Disallow: /*?fbclid=
+Disallow: /*?gclid=
+Disallow: /*?ref=
+Crawl-delay: 1
+
+# ---------- Google ----------
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /thanks
+Disallow: /admin/
+
+User-agent: Googlebot-Image
+Allow: /
+Disallow: /api/
+
+User-agent: Googlebot-News
+Allow: /
+Disallow: /api/
+
+# Google-Extended: Gemini training opt-IN (we want the training inclusion).
+User-agent: Google-Extended
+Allow: /
+Disallow: /api/
+
+# GoogleOther: general-purpose Google fetcher (R&D + Vertex AI).
+User-agent: GoogleOther
+Allow: /
+Disallow: /api/
+
+User-agent: Google-CloudVertexBot
+Allow: /
+Disallow: /api/
+
+# ---------- Microsoft / Bing ----------
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+Disallow: /thanks
+
+User-agent: msnbot
+Allow: /
+Disallow: /api/
+
+# Microsoft Copilot fetches (currently piggybacks Bingbot; included for clarity).
+User-agent: BingPreview
+Allow: /
+
+# ---------- DuckDuckGo ----------
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /api/
+
+User-agent: DuckAssistBot
+Allow: /
+Disallow: /api/
+
+# ---------- Brave ----------
+User-agent: BraveBot
+Allow: /
+Disallow: /api/
+
+# ---------- Apple ----------
+User-agent: Applebot
+Allow: /
+Disallow: /api/
+
+# Applebot-Extended: Apple Intelligence training opt-in.
+User-agent: Applebot-Extended
+Allow: /
+
+# ---------- OpenAI ----------
+# GPTBot: ChatGPT training corpus.
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+Disallow: /thanks
+
+# OAI-SearchBot: ChatGPT Search index (citations with traffic).
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /api/
+
+# ChatGPT-User: user-initiated fetch (link clicked from ChatGPT).
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /api/
+
+# ---------- Anthropic ----------
+# ClaudeBot: Claude training corpus.
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+Disallow: /thanks
+
+# Claude-User: user-initiated fetch from Claude.ai (cites with traffic).
+User-agent: Claude-User
+Allow: /
+Disallow: /api/
+
+# Claude-SearchBot: Claude web search retrieval.
+User-agent: Claude-SearchBot
+Allow: /
+Disallow: /api/
+
+# anthropic-ai: legacy UA, still observed in 2026.
+User-agent: anthropic-ai
+Allow: /
+Disallow: /api/
+
+# claude-code: Claude Code CLI fetches.
+User-agent: claude-code
+Allow: /
+Disallow: /api/
+
+# ---------- Perplexity ----------
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
+Disallow: /thanks
+
+User-agent: Perplexity-User
+Allow: /
+Disallow: /api/
+
+# ---------- Common Crawl (used by many LLMs) ----------
+User-agent: CCBot
+Allow: /
+Disallow: /api/
+Disallow: /thanks
+
+# ---------- Meta / Facebook ----------
+User-agent: Meta-ExternalAgent
+Allow: /
+Disallow: /api/
+
+User-agent: Meta-ExternalFetcher
+Allow: /
+Disallow: /api/
+
+User-agent: FacebookBot
+Allow: /
+Disallow: /api/
+
+User-agent: facebookexternalhit
+Allow: /
+Disallow: /api/
+
+# ---------- Amazon ----------
+User-agent: Amazonbot
+Allow: /
+Disallow: /api/
+
+# ---------- Cohere ----------
+User-agent: cohere-ai
+Allow: /
+Disallow: /api/
+
+User-agent: cohere-training-data-crawler
+Allow: /
+Disallow: /api/
+
+# ---------- Mistral ----------
+User-agent: MistralAI-User
+Allow: /
+Disallow: /api/
+
+# ---------- You.com ----------
+User-agent: YouBot
+Allow: /
+Disallow: /api/
+
+# ---------- Timpi ----------
+User-agent: Timpibot
+Allow: /
+Disallow: /api/
+
+# ---------- Diffbot ----------
+User-agent: Diffbot
+Allow: /
+Disallow: /api/
+
+# ---------- Image scrapers (low risk for text site) ----------
+User-agent: ImagesiftBot
+Allow: /
+Disallow: /api/
+
+# =====================================================================
+# Blocked: opaque or abusive UAs
+# =====================================================================
+
+# Bytespider: ByteDance training crawler. Documented robots.txt non-compliance
+# in past; no measurable citation upside in US YMYL.
+User-agent: Bytespider
+Disallow: /
+
+# =====================================================================
+# Sitemaps (absolute URLs per protocol)
+# =====================================================================
+Sitemap: https://millertrustguide.com/sitemap-index.xml

@@ -1,0 +1,72 @@
+---
+// Human-readable HTML sitemap. Complements the machine-readable
+// /sitemap-index.xml. Useful for AI crawlers that prefer link traversal
+// over XML parsing, and for users who want a single overview page.
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { breadcrumbSchema } from '~/lib/schema';
+
+export const prerender = true;
+
+const states = (await getCollection('states'))
+  .map((s) => s.data)
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+const SITE_URL = 'https://millertrustguide.com';
+const canonical = `${SITE_URL}/sitemap`;
+
+const jsonLd = [
+  breadcrumbSchema([
+    { name: 'Home', url: SITE_URL + '/' },
+    { name: 'Sitemap', url: canonical },
+  ]),
+];
+---
+
+<BaseLayout
+  title="Sitemap — Miller Trust Guide"
+  description="All pages on Miller Trust Guide. Hub-and-spoke index of state guides, editorial pages, and legal documents."
+  canonical={canonical}
+  jsonLd={jsonLd}
+>
+  <article class="prose-content mx-auto max-w-3xl px-4 py-12">
+    <h1>Sitemap</h1>
+
+    <h2>Core pages</h2>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/authors/james-whitfield">Author bio — James Whitfield</a></li>
+      <li><a href="/editorial-process">Editorial process and review schedule</a></li>
+    </ul>
+
+    <h2>State guides</h2>
+    <ul>
+      {
+        states.map((s) => (
+          <li>
+            <a href={`/states/${s.slug}`}>{s.name} Miller Trust Setup Guide</a>
+            {s.status !== 'live' && <span class="ml-1 text-sm text-ink-muted">({s.status})</span>}
+          </li>
+        ))
+      }
+    </ul>
+
+    <h2>Legal</h2>
+    <ul>
+      <li><a href="/disclaimer">Full disclaimer</a></li>
+      <li><a href="/privacy">Privacy policy</a></li>
+      <li><a href="/refund-policy">Refund policy</a></li>
+    </ul>
+
+    <h2>Machine-readable indexes</h2>
+    <ul>
+      <li><a href="/sitemap-index.xml">XML sitemap</a></li>
+      <li><a href="/llms.txt">llms.txt</a> (LLM-friendly index)</li>
+      <li><a href="/llms-full.txt">llms-full.txt</a> (expanded LLM-friendly content)</li>
+      <li><a href="/robots.txt">robots.txt</a></li>
+      <li><a href="/.well-known/security.txt">security.txt</a></li>
+    </ul>
+  </article>
+</BaseLayout>

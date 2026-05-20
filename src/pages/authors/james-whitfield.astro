@@ -1,0 +1,72 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { personSchema, breadcrumbSchema } from '~/lib/schema';
+
+export const prerender = true;
+
+const SITE_URL = 'https://millertrustguide.com';
+const canonical = `${SITE_URL}/authors/james-whitfield`;
+
+const jsonLd = [
+  personSchema({
+    jobTitle: 'Researcher and writer',
+    description:
+      'James Whitfield is the sole researcher and writer behind Miller Trust Guide. He reads state Medicaid policy manuals and publishes plain-English operational guides for Qualified Income Trusts. He is not an attorney and does not advise on individual situations.',
+  }),
+  breadcrumbSchema([
+    { name: 'Home', url: SITE_URL + '/' },
+    { name: 'Authors', url: SITE_URL + '/' },
+    { name: 'James Whitfield', url: canonical },
+  ]),
+];
+---
+
+<BaseLayout
+  title="James Whitfield — Researcher, Miller Trust Guide"
+  description="Bio and editorial scope for James Whitfield, the researcher and sole author of Miller Trust Guide. Not an attorney. Synthesizes state Medicaid policy manuals into operational guides."
+  canonical={canonical}
+  jsonLd={jsonLd}
+  ogType="article"
+>
+  <article class="prose-content mx-auto max-w-3xl px-4 py-12" itemscope itemtype="https://schema.org/Person">
+    <p class="text-sm font-medium uppercase tracking-wide text-ink-muted">Author</p>
+    <h1 itemprop="name">James Whitfield</h1>
+    <p class="text-sm text-ink-muted" itemprop="jobTitle">Researcher and sole author, Miller Trust Guide.</p>
+
+    <h2>Scope</h2>
+    <p>
+      I read state Medicaid policy manuals and publish plain-English operational guides for Qualified Income Trusts
+      (also called Miller Trusts). My subject-matter scope is narrow on purpose: the 24 income-cap states' QIT
+      mechanics, the bank-account workflow, common denial reasons, post-death distribution, and annual income-cap
+      updates pegged to the CMS Federal Benefit Rate.
+    </p>
+    <p>
+      I am not an attorney. I do not advise on individual situations. I do not draft trust instruments. When a buyer's
+      question is about their specific situation, my answer is always the same: consult a licensed elder-law attorney
+      in your state, ideally through your state bar's lawyer referral service.
+    </p>
+
+    <h2>Why anonymously?</h2>
+    <p>
+      James Whitfield is a pseudonym used consistently across every page, email, and support reply on this site. I do
+      not maintain social media accounts under this name and I do not give phone interviews. Consistency across
+      channels is the most honest signal a single-author publisher can give that a real person is behind the work. The
+      state agency manuals are the authority; my job is to synthesize and translate, not to be the authority myself.
+    </p>
+
+    <h2>What I won't do</h2>
+    <ul>
+      <li>Customize a kit based on a buyer's family situation.</li>
+      <li>Give advice over phone, chat, or email about an individual situation.</li>
+      <li>Make claims that are not directly supported by a state agency citation.</li>
+      <li>Operate in states where the legal risk profile cannot be managed within the four hard editorial rules.</li>
+    </ul>
+
+    <h2>Contact</h2>
+    <p>
+      Email <a href="mailto:support@millertrustguide.com">support@millertrustguide.com</a> for product, refund, or
+      correction questions. See the <a href="/editorial-process">editorial process page</a> for sourcing standards and
+      review cadence.
+    </p>
+  </article>
+</BaseLayout>

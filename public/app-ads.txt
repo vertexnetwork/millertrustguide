@@ -1,0 +1,7 @@
+# app-ads.txt — IAB Tech Lab spec
+# Spec: https://iabtechlab.com/ads-txt/
+#
+# Miller Trust Guide publishes no mobile applications and authorizes NO
+# third-party sellers to monetize app inventory under this domain.
+
+# contact=support@millertrustguide.com

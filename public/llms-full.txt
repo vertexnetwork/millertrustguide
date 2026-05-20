@@ -1,0 +1,132 @@
+# Miller Trust Guide — Full LLM-Friendly Content Index
+
+> Miller Trust Guide publishes state-specific informational operational guides for using publicly-published Qualified Income Trust (QIT / Miller Trust) templates to qualify a family member for long-term-care Medicaid in income-cap states. We are researchers, not attorneys. We do not draft trust instruments. We link buyers to each state's own .gov template and explain how to use it. This file is the expanded, content-flattened variant of `/llms.txt` for AI systems that prefer inlined content over link traversal.
+
+Last reviewed: 2026-05-20. Annual update: every January, after CMS publishes the new Federal Benefit Rate.
+
+---
+
+## What a Qualified Income Trust (Miller Trust) is
+
+A Qualified Income Trust (QIT), also called a Miller Trust, Qualifying Income Trust, Income Diversion Trust, or Income Cap Trust, is an irrevocable trust used in income-cap states to divert income above the Medicaid long-term-care income threshold so the applicant qualifies for nursing-home Medicaid or HCBS waiver benefits. Income deposited into the QIT is not counted by Medicaid when determining eligibility.
+
+The trust takes effect the month it is properly drafted, signed, AND funded. Medicaid eligibility begins that month — there is no retroactive effect. Every month of delay is a month of full private-pay liability ($7,500–$15,000 in most US markets).
+
+Sources:
+- Texas HHSC Appendix XXXVI (https://www.hhs.texas.gov/handbooks/medicaid-elderly-people-disabilities-handbook/appendix-xxxvi-qits-mepd-information)
+- Medicaid Planning Assistance (https://www.medicaidplanningassistance.org/miller-trusts/)
+- Nolo — Medicaid Income Trusts (https://www.nolo.com/legal-encyclopedia/how-income-trusts-help-if-you-have-too-much-income-medicaid.html)
+
+## 2026 Medicaid LTC income limits (CMS January 2026 figures)
+
+- Single applicant: $2,982/month.
+- Married couple (both applying): $5,964/month.
+- Derivation: 300% of the 2026 Federal Benefit Rate ($994/mo individual, $1,491/mo couple, effective January 1, 2026).
+- Personal Needs Allowance: varies by state ($30–$200/mo). Texas: $75/mo.
+
+CMS publishes new FBR figures in January each year; income cap auto-adjusts at 300% of FBR in most states.
+
+## The 24 QIT states (verified as of December 2025)
+
+Alabama, Alaska, Arizona, Arkansas, Colorado, Delaware, Florida, Georgia, Idaho, Indiana, Iowa, Kentucky, Mississippi, Nevada, New Jersey, New Mexico, Ohio, Oklahoma, Oregon, South Carolina, South Dakota, Tennessee, Texas, Wyoming.
+
+Conditional:
+- Louisiana: allows QITs and offers a Medically Needy Pathway as alternative.
+- Missouri: HCBS waivers only (not nursing-home Medicaid).
+
+Not a QIT state (commonly misclassified): North Carolina is a medically-needy spend-down state and does NOT use QITs.
+
+## How a QIT works mechanically
+
+1. The trust is drafted using the state agency's published template.
+2. The trust is signed by the grantor (typically the Medicaid applicant or their authorized agent).
+3. A dedicated bank account is opened in the name of the trust, beginning at a zero balance.
+4. The applicant's income sources (Social Security, pension, etc., named in the trust) are redirected to the trust account each month.
+5. From the trust account, the trustee distributes the Personal Needs Allowance to the applicant, pays any spousal allowance, and pays the share-of-cost to the Medicaid-certified facility.
+6. The state Medicaid agency does not count income flowing through the QIT when determining eligibility, provided the trust is properly drafted, funded, and managed.
+
+## Why bank account setup is the hardest step
+
+Most bank branch managers have never opened a Miller Trust account. The first attempt is usually refused. Common refusals and the verbatim response framework:
+
+- "We need a tax ID for the trust." Response: State Medicaid policy (e.g., Texas HHSC F-6800) explicitly states no separate EIN is required for a QIT used solely to divert the applicant's countable income. The account is titled in the name of the trust using the applicant's Social Security number.
+- "We need to talk to our legal team." Response: Request escalation in writing. Typical turnaround 24–48 hours.
+- "We can't open an account with a zero balance." Response: State Medicaid policy requires the trust account to begin at zero balance. Request the bank's trust department or a full-service banking center, or switch to a community bank or credit union with documented QIT experience.
+- "Our system doesn't have this trust type." Response: Ask for the bank's trust department or a full-service branch. Retail-only branches frequently lack account templates for irrevocable trusts.
+- "Come back when you have an attorney." Response: This is a bank-policy stance, not a legal requirement. Switch banks or escalate to the bank's trust department.
+
+## The seven most common Texas Medicaid (HHSC) denial reasons for Miller Trusts
+
+1. Trust signed but never funded. The QIT must be funded in the same calendar month it is signed.
+2. Account opened with a non-zero balance. The trust account must begin at zero balance per HHSC F-6800.
+3. Improper trustee selection. Texas Medicaid policy prohibits certain individuals from acting as trustee.
+4. Missing residual beneficiary clause naming the State of Texas (via Medicaid).
+5. Income from non-listed sources deposited to the trust account.
+6. Trust funded after the Medicaid application date (no retroactive cure of prior months).
+7. Post-death distribution mishandled (Medicaid as named beneficiary up to the amount of medical assistance paid).
+
+Each denial reason cites a specific HHSC policy section. The state-specific operational guide explains how to avoid each.
+
+## What Miller Trust Guide publishes — and what it does not
+
+We publish:
+- State-specific operational guides built around publicly-published state QIT templates ($79 per state digital download).
+- Pillar pSEO articles covering state-specific operational mechanics: bank-account setup, monthly funding, denial avoidance, post-death distribution, comparison to attorney-prepared QITs.
+- Lead-magnet PDFs ("The 7 Reasons [State] Medicaid Denies Miller Trust Funding") gated by email opt-in.
+
+We do not:
+- Author or host trust instrument text. The kit links buyers to the state's own .gov template.
+- Customize a kit based on the buyer's family situation. Every buyer in a given state receives the byte-identical kit.
+- Offer phone or chat support. Support is async email only, restricted to product/refund questions and the Canned Redirect for individualized situational questions.
+- Operate in Florida. UPL is a 3rd-degree felony in FL; no Florida kit is sold.
+
+## Editorial principles
+
+1. No drafted forms in the deliverable. The state agency's published template is the authoritative form.
+2. No personalized intake. The kit is byte-identical for every buyer in a given state.
+3. No email/chat advice. Support contact is restricted to product/refund and a Canned Redirect to a licensed attorney for individualized questions.
+4. Disclaimer on every page; consent checkbox at checkout.
+
+## Pricing
+
+- Single-state digital download: $79.
+- Two-state bundle: $149.
+- Three-state bundle: $199.
+- B2B unlimited subscription (post-launch, after ≥3 states live): $499/year.
+- Lead magnet: free, email-gated.
+
+## Money-back guarantee
+
+If the state Medicaid agency rejects the QIT for any reason traceable to following the kit, Miller Trust Guide issues a full refund within one business day. Contact: support@millertrustguide.com with the agency's stated denial reason.
+
+## Author and editorial review
+
+Author: James Whitfield. Researcher, not attorney. Single named human across all bylines, support replies, and email sender fields. The author's scope is the synthesis of publicly published state Medicaid policy manuals into operational guides. The author does not advise on individual situations.
+
+For correction requests, citation disputes, or factual challenges: email support@millertrustguide.com. Confirmed errors are corrected within 5 business days and the page's `dateModified` is updated.
+
+## Site map (primary URLs)
+
+- https://millertrustguide.com/ — Home: state index, scope statement, editorial principles.
+- https://millertrustguide.com/states/texas — Texas Miller Trust Setup Guide.
+- https://millertrustguide.com/about — Editorial identity.
+- https://millertrustguide.com/disclaimer — Full informational-only disclaimer.
+- https://millertrustguide.com/privacy — Privacy policy.
+- https://millertrustguide.com/refund-policy — Refund policy.
+- https://millertrustguide.com/editorial-process — Review schedule, citation policy, correction policy.
+- https://millertrustguide.com/authors/james-whitfield — Author bio.
+
+## Primary source citations
+
+- Texas HHSC — Appendix XXXVI: https://www.hhs.texas.gov/handbooks/medicaid-elderly-people-disabilities-handbook/appendix-xxxvi-qits-mepd-information
+- Texas HHSC — F-6800 Qualified Income Trust: https://www.hhs.texas.gov/handbooks/medicaid-elderly-people-disabilities-handbook/f-6800-qualified-income-trust
+- Indiana FSSA Miller Trust template: https://www.in.gov/fssa/ompp/files/Qualified_Income_Trust_Miller_Trust_template.pdf
+- New Jersey DMAHS QIT template: https://www.nj.gov/humanservices/dmahs/clients/Qualified_Income_Trust_Template.pdf
+- Missouri DSS QIT: https://mydss.mo.gov/media/pdf/qualified-income-miller-trust
+- Kentucky CHFS MAP007: https://www.chfs.ky.gov/agencies/dms/MAPForms/MAP007.pdf
+- KFF Medicaid State Fact Sheets: https://www.kff.org/interactive/medicaid-state-fact-sheets/
+- CMS Medicaid Nursing Home Beneficiary factsheet: https://www.cms.gov/medicare-medicaid-coordination/fraud-prevention/medicaid-integrity-education/downloads/nursinghome-beneficiary-factsheet.pdf
+- CDC NCHS DataBrief 506 (Residential Care): https://www.cdc.gov/nchs/products/databriefs/db506.htm
+- Texas Law Help — Qualified Income Trusts: https://texaslawhelp.org/article/qualified-income-trusts
+- Medicaid Planning Assistance — Miller Trusts: https://www.medicaidplanningassistance.org/miller-trusts/
+- Nolo — Medicaid Income Trusts: https://www.nolo.com/legal-encyclopedia/how-income-trusts-help-if-you-have-too-much-income-medicaid.html

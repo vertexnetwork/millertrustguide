@@ -1,0 +1,12 @@
+# ads.txt — IAB Tech Lab v1.1
+# Spec: https://iabtechlab.com/wp-content/uploads/2022/04/Ads.txt-1.1.pdf
+#
+# Miller Trust Guide runs NO programmatic advertising and authorizes NO
+# third-party sellers to monetize this domain's inventory. This file is
+# intentionally empty of authorized-seller records so that ad-tech systems
+# scanning the domain receive an explicit "no authorized sellers" answer
+# rather than ambiguity. The contact line below is non-spec metadata for
+# manual operator review.
+
+# contact=support@millertrustguide.com
+# subdomain=*.millertrustguide.com

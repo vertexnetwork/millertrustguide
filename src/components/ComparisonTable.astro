@@ -1,0 +1,62 @@
+---
+interface Props {
+  stateName: string;
+  price: number;
+}
+
+const { stateName, price } = Astro.props;
+---
+
+<section aria-labelledby="comparison-heading" class="my-12">
+  <h2 id="comparison-heading">How this compares</h2>
+  <div class="overflow-x-auto">
+    <table class="mt-4 w-full border-collapse text-left text-sm md:text-base">
+      <thead>
+        <tr class="border-b border-border-strong text-ink-heading">
+          <th class="py-3 pr-4 font-semibold"></th>
+          <th class="py-3 pr-4 font-semibold">This kit</th>
+          <th class="py-3 pr-4 font-semibold">Elder-law attorney</th>
+          <th class="py-3 pr-4 font-semibold">Free state PDF</th>
+          <th class="py-3 pr-4 font-semibold">Doing nothing</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-border">
+        <tr>
+          <th scope="row" class="py-3 pr-4 font-medium">Cost</th>
+          <td class="py-3 pr-4">${price}</td>
+          <td class="py-3 pr-4">$1,000–2,500</td>
+          <td class="py-3 pr-4">$0</td>
+          <td class="py-3 pr-4">$0, then $9K–15K/mo private-pay</td>
+        </tr>
+        <tr>
+          <th scope="row" class="py-3 pr-4 font-medium">Time to qualified</th>
+          <td class="py-3 pr-4">Same week</td>
+          <td class="py-3 pr-4">2–6 weeks</td>
+          <td class="py-3 pr-4">If you can decode it alone</td>
+          <td class="py-3 pr-4">Never</td>
+        </tr>
+        <tr>
+          <th scope="row" class="py-3 pr-4 font-medium">Bank-refusal script</th>
+          <td class="py-3 pr-4">Yes</td>
+          <td class="py-3 pr-4">Sometimes</td>
+          <td class="py-3 pr-4">No</td>
+          <td class="py-3 pr-4">n/a</td>
+        </tr>
+        <tr>
+          <th scope="row" class="py-3 pr-4 font-medium">State agency citations</th>
+          <td class="py-3 pr-4">Yes</td>
+          <td class="py-3 pr-4">n/a</td>
+          <td class="py-3 pr-4">n/a</td>
+          <td class="py-3 pr-4">n/a</td>
+        </tr>
+        <tr>
+          <th scope="row" class="py-3 pr-4 font-medium">Updated for 2026 income cap</th>
+          <td class="py-3 pr-4">Yes</td>
+          <td class="py-3 pr-4">Yes</td>
+          <td class="py-3 pr-4">If {stateName} has updated PDF</td>
+          <td class="py-3 pr-4">n/a</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

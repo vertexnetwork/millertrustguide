@@ -1,0 +1,34 @@
+---
+interface Props {
+  stateAgencyAbbreviation: string;
+}
+
+const { stateAgencyAbbreviation } = Astro.props;
+---
+
+<div
+  class="my-8 flex items-start gap-4 rounded-lg border border-primary/30 bg-primary-tint/40 p-5"
+  role="note"
+  aria-label="Refund policy summary"
+>
+  <svg
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+    class="mt-1 h-7 w-7 flex-shrink-0 text-primary"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="12" cy="12" r="10" />
+  </svg>
+  <div>
+    <p class="font-semibold text-ink-heading">Money-back guarantee</p>
+    <p class="mt-1 text-sm text-ink leading-relaxed">
+      If {stateAgencyAbbreviation} rejects your QIT for any reason traceable to following this guide, email
+      <a href="mailto:support@millertrustguide.com">support@millertrustguide.com</a> with the agency's stated denial reason
+      and we issue a full refund within one business day.
+      <a href="/refund-policy">Full refund policy.</a>
+    </p>
+  </div>
+</div>

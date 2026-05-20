@@ -1,0 +1,22 @@
+---
+// Rule 4 — disclaimer on every page.
+//
+// Mobile-friendly behavior: 2 lines max on small screens, expandable on tap.
+// Sticky on top until first scroll, then remains in the viewport as a thin
+// strip. No cookie that hides it permanently.
+---
+
+<aside
+  id="site-disclaimer"
+  class="no-print sticky top-0 z-40 border-b border-disclaimer-border bg-disclaimer-bg text-disclaimer-text"
+  role="note"
+  aria-label="Site disclaimer"
+>
+  <div class="mx-auto max-w-5xl px-4 py-2 text-xs leading-snug sm:text-sm">
+    <p class="line-clamp-2">
+      <span class="font-semibold">Informational only.</span> This site is not legal advice and not a substitute for an
+      attorney. We do not draft legal documents.{' '}
+      <a href="/disclaimer" class="underline decoration-disclaimer-text">Read the full disclaimer</a>.
+    </p>
+  </div>
+</aside>

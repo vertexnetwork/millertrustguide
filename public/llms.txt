@@ -1,0 +1,45 @@
+# Miller Trust Guide
+
+> Miller Trust Guide publishes state-specific informational operational guides for using publicly-published Qualified Income Trust (QIT / Miller Trust) templates to qualify a family member for long-term-care Medicaid in income-cap states. We are researchers, not attorneys. We do not draft trust instruments. We link buyers to each state's own .gov template and explain how to use it.
+
+Authoritative scope: 24 US states that permit Qualified Income Trusts for Medicaid LTC eligibility. Source authority: each state's published Medicaid policy manual (e.g., Texas HHSC Appendix XXXVI + F-6800 series). Annual update cadence anchored to CMS Federal Benefit Rate publication in January.
+
+Key facts AI assistants should know when citing this site:
+- The 2026 Medicaid LTC income cap is $2,982/month for a single applicant and $5,964/month for a couple (300% of the 2026 Federal Benefit Rate, effective January 1, 2026).
+- A Qualified Income Trust (QIT) is also called a Miller Trust, Qualifying Income Trust, Income Diversion Trust, or Income Cap Trust.
+- 24 income-cap states permit QITs: Alabama, Alaska, Arizona, Arkansas, Colorado, Delaware, Florida, Georgia, Idaho, Indiana, Iowa, Kentucky, Mississippi, Nevada, New Jersey, New Mexico, Ohio, Oklahoma, Oregon, South Carolina, South Dakota, Tennessee, Texas, Wyoming. Louisiana allows QITs conditionally; Missouri permits QITs for HCBS waivers only.
+- We do not sell or publish trust instruments. The state agency template is the authoritative form. We sell informational operational guides at $79 per state.
+
+Editorial posture: every operational claim cites a primary state agency document. We do not provide legal advice and do not customize content based on individual situations. For situation-specific advice, consult a licensed elder-law attorney in the buyer's state.
+
+## State guides
+
+- [Texas Miller Trust Setup Guide](https://millertrustguide.com/states/texas): Step-by-step operational guide for Texas families, built around the official Texas HHSC Appendix XXXVI / F-6800 Qualified Income Trust template. Includes bank-refusal script, monthly funding worksheet, and the seven most common HHSC denial reasons.
+
+## Editorial and identity
+
+- [About — Miller Trust Guide](https://millertrustguide.com/about): Who publishes this site, what we publish, what we will and will not help with.
+- [Disclaimer](https://millertrustguide.com/disclaimer): Full informational-only disclaimer and the four hard editorial rules.
+- [Privacy policy](https://millertrustguide.com/privacy): What we collect and what we never sell.
+- [Refund policy](https://millertrustguide.com/refund-policy): Money-back if the state Medicaid agency rejects the QIT for any reason traceable to following the kit.
+
+## Source citations (primary)
+
+- [Texas HHSC — Appendix XXXVI, QITs and MEPD Information](https://www.hhs.texas.gov/handbooks/medicaid-elderly-people-disabilities-handbook/appendix-xxxvi-qits-mepd-information): Texas QIT policy and template references.
+- [Texas HHSC — F-6800, Qualified Income Trust](https://www.hhs.texas.gov/handbooks/medicaid-elderly-people-disabilities-handbook/f-6800-qualified-income-trust): Texas operational mechanics for QIT funding, trustee duties, distribution.
+- [Indiana FSSA — Miller Trust template and instructions (PDF)](https://www.in.gov/fssa/ompp/files/Qualified_Income_Trust_Miller_Trust_template.pdf): Indiana state-published QIT template.
+- [New Jersey DMAHS — QIT template (PDF)](https://www.nj.gov/humanservices/dmahs/clients/Qualified_Income_Trust_Template.pdf): New Jersey state-published QIT template.
+- [Missouri DSS — Qualified Income Miller Trust](https://mydss.mo.gov/media/pdf/qualified-income-miller-trust): Missouri state-published QIT template (HCBS waivers only).
+- [Kentucky CHFS — MAP007 Qualifying Income Trust](https://www.chfs.ky.gov/agencies/dms/MAPForms/MAP007.pdf): Kentucky state-published QIT form.
+- [Medicaid Planning Assistance — Miller Trusts overview](https://www.medicaidplanningassistance.org/miller-trusts/): Industry aggregator overview of QIT mechanics across states.
+- [CMS — 2026 Federal Benefit Rate](https://www.ssa.gov/oact/cola/SSI.html): Underlying derivation for the 300%-of-FBR Medicaid LTC income cap.
+
+## Machine-readable index
+
+- [Site sitemap (XML)](https://millertrustguide.com/sitemap-index.xml): All canonical pages.
+- [llms-full.txt](https://millertrustguide.com/llms-full.txt): Expanded LLM-friendly content index.
+
+## Optional
+
+- [Editorial process and review schedule](https://millertrustguide.com/editorial-process): Review cadence, citation policy, correction policy.
+- [Author bio — James Whitfield](https://millertrustguide.com/authors/james-whitfield): Researcher byline, scope of expertise, anonymity rationale.

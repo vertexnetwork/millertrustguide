@@ -1,0 +1,389 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import ConsentBuyButton from '~/components/ConsentBuyButton.astro';
+import ComparisonTable from '~/components/ComparisonTable.astro';
+import ReassuranceBlock from '~/components/ReassuranceBlock.astro';
+import MoneyBackGuarantee from '~/components/MoneyBackGuarantee.astro';
+import PdfPreview from '~/components/PdfPreview.astro';
+import {
+  articleSchema,
+  faqPageSchema,
+  breadcrumbSchema,
+  medicalWebPageSchema,
+  governmentServiceSchema,
+  productSchema,
+  howToSchema,
+} from '~/lib/schema';
+import type { StateData } from '~/content/config';
+
+interface Props {
+  state: StateData;
+}
+
+const { state } = Astro.props;
+
+const canonical = `https://millertrustguide.com/states/${state.slug}`;
+const isLive = state.status === 'live';
+const blocked = state.status === 'blocked';
+const draft = state.status === 'draft';
+
+const fmt = (n: number) => n.toLocaleString('en-US');
+
+// GEO/AI-citation lede. First ~80 words must directly answer the primary
+// query — Princeton GEO + 2026 AI Overview research both prioritize
+// answer-first content. We mark this passage as speakable so voice/AI
+// assistants can lift it verbatim.
+const tldr = blocked
+  ? `Miller Trust Guide does not currently publish a kit for ${state.name}. ${state.blockedReason ?? 'For advice on your situation, consult a licensed elder-law attorney in your state.'}`
+  : `A ${state.name} Miller Trust (Qualified Income Trust) is an irrevocable trust used to qualify a Medicaid applicant whose monthly income exceeds the ${state.asOf} ${state.name} long-term-care income cap of $${fmt(state.incomeCap2026)} per month. The trust must be drafted, signed, and funded in the same calendar month using the official ${state.agencyAbbreviation} template (${state.policyManualSection}). Medicaid eligibility begins the month the trust is funded; there is no retroactive effect. The ${state.name} Personal Needs Allowance is $${fmt(state.personalNeedsAllowance)} per month.`;
+
+// Authoritative citations used in this article — feeds the Article@citation
+// JSON-LD array (2026 entity-binding signal).
+const citationUrls = [state.officialTemplateUrl, state.policyManualUrl];
+
+const jsonLd: object[] = [
+  articleSchema({
+    headline: state.metaTitle,
+    description: state.metaDescription,
+    url: canonical,
+    dateModified: state.reviewedDate,
+    lastReviewed: state.reviewedDate,
+    reviewedBy: null, // anonymity doctrine; replace when a credentialed reviewer is wired in
+    speakableCssSelectors: ['#tldr', '.faq-question', '.faq-answer'],
+    citations: citationUrls,
+  }),
+  medicalWebPageSchema({
+    url: canonical,
+    name: state.metaTitle,
+    description: state.metaDescription,
+    dateModified: state.reviewedDate,
+    lastReviewed: state.reviewedDate,
+    reviewedBy: null,
+    audience: 'Patient',
+  }),
+  governmentServiceSchema({
+    url: canonical,
+    stateName: state.name,
+    agencyName: state.agencyName,
+    policyManualUrl: state.policyManualUrl,
+  }),
+  faqPageSchema(state.faq),
+  breadcrumbSchema([
+    { name: 'Home', url: 'https://millertrustguide.com/' },
+    { name: 'State Guides', url: 'https://millertrustguide.com/#states' },
+    { name: state.name, url: canonical },
+  ]),
+];
+
+// Only render Product schema when the state is actually purchasable.
+if (isLive) {
+  jsonLd.push(
+    productSchema({
+      url: canonical,
+      name: `${state.name} Miller Trust Setup Kit`,
+      description: state.metaDescription,
+      price: state.price,
+      stateAbbreviation: state.abbreviation,
+      inStock: true,
+    })
+  );
+  jsonLd.push(
+    howToSchema({
+      url: canonical,
+      name: `How to set up a ${state.name} Miller Trust (Qualified Income Trust)`,
+      description: `Step-by-step procedure for setting up a ${state.name} Medicaid Qualified Income Trust using the official ${state.agencyAbbreviation} template.`,
+      totalTime: 'PT3H',
+      estimatedCost: { value: state.price, currency: 'USD' },
+      steps: [
+        {
+          name: `Download the official ${state.agencyAbbreviation} QIT template`,
+          text: `Visit ${state.agencyAbbreviation}'s published template page and download the most current version.`,
+          url: state.officialTemplateUrl,
+        },
+        {
+          name: 'Fill in the obvious data fields',
+          text: 'Enter the applicant name, trustee name, and listed income sources per the state-published instructions.',
+        },
+        {
+          name: 'Sign the trust',
+          text: 'Execute the signed trust in the same calendar month you intend to fund it.',
+        },
+        {
+          name: 'Open a zero-balance bank account in the name of the trust',
+          text: `Use the bank-refusal script and printed ${state.agencyAbbreviation} policy section to handle first-attempt refusals.`,
+        },
+        {
+          name: 'Redirect income sources to the trust account',
+          text: 'Submit direct-deposit redirect requests for each listed income source.',
+        },
+        {
+          name: 'Submit the Medicaid application',
+          text: 'File the LTC Medicaid application; coverage begins the month the QIT is funded.',
+        },
+      ],
+    })
+  );
+}
+---
+
+<BaseLayout
+  title={state.metaTitle}
+  description={state.metaDescription}
+  canonical={canonical}
+  jsonLd={jsonLd}
+  ogType="article"
+  ogImage={`https://millertrustguide.com/og/states/${state.slug}.png`}
+  ogImageAlt={`${state.name} Miller Trust Setup Guide — Miller Trust Guide`}
+  modifiedTime={state.reviewedDate}
+  publishedTime={state.reviewedDate}
+  noindex={draft}
+  speakableSelector="#tldr"
+>
+  <article class="mx-auto max-w-4xl px-4 pb-16 pt-6 md:pt-10" itemscope itemtype="https://schema.org/MedicalWebPage">
+    {/* Breadcrumb (visible + schema-aligned) */}
+    <nav aria-label="Breadcrumb" class="mb-3 text-sm text-ink-muted">
+      <ol class="flex flex-wrap items-center gap-x-2">
+        <li><a href="/" class="no-underline hover:underline">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href="/#states" class="no-underline hover:underline">State guides</a></li>
+        <li aria-hidden="true">/</li>
+        <li aria-current="page" class="text-ink">{state.name}</li>
+      </ol>
+    </nav>
+
+    {/* Hero */}
+    <header class="prose-content">
+      <p class="text-sm font-medium uppercase tracking-wide text-ink-muted">
+        {state.name} &middot; Last reviewed <time datetime={state.reviewedDate}>{state.reviewedDate}</time>
+      </p>
+      <h1 class="mt-2 !text-3xl md:!text-5xl" itemprop="name">
+        {state.name} Miller Trust Setup Guide — Qualify Your Family Member for Medicaid Long-Term Care
+      </h1>
+
+      {/* Answer-first lede. Speakable. AI engines: extract this. */}
+      <p
+        id="tldr"
+        class="mt-5 rounded-lg border border-primary/20 bg-primary-tint/30 p-4 text-base leading-relaxed text-ink"
+        itemprop="abstract"
+      >
+        {tldr}
+      </p>
+
+      <p class="mt-4 text-base text-ink">
+        Step-by-step operational guide for {state.name} families. Built around the official {state.agencyAbbreviation}
+        Qualified Income Trust template. <strong>Informational only — not legal advice.</strong>
+      </p>
+    </header>
+
+    {
+      blocked && (
+        <div class="mt-8 rounded-lg border border-warning/40 bg-disclaimer-bg/40 p-6" role="status">
+          <h2 class="!mt-0">We don't currently sell a {state.name} kit</h2>
+          <p>
+            {state.blockedReason ??
+              'We do not currently sell an operational kit for this state. For advice on your situation, consult a licensed elder-law attorney in your state.'}
+          </p>
+        </div>
+      )
+    }
+
+    {
+      draft && (
+        <div class="mt-6 rounded border border-warning/40 bg-disclaimer-bg/40 p-3 text-sm text-ink" role="status">
+          This state page is in draft and not yet purchasable.
+        </div>
+      )
+    }
+
+    {
+      !blocked && (
+        <div class="mt-8 grid gap-8 md:grid-cols-[1fr_360px]">
+          <div class="prose-content">
+            {/* Delay-cost anchor (DEMOGRAPHICS lever #1) */}
+            <div class="rounded-lg border border-border bg-surface-elevated p-5">
+              <p class="!mt-0 text-base">
+                <strong>The cost of delay:</strong> {state.name} nursing-home Medicaid private-pay averages
+                ${fmt(state.privatePayMonthlyLow)}–${fmt(state.privatePayMonthlyHigh)}/month. Every month of QIT delay
+                is a month of full out-of-pocket cost.
+              </p>
+            </div>
+
+            <h2>What this kit covers</h2>
+            <ul>
+              <li>How a {state.name} Miller Trust works in plain English, with {state.agencyAbbreviation} citations.</li>
+              <li>Where to download the official {state.agencyAbbreviation} template on the .gov site.</li>
+              <li>The fields you fill in yourself — and the clauses you don't.</li>
+              <li>The monthly funding worksheet, pre-filled with {state.asOf}.</li>
+              <li>
+                <strong>The bank-account walkthrough.</strong> Why most banks refuse on first request, the verbatim script
+                citing {state.policyManualSection}, the five most common refusals and how to respond, and a sample
+                resolution letter for the branch manager.
+              </li>
+              <li>How to redirect income month by month after the account opens.</li>
+              <li>
+                The {state.commonDenialReasons.length} most common {state.agencyAbbreviation} denial reasons, with the
+                specific {state.agencyAbbreviation} citation behind each.
+              </li>
+            </ul>
+
+            <h2>The {state.asOf} {state.name} income cap</h2>
+            <p>
+              The {state.name} {state.asOf} Medicaid long-term-care income limit is{' '}
+              <strong>${fmt(state.incomeCap2026)}/month</strong> for a single applicant. If your family member's
+              countable monthly income exceeds this limit, a properly drafted, signed, and funded QIT diverts the excess
+              and brings countable income below the cap. The applicant's Personal Needs Allowance in {state.name} is{' '}
+              <strong>${fmt(state.personalNeedsAllowance)}/month</strong>. Source:{' '}
+              <a href={state.policyManualUrl} rel="external nofollow">{state.agencyAbbreviation} {state.policyManualSection}</a>.
+            </p>
+          </div>
+
+          {/* Sticky buy panel on desktop */}
+          <aside class="md:sticky md:top-24 md:self-start">
+            <div class="rounded-lg border border-border bg-surface-elevated p-6 shadow-sm">
+              <p class="text-sm font-medium uppercase tracking-wide text-ink-muted">{state.name} Kit</p>
+              <p class="mt-2 text-4xl font-bold text-ink-heading">
+                <span aria-label={`${state.price} dollars`}>${state.price}</span>
+              </p>
+              <p class="mt-1 text-sm text-ink-muted">
+                Instant download. Money-back if {state.agencyAbbreviation} rejects.
+              </p>
+              <div class="mt-5">
+                <ConsentBuyButton stateSlug={state.slug} price={state.price} />
+              </div>
+            </div>
+          </aside>
+        </div>
+      )
+    }
+
+    {!blocked && <PdfPreview stateSlug={state.slug} />}
+
+    {!blocked && <ComparisonTable stateName={state.name} price={state.price} />}
+
+    {/* Bank-refusal teaser (the moat) */}
+    {
+      !blocked && (
+        <section class="prose-content my-12" aria-labelledby="bank-heading">
+          <h2 id="bank-heading">The bank refusal — and what to say</h2>
+          <p>
+            Most {state.name} bank branches have never opened a Miller Trust account. The first attempt is usually
+            refused. Branch managers ask for a tax ID. {state.agencyAbbreviation} explicitly states no separate EIN is
+            required. The kit includes the exact language to cite at the counter, plus a printable resolution letter for
+            the branch manager.
+          </p>
+          <p class="text-sm text-ink-muted">Sample objections handled in the kit:</p>
+          <ul>
+            {state.bankRefusalNotes.slice(0, 3).map((note) => (
+              <li>
+                <strong>{note.refusalType}.</strong> {note.response.slice(0, 140)}…
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {!blocked && <ReassuranceBlock stateAgencyAbbreviation={state.agencyAbbreviation} />}
+
+    {!blocked && <MoneyBackGuarantee stateAgencyAbbreviation={state.agencyAbbreviation} />}
+
+    {/* Common denial reasons */}
+    {
+      !blocked && (
+        <section class="prose-content my-12" aria-labelledby="denials-heading">
+          <h2 id="denials-heading">
+            The {state.commonDenialReasons.length} most common {state.name} denial reasons
+          </h2>
+          <p>
+            Every denial reason below cites {state.agencyAbbreviation} policy. The full kit explains how to avoid each
+            and the order in which to verify them before submitting the Medicaid application.
+          </p>
+          <ol>
+            {state.commonDenialReasons.map((r) => (
+              <li>
+                <strong>{r.title}.</strong> {r.description}{' '}
+                <span class="text-sm text-ink-muted">— {r.agencyCitation}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
+
+    {/* About the kit author */}
+    <section class="prose-content my-12" aria-labelledby="author-heading">
+      <h2 id="author-heading">About the author</h2>
+      <p>
+        I'm <a href="/authors/james-whitfield" rel="author">James Whitfield</a>. I built this site after spending weeks
+        helping my own family member set up a Miller Trust. I'm not an attorney — I'm a researcher who has now read
+        every {state.agencyAbbreviation} policy manual section that covers Qualified Income Trusts. I publish what I
+        learned. I will not advise you on your specific situation; for that, you need a {state.name}-licensed
+        attorney. I work anonymously because the state agency manuals do the talking, not me.
+      </p>
+    </section>
+
+    {/* FAQ */}
+    {
+      !blocked && (
+        <section class="prose-content my-12" aria-labelledby="faq-heading">
+          <h2 id="faq-heading">Frequently asked questions</h2>
+          <dl>
+            {state.faq.map((f) => (
+              <div class="mt-6">
+                <dt class="faq-question font-semibold text-ink-heading">{f.question}</dt>
+                <dd class="faq-answer mt-1">{f.answer}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )
+    }
+
+    {/* State agency citations panel */}
+    <section class="prose-content my-12" aria-labelledby="sources-heading">
+      <h2 id="sources-heading">State agency sources</h2>
+      <p>
+        Every operational claim in this kit cites a primary {state.agencyAbbreviation} document. Verify directly:
+      </p>
+      <ul>
+        <li>
+          <strong>Official template:</strong>{' '}
+          <a href={state.officialTemplateUrl} rel="external nofollow noopener">
+            {state.agencyAbbreviation} — {state.policyManualSection}
+          </a>
+          . {state.officialTemplateNote}
+        </li>
+        <li>
+          <strong>Policy manual:</strong>{' '}
+          <a href={state.policyManualUrl} rel="external nofollow noopener">
+            {state.agencyAbbreviation} policy manual
+          </a>{' '}
+          (section {state.policyManualSection}).
+        </li>
+      </ul>
+    </section>
+
+    {/* Buy CTA repeat */}
+    {
+      !blocked && (
+        <section
+          class="prose-content my-12 rounded-lg border border-border bg-surface-elevated p-6"
+          aria-labelledby="cta-heading"
+        >
+          <h2 id="cta-heading" class="!mt-0">Ready to start?</h2>
+          <p>
+            ${state.price}. Instant download. Money-back if {state.agencyAbbreviation} rejects your QIT for any reason
+            traceable to following the kit.
+          </p>
+          <div class="mt-6">
+            <ConsentBuyButton
+              stateSlug={state.slug}
+              price={state.price}
+              buttonLabel={`Get the ${state.name} kit — $${state.price}`}
+            />
+          </div>
+        </section>
+      )
+    }
+  </article>
+</BaseLayout>

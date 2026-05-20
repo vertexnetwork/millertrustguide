@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Miller Trust Guide">
+  <title>Miller Trust Guide</title>
+  <rect width="64" height="64" rx="10" fill="#115E59"/>
+  <rect x="5" y="5" width="54" height="54" rx="6" fill="none" stroke="#FAFAF7" stroke-opacity="0.16" stroke-width="0.75"/>
+  <text x="32" y="47" font-family="Georgia, 'Times New Roman', 'Source Serif Pro', serif" font-size="42" font-weight="700" fill="#FAFAF7" text-anchor="middle" letter-spacing="-1">M</text>
+</svg>

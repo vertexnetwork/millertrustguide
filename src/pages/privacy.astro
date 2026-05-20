@@ -1,0 +1,71 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+export const prerender = true;
+---
+
+<BaseLayout
+  title="Privacy Policy — Miller Trust Guide"
+  description="What data we collect, what we don't, and how we handle email addresses and payment data."
+>
+  <article class="prose-content mx-auto max-w-3xl px-4 py-12">
+    <h1>Privacy Policy</h1>
+    <p class="text-sm text-ink-muted">Last updated 2026-05-20.</p>
+
+    <h2>What we collect</h2>
+    <ul>
+      <li>
+        <strong>Email address</strong> — at checkout (to deliver the kit) and optionally via the lead-magnet form (to
+        send the free educational PDF and a 30–45-day educational email sequence you can unsubscribe from at any time).
+      </li>
+      <li>
+        <strong>Payment information</strong> — handled entirely by Stripe. We never see your card number. Stripe stores
+        the transaction record per its own retention policy (≥7 years).
+      </li>
+      <li>
+        <strong>Consent acknowledgment</strong> — the checkout consent record (timestamp + IP) is stored in our server
+        logs and in Stripe's order metadata.
+      </li>
+      <li>
+        <strong>Aggregate, cookie-less analytics</strong> via Vercel Web Analytics. No cookies. No personally identifying
+        information. Pageview counts and referrer URLs only.
+      </li>
+    </ul>
+
+    <h2>What we do NOT collect</h2>
+    <ul>
+      <li>We do not ask for the applicant's name, income, Social Security number, age, family situation, or any other personal information about your family.</li>
+      <li>We do not run third-party tracking pixels, advertising trackers, or behavioral profiling tools.</li>
+      <li>We do not maintain user accounts. There is no login.</li>
+    </ul>
+
+    <h2>What we do with email addresses</h2>
+    <p>
+      Buyer email addresses are used only to deliver the kit, send refund confirmations, and respond to support
+      requests. Lead-magnet emails are used to send the educational nurture sequence and a soft kit pitch at the end.
+      You can unsubscribe from the nurture sequence at any time via the link in every email.
+    </p>
+
+    <p>
+      <strong>We do not sell or share email addresses</strong> with attorneys, Medicaid planners, lead-generation
+      companies, advertisers, affiliates, or any third party. Ever.
+    </p>
+
+    <h2>Service providers</h2>
+    <ul>
+      <li><strong>Stripe</strong> — payment processing and tax calculation.</li>
+      <li><strong>Postmark</strong> — transactional email delivery (order receipts, kit download links).</li>
+      <li><strong>Buttondown</strong> — educational email sequences for lead-magnet subscribers.</li>
+      <li><strong>Vercel</strong> — site hosting, file storage for the kit PDF, and cookie-less analytics.</li>
+    </ul>
+
+    <h2>Your rights</h2>
+    <p>
+      To request deletion of your email address from our records, email <a href="mailto:support@millertrustguide.com">support@millertrustguide.com</a>.
+      We honor deletion requests within 7 business days. Note that Stripe retains order records independently per its
+      own retention policy and we cannot delete those.
+    </p>
+
+    <h2>Contact</h2>
+    <p><a href="mailto:support@millertrustguide.com">support@millertrustguide.com</a></p>
+  </article>
+</BaseLayout>

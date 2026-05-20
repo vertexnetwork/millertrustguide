@@ -1,0 +1,26 @@
+/* TEAM */
+Author: James Whitfield
+Role: Researcher, writer, sole publisher
+Contact: support [at] millertrustguide.com
+Location: United States
+
+/* SITE */
+Site name: Miller Trust Guide
+Brand: Miller Trust Guide
+Last updated: 2026-05-20
+Standards: HTML5, ES2022, WCAG 2.2 AA
+Tools: Astro, Tailwind CSS, Vercel, Stripe, Postmark, Vercel Blob, Buttondown
+Editorial review cadence: Annual at CMS Federal Benefit Rate publication (January).
+
+/* ANONYMITY NOTE */
+This site is published under a pseudonymous researcher byline. The
+operator does not maintain social media accounts under this name and does
+not give phone interviews. The author byline is consistent across every
+page, email, and support reply because consistency is the most honest
+signal a single-author publisher can give that a real person is behind
+the work.
+
+/* CONTRIBUTORS */
+None. Editorial is single-author. Content review is performed by the
+author annually; correction requests via email are reviewed within five
+business days.

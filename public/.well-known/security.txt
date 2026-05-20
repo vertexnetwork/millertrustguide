@@ -1,0 +1,13 @@
+# RFC 9116 security.txt for millertrustguide.com
+# Spec: https://www.rfc-editor.org/rfc/rfc9116
+# Generator-free, manually authored.
+
+Contact: mailto:support@millertrustguide.com
+Expires: 2027-05-20T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://millertrustguide.com/.well-known/security.txt
+Policy: https://millertrustguide.com/disclaimer
+
+# We are a single-author informational publisher. We do not run a bug bounty.
+# We respond to good-faith security reports within five business days. Please
+# do not submit automated scan reports; please include reproduction steps.

@@ -1,0 +1,223 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import {
+  faqPageSchemaFromPairs,
+  articleSchema,
+  breadcrumbSchema,
+} from '~/lib/schema';
+
+export const prerender = true;
+
+const states = (await getCollection('states'))
+  .map((s) => s.data)
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+const live = states.filter((s) => s.status === 'live');
+const draft = states.filter((s) => s.status === 'draft');
+const blocked = states.filter((s) => s.status === 'blocked');
+
+const SITE_URL = 'https://millertrustguide.com';
+
+// Homepage FAQ — generic QIT questions (separate from per-state FAQ).
+// These power the FAQPage schema and the visible accordion.
+const homeFaq = [
+  {
+    question: 'What is a Miller Trust?',
+    answer:
+      'A Miller Trust (also called a Qualified Income Trust or QIT) is an irrevocable trust used in 24 US "income-cap" states to divert income above the Medicaid long-term-care threshold so the applicant qualifies for nursing-home Medicaid or HCBS waiver benefits. Income deposited into the QIT is not counted by Medicaid when determining eligibility.',
+  },
+  {
+    question: 'What is the 2026 Medicaid income limit?',
+    answer:
+      'For 2026, the long-term-care Medicaid income limit is $2,982 per month for a single applicant and $5,964 per month for a couple where both spouses are applying. These figures derive from 300% of the 2026 Federal Benefit Rate, effective January 1, 2026.',
+  },
+  {
+    question: 'Which states allow Miller Trusts?',
+    answer:
+      'As of December 2025, 24 income-cap states permit Qualified Income Trusts: Alabama, Alaska, Arizona, Arkansas, Colorado, Delaware, Florida, Georgia, Idaho, Indiana, Iowa, Kentucky, Mississippi, Nevada, New Jersey, New Mexico, Ohio, Oklahoma, Oregon, South Carolina, South Dakota, Tennessee, Texas, and Wyoming. Louisiana allows QITs conditionally; Missouri permits them for HCBS waivers only.',
+  },
+  {
+    question: 'Do you draft the trust document?',
+    answer:
+      'No. We never author or host trust instrument text. The kit links you to your state\'s publicly-published Qualified Income Trust template on the state agency .gov website. You download the template directly from the agency. We explain how to use it.',
+  },
+  {
+    question: 'Is this legal advice?',
+    answer:
+      'No. Miller Trust Guide is an informational publisher, not a law firm. We are not attorneys and we do not practice law. We do not customize the kit based on your situation. For advice on your specific situation, consult a licensed elder-law attorney in your state.',
+  },
+  {
+    question: 'What does a kit cost?',
+    answer:
+      'A single-state digital download is $79. A two-state bundle is $149 and a three-state bundle is $199. We offer a money-back guarantee: if your state Medicaid agency rejects the QIT for any reason traceable to following the kit, we issue a full refund.',
+  },
+  {
+    question: 'When does Medicaid coverage begin?',
+    answer:
+      'Medicaid long-term-care coverage begins the calendar month the QIT is signed AND funded. There is no retroactive effect. Every month of delay is a month of full private-pay liability ($7,500–$15,000 in most US markets).',
+  },
+];
+
+const canonical = SITE_URL + '/';
+const jsonLd = [
+  articleSchema({
+    headline: 'Miller Trust Guide — State-Specific Operational Guides for Medicaid Qualified Income Trusts',
+    description:
+      'State-specific operational guides for setting up a Qualified Income Trust (Miller Trust) to qualify a family member for Medicaid long-term care. Informational, not legal advice.',
+    url: canonical,
+    dateModified: '2026-05-20',
+    lastReviewed: '2026-05-20',
+    speakableCssSelectors: ['#tldr', '.faq-question', '.faq-answer'],
+  }),
+  faqPageSchemaFromPairs(homeFaq),
+  breadcrumbSchema([{ name: 'Home', url: canonical }]),
+];
+---
+
+<BaseLayout
+  title="Miller Trust Guide — State-Specific Setup Guides for Medicaid Qualified Income Trusts (2026)"
+  description="State-specific operational guides for setting up a Qualified Income Trust (Miller Trust) to qualify a family member for Medicaid long-term care. Built around each state's official .gov template. Informational, not legal advice."
+  canonical={canonical}
+  jsonLd={jsonLd}
+  ogImage={`${SITE_URL}/og-default.png`}
+  ogImageAlt="Miller Trust Guide — state-specific operational guides for Medicaid Qualified Income Trusts."
+  speakableSelector="#tldr"
+>
+  <section class="mx-auto max-w-3xl px-4 pt-8 pb-4 md:pt-12">
+    <p class="text-sm font-medium uppercase tracking-wide text-ink-muted">Miller Trust Guide</p>
+    <h1 class="mt-2 !text-3xl md:!text-5xl">
+      State-specific setup guides for Medicaid Qualified Income Trusts.
+    </h1>
+
+    {/* Answer-first lede. Speakable. */}
+    <p
+      id="tldr"
+      class="mt-5 rounded-lg border border-primary/20 bg-primary-tint/30 p-4 text-base leading-relaxed text-ink"
+    >
+      A Miller Trust (Qualified Income Trust, or QIT) is an irrevocable trust used in 24 US income-cap states to qualify
+      a Medicaid applicant whose monthly income exceeds the long-term-care threshold. The 2026 single-applicant cap is
+      $2,982 per month. Each state publishes its own QIT template on its Medicaid agency site. This guide is a
+      step-by-step operational walkthrough built around that template: how to fund it, how to open the bank account,
+      how to redirect income, and how to avoid the most common denial reasons. We are researchers, not attorneys.
+    </p>
+
+    <p class="mt-4 text-sm text-ink-muted">
+      Last reviewed <time datetime="2026-05-20">2026-05-20</time>. {' '}
+      Annual update at January CMS Federal Benefit Rate publication.
+    </p>
+  </section>
+
+  <section id="states" class="mx-auto max-w-3xl px-4 py-6">
+    <h2>Available state guides</h2>
+    {
+      live.length === 0 ? (
+        <p class="mt-2 text-ink-muted">
+          No kits are currently published.{' '}
+          <a href="#email-signup" class="underline">Join the email list</a> to be notified when we launch.
+        </p>
+      ) : (
+        <ul class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+          {live.map((s) => (
+            <li class="rounded-lg border border-border bg-surface-elevated p-4">
+              <a
+                href={`/states/${s.slug}`}
+                class="text-lg font-semibold no-underline hover:underline"
+                aria-label={`${s.name} Miller Trust Setup Guide — $${s.price}`}
+              >
+                {s.name} Miller Trust Guide — ${s.price}
+              </a>
+              <p class="mt-1 text-sm text-ink-muted">{s.metaDescription.slice(0, 130)}…</p>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+
+  {
+    draft.length > 0 && (
+      <section class="mx-auto max-w-3xl px-4 py-6">
+        <h2>In progress</h2>
+        <p class="mt-2 text-ink-muted">
+          Drafting kits for: {draft.map((s) => s.name).join(', ')}.
+        </p>
+      </section>
+    )
+  }
+
+  {
+    blocked.length > 0 && (
+      <section class="mx-auto max-w-3xl px-4 py-6">
+        <h2>Not currently available</h2>
+        <p class="mt-2 text-ink-muted">
+          We do not currently publish kits for: {blocked.map((s) => s.name).join(', ')}.
+        </p>
+      </section>
+    )
+  }
+
+  <section class="mx-auto max-w-3xl px-4 py-10">
+    <h2>What this is — and what it isn't</h2>
+    <ul class="mt-3 list-disc space-y-2 pl-6">
+      <li>An informational operational guide. Plain-English explanations of state Medicaid policy, citations, and step-by-step instructions.</li>
+      <li>Not legal advice. Not a substitute for a licensed attorney. We do not draft trust instruments.</li>
+      <li>Not personalized. Every buyer in a given state receives the byte-identical kit.</li>
+      <li>Support is email-only and limited to product and refund questions. For advice on your specific situation, consult a licensed elder-law attorney in your state.</li>
+    </ul>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-4 py-10" aria-labelledby="home-faq-heading">
+    <h2 id="home-faq-heading">Frequently asked questions</h2>
+    <dl class="mt-4 divide-y divide-border">
+      {
+        homeFaq.map((f, i) => (
+          <details class="group py-4" open={i === 0}>
+            <summary class="faq-question cursor-pointer list-none font-semibold text-ink-heading marker:hidden">
+              <span class="inline-block transition-transform group-open:rotate-90" aria-hidden="true">▸</span>{' '}
+              {f.question}
+            </summary>
+            <div class="faq-answer mt-2 pl-5 leading-relaxed text-ink">{f.answer}</div>
+          </details>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-4 py-10">
+    <h2>Editorial sources</h2>
+    <p class="text-ink-muted">
+      Every claim on this site cites a primary state agency document or a recognized source. Selected primary
+      sources:
+    </p>
+    <ul class="mt-3 list-disc space-y-1 pl-6 text-sm">
+      <li>
+        <a href="https://www.hhs.texas.gov/handbooks/medicaid-elderly-people-disabilities-handbook/appendix-xxxvi-qits-mepd-information"
+          rel="external nofollow noopener">
+          Texas HHSC — Appendix XXXVI, QITs and MEPD Information
+        </a>
+      </li>
+      <li>
+        <a href="https://www.in.gov/fssa/ompp/files/Qualified_Income_Trust_Miller_Trust_template.pdf"
+          rel="external nofollow noopener">
+          Indiana FSSA — Miller Trust template + instructions (PDF)
+        </a>
+      </li>
+      <li>
+        <a href="https://www.nj.gov/humanservices/dmahs/clients/Qualified_Income_Trust_Template.pdf"
+          rel="external nofollow noopener">
+          New Jersey DMAHS — QIT template (PDF)
+        </a>
+      </li>
+      <li>
+        <a href="https://www.medicaidplanningassistance.org/miller-trusts/" rel="external nofollow noopener">
+          Medicaid Planning Assistance — Miller Trusts overview
+        </a>
+      </li>
+    </ul>
+    <p class="mt-4 text-sm text-ink-muted">
+      <a href="/editorial-process">Editorial process &rarr;</a> &middot;{' '}
+      <a href="/authors/james-whitfield">About the author &rarr;</a>
+    </p>
+  </section>
+</BaseLayout>

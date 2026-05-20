@@ -1,0 +1,8 @@
+# This file exists for crawlers that probe the legacy root path.
+# Canonical location is /.well-known/security.txt per RFC 9116.
+
+Contact: mailto:support@millertrustguide.com
+Expires: 2027-05-20T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://millertrustguide.com/.well-known/security.txt
+Policy: https://millertrustguide.com/disclaimer

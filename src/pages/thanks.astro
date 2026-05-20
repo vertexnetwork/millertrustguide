@@ -1,0 +1,76 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+// SSR so we can look up the Stripe session and confirm payment status before
+// telling the buyer to check their inbox. Avoids the rare "thanks page loads
+// before webhook fires" trust-erosion edge case.
+export const prerender = false;
+
+import { getStripe } from '~/lib/stripe';
+
+const sessionId = Astro.url.searchParams.get('session_id');
+let stateName: string | null = null;
+let paymentConfirmed = false;
+let lookupError = false;
+
+if (sessionId) {
+  try {
+    const stripe = getStripe();
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    paymentConfirmed = session.payment_status === 'paid';
+    stateName =
+      (session.metadata?.state_name as string | undefined) ??
+      (session.metadata?.state_slug
+        ? String(session.metadata.state_slug).charAt(0).toUpperCase() + String(session.metadata.state_slug).slice(1)
+        : null);
+  } catch {
+    lookupError = true;
+  }
+}
+---
+
+<BaseLayout
+  title="Thank you — Miller Trust Guide"
+  description="Payment received. Your kit is on its way to your inbox."
+>
+  <article class="prose-content mx-auto max-w-2xl px-4 py-16 text-center">
+    {
+      paymentConfirmed ? (
+        <>
+          <h1>Thank you{stateName ? ` — your ${stateName} kit is on the way` : ''}.</h1>
+          <p>
+            Your payment is confirmed. The download link will arrive in your inbox within a few minutes from
+            <strong> support@millertrustguide.com</strong>.
+          </p>
+          <p>The link is valid for 7 days. If you don't see it, check spam — or just reply to any of our emails and we'll resend.</p>
+        </>
+      ) : lookupError || !sessionId ? (
+        <>
+          <h1>Thank you</h1>
+          <p>
+            If you just completed checkout, your kit will arrive in your inbox within a few minutes from
+            <strong> support@millertrustguide.com</strong>.
+          </p>
+          <p>
+            If you don't see it within 15 minutes, please email
+            <a href="mailto:support@millertrustguide.com"> support@millertrustguide.com</a> and we'll resend.
+          </p>
+        </>
+      ) : (
+        <>
+          <h1>Almost there</h1>
+          <p>
+            Stripe is still processing your payment. The kit will be emailed once the payment confirms — usually within
+            a minute or two. If you haven't received it within 15 minutes, email
+            <a href="mailto:support@millertrustguide.com"> support@millertrustguide.com</a>.
+          </p>
+        </>
+      )
+    }
+
+    <p class="mt-8 text-sm text-ink-muted">
+      Reminder: this kit is informational only and is not legal advice. For advice on your specific situation, consult
+      a licensed elder-law attorney in your state.
+    </p>
+  </article>
+</BaseLayout>

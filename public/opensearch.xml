@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Miller Trust Guide</ShortName>
+  <Description>State-specific Qualified Income Trust (Miller Trust) operational guides.</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image height="16" width="16" type="image/x-icon">https://millertrustguide.com/favicon.ico</Image>
+  <Url type="text/html" method="get" template="https://millertrustguide.com/?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://millertrustguide.com/opensearch.xml"/>
+  <SearchForm>https://millertrustguide.com/</SearchForm>
+</OpenSearchDescription>

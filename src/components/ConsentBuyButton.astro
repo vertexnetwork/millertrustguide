@@ -1,0 +1,121 @@
+---
+// Rule 4 enforcer. Pairs the consent checkbox with the buy button as one
+// island. The checkbox toggles the button's `disabled` attribute via a tiny
+// inline script (no React, no framework — just DOM). On click, the script
+// POSTs to /api/create-checkout with consent=true; the server validates again
+// and refuses to create a Stripe session if consent is missing.
+
+interface Props {
+  stateSlug: string;
+  price: number;
+  buttonLabel?: string;
+}
+
+const { stateSlug, price, buttonLabel = `Get the kit — $${price}` } = Astro.props;
+
+const formId = `buy-${stateSlug}`;
+const consentId = `${formId}-consent`;
+const buttonId = `${formId}-button`;
+const errorId = `${formId}-error`;
+---
+
+<div class="rounded-lg border border-border bg-surface-elevated p-6 shadow-sm">
+  <label
+    for={consentId}
+    class="flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-ink"
+  >
+    <input
+      type="checkbox"
+      id={consentId}
+      name="consent"
+      class="mt-1 h-5 w-5 flex-shrink-0 cursor-pointer rounded border-border-strong"
+      aria-describedby={`${formId}-consent-text`}
+      required
+    />
+    <span id={`${formId}-consent-text`}>
+      I understand this is an informational guide, not legal advice. I will consult a licensed attorney for advice on my
+      specific situation. I am purchasing a guide that explains how to use my state's public Medicaid forms.
+    </span>
+  </label>
+
+  <button
+    type="button"
+    id={buttonId}
+    data-state-slug={stateSlug}
+    data-consent-id={consentId}
+    data-error-id={errorId}
+    class="btn-cta mt-5 w-full"
+    disabled
+    aria-disabled="true"
+  >
+    {buttonLabel}
+  </button>
+
+  <p
+    id={errorId}
+    class="mt-3 hidden text-sm text-error"
+    role="alert"
+    aria-live="polite"
+  ></p>
+
+  <p class="mt-3 text-center text-xs text-ink-muted">
+    Secure checkout by Stripe &middot; Instant download &middot; Money-back if HHSC rejects
+  </p>
+</div>
+
+<script>
+  // Wire every ConsentBuyButton instance on the page.
+  document.querySelectorAll<HTMLButtonElement>('[data-state-slug]').forEach((button) => {
+    const consentId = button.dataset.consentId!;
+    const errorId = button.dataset.errorId!;
+    const stateSlug = button.dataset.stateSlug!;
+
+    const checkbox = document.getElementById(consentId) as HTMLInputElement | null;
+    const errorEl = document.getElementById(errorId) as HTMLParagraphElement | null;
+    if (!checkbox || !errorEl) return;
+
+    const sync = () => {
+      const checked = checkbox.checked;
+      button.disabled = !checked;
+      button.setAttribute('aria-disabled', String(!checked));
+      if (checked) errorEl.classList.add('hidden');
+    };
+    checkbox.addEventListener('change', sync);
+    sync();
+
+    button.addEventListener('click', async () => {
+      if (!checkbox.checked) {
+        errorEl.textContent = 'Please confirm the acknowledgment above before continuing.';
+        errorEl.classList.remove('hidden');
+        return;
+      }
+      button.disabled = true;
+      button.textContent = 'Redirecting to secure checkout…';
+      try {
+        const res = await fetch('/api/create-checkout', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            stateSlug,
+            consent: true,
+            consentTimestamp: new Date().toISOString(),
+          }),
+        });
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(text || `Checkout failed (${res.status})`);
+        }
+        const data = (await res.json()) as { url?: string };
+        if (!data.url) throw new Error('No checkout URL returned.');
+        window.location.href = data.url;
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Something went wrong. Please try again or email support@millertrustguide.com.';
+        errorEl.textContent = message;
+        errorEl.classList.remove('hidden');
+        button.disabled = false;
+        button.textContent = 'Try again';
+      }
+    });
+  });
+</script>

@@ -1,0 +1,32 @@
+{
+  "name": "Miller Trust Guide",
+  "short_name": "Miller Trust Guide",
+  "description": "State-specific operational guides for Medicaid Qualified Income Trusts.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "minimal-ui",
+  "theme_color": "#115E59",
+  "background_color": "#FAFAF7",
+  "lang": "en-US",
+  "categories": ["education", "reference", "finance"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

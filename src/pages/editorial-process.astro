@@ -1,0 +1,109 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { articleSchema, breadcrumbSchema } from '~/lib/schema';
+
+export const prerender = true;
+
+const SITE_URL = 'https://millertrustguide.com';
+const canonical = `${SITE_URL}/editorial-process`;
+
+const jsonLd = [
+  articleSchema({
+    headline: 'Editorial process and review schedule — Miller Trust Guide',
+    description:
+      'How Miller Trust Guide sources, reviews, and updates state Medicaid Qualified Income Trust content. Citation policy, correction policy, annual review cadence.',
+    url: canonical,
+    dateModified: '2026-05-20',
+    lastReviewed: '2026-05-20',
+  }),
+  breadcrumbSchema([
+    { name: 'Home', url: SITE_URL + '/' },
+    { name: 'Editorial process', url: canonical },
+  ]),
+];
+---
+
+<BaseLayout
+  title="Editorial Process — Miller Trust Guide"
+  description="How Miller Trust Guide sources, reviews, and updates state Medicaid Qualified Income Trust content. Citation policy, correction policy, annual review cadence."
+  canonical={canonical}
+  jsonLd={jsonLd}
+  ogType="article"
+  modifiedTime="2026-05-20"
+>
+  <article class="prose-content mx-auto max-w-3xl px-4 py-12">
+    <p class="text-sm font-medium uppercase tracking-wide text-ink-muted">Editorial</p>
+    <h1>Editorial process and review schedule</h1>
+    <p class="text-sm text-ink-muted">Last reviewed <time datetime="2026-05-20">2026-05-20</time>.</p>
+
+    <h2>What we publish</h2>
+    <p>
+      Miller Trust Guide publishes state-specific informational operational guides that teach families how to use their
+      state's publicly-published Qualified Income Trust (Miller Trust) template to qualify a parent or spouse for
+      long-term-care Medicaid. Every state page contains the income cap, the Personal Needs Allowance, the citation to
+      the state agency's policy manual, the bank-account walkthrough, common denial reasons, and the post-death
+      distribution rules.
+    </p>
+
+    <h2>Sourcing standards</h2>
+    <ul>
+      <li>Every operational claim cites a primary state agency document (e.g., Texas HHSC Appendix XXXVI), CMS, or a recognized industry aggregator (e.g., Medicaid Planning Assistance).</li>
+      <li>Citations point directly to the source URL, not to a summary or intermediate page.</li>
+      <li>Where state agencies publish a template, we link to it. We never host or "improve" the template.</li>
+      <li>Where a state does not publish a template, we say so plainly and direct readers to obtain one from a licensed attorney in that state.</li>
+    </ul>
+
+    <h2>Author and reviewer</h2>
+    <p>
+      Author: <a href="/authors/james-whitfield" rel="author">James Whitfield</a>, researcher. The author is not an
+      attorney and does not advise on individual situations. The author is solely responsible for content.
+    </p>
+    <p>
+      Independent legal review: Miller Trust Guide engages a licensed elder-law attorney to review the full kit and
+      site annually. The most recent review date is published on each state page and updated when the review completes.
+      The reviewer's identity is disclosed on each state page in the schema-marked reviewedBy field once the engagement
+      is in place.
+    </p>
+
+    <h2>Annual update cadence</h2>
+    <p>
+      Each state page is reviewed annually in January, immediately after CMS publishes the new Federal Benefit Rate.
+      Income cap and Personal Needs Allowance values are recomputed and refreshed. The income-cap-state list is
+      re-verified against current state Medicaid agency policy manuals. State agency URL citations are re-checked for
+      validity.
+    </p>
+    <p>
+      In addition to the January refresh, pages are reviewed quarterly for citation rot, broken state-agency links, and
+      reader-reported corrections.
+    </p>
+
+    <h2>Correction policy</h2>
+    <p>
+      If you find content on this site that does not match what your state Medicaid agency publishes, please email{' '}
+      <a href="mailto:support@millertrustguide.com">support@millertrustguide.com</a> with the page URL, the disputed
+      claim, and the agency citation that supports your correction. Confirmed corrections are made within five business
+      days; the page's last-reviewed date is updated and the correction is logged here.
+    </p>
+
+    <h3>Correction log</h3>
+    <p class="text-sm text-ink-muted">
+      No corrections logged as of 2026-05-20. This log will be updated as corrections are processed.
+    </p>
+
+    <h2>What we will not do</h2>
+    <ul>
+      <li>Draft, host, or distribute trust instrument text.</li>
+      <li>Customize a kit based on a buyer's family situation.</li>
+      <li>Give advice over phone, chat, or email about an individual situation.</li>
+      <li>Sell email addresses or share buyer data with attorneys, planners, or referral services.</li>
+      <li>Operate in Florida (UPL is a 3rd-degree felony in FL).</li>
+    </ul>
+
+    <h2>Conflicts of interest</h2>
+    <p>
+      Miller Trust Guide accepts no advertising, no affiliate revenue, no referral fees, and no sponsorships. Our only
+      revenue is direct sale of state kits and the post-launch B2B subscription tier. We do not pay for placement on
+      attorney directories or aggregators. We do not pay for backlinks.
+    </p>
+  </article>
+</BaseLayout>
