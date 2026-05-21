@@ -20,7 +20,8 @@ export default defineConfig({
         !page.includes('/api/') &&
         !page.includes('/thanks') &&
         !page.includes('/admin') &&
-        !page.includes('/draft'),
+        !page.includes('/draft') &&
+        !page.includes('/kits/'),
       changefreq: 'weekly',
       priority: 0.7,
       lastmod: new Date(),

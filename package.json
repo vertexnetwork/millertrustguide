@@ -12,6 +12,7 @@
     "lint:guardrails": "node scripts/check-guardrails.mjs",
     "indexnow:submit": "node scripts/indexnow-submit.mjs",
     "og:generate": "node scripts/generate-og.mjs",
+    "kits:build": "node scripts/build-pdfs.mjs",
     "postbuild": "node scripts/indexnow-submit.mjs || true"
   },
   "dependencies": {
@@ -29,7 +30,8 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@resvg/resvg-js": "^2.6.2"
+    "@resvg/resvg-js": "^2.6.2",
+    "playwright": "^1.49.1"
   },
   "engines": {
     "node": ">=20.0.0"

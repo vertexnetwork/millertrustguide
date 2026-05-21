@@ -7,51 +7,63 @@
 const sections = [
   {
     label: 'Section 1',
-    title: 'How a Miller Trust actually works',
-    body: 'Plain-English walkthrough of why income-cap states require a QIT, what gets diverted, and what stays with your parent.',
+    title: 'What a Miller Trust does, in plain English',
+    body: 'How income-cap states use a QIT to qualify a Medicaid applicant whose income exceeds the threshold, with the federal statute and state agency citations.',
   },
   {
     label: 'Section 2',
     title: 'Download the official state template',
-    body: 'Direct .gov link, the version date to check for, and what to do if your state has just updated the template.',
+    body: 'Direct .gov link, the version date to check for, and why we never host the template ourselves.',
   },
   {
     label: 'Section 3',
-    title: 'Fill in the obvious fields',
-    body: 'Applicant, trustee, listed income sources, residual beneficiary clause — every field, with what the state actually wants in each blank.',
+    title: 'Filling in the obvious fields',
+    body: 'Applicant, trustee, listed income sources, reversion clause — every field, with what the state actually wants in each blank, plus the state agency\'s own guidance on trustee selection.',
   },
   {
     label: 'Section 4',
     title: 'The monthly funding worksheet',
-    body: 'Pre-filled with the 2026 income cap so you know exactly how much income to redirect each month.',
+    body: 'Pre-filled with the 2026 income cap so you know exactly how much income to redirect, how much stays as the Personal Needs Allowance, and how much goes to the nursing facility each month.',
   },
   {
     label: 'Section 5',
     title: 'The bank-account walkthrough',
-    body: 'Why most branches refuse on first request, the verbatim script citing state policy, five common refusals, and a printable resolution letter for the branch manager.',
+    body: 'Why most branches refuse on first request, the verbatim opening script citing state policy and the federal statute, five common refusals with the response to each, and a printable resolution letter for the branch manager.',
   },
   {
     label: 'Section 6',
-    title: 'Redirecting income, month by month',
-    body: 'Social Security, pension, annuity — the exact forms and the correct order of operations so nothing lands in the wrong account.',
+    title: 'Funding the trust month by month',
+    body: 'The direct-deposit redirect process for Social Security, pension, VA benefits, and annuities. The monthly distribution checklist. What happens — and what to do — if you miss a month.',
   },
   {
     label: 'Section 7',
-    title: 'The denial-avoidance checklist',
-    body: 'Every common denial reason the state agency cites, with the policy section behind each, in the order to verify before submitting the Medicaid application.',
+    title: 'Common denials and how to avoid each',
+    body: 'Every state-specific denial reason the agency cites, with the policy section behind each, plus a pre-submission checklist to run the day before you file the Medicaid application.',
   },
   {
     label: 'Section 8',
-    title: 'What to say to family members',
-    body: 'A short script for the sibling who asks why you didn\'t just hire an attorney. Pre-empts the family fight.',
+    title: 'Post-death distribution',
+    body: 'What happens to the QIT when the applicant dies. The trustee\'s duties, the order of distributions, and how the residual-beneficiary clause works against state Medicaid spending.',
   },
+  {
+    label: 'Section 9',
+    title: 'When to call an attorney',
+    body: 'Eight scenarios where a licensed elder-law attorney is the right call — and how to find one through the state bar referral service, NAELA, and the CELA directory.',
+  },
+];
+
+const appendices = [
+  { label: 'Appendix A', title: 'State agency citations index' },
+  { label: 'Appendix B', title: 'Trustee record-keeping checklist' },
+  { label: 'Appendix C', title: 'Version history' },
 ];
 ---
 
 <section aria-labelledby="preview-heading" class="my-12">
   <h2 id="preview-heading">What's inside the kit</h2>
   <p class="mt-2 text-ink-muted">
-    A focused operational PDF — instant download after purchase. Eight sections, in the order you'll use them.
+    A focused operational PDF — instant download after purchase. Nine sections in the order you'll use them, plus
+    three appendices for reference.
   </p>
   <ol class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
     {
@@ -64,7 +76,20 @@ const sections = [
       ))
     }
   </ol>
+
+  <div class="mt-4 rounded-md border border-border bg-surface-elevated p-4">
+    <p class="text-xs font-semibold uppercase tracking-wide text-primary">Appendices</p>
+    <ul class="mt-2 grid grid-cols-1 gap-1 text-sm text-ink sm:grid-cols-3">
+      {appendices.map((a) => (
+        <li>
+          <span class="font-semibold text-ink-heading">{a.label}.</span> {a.title}
+        </li>
+      ))}
+    </ul>
+  </div>
+
   <p class="mt-4 text-xs text-ink-muted">
-    PDF is print-friendly and readable on a phone, tablet, or printed and taken to the bank.
+    Print-friendly, readable on a phone or tablet, and designed to be taken to the bank. Every operational claim
+    cites a primary state agency or federal source.
   </p>
 </section>

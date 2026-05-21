@@ -29,8 +29,31 @@ const stateSchema = z.object({
 
   // 2026 figures (annual update target)
   incomeCap2026: z.number(),
+  incomeCapCouple2026: z.number(),
   personalNeedsAllowance: z.number(),
   asOf: z.string(),
+
+  // federal-statute citation that authorizes the QIT
+  federalStatuteCitation: z.string().default('42 U.S.C. § 1396p(d)(4)(B)'),
+  federalStatuteUrl: z.string().url().default('https://www.law.cornell.edu/uscode/text/42/1396p'),
+
+  // state-specific trustee + bank operational facts (used by the PDF kit)
+  //
+  // trusteeGuidanceNote: prose paragraph describing the state's actual posture
+  // on trustee selection. Many states (incl. Texas per HHSC Appendix XXXVI)
+  // do not statutorily prohibit specific trustees but do recommend against
+  // certain choices. Use this prose field to capture the *exact* state
+  // language; do not paraphrase into a stronger "prohibited" claim.
+  trusteeGuidanceNote: z.string(),
+  einRequired: z.boolean(),
+  einRequiredNote: z.string(),
+  stateBarLrsName: z.string(),
+  stateBarLrsUrl: z.string().url(),
+
+  // additional attorney-referral resources the state agency cites by name
+  // (e.g., HHSC names NAELA, Advocacy Inc., legal aid offices, area agencies
+  // on aging). Populate per-state from the state agency's own published list.
+  additionalLegalAidReferrals: z.array(z.string()).default([]),
 
   // operational specifics (drives content blocks)
   commonDenialReasons: z.array(
@@ -68,6 +91,17 @@ const stateSchema = z.object({
     z.object({
       question: z.string(),
       answer: z.string(),
+    })
+  ),
+
+  // kit version metadata — visible on the PDF cover + changelog page
+  kitVersion: z.string(),
+  kitVersionDate: z.string(),
+  kitChangelog: z.array(
+    z.object({
+      version: z.string(),
+      date: z.string(),
+      changes: z.array(z.string()),
     })
   ),
 });

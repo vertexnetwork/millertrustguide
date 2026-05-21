@@ -12,50 +12,67 @@ multiStateBundleEligible: true
 
 agencyName: "Texas Health and Human Services Commission"
 agencyAbbreviation: "HHSC"
-officialTemplateUrl: "https://www.hhs.texas.gov/handbooks/medicaid-elderly-people-disabilities-handbook/appendix-xxxvi-qits-mepd-information"
-officialTemplateNote: "Appendix XXXVI of the MEPD Handbook contains the QIT template references and the F-6800 series covers the operational mechanics."
-policyManualUrl: "https://www.hhs.texas.gov/handbooks/medicaid-elderly-people-disabilities-handbook"
-policyManualSection: "Appendix XXXVI; F-6800"
+officialTemplateUrl: "https://www.hhs.texas.gov/sites/default/files/documents/appendix-xxxvi-sample-qit.pdf"
+officialTemplateNote: "HHSC publishes a Sample QIT PDF linked from Appendix XXXVI of the MEPD Handbook. HHSC notes the sample meets the basic MEPD requirements for a QIT when properly completed, but is not the only acceptable QIT form."
+policyManualUrl: "https://www.hhs.texas.gov/handbooks/medicaid-elderly-people-disabilities-handbook/appendix-xxxvi-qits-mepd-information"
+policyManualSection: "Appendix XXXVI (Revision 26-1, Effective March 1, 2026)"
 
 incomeCap2026: 2982
+incomeCapCouple2026: 5964
 personalNeedsAllowance: 75
 asOf: "CMS January 2026 figures"
+
+federalStatuteCitation: "42 U.S.C. § 1396p(d)(4)(B)"
+federalStatuteUrl: "https://www.law.cornell.edu/uscode/text/42/1396p"
+
+trusteeGuidanceNote: "HHSC Appendix XXXVI states the statutory authority for a QIT is silent on who may serve as the trustee, but HHSC recommends that the beneficiary not be a trustee — the beneficiary may lose Medicaid eligibility if the trust requirements are not met. The QIT instrument may provide for successor or co-trustees, waive bond, and incorporate the Texas Trust Act provisions for trustee powers."
+einRequired: false
+einRequiredNote: "HHSC Appendix XXXVI states the QIT account is set up using the beneficiary's Social Security number — no separate EIN is required for a QIT used solely to divert the applicant's countable income."
+stateBarLrsName: "State Bar of Texas Lawyer Referral and Information Service"
+stateBarLrsUrl: "https://www.texasbar.com/AM/Template.cfm?Section=Lawyer_Referral_Information_Service"
+additionalLegalAidReferrals:
+  - "Local legal aid office"
+  - "Local area agency on aging"
+  - "Local bar association"
+  - "National Academy of Elder Law Attorneys (NAELA)"
+  - "Advocacy Inc."
 
 privatePayMonthlyLow: 7500
 privatePayMonthlyHigh: 11000
 
 commonDenialReasons:
-  - title: "Trust signed but never funded"
-    description: "The QIT must be funded in the same calendar month it is signed. A signed-but-unfunded trust does not change countable income for that month."
-    agencyCitation: "TX HHSC Appendix XXXVI"
-  - title: "Account opened with a non-zero balance"
-    description: "The trust account must be opened at a zero balance. Any opening deposit other than the redirected income causes denial of the income-diversion treatment."
-    agencyCitation: "TX HHSC F-6800"
-  - title: "Improper trustee selection"
-    description: "Certain individuals are prohibited from acting as trustee under Texas Medicaid policy. Selecting a prohibited trustee invalidates the QIT for eligibility purposes."
-    agencyCitation: "TX HHSC F-6800 series"
-  - title: "Missing residual beneficiary clause"
-    description: "The QIT must name the State of Texas (via Medicaid) as the residual beneficiary up to the amount of medical assistance paid. A missing clause causes denial."
-    agencyCitation: "TX HHSC Appendix XXXVI"
-  - title: "Income from non-listed sources deposited"
-    description: "Only income sources identified in the trust instrument can be deposited. Depositing a non-listed source can invalidate the diversion treatment for the month."
-    agencyCitation: "TX HHSC F-6800"
-  - title: "Trust funded after the Medicaid application date"
-    description: "Funding must occur on or before the first month for which Medicaid coverage is sought. Funding after the application date does not retroactively cure prior months."
-    agencyCitation: "TX HHSC Appendix XXXVI"
+  - title: "No income deposited into the QIT account in the initial month"
+    description: "HHSC disregards income for Medicaid eligibility purposes the first month a valid QIT is signed, the QIT account is set up, and enough income is deposited into the account to reduce remaining countable income below the special income limit. A partial deposit in the initial month is allowed and will not invalidate the QIT, but no deposit at all means no income disregard that month."
+    agencyCitation: "TX HHSC Appendix XXXVI (Revision 26-1)"
+  - title: "Partial source diversion in any month after the initial month"
+    description: "Once a source of income is named in the QIT, the entire amount of that source must be deposited into the QIT account every month after the initial month. Depositing only part of a listed source in a non-initial month invalidates the QIT."
+    agencyCitation: "TX HHSC Appendix XXXVI (Revision 26-1)"
+  - title: "Trust not irrevocable, or revocable through court action"
+    description: "Per CMS, a trust that says it is irrevocable but allows revocation through court action does not meet the irrevocability requirement. HHSC follows the CMS position."
+    agencyCitation: "TX HHSC Appendix XXXVI (Revision 26-1)"
+  - title: "Missing or defective reversion (residuary) clause"
+    description: "The QIT instrument must name the State of Texas as the residuary beneficiary of any funds remaining at the beneficiary's death, up to the total amount of Medicaid assistance provided. A missing or defective reversion clause is a denial cause."
+    agencyCitation: "TX HHSC Appendix XXXVI (Revision 26-1)"
+  - title: "Resources deposited into the QIT account"
+    description: "The QIT account may only receive the beneficiary's income from sources listed in the trust. Depositing resources (savings, gifts from family, etc.) into the QIT account can cause the entire account to become a countable resource, which may put the applicant over the $2,000 resource limit."
+    agencyCitation: "TX HHSC Appendix XXXVI (Revision 26-1)"
+  - title: "Trustee fails to distribute by end of the following month"
+    description: "Income deposited into the QIT account must be distributed by the last day of the following month. Per HHSC, failure to timely distribute is treated as a transfer of assets, which can trigger a Medicaid penalty period."
+    agencyCitation: "TX HHSC Appendix XXXVI (Revision 26-1)"
 
 bankRefusalNotes:
-  - refusalType: "Branch requests a tax ID for the trust"
-    response: "Texas Medicaid policy explicitly states a separate EIN is not required for a QIT used solely to divert the applicant's countable income. The account is titled in the name of the trust using the applicant's Social Security number."
-    documentNeeded: "Printed copy of the relevant HHSC F-6800 section"
-  - refusalType: "Branch requires escalation to internal legal"
-    response: "Request escalation in writing. Typical turnaround is 24 to 48 hours. Document the date and the name of the branch contact for follow-up."
-  - refusalType: "Branch refuses to open an account with a zero balance"
-    response: "HHSC requires the trust account to begin at zero balance. If the bank cannot accommodate, request the next-level branch (a full-service banking center) or escalate to the bank's trust department."
+  - refusalType: "Branch requests a tax ID (EIN) for the trust"
+    response: "HHSC Appendix XXXVI explicitly states the QIT account is set up using the beneficiary's Social Security number. Ask the branch to open the account in the name of the trust with the applicant's SSN on file for IRS reporting."
+    documentNeeded: "Printed copy of HHSC Appendix XXXVI (the 'Effective Date' section names the SSN-on-account requirement)"
+  - refusalType: "Branch requires escalation to internal legal or trust department"
+    response: "Request escalation in writing. Typical turnaround at large banks is 24 to 48 hours. Document the date and the name of the branch contact for follow-up. The bank's trust department handles non-standard account types like QITs routinely."
   - refusalType: "Branch system does not recognize this trust type"
-    response: "Ask for the bank's trust department or a full-service branch. Many retail-only branches lack the account templates required."
+    response: "Ask for a full-service branch or the bank's trust department. Many retail-only branches lack the account templates required. Community banks and credit unions are often more flexible because their account opening involves a human review rather than a screen-driven template."
   - refusalType: "Branch instructs the customer to bring an attorney"
-    response: "This is a bank-policy stance, not a legal requirement. Either escalate to the bank's trust department or switch to a community bank or credit union with documented QIT experience."
+    response: "This is a bank-policy stance, not a Medicaid requirement. HHSC does not require legal representation to open a QIT account. Either escalate to the bank's trust department or switch to a community bank or credit union willing to open the account."
+  - refusalType: "Branch insists on a large opening deposit"
+    response: "HHSC allows the small opening deposit (typically $10–$20) that banks require to open a new account. That opening deposit is not counted as a resource or income to the beneficiary. Confirm to the branch that the account will then receive only the beneficiary's listed income."
+    documentNeeded: "Printed copy of HHSC Appendix XXXVI ('Establishing a Bank or Other Financial Account as the QIT Account' section)"
 
 postDeathDistribution: "Upon the death of the Medicaid beneficiary, funds remaining in the QIT pass to the State of Texas (via Medicaid) up to the total amount of medical assistance paid on the beneficiary's behalf. Any remainder is distributed per the trust's residual beneficiary clause. The trustee should request a final accounting statement from the Medicaid program before disbursing any remaining funds."
 
@@ -74,6 +91,16 @@ secondaryKeywords:
 reviewedDate: "2026-05-20"
 uplNotes: "Texas UPL law (per Fadia v. Unauthorized Practice of Law Committee) permits sale of forms absent personalized advice. Kit operates under all 4 hard rules: no drafted forms, no personalized intake, no email/chat advice, disclaimer + consent gate."
 
+kitVersion: "v1.0"
+kitVersionDate: "2026-05-21"
+kitChangelog:
+  - version: "v1.0"
+    date: "2026-05-21"
+    changes:
+      - "Initial release."
+      - "Reconciled against HHSC Appendix XXXVI, Revision 26-1, Effective March 1, 2026."
+      - "2026 income cap of $2,982/month single and $5,964/month couple reflects 300% of the CMS-published 2026 Federal Benefit Rate of $994."
+
 faq:
   - question: "Is the Texas Miller Trust Kit legal advice?"
     answer: "No. This kit is informational only and is not legal advice. We are not attorneys and we do not practice law. The kit teaches you how to use the Texas HHSC publicly-published Qualified Income Trust template. For advice on your specific situation, consult a Texas-licensed elder-law attorney."
@@ -82,7 +109,7 @@ faq:
   - question: "Do you provide the trust template itself?"
     answer: "No. We never author or host trust instrument text. The kit links you to the HHSC-published template on the .gov website. You download the template directly from HHSC. We explain how to use it."
   - question: "When does Medicaid eligibility begin?"
-    answer: "Texas Medicaid eligibility begins the month the QIT is signed AND funded. There is no retroactive effect. Per HHSC Appendix XXXVI, the trust must be properly drafted, signed, and funded in the same calendar month for that month to qualify."
+    answer: "Per HHSC Appendix XXXVI, eligibility for the income disregard begins the first month a valid QIT is signed, the QIT account is opened, and enough income is deposited to bring the applicant's remaining countable income below the special income limit. If the QIT was already qualifying in earlier months, HHSC can apply the income disregard up to three months before the Medicaid application file date, provided all other eligibility requirements were met in those months."
   - question: "What is the 2026 income limit?"
     answer: "$2,982/month for a single applicant and $5,964/month for a couple where both are applying. These figures derive from 300% of the 2026 Federal Benefit Rate, effective January 1, 2026. Source: CMS, mirrored in TX HHSC handbook updates."
   - question: "What if my bank refuses to open the trust account?"

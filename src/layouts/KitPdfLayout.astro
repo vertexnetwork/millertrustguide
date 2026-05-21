@@ -1,0 +1,1214 @@
+---
+import '~/styles/kit-print.css';
+import type { StateData } from '~/content/config';
+
+interface Props {
+  state: StateData;
+}
+
+const { state } = Astro.props;
+
+const fmt = (n: number) => n.toLocaleString('en-US');
+
+/* The kit content is structured as a single layout that renders the full
+   PDF for any state by interpolating state-specific facts pulled from the
+   state's frontmatter. ~95% of the prose is state-agnostic; the
+   ~5% that varies (income cap, agency name, policy section, denial list,
+   bank-refusal patterns, trustee restrictions, state-bar referral URL) is
+   pulled from frontmatter. This is the same pattern the site uses for
+   state pages — single template, N states, no template forks. */
+---
+
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{state.name} Miller Trust Setup Kit — {state.kitVersion}</title>
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <meta name="generator" content="Miller Trust Guide Kit Builder" />
+    <link rel="preconnect" href="https://rsms.me" crossorigin />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    {/* Paged.js: turns this HTML into paginated, header/footer/page-numbered
+       output that Playwright captures to PDF. Loaded only at build time. */}
+    <script src="https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js" defer is:inline></script>
+  </head>
+  <body class="kit">
+    {/* Strings consumed by the @page running headers/footers (see kit-print.css). */}
+    <span class="kit-state-string" style="display:none">{state.name}</span>
+    <span class="kit-version-string" style="display:none">{state.kitVersion}</span>
+
+    {/* ============================== COVER ============================== */}
+    <section class="kit-cover">
+      <div class="kit-cover-inner">
+        <div>
+          <div class="kit-cover-mark">
+            <span class="kit-cover-mark-square">MT</span>
+            <span>Miller Trust Guide</span>
+          </div>
+          <p style="margin-top: 90pt; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.18em; color: #6B7280;">
+            {state.abbreviation} &middot; Setup Kit
+          </p>
+          <h1 class="kit-cover-title">
+            {state.name} Miller Trust Setup Kit
+          </h1>
+          <p class="kit-cover-subtitle">
+            A step-by-step operational guide to qualifying a family member for {state.name} Medicaid long-term care
+            using the official {state.agencyAbbreviation} Qualified Income Trust template.
+          </p>
+        </div>
+
+        <dl class="kit-cover-meta">
+          <dt>Edition</dt>
+          <dd>{state.kitVersion}</dd>
+          <dt>Last reviewed</dt>
+          <dd>{state.kitVersionDate}</dd>
+          <dt>State</dt>
+          <dd>{state.name} ({state.abbreviation})</dd>
+          <dt>State agency</dt>
+          <dd>{state.agencyAbbreviation}</dd>
+          <dt>2026 income cap</dt>
+          <dd>${fmt(state.incomeCap2026)}/month (single)</dd>
+          <dt>Publisher</dt>
+          <dd>Miller Trust Guide &middot; millertrustguide.com</dd>
+        </dl>
+
+        <p style="font-size: 8.5pt; color: #6B7280; line-height: 1.5; margin-top: 18pt; border-top: 0.5pt solid #D1D5DB; padding-top: 10pt;">
+          Informational only. Not legal advice. Not a substitute for consultation with a licensed attorney.
+          Miller Trust Guide is not a law firm and does not practice law. We do not draft legal documents. State
+          Medicaid rules vary and change; verify all information with your state Medicaid agency and an attorney
+          licensed in your state before acting.
+        </p>
+      </div>
+    </section>
+
+    {/* ====================== DISCLAIMER / RULE 4 ======================== */}
+    <section class="kit-page-break kit-front-matter">
+      <p class="kit-eyebrow">Page 1 &middot; Required reading</p>
+      <h1>Disclaimer and consent acknowledgment</h1>
+
+      <p>
+        <strong>This kit is informational only.</strong> It is not legal advice. It is not a substitute for
+        consultation with a licensed attorney. Miller Trust Guide is not a law firm and does not practice law.
+        We do not draft legal documents. We do not host trust instrument text.
+      </p>
+
+      <p>
+        The kit teaches you how to use {state.name}'s publicly-published Qualified Income Trust template — published
+        by {state.agencyName} on its official .gov website — to qualify a family member for long-term-care Medicaid.
+        We explain how to use the template, how to fund the trust, how to open the bank account, and how to avoid
+        common denial reasons. <strong>We never apply legal judgment to your family's specific situation.</strong>
+      </p>
+
+      <p>
+        State Medicaid rules vary and change. The figures, policy sections, and procedures cited in this kit reflect
+        publicly-available {state.agencyAbbreviation} materials as of <strong>{state.kitVersionDate}</strong>.
+        Verify all information directly with {state.agencyAbbreviation} and an attorney licensed in {state.name}
+        before acting on any step in this kit.
+      </p>
+
+      <div class="kit-callout kit-callout--rule">
+        <p style="font-weight: 600;">By using this kit, you acknowledge:</p>
+        <ul style="margin-bottom: 0;">
+          <li>This is an informational guide, not legal advice.</li>
+          <li>You will consult a licensed attorney in {state.name} for advice on your specific situation.</li>
+          <li>You are using a guide that explains how to use {state.agencyAbbreviation}'s public Medicaid forms.</li>
+          <li>Miller Trust Guide cannot and does not represent you in any matter.</li>
+        </ul>
+      </div>
+
+      <h3>Support scope</h3>
+      <p>
+        Email support is limited to two categories: product/refund questions, and the canned redirect for any
+        question about your specific situation. For advice on your specific situation, please consult a licensed
+        {state.name} elder-law attorney — you can find one through the
+        <a href={state.stateBarLrsUrl}>{state.stateBarLrsName}</a>. We do not offer phone support.
+      </p>
+
+      <h3>Refund</h3>
+      <p>
+        If {state.agencyAbbreviation} rejects your QIT for any reason traceable to following this kit, email
+        <strong> support@millertrustguide.com</strong> with the agency's stated denial reason and we issue a full
+        refund within one business day. See the refund policy at
+        <a href="https://millertrustguide.com/refund-policy">millertrustguide.com/refund-policy</a>.
+      </p>
+    </section>
+
+    {/* ============================ HOW TO USE =========================== */}
+    <section class="kit-page-break kit-front-matter">
+      <p class="kit-eyebrow">Page 2 &middot; Orientation</p>
+      <h1>How to use this kit</h1>
+
+      <p>
+        This kit is designed to be read in order the first time, then used as a reference throughout the setup
+        process. Most {state.name} families complete the full process in seven to ten days from the day they
+        download the kit to the day Medicaid coverage begins.
+      </p>
+
+      <h3>Recommended sequence</h3>
+      <ol>
+        <li><strong>Read Sections 1 and 2 first.</strong> They establish what a Miller Trust is and where the official {state.agencyAbbreviation} template lives.</li>
+        <li><strong>Complete the worksheet in Section 4</strong> before you fill in the template. The worksheet tells you exactly how much income to redirect each month.</li>
+        <li><strong>Print Section 5</strong> (the bank-account walkthrough) and bring it with you to the bank. Bring the resolution letter at the end of Section 5 with you in case the branch refuses.</li>
+        <li><strong>Use Section 7</strong> as your pre-submission checklist before you file the Medicaid application.</li>
+      </ol>
+
+      <h3>What you'll need before you start</h3>
+      <ul>
+        <li>The applicant's Social Security card and a government-issued photo ID.</li>
+        <li>Documentation of every income source the applicant receives (most recent Social Security award letter, pension statement, annuity statement, etc.).</li>
+        <li>The trustee's photo ID. The trustee is the person who will manage the trust account — see Section 3 for who can serve.</li>
+        <li>Power of attorney documentation if the trustee is acting under POA.</li>
+        <li>A working email address you check daily — {state.agencyAbbreviation} and your bank will communicate by phone and mail, but the {state.agencyAbbreviation} portal sends notices by email.</li>
+      </ul>
+
+      <div class="kit-callout">
+        <p>
+          <strong>Time-sensitive:</strong> Medicaid eligibility in {state.name} begins the calendar month the QIT
+          is signed <em>and</em> funded — not earlier. There is no back-dating. If you start this process in the
+          last week of a month, plan to sign and fund the trust by the last business day of that month, or accept
+          that coverage starts the following month.
+        </p>
+      </div>
+    </section>
+
+    {/* ============================= GLOSSARY ============================ */}
+    <section class="kit-page-break kit-front-matter">
+      <p class="kit-eyebrow">Page 3 &middot; Plain-English glossary</p>
+      <h1>Key terms</h1>
+
+      <dl>
+        <dt><strong>Qualified Income Trust (QIT) / Miller Trust</strong></dt>
+        <dd>An irrevocable trust authorized by federal law ({state.federalStatuteCitation}) that diverts income above a state's Medicaid long-term-care income limit so the applicant qualifies for benefits. The two names refer to the same instrument; "Miller Trust" comes from the 1990 case <em>Miller v. Ibarra</em>, which established the mechanism.</dd>
+
+        <dt><strong>Applicant</strong></dt>
+        <dd>The person applying for Medicaid long-term-care benefits. The QIT is funded with the applicant's own income.</dd>
+
+        <dt><strong>Community spouse</strong></dt>
+        <dd>The non-applicant spouse of a married applicant. The community spouse remains at home (or in a non-institutional setting) while the applicant receives Medicaid-covered long-term care. Different rules apply to the community spouse's income and assets.</dd>
+
+        <dt><strong>Trustee</strong></dt>
+        <dd>The person who manages the QIT bank account. The trustee deposits the applicant's income each month and disburses the distributions the trust authorizes. See Section 3 for who can — and cannot — serve as trustee in {state.name}.</dd>
+
+        <dt><strong>Residual beneficiary</strong></dt>
+        <dd>The party that receives anything left in the QIT after the applicant's death. Federal law requires the state Medicaid agency to be named as the residual beneficiary up to the total amount Medicaid paid on the applicant's behalf.</dd>
+
+        <dt><strong>Personal Needs Allowance (PNA)</strong></dt>
+        <dd>The amount of the applicant's income retained each month for personal expenses while in a nursing facility. {state.name}'s PNA is <strong>${fmt(state.personalNeedsAllowance)}/month</strong>.</dd>
+
+        <dt><strong>Income cap</strong></dt>
+        <dd>The maximum monthly income a single applicant can have and still qualify for long-term-care Medicaid in an "income-cap state." {state.name}'s 2026 cap is <strong>${fmt(state.incomeCap2026)}/month</strong> (single) and <strong>${fmt(state.incomeCapCouple2026)}/month</strong> for a couple where both spouses are applying. Computed as 300% of the CMS Federal Benefit Rate, which CMS publishes each January.</dd>
+
+        <dt><strong>{state.agencyAbbreviation}</strong></dt>
+        <dd>{state.agencyName}. The {state.name} state agency that administers Medicaid eligibility and publishes the QIT template referenced in Section 2.</dd>
+
+        <dt><strong>{state.policyManualSection}</strong></dt>
+        <dd>The {state.agencyAbbreviation} policy manual section(s) that govern Qualified Income Trusts in {state.name}. Cited throughout this kit and indexed in Appendix A.</dd>
+
+        <dt><strong>MEPD</strong></dt>
+        <dd>Medicaid for the Elderly and People with Disabilities — the {state.agencyAbbreviation} program category that covers long-term-care Medicaid eligibility.</dd>
+
+        <dt><strong>Look-back period</strong></dt>
+        <dd>A 60-month (5-year) window before the Medicaid application date during which uncompensated asset transfers may trigger a transfer penalty (period of ineligibility). The QIT does not affect the look-back analysis. If the applicant has made gifts or transfers in the last five years, consult an attorney — see Section 9.</dd>
+
+        <dt><strong>Estate recovery</strong></dt>
+        <dd>The state's right to recover Medicaid spending from the applicant's estate after death. Each state has its own estate-recovery rules and exemptions (homestead, surviving spouse, certain dependents). The QIT's residual beneficiary clause is part of this framework. See Section 8.</dd>
+      </dl>
+    </section>
+
+    {/* ========================== TABLE OF CONTENTS ====================== */}
+    <section class="kit-page-break kit-front-matter">
+      <p class="kit-eyebrow">Page 4 &middot; What's inside</p>
+      <h1>Table of contents</h1>
+
+      <ul class="kit-toc-list">
+        <li><span class="toc-title">Section 1 &middot; What a {state.name} Miller Trust does</span></li>
+        <li><span class="toc-title">Section 2 &middot; Where to download the official {state.agencyAbbreviation} template</span></li>
+        <li><span class="toc-title">Section 3 &middot; Filling in the obvious fields</span></li>
+        <li><span class="toc-title">Section 4 &middot; The monthly funding worksheet</span></li>
+        <li><span class="toc-title">Section 5 &middot; The bank-account walkthrough</span></li>
+        <li><span class="toc-title">Section 6 &middot; Funding the trust month by month</span></li>
+        <li><span class="toc-title">Section 7 &middot; Common {state.name} Medicaid denials</span></li>
+        <li><span class="toc-title">Section 8 &middot; Post-death distribution</span></li>
+        <li><span class="toc-title">Section 9 &middot; When to call an attorney</span></li>
+        <li><span class="toc-title">Appendix A &middot; {state.agencyAbbreviation} citations index</span></li>
+        <li><span class="toc-title">Appendix B &middot; Trustee record-keeping checklist</span></li>
+        <li><span class="toc-title">Appendix C &middot; Version history</span></li>
+      </ul>
+    </section>
+
+    {/* ============================ SECTION 1 ============================ */}
+    <section class="kit-page-break">
+      <p class="kit-eyebrow kit-section-title">Section 1 &middot; What a {state.name} Miller Trust does</p>
+      <h1>What a {state.name} Miller Trust does, in plain English</h1>
+
+      <p>
+        A <strong>Miller Trust</strong> — formally called a <strong>Qualified Income Trust (QIT)</strong> — is an
+        irrevocable trust used in twenty-four U.S. "income-cap" states to qualify a Medicaid applicant whose monthly
+        income is above the long-term-care income threshold. {state.name} is an income-cap state.
+      </p>
+
+      <p>
+        The mechanism is federal: <a href={state.federalStatuteUrl}>{state.federalStatuteCitation}</a> exempts
+        income deposited into a properly drafted QIT from the income-eligibility count, on the condition that the
+        trust meets specific drafting and operational requirements (irrevocability, designated income sources,
+        Medicaid as residual beneficiary, and post-death distribution to the state).
+      </p>
+
+      <h3>The {state.name} numbers that matter</h3>
+      <ul>
+        <li>
+          <strong>2026 income cap (single applicant):</strong> ${fmt(state.incomeCap2026)}/month. If the
+          applicant's countable monthly income — Social Security, pension, annuity, VA benefits, and any other
+          recurring income — exceeds this number by even one dollar, Medicaid long-term-care benefits are denied
+          unless the excess is diverted through a QIT.
+        </li>
+        <li>
+          <strong>2026 income cap (couple, both applying):</strong> ${fmt(state.incomeCapCouple2026)}/month combined.
+        </li>
+        <li>
+          <strong>Personal Needs Allowance:</strong> ${fmt(state.personalNeedsAllowance)}/month. This is the
+          amount of the applicant's income that stays with the applicant for personal expenses while in a nursing
+          facility (toiletries, clothing, etc.). Source: {state.agencyAbbreviation} {state.policyManualSection}.
+        </li>
+        <li>
+          <strong>Effective date:</strong> The income disregard begins the first month a valid QIT is signed, the
+          QIT account is opened, and enough income is deposited to bring the remaining countable income below the
+          special income limit. If all three were true in months <em>before</em> the Medicaid application was
+          filed, HHSC can apply the income disregard up to <strong>three months retroactive</strong> to the file
+          date — provided all other eligibility requirements were met in those months.
+        </li>
+      </ul>
+
+      <h3>How the diversion works, mechanically</h3>
+      <p>
+        Each month, the trustee deposits the applicant's countable income into the QIT bank account. From the QIT
+        account, the trustee distributes:
+      </p>
+      <ol>
+        <li>The Personal Needs Allowance to the applicant (${fmt(state.personalNeedsAllowance)}/month).</li>
+        <li>Any spousal allowance to the community spouse, if applicable.</li>
+        <li>The remainder to the nursing facility as the applicant's "patient liability" or "share of cost."</li>
+      </ol>
+      <p>
+        Income that passes through the QIT this way is not counted toward the income cap. The QIT is therefore an
+        accounting and routing structure, not a savings vehicle. <strong>At the end of each month the trust account
+        balance is typically zero or near-zero.</strong>
+      </p>
+
+      <div class="kit-callout">
+        <p>
+          <strong>The QIT does not affect asset eligibility.</strong> The QIT is an <em>income</em>-management tool.
+          The asset (countable resource) limit is separate — generally $2,000 in countable assets for a single
+          applicant. If your family member has assets above the limit, you may also need to address those before
+          Medicaid will approve coverage. Asset-side planning often requires an attorney; see Section 9.
+        </p>
+      </div>
+
+      <h3>What the trust is, legally</h3>
+      <p>
+        The QIT is an <strong>irrevocable</strong> trust — once funded, you cannot dissolve it and take the money
+        back. It exists for one purpose: to receive and disburse the applicant's income according to the trust's
+        own terms and the {state.agencyAbbreviation} requirements. The applicant retains beneficial use of the
+        funds through the monthly distributions, but does not "own" the trust account in the conventional sense.
+      </p>
+
+      <p class="kit-cite">
+        Source: {state.agencyAbbreviation} {state.policyManualSection}. Federal authority:
+        {' '}{state.federalStatuteCitation}.
+      </p>
+    </section>
+
+    {/* ============================ SECTION 2 ============================ */}
+    <section class="kit-page-break">
+      <p class="kit-eyebrow kit-section-title">Section 2 &middot; Where to download the official {state.agencyAbbreviation} template</p>
+      <h1>Where to download the official {state.agencyAbbreviation} template</h1>
+
+      <p>
+        {state.agencyName} publishes the {state.name} Qualified Income Trust template and the policy instructions
+        for using it on its official .gov website. <strong>This is the only template you should use.</strong>
+        {state.agencyAbbreviation} accepts QITs drafted on its own published template; QITs drafted on alternate
+        templates can be — and often are — rejected on technical grounds even when the substance is identical.
+      </p>
+
+      <h3>The download links</h3>
+      <ul>
+        <li>
+          <strong>Official template page:</strong>{' '}
+          <a href={state.officialTemplateUrl}>{state.officialTemplateUrl}</a>
+          <br />
+          <span class="kit-cite">{state.officialTemplateNote}</span>
+        </li>
+        <li>
+          <strong>Policy manual section:</strong>{' '}
+          <a href={state.policyManualUrl}>{state.policyManualUrl}</a>
+          <br />
+          <span class="kit-cite">Refer to {state.policyManualSection} for the operational rules and the
+          {' '}requirements your trust must satisfy.</span>
+        </li>
+      </ul>
+
+      <div class="kit-callout kit-callout--warning">
+        <p>
+          <strong>If {state.agencyAbbreviation} has updated the template since {state.kitVersionDate}, use the
+          updated version.</strong> Always download fresh from the link above on the day you sign the trust. Do not
+          rely on a printed copy or a saved PDF. Template revisions sometimes change required clauses; using an
+          outdated version is a documented denial cause (see Section 7).
+        </p>
+      </div>
+
+      <h3>Why we don't host the template ourselves</h3>
+      <p>
+        Two reasons. First, drafting a trust instrument for another person is the practice of law in every state;
+        publishing the state's own template would not change that analysis cleanly, so we link rather than host.
+        Second, {state.agencyAbbreviation} occasionally revises its template, and a mirror on our site would go
+        stale. Linking to the source guarantees you always get the current version {state.agencyAbbreviation}
+        actually accepts.
+      </p>
+    </section>
+
+    {/* ============================ SECTION 3 ============================ */}
+    <section class="kit-page-break">
+      <p class="kit-eyebrow kit-section-title">Section 3 &middot; Filling in the obvious fields</p>
+      <h1>Filling in the obvious fields</h1>
+
+      <p>
+        The {state.agencyAbbreviation} template is a structured document with blanks. Most blanks ask for facts
+        that are objectively true about your family — names, dates, income sources. This section walks through
+        those obvious fields. <strong>Where the template asks you to make a substantive legal choice (residual
+        beneficiary designations beyond Medicaid, complex trustee structures, anything the template's own
+        instructions don't explain in plain English), stop and consult a {state.name} attorney</strong> — see
+        Section 9.
+      </p>
+
+      <h3>1. Applicant identification</h3>
+      <ul>
+        <li><strong>Applicant's full legal name</strong> — exactly as it appears on the Social Security card.</li>
+        <li><strong>Applicant's date of birth.</strong></li>
+        <li><strong>Applicant's Social Security number.</strong></li>
+        <li><strong>Applicant's current address</strong> — the nursing facility or current residence.</li>
+      </ul>
+
+      <h3>2. Trustee identification</h3>
+      <p>
+        The trustee is the person who manages the QIT bank account each month. Most families name an adult child
+        of the applicant who has Power of Attorney for the applicant's finances. The applicant's spouse is also a
+        common choice when the applicant is the institutionalized spouse and the community spouse is willing to
+        serve.
+      </p>
+
+      <div class="kit-callout">
+        <p style="font-weight: 600; margin-bottom: 6pt;">{state.agencyAbbreviation} guidance on trustee selection</p>
+        <p style="margin-bottom: 0;">{state.trusteeGuidanceNote}</p>
+        <p style="margin-top: 6pt; font-size: 9pt; color: #6B7280;">
+          Source: {state.agencyAbbreviation} {state.policyManualSection}.
+        </p>
+      </div>
+
+      <ul>
+        <li><strong>Trustee's full legal name.</strong></li>
+        <li><strong>Trustee's date of birth.</strong></li>
+        <li><strong>Trustee's address and phone number.</strong></li>
+        <li><strong>Trustee's relationship to applicant</strong> (e.g., "adult son," "spouse").</li>
+      </ul>
+
+      <h3>3. Income sources to list</h3>
+      <p>
+        List <strong>every recurring income source the applicant receives that counts toward the Medicaid income
+        limit</strong>. The trust can only receive and divert income from sources named in the trust instrument.
+        Once a source is named, <strong>the entire monthly amount from that source must be deposited into the QIT
+        every month after the initial month</strong> — partial diversion of a listed source is a documented denial
+        cause (Section 7).
+      </p>
+
+      <p>Common countable income sources to list:</p>
+      <ul>
+        <li>Social Security retirement or disability benefits</li>
+        <li>Railroad Retirement Board benefits</li>
+        <li>Pension (private employer or government)</li>
+        <li>VA pension and compensation (see VA caveat below)</li>
+        <li>Annuity payments</li>
+        <li>Required Minimum Distributions (RMDs) from retirement accounts</li>
+        <li>Any other recurring monthly payment the applicant receives that is countable for Medicaid eligibility</li>
+      </ul>
+
+      <div class="kit-callout kit-callout--warning">
+        <p style="font-weight: 600; margin-bottom: 6pt;">VA aid and attendance caveat</p>
+        <p style="margin-bottom: 0;">
+          {state.agencyAbbreviation} Appendix XXXVI specifies that VA aid and attendance benefits, housebound
+          allowances, and reimbursements for unusual or continuing medical expenses are <strong>exempt</strong>
+          from both Medicaid eligibility and the co-payment calculation. <strong>Do not deposit these specific
+          benefits into the QIT account</strong> — depositing them makes them countable for the co-payment
+          budget. If the applicant receives a VA pension that includes these benefits, separate the aid and
+          attendance, housebound, or unusual-medical-expense portion before depositing the rest of the VA pension
+          into the QIT.
+        </p>
+      </div>
+
+      <p>
+        For each countable source you list, write the source name (e.g., "Social Security Administration") and
+        the monthly amount (gross, before any deductions). Pull these numbers from the most recent benefit-award
+        letter or statement for each source.
+      </p>
+
+      <h3>4. Residual beneficiary</h3>
+      <p>
+        Federal law requires the QIT to name the state Medicaid agency as the residual beneficiary <strong>up to
+        the total amount of medical assistance paid on the applicant's behalf</strong>. The {state.agencyAbbreviation}
+        template contains this clause pre-drafted. <strong>Do not edit, weaken, or remove it</strong> — a
+        defective residual-beneficiary clause is a documented denial cause (Section 7).
+      </p>
+
+      <p>
+        Anything remaining after the state's recovery passes to whatever party the template's secondary residual
+        clause names. Some state templates leave this blank for the trustor to fill in (e.g., children, named
+        family members); others default to the applicant's probate estate. Read the template's instructions on
+        this point. If you are unsure who to name, leave the field as the template's default — secondary residual
+        designations are an estate-planning decision, not a Medicaid-qualification decision, and you can address
+        them later without delaying eligibility.
+      </p>
+
+      <h3>5. Signature, date, and witnessing</h3>
+      <p>
+        The trust must be signed by the applicant (or by the trustee acting under a valid POA for the applicant)
+        and dated. Witnessing requirements vary by template — follow the template's own signature block. Most
+        {' '}{state.agencyAbbreviation} templates require either a notary or two witnesses. <strong>Sign and date
+        in the same calendar month you intend to fund the trust.</strong>
+      </p>
+    </section>
+
+    {/* ============================ SECTION 4 ============================ */}
+    <section class="kit-page-break">
+      <p class="kit-eyebrow kit-section-title">Section 4 &middot; The monthly funding worksheet</p>
+      <h1>The monthly funding worksheet</h1>
+
+      <p>
+        Use this worksheet to determine exactly how much income to redirect into the QIT each month. The worksheet
+        is the same for every {state.name} buyer because the {state.agencyAbbreviation} math is the same; you fill
+        in your family's specific numbers in the right column.
+      </p>
+
+      <table class="kit-worksheet">
+        <thead>
+          <tr>
+            <th style="width: 60%;">Line</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>A.</strong> Applicant's monthly income — Social Security (gross, before Medicare premium)</td>
+            <td class="kit-fillable">$ ______</td>
+          </tr>
+          <tr>
+            <td><strong>B.</strong> Applicant's monthly income — pension</td>
+            <td class="kit-fillable">$ ______</td>
+          </tr>
+          <tr>
+            <td><strong>C.</strong> Applicant's monthly income — VA benefits</td>
+            <td class="kit-fillable">$ ______</td>
+          </tr>
+          <tr>
+            <td><strong>D.</strong> Applicant's monthly income — annuity, RMD, other recurring</td>
+            <td class="kit-fillable">$ ______</td>
+          </tr>
+          <tr>
+            <td><strong>E. Total countable monthly income</strong> (A + B + C + D)</td>
+            <td class="kit-fillable">$ ______</td>
+          </tr>
+          <tr>
+            <td><strong>F.</strong> {state.name} 2026 income cap (single applicant)</td>
+            <td>${fmt(state.incomeCap2026)}</td>
+          </tr>
+          <tr>
+            <td><strong>G.</strong> Amount above the cap (E − F). If negative or zero, you do not need a QIT — see "When you do <em>not</em> need a QIT" below.</td>
+            <td class="kit-fillable">$ ______</td>
+          </tr>
+          <tr>
+            <td><strong>H.</strong> Minimum amount to deposit into QIT each month (G — but most attorneys recommend depositing all of line E to simplify accounting)</td>
+            <td class="kit-fillable">$ ______</td>
+          </tr>
+          <tr>
+            <td><strong>I.</strong> Personal Needs Allowance distribution from QIT to applicant</td>
+            <td>${fmt(state.personalNeedsAllowance)}</td>
+          </tr>
+          <tr>
+            <td><strong>J.</strong> Spousal allowance distribution from QIT to community spouse (if applicable; see Section 8 of the {state.agencyAbbreviation} handbook for the calculation)</td>
+            <td class="kit-fillable">$ ______</td>
+          </tr>
+          <tr>
+            <td><strong>K. Patient liability / share of cost</strong> distribution from QIT to nursing facility (H − I − J)</td>
+            <td class="kit-fillable">$ ______</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>How to read the result</h3>
+      <ul>
+        <li>
+          <strong>Line H</strong> is what hits the QIT bank account each month. Direct-deposit your income sources
+          here (see Section 6 for the redirect process).
+        </li>
+        <li>
+          <strong>Line I</strong> goes back to the applicant for personal expenses. The trustee can issue this as
+          a check or a monthly transfer.
+        </li>
+        <li>
+          <strong>Line K</strong> is the check the trustee writes to the nursing facility each month for the
+          applicant's share of the cost of care. Medicaid covers the remainder.
+        </li>
+      </ul>
+
+      <h3>When you do <em>not</em> need a QIT</h3>
+      <p>
+        If line G is zero or negative — the applicant's total income is at or below ${fmt(state.incomeCap2026)}/month
+        — the applicant is already income-eligible for {state.name} long-term-care Medicaid without a QIT. You can
+        skip this kit and proceed directly to the Medicaid application. Most families who reach this kit are
+        above the cap (often only by a few hundred dollars per month from Social Security cost-of-living increases),
+        but verify before you set up a trust you may not need.
+      </p>
+    </section>
+
+    {/* ============================ SECTION 5 ============================ */}
+    <section class="kit-page-break">
+      <p class="kit-eyebrow kit-section-title">Section 5 &middot; The bank-account walkthrough</p>
+      <h1>The bank-account walkthrough</h1>
+
+      <p>
+        This is the section where most families get stuck. The mechanical reason: most retail bank branches have
+        never opened a Qualified Income Trust account. The branch manager opens the same five or six account types
+        every day; a QIT is not one of them. The first attempt is usually refused, not because there is anything
+        wrong with the trust, but because the branch's account-opening system does not have a matching template.
+      </p>
+
+      <p>
+        This section gives you the script, the documents, and the escalation path to open the account on your
+        first or second visit. <strong>Read it before you walk into the bank.</strong>
+      </p>
+
+      <h3>Before you go: documents to bring</h3>
+      <ul>
+        <li><strong>The signed trust document</strong> — original or notary-certified copy, executed in the same calendar month you intend to fund the trust.</li>
+        <li><strong>The applicant's Social Security card.</strong> The account is titled in the name of the trust but uses the applicant's SSN for IRS purposes (see "EIN" below).</li>
+        <li><strong>The applicant's government-issued photo ID</strong> — driver's license, state ID, or passport.</li>
+        <li><strong>The trustee's photo ID.</strong></li>
+        <li><strong>Power of attorney documentation</strong> if the trustee is opening the account under POA for the applicant.</li>
+        <li>
+          <strong>A printed copy of the relevant {state.agencyAbbreviation} policy section</strong>
+          ({state.policyManualSection}). Print pages 1–2 of the relevant section so you can hand them across the
+          counter if needed.
+        </li>
+        <li><strong>The bank-refusal resolution letter</strong> at the end of this section, printed and ready to use.</li>
+      </ul>
+
+      <h3>On the EIN question</h3>
+      {state.einRequired ? (
+        <div class="kit-callout kit-callout--warning">
+          <p>
+            <strong>{state.name} requires a separate EIN for QIT accounts.</strong> {state.einRequiredNote}
+            Obtain the EIN online at the IRS (irs.gov) before your bank visit. The process takes about ten minutes
+            and is free.
+          </p>
+        </div>
+      ) : (
+        <div class="kit-callout">
+          <p>
+            <strong>No EIN is required.</strong> {state.einRequiredNote} If the branch insists on an EIN, hand them
+            the printed {state.agencyAbbreviation} policy section and ask the branch manager to escalate to the
+            bank's trust department.
+          </p>
+        </div>
+      )}
+
+      <h3>The opening script</h3>
+      <p>
+        Use this verbatim at the counter. It establishes that the trust is authorized, that you know what you're
+        asking for, and that the branch is dealing with an informed customer.
+      </p>
+
+      <div class="kit-callout">
+        <p style="font-style: italic;">
+          "I'd like to open a checking account in the name of an irrevocable trust. The trust is a Qualified
+          Income Trust authorized under {state.name} Medicaid policy ({state.policyManualSection}) and federal
+          law at {state.federalStatuteCitation}. I have the trust document signed and dated. I'd like the
+          account titled exactly as the trust is named, with the {' '}
+          {state.einRequired ? 'EIN' : "applicant's Social Security number"} on file for IRS reporting. The
+          trustee is the only authorized signer. If your bank requires a small opening deposit to open the
+          account, that's fine — {state.agencyAbbreviation} expressly allows the standard $10–$20 opening
+          deposit banks ask for. After that, only the applicant's listed income will be deposited to this
+          account."
+        </p>
+      </div>
+
+      <p class="kit-cite">
+        Source for the opening-deposit allowance: {state.agencyAbbreviation} Appendix XXXVI,
+        "Establishing a Bank or Other Financial Account as the QIT Account."
+      </p>
+
+      <h3>The five most common refusals — and how to respond</h3>
+
+      {state.bankRefusalNotes.map((note, i) => (
+        <div class="kit-callout kit-no-break" style="margin-top: 16pt;">
+          <p style="font-weight: 600;">Refusal {i + 1}: {note.refusalType}</p>
+          <p style="margin-bottom: 0;">{note.response}</p>
+          {note.documentNeeded && (
+            <p style="margin-top: 6pt; font-size: 9pt; color: #6B7280;">
+              <strong>Document to bring:</strong> {note.documentNeeded}
+            </p>
+          )}
+        </div>
+      ))}
+
+      <h3>If the branch still won't open the account</h3>
+      <p>
+        You have three escalation paths, in order of preference:
+      </p>
+      <ol>
+        <li>
+          <strong>Ask for the bank's trust department.</strong> Larger banks (Chase, Wells Fargo, Bank of America)
+          have centralized trust departments that handle non-standard account types. The branch manager can submit
+          an internal request; turnaround is typically 24–48 hours.
+        </li>
+        <li>
+          <strong>Ask for a full-service branch.</strong> Some retail branches are limited to standard consumer
+          accounts. A full-service branch (often the main branch of the local market) opens commercial and
+          trust-style accounts routinely.
+        </li>
+        <li>
+          <strong>Switch banks.</strong> Community banks and credit unions are often more willing than retail
+          megabanks because their account-opening process involves a human review rather than a screen-driven
+          template. Call ahead and ask: "Do you open Qualified Income Trust accounts for {state.name} Medicaid
+          applicants?" If the answer is anything other than an immediate yes, call the next bank on your list.
+        </li>
+      </ol>
+
+      <h3>Resolution letter for the branch manager</h3>
+      <p>
+        If the branch escalates internally, hand the manager the letter below. Print it on a clean sheet and bring
+        it with you. It restates the policy citation in a form the branch's legal/compliance team can verify
+        independently.
+      </p>
+
+      <div class="kit-callout kit-callout--rule">
+        <p style="font-style: italic;">
+          To: Branch Manager<br />
+          From: [Trustee name], Trustee for the [Applicant name] Qualified Income Trust<br />
+          Date: [Date]<br />
+          Re: Account opening for {state.name} Medicaid Qualified Income Trust
+        </p>
+        <p style="font-style: italic;">
+          I am the trustee of an irrevocable Qualified Income Trust drafted on the official template published by
+          {' '}{state.agencyName} ({state.agencyAbbreviation}). The trust is authorized under federal law at
+          {' '}{state.federalStatuteCitation} and {state.name} state policy at {state.agencyAbbreviation}
+          {' '}{state.policyManualSection}.
+        </p>
+        <p style="font-style: italic;">
+          I am requesting a checking account opened in the name of the trust, with me as the sole authorized
+          signer. If your bank requires a small opening deposit to open a new account, that is acceptable —
+          {' '}{state.agencyAbbreviation} Appendix XXXVI expressly allows the standard $10–$20 opening deposit
+          banks require and states it is not counted as a resource or income to the beneficiary. {state.einRequired
+            ? `Per ${state.agencyAbbreviation} policy, the account requires a separate EIN, which I have obtained from the IRS and have provided with this letter.`
+            : `Per ${state.agencyAbbreviation} Appendix XXXVI, the QIT account is set up using the applicant's Social Security number — no separate EIN is required.`}
+        </p>
+        <p style="font-style: italic;">
+          After the account is open, the trust will receive only the applicant's monthly Medicaid-countable
+          income and disburse the Personal Needs Allowance, any spousal allowance, and the patient-liability
+          share of care to the applicant's nursing facility, all by the last day of the month following each
+          deposit. No third parties have access to the account; the account balance returns to near zero each
+          month after distributions.
+        </p>
+        <p style="font-style: italic;">
+          The signed trust document, my photo ID, the applicant's Social Security card, and a printed copy of the
+          relevant {state.agencyAbbreviation} policy section are attached. Please contact your trust department
+          if internal escalation is required. I am available at the contact information above for any follow-up.
+        </p>
+        <p style="font-style: italic;">
+          Thank you,<br />
+          [Trustee signature]
+        </p>
+      </div>
+    </section>
+
+    {/* ============================ SECTION 6 ============================ */}
+    <section class="kit-page-break">
+      <p class="kit-eyebrow kit-section-title">Section 6 &middot; Funding the trust month by month</p>
+      <h1>Funding the trust month by month</h1>
+
+      <p>
+        Opening the account is the hard part. Keeping it funded correctly is mostly clerical work, but the
+        clerical work has to happen <strong>every month, without missing a month</strong>. A missed funding month
+        is a denied month of Medicaid coverage — there is no make-up provision.
+      </p>
+
+      <h3>Redirecting income sources to the QIT account</h3>
+      <p>
+        Once the QIT account is open, each income source listed in the trust needs to be redirected so it
+        deposits into the QIT instead of the applicant's personal account. The redirect process differs by source.
+      </p>
+
+      <h4>Social Security</h4>
+      <p>
+        Submit a direct-deposit change request through one of three channels:
+      </p>
+      <ul>
+        <li>Online at <a href="https://www.ssa.gov/myaccount/">ssa.gov/myaccount</a> — fastest, takes one to two business days to process.</li>
+        <li>By phone with SSA — call your local SSA office (the national 800 line is also available; see ssa.gov for current numbers).</li>
+        <li>By mail using SSA Form SF-1199A — typically two to three weeks to process.</li>
+      </ul>
+      <p>
+        You will need the QIT account's routing and account numbers. Have the bank-issued direct-deposit
+        confirmation slip on hand when you submit the request.
+      </p>
+
+      <h4>Pension and annuity</h4>
+      <p>
+        Each pension administrator has its own direct-deposit change form. Contact the plan administrator (the
+        phone number is on the pension statement) and request the form. Most pensions process the change within
+        one full pay cycle.
+      </p>
+
+      <h4>VA benefits</h4>
+      <p>
+        Update direct deposit through VA at <a href="https://www.va.gov/change-direct-deposit/">va.gov/change-direct-deposit</a>
+        or by calling VA. The VA also accepts mailed forms.
+      </p>
+
+      <h3>The first month — what to expect</h3>
+      <p>
+        The first month is the most error-prone because income redirects rarely process in time. Two important
+        accommodations {state.agencyAbbreviation} makes for the initial month:
+      </p>
+      <ul>
+        <li>
+          <strong>A partial deposit in the initial month is allowed.</strong> If only part of an income source
+          made it into the QIT in the first month — for example, the applicant already paid some bills before the
+          trust was established — the QIT is still valid and the entire amount of that income source is
+          disregarded from countable income for that month.
+        </li>
+        <li>
+          <strong>In every month after the initial month, the entire listed source must be deposited.</strong> A
+          partial deposit of a listed source in any non-initial month invalidates the QIT for that month.
+        </li>
+      </ul>
+      <p>
+        Most families also manually transfer the first month's income into the QIT from the applicant's personal
+        account in the same calendar month the trust is signed, to start the eligibility clock without waiting
+        for the direct-deposit redirect to complete. Document any manual transfer with a memo line that
+        identifies it as the QIT funding deposit for that month.
+      </p>
+
+      <h3>The monthly distribution rule</h3>
+      <p>
+        <strong>Income deposited into the QIT account must be distributed by the last day of the following month.</strong>
+        If income is deposited in March, the trustee has until April 30 to make the required distributions. This is
+        the controlling deadline — not the end of the same month.
+      </p>
+
+      <div class="kit-callout kit-callout--warning">
+        <p>
+          <strong>Late distribution is treated as a transfer of assets.</strong> Per {state.agencyAbbreviation},
+          if the trustee fails to distribute income deposited into the QIT account by the end of the following
+          month, the failure is considered a transfer of assets. Transfers of assets can trigger a Medicaid
+          penalty period (a period of ineligibility for benefits). Set a recurring monthly reminder to make
+          distributions on the same day each month — well before the next-month deadline.
+        </p>
+      </div>
+
+      <h3>The monthly distribution checklist</h3>
+      <p>By the last day of the month following each deposit, the trustee should have:</p>
+      <ol>
+        <li>Confirmed the month's income deposited into the QIT account (check the bank statement).</li>
+        <li>Distributed the Personal Needs Allowance (${fmt(state.personalNeedsAllowance)}) to the applicant.</li>
+        <li>Distributed any spousal allowance (the Minimum Monthly Maintenance Needs Allowance, where applicable) to the community spouse.</li>
+        <li>Distributed any court-ordered guardianship fees, if applicable.</li>
+        <li>Distributed the cost of medical assistance (patient liability / share of cost) to the nursing facility.</li>
+        <li>Saved the bank statement and any check copies in the trustee's monthly file (see Appendix B).</li>
+      </ol>
+
+      <p>
+        After required distributions, the account should return to a near-zero balance. A residual balance of a
+        few cents to a few dollars is normal and acceptable. Any residual amount left after the required
+        distributions may be applied to the cost of trust administration — but {state.agencyAbbreviation} does
+        not allow deductions for trust administration costs when computing the beneficiary's share of cost.
+      </p>
+
+      <h3>What happens if a month's income is not deposited</h3>
+      <p>
+        If a month's income is not deposited into the QIT (e.g., the redirect didn't process and the income
+        landed in the applicant's personal account), HHSC will count the income as the applicant's for that
+        month, and the applicant will be income-ineligible for that month. Coverage for that month is denied. You
+        cannot cure the month by transferring the money later — the deposit must have occurred in the calendar
+        month the income was received.
+      </p>
+
+      <p>
+        Resume normal funding the following month and the applicant's eligibility resumes for that month. The
+        lost month is usually billed at private-pay rates by the nursing facility.
+      </p>
+    </section>
+
+    {/* ============================ SECTION 7 ============================ */}
+    <section class="kit-page-break">
+      <p class="kit-eyebrow kit-section-title">Section 7 &middot; Common {state.name} Medicaid denials</p>
+      <h1>The {state.commonDenialReasons.length} most common {state.name} Medicaid denials — and how to avoid each</h1>
+
+      <p>
+        Most {state.agencyAbbreviation} QIT denials are not substantive eligibility problems — they are technical
+        compliance issues with the trust drafting or funding. Each denial cause below is a documented
+        {' '}{state.agencyAbbreviation} requirement. Verify each item against your trust before you submit the
+        Medicaid application.
+      </p>
+
+      <ol>
+        {state.commonDenialReasons.map((r) => (
+          <li class="kit-no-break" style="margin-bottom: 14pt;">
+            <p style="font-weight: 600; margin-bottom: 4pt;">{r.title}</p>
+            <p style="margin-bottom: 2pt;">{r.description}</p>
+            <p class="kit-cite">Citation: {r.agencyCitation}</p>
+          </li>
+        ))}
+      </ol>
+
+      <h3>Pre-submission checklist</h3>
+      <p>Run this checklist the day before you file the Medicaid application:</p>
+      <div class="kit-callout">
+        <ul style="margin-bottom: 0;">
+          <li>Trust signed and dated in the calendar month you intend coverage to begin (or earlier, if relying on the up-to-three-month retroactive disregard).</li>
+          <li>Trust is irrevocable on its face — and the irrevocability is not contingent on court action.</li>
+          <li>QIT account opened in the name of the trust, using the applicant's SSN (or EIN if your state requires one).</li>
+          <li>Initial-month deposit visible on the QIT bank statement — a partial first-month deposit is acceptable; no deposit at all is not.</li>
+          <li>Reversion (residuary beneficiary) clause names the State of {state.name} as the residuary up to total Medicaid assistance paid (verify the {state.agencyAbbreviation} template's pre-drafted language is intact).</li>
+          <li>Every income source listed in the trust is direct-deposited to the QIT (full source amount each month after the initial month).</li>
+          <li>No resources have been deposited into the QIT account (income only).</li>
+          <li>VA aid &amp; attendance / housebound / unusual-medical-expense reimbursements are <em>not</em> being deposited to the QIT (see Section 3).</li>
+          <li>Trustee selection is consistent with {state.agencyAbbreviation} guidance (see Section 3).</li>
+          <li>Trust uses the current {state.agencyAbbreviation} template, downloaded fresh on the day of signing.</li>
+          <li>Trustee has a monthly distribution reminder set to ensure deposits are distributed by the last day of the following month.</li>
+        </ul>
+      </div>
+    </section>
+
+    {/* ============================ SECTION 8 ============================ */}
+    <section class="kit-page-break">
+      <p class="kit-eyebrow kit-section-title">Section 8 &middot; Post-death distribution</p>
+      <h1>What happens to the QIT when the applicant dies</h1>
+
+      <p>{state.postDeathDistribution}</p>
+
+      <h3>The trustee's duties on death</h3>
+      <ol>
+        <li>
+          <strong>Notify {state.agencyAbbreviation}</strong> of the applicant's death within the timeframe the
+          agency requires (typically 10–30 days). The agency will send a final accounting request.
+        </li>
+        <li>
+          <strong>Stop further deposits.</strong> The trust no longer needs new income — the applicant is no
+          longer eligible after death. Contact each income source (SSA, pension, VA) to stop direct deposits to
+          the QIT. SSA, in particular, will request return of any post-death payments.
+        </li>
+        <li>
+          <strong>Distribute the Personal Needs Allowance and patient liability for the partial month of death</strong>
+          per normal procedure, prorated as the trust instrument or {state.agencyAbbreviation} guidance directs.
+        </li>
+        <li>
+          <strong>Wait for {state.agencyAbbreviation}'s final accounting</strong> showing the total Medicaid
+          benefits paid on the applicant's behalf. Do not distribute any remaining trust balance until you have
+          that accounting in writing.
+        </li>
+        <li>
+          <strong>Pay {state.agencyAbbreviation} the residual balance</strong> up to the total of medical
+          assistance paid. Per {state.agencyAbbreviation} Appendix XXXVI, payments to the agency as residuary
+          beneficiary should be made in <strong>whole dollar amounts</strong> by <strong>cashier's check, money
+          order, or personal check</strong>. {state.agencyAbbreviation} receipts these payments on
+          <strong> Form H4100 (Money Receipt)</strong> — keep the receipt as part of the permanent trust file.
+        </li>
+        <li>
+          <strong>Distribute any remainder</strong> to the secondary residual beneficiary named in the trust.
+        </li>
+        <li>
+          <strong>Close the QIT bank account</strong> after all distributions are complete and
+          {' '}{state.agencyAbbreviation} confirms the trust has satisfied its obligations.
+        </li>
+      </ol>
+
+      <p class="kit-cite">
+        Source: {state.agencyAbbreviation} Appendix XXXVI ("Characteristics of the Trust" — reversion clause).
+        Form H4100 reference:
+        {' '}<a href="https://www.hhs.texas.gov/regulations/forms/4000-4999/form-h4100-money-receipt">https://www.hhs.texas.gov/regulations/forms/4000-4999/form-h4100-money-receipt</a>
+      </p>
+
+      <h3>On estate recovery generally</h3>
+      <p>
+        The QIT residual-beneficiary clause is one piece of the larger Medicaid estate-recovery framework.
+        {' '}{state.name}, like every state, has the right to seek recovery of Medicaid spending from the
+        applicant's estate (the assets owned at death). Estate recovery rules are fact-intensive and vary by
+        situation: homestead protections, surviving-spouse exemptions, dependent-relative exemptions, and
+        hardship waivers all interact with the analysis.
+      </p>
+
+      <div class="kit-callout kit-callout--warning">
+        <p>
+          <strong>This kit does not address estate recovery beyond the QIT's own distribution clause.</strong>
+          If the applicant owns a home, has assets outside the QIT, or has a surviving spouse with potential
+          estate interests, consult a {state.name}-licensed elder-law attorney for the estate-recovery analysis.
+          The State Bar of {state.name} referral service is below.
+        </p>
+      </div>
+    </section>
+
+    {/* ============================ SECTION 9 ============================ */}
+    <section class="kit-page-break">
+      <p class="kit-eyebrow kit-section-title">Section 9 &middot; When to call an attorney</p>
+      <h1>When to call an attorney — and how to find one</h1>
+
+      <p>
+        This kit handles the operational mechanics of setting up a {state.name} Qualified Income Trust. It does
+        not handle situations that require legal judgment applied to specific facts. The list below is not
+        exhaustive, but it covers the situations we see most often where a {state.name}-licensed elder-law
+        attorney is the right call.
+      </p>
+
+      <h3>Call an attorney if any of these apply</h3>
+      <ul>
+        <li>
+          <strong>The applicant has trusts other than the QIT</strong> — revocable living trusts, special needs
+          trusts, irrevocable Medicaid asset protection trusts, or any other trust structure. The interaction
+          between trusts is fact-specific and frequently changes Medicaid analysis.
+        </li>
+        <li>
+          <strong>The applicant has made gifts or transferred assets in the last five years</strong> — to
+          children, to a charity, to anyone for less than fair-market value. This implicates the 60-month
+          look-back period and may trigger a transfer penalty (a period of Medicaid ineligibility).
+        </li>
+        <li>
+          <strong>The applicant has assets above the countable resource limit</strong> (generally $2,000 for a
+          single applicant). Asset spend-down planning is separate from the QIT and often requires legal
+          structuring (irrevocable trusts, annuities, exempt-asset purchases) that should be done with counsel.
+        </li>
+        <li>
+          <strong>The applicant is a community spouse</strong> rather than the institutionalized spouse, and you
+          are uncertain about the Community Spouse Resource Allowance, Minimum Monthly Maintenance Needs
+          Allowance, or other community-spouse protections.
+        </li>
+        <li>
+          <strong>The applicant owns a home (homestead)</strong> and there is no surviving spouse, dependent
+          child, or other exemption-qualifying occupant. Homestead disposition during Medicaid eligibility and
+          post-death estate recovery is fact-specific.
+        </li>
+        <li>
+          <strong>The applicant has a complicated income picture</strong> — multiple pensions from different
+          countries, rental income, business income, irregular trust distributions, or anything that doesn't fit
+          neatly into the worksheet in Section 4.
+        </li>
+        <li>
+          <strong>The Medicaid application has already been denied</strong> for a substantive reason (not a fixable
+          drafting error). Appeals require legal posture and statutory deadlines.
+        </li>
+        <li>
+          <strong>You suspect fraud, identity-theft, or any criminal-history issue</strong> in the applicant's
+          financial record. This is outside our scope entirely.
+        </li>
+      </ul>
+
+      <h3>How to find a {state.name} elder-law attorney</h3>
+      <p>
+        The most reliable starting point is the
+        {' '}<a href={state.stateBarLrsUrl}>{state.stateBarLrsName}</a>. The referral service matches you with a
+        bar-member attorney whose practice includes elder law or Medicaid planning. Most state bar referrals
+        offer a low-cost initial consultation (typically $30 for 30 minutes) — enough time to understand whether
+        your situation needs full representation or whether a one-time consultation will resolve the question.
+      </p>
+
+      <p>
+        Two additional national directories are useful as cross-references:
+      </p>
+      <ul>
+        <li>
+          <a href="https://www.naela.org/findlawyer">National Academy of Elder Law Attorneys (NAELA) — Find a Lawyer</a>:
+          NAELA members specialize in elder law as a practice area. Useful for vetting credentials.
+        </li>
+        <li>
+          <a href="https://www.nelf.org/find-a-cela">National Elder Law Foundation (NELF) — Certified Elder Law Attorneys</a>:
+          CELA certification is the recognized specialty credential for elder-law practice. CELAs are credentialed
+          through a process the ABA accredits.
+        </li>
+      </ul>
+
+      {state.additionalLegalAidReferrals.length > 0 && (
+        <>
+          <h3>Low-income legal aid resources {state.agencyAbbreviation} names</h3>
+          <p>
+            {state.agencyAbbreviation} Appendix XXXVI specifically directs people with low or limited income to
+            consider the following resources in addition to the state bar referral service:
+          </p>
+          <ul>
+            {state.additionalLegalAidReferrals.map((r) => <li>{r}</li>)}
+          </ul>
+        </>
+      )}
+
+      <p>
+        For initial consultations, bring this kit, the worksheet in Section 4 filled in with the applicant's
+        actual numbers, and a list of the applicant's assets. The attorney can scan the QIT side in five minutes
+        and focus the consultation on whatever is actually complex about your situation.
+      </p>
+    </section>
+
+    {/* =========================== APPENDIX A ============================ */}
+    <section class="kit-page-break">
+      <p class="kit-eyebrow kit-section-title">Appendix A &middot; {state.agencyAbbreviation} citations index</p>
+      <h1>Appendix A — {state.agencyAbbreviation} citations index</h1>
+
+      <p>
+        Every operational claim in this kit cites a primary source. The list below is the deduplicated index of
+        every citation used in the kit. Verify directly if anything in the kit conflicts with what
+        {' '}{state.agencyAbbreviation} publishes — and email <strong>support@millertrustguide.com</strong> if
+        you find a discrepancy. We correct verified discrepancies within five business days and update the kit's
+        version number accordingly.
+      </p>
+
+      <h3>Primary state agency sources</h3>
+      <ul>
+        <li>
+          <strong>{state.agencyAbbreviation} — Sample QIT (PDF)</strong><br />
+          <a href={state.officialTemplateUrl}>{state.officialTemplateUrl}</a><br />
+          <span class="kit-cite">{state.officialTemplateNote}</span>
+        </li>
+        <li>
+          <strong>{state.agencyAbbreviation} — {state.policyManualSection}</strong><br />
+          <a href={state.policyManualUrl}>{state.policyManualUrl}</a><br />
+          <span class="kit-cite">Operational rules for Qualified Income Trusts in {state.name}. The exact text of
+          this kit's source-controlling claims (irrevocability, reversion clause, opening-deposit allowance,
+          distribution timing, transfer-of-assets risk for late distribution) lives in this Appendix.</span>
+        </li>
+        <li>
+          <strong>{state.agencyAbbreviation} Form H4100 — Money Receipt</strong><br />
+          <a href="https://www.hhs.texas.gov/regulations/forms/4000-4999/form-h4100-money-receipt">https://www.hhs.texas.gov/regulations/forms/4000-4999/form-h4100-money-receipt</a><br />
+          <span class="kit-cite">Used by {state.agencyAbbreviation} to receipt residuary-beneficiary payments
+          made by the trustee on the beneficiary's death (Section 8).</span>
+        </li>
+      </ul>
+
+      <h3>Federal sources</h3>
+      <ul>
+        <li>
+          <strong>{state.federalStatuteCitation}</strong> — Federal Medicaid statute authorizing QITs<br />
+          <a href={state.federalStatuteUrl}>{state.federalStatuteUrl}</a><br />
+          <span class="kit-cite">Subsection (d)(4)(B): "A trust composed only of pension, Social Security, and other income to the individual..."</span>
+        </li>
+        <li>
+          <strong>CMS — 2026 SSI and Spousal Impoverishment Standards</strong><br />
+          <a href="https://www.medicaid.gov/federal-policy-guidance/downloads/cib12092025.pdf">https://www.medicaid.gov/federal-policy-guidance/downloads/cib12092025.pdf</a><br />
+          <span class="kit-cite">Source for the 2026 Federal Benefit Rate ($994/month) and the 300% cap derivation ($2,982/month) used in the {state.name} income-cap figure.</span>
+        </li>
+        <li>
+          <strong>SSA — 2026 SSI Federal Payment Amounts</strong><br />
+          <a href="https://www.ssa.gov/oact/cola/SSI.html">https://www.ssa.gov/oact/cola/SSI.html</a><br />
+          <span class="kit-cite">Verification of the 2026 FBR figure CMS uses to compute the 300% Medicaid long-term-care income cap.</span>
+        </li>
+      </ul>
+
+      <h3>Attorney referral</h3>
+      <ul>
+        <li>
+          <strong>{state.stateBarLrsName}</strong><br />
+          <a href={state.stateBarLrsUrl}>{state.stateBarLrsUrl}</a>
+        </li>
+        <li>
+          <strong>NAELA — National Academy of Elder Law Attorneys</strong> &middot;{' '}
+          <a href="https://www.naela.org/findlawyer">https://www.naela.org/findlawyer</a>
+        </li>
+        <li>
+          <strong>NELF — National Elder Law Foundation (CELA directory)</strong> &middot;{' '}
+          <a href="https://www.nelf.org/find-a-cela">https://www.nelf.org/find-a-cela</a>
+        </li>
+      </ul>
+    </section>
+
+    {/* =========================== APPENDIX B ============================ */}
+    <section class="kit-page-break">
+      <p class="kit-eyebrow kit-section-title">Appendix B &middot; Trustee record-keeping checklist</p>
+      <h1>Appendix B — Trustee record-keeping checklist</h1>
+
+      <p>
+        Trustees should keep monthly records in a single folder or binder. {state.agencyAbbreviation} may request
+        QIT records during periodic eligibility reviews or estate-recovery proceedings. Records also protect the
+        trustee personally — fiduciary duty includes the duty to account.
+      </p>
+
+      <h3>Monthly file (every month)</h3>
+      <ul>
+        <li>QIT bank statement showing the month's deposit and all distributions.</li>
+        <li>Copy of the check (or transfer confirmation) for the Personal Needs Allowance to the applicant.</li>
+        <li>Copy of the check (or transfer confirmation) for the spousal allowance, if applicable.</li>
+        <li>Copy of the check (or transfer confirmation) for the patient liability to the nursing facility.</li>
+        <li>Receipt or acknowledgment from the nursing facility for the patient-liability payment.</li>
+      </ul>
+
+      <h3>Annual file (each calendar year)</h3>
+      <ul>
+        <li>Year-end account summary from the bank.</li>
+        <li>Income-source statements for the year (SSA 1099, pension 1099-R, VA award letter).</li>
+        <li>Copy of any {state.agencyAbbreviation} eligibility-renewal correspondence.</li>
+        <li>Copy of any updated trust documents or {state.agencyAbbreviation} template revisions.</li>
+      </ul>
+
+      <h3>Permanent file (kept indefinitely)</h3>
+      <ul>
+        <li>Original signed trust document.</li>
+        <li>Original bank-account opening documents.</li>
+        <li>Power of attorney documentation (if applicable).</li>
+        <li>Copy of the applicant's Medicaid approval letter.</li>
+        <li>Copy of this kit (for the citation chain at the time of setup).</li>
+      </ul>
+
+      <p class="kit-cite">
+        Retain records for at least seven years after the applicant's death or trust termination, consistent with
+        the IRS general statute of limitations and Medicaid estate-recovery timelines.
+      </p>
+    </section>
+
+    {/* =========================== APPENDIX C ============================ */}
+    <section class="kit-page-break">
+      <p class="kit-eyebrow kit-section-title">Appendix C &middot; Version history</p>
+      <h1>Appendix C — Version history</h1>
+
+      <p>
+        The current edition of this kit is <strong>{state.kitVersion}</strong>, last reviewed
+        {' '}<strong>{state.kitVersionDate}</strong>. We email past buyers when a new edition is released. If you
+        purchased this kit and have not received the current edition, email <strong>support@millertrustguide.com</strong>
+        from the email address you used at checkout and we will resend.
+      </p>
+
+      <h3>Annual update cadence</h3>
+      <p>
+        We refresh this kit on a fixed annual cadence (typically January, immediately after CMS publishes the
+        new Federal Benefit Rate) and on an ad-hoc basis whenever {state.agencyAbbreviation} updates the QIT
+        template, policy section, or operational requirements cited in this kit.
+      </p>
+
+      <h3>Changelog</h3>
+      {state.kitChangelog.map((entry) => (
+        <div class="kit-no-break" style="margin-bottom: 14pt;">
+          <p style="font-weight: 600; margin-bottom: 4pt;">{entry.version} &middot; {entry.date}</p>
+          <ul>
+            {entry.changes.map((c) => <li>{c}</li>)}
+          </ul>
+        </div>
+      ))}
+
+      <h3>Reporting an error</h3>
+      <p>
+        If you find anything in this kit that does not match what {state.agencyAbbreviation} or CMS currently
+        publishes, email <strong>support@millertrustguide.com</strong> with the page reference and the source you
+        believe is authoritative. We correct verified discrepancies within five business days, ship a new edition,
+        and email past buyers the updated version at no charge.
+      </p>
+
+      <p style="margin-top: 30pt; font-size: 9pt; color: #6B7280; border-top: 0.5pt solid #D1D5DB; padding-top: 12pt;">
+        Miller Trust Guide &middot; millertrustguide.com &middot; support@millertrustguide.com<br />
+        Researcher: James Whitfield. We are not attorneys.
+      </p>
+    </section>
+  </body>
+</html>

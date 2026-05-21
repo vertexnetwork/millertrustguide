@@ -110,8 +110,8 @@ if (isLive) {
           text: 'Execute the signed trust in the same calendar month you intend to fund it.',
         },
         {
-          name: 'Open a zero-balance bank account in the name of the trust',
-          text: `Use the bank-refusal script and printed ${state.agencyAbbreviation} policy section to handle first-attempt refusals.`,
+          name: 'Open a bank account in the name of the trust',
+          text: `Open the account using the applicant's Social Security number${state.einRequired ? ' or the trust EIN where required' : ''}. ${state.agencyAbbreviation} allows the small opening deposit banks typically require to open a new account. Use the kit's bank-refusal script and printed ${state.agencyAbbreviation} policy section to handle first-attempt refusals.`,
         },
         {
           name: 'Redirect income sources to the trust account',

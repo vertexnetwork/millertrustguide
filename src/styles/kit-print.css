@@ -1,0 +1,259 @@
+/* ============================================================================
+   Kit PDF print stylesheet — used by /kits/[slug] and consumed by Paged.js
+   during headless rendering in scripts/build-pdfs.mjs.
+   ----------------------------------------------------------------------------
+   Pagination, running headers/footers, page numbers, and section breaks are
+   all CSS — Paged.js turns these into real PDF pages. The on-screen render
+   inside Chromium is the same HTML, so authors get accurate WYSIWYG when
+   they preview /kits/[slug] in the browser.
+   ========================================================================= */
+
+@page {
+  size: Letter;
+  margin: 0.85in 0.9in 1.1in 0.9in;
+
+  @bottom-center {
+    content: "Miller Trust Guide  ·  " string(kit-state) " Miller Trust Setup Kit  ·  " string(kit-version);
+    font-family: 'Source Serif Pro', Georgia, serif;
+    font-size: 8.5pt;
+    color: #6B7280;
+    padding-top: 0.4in;
+  }
+
+  @bottom-right {
+    content: counter(page) " / " counter(pages);
+    font-family: 'Inter', sans-serif;
+    font-size: 8.5pt;
+    color: #6B7280;
+    padding-top: 0.4in;
+  }
+
+  @top-right {
+    content: string(kit-section-title);
+    font-family: 'Inter', sans-serif;
+    font-size: 8.5pt;
+    color: #6B7280;
+    padding-bottom: 0.3in;
+    border-bottom: 0.5pt solid #E5E7EB;
+  }
+}
+
+/* Front-matter pages (cover, disclaimer, TOC) have no running header. */
+@page :first,
+@page front-matter {
+  @top-right { content: ""; border-bottom: none; }
+}
+
+@page cover {
+  margin: 0;
+  @bottom-center { content: ""; }
+  @bottom-right { content: ""; }
+}
+
+/* Capture the section title and state into running-header strings. */
+.kit-section-title {
+  string-set: kit-section-title content();
+}
+.kit-state-string {
+  string-set: kit-state content();
+}
+.kit-version-string {
+  string-set: kit-version content();
+}
+
+/* Page-break controls — sections start on a fresh page. */
+.kit-page-break {
+  break-before: page;
+}
+.kit-no-break {
+  break-inside: avoid;
+}
+
+/* Cover page uses the dedicated @page cover rule. */
+.kit-cover {
+  page: cover;
+  break-after: page;
+}
+
+/* Disclaimer, how-to-use, glossary, and the TOC live in front matter. */
+.kit-front-matter {
+  page: front-matter;
+}
+
+/* ----------------------------------------------------------------------------
+   Typography — designed for printed legal-publication legibility, not screen.
+   Body 10.5pt is the sweet spot for Letter-size operational documents.
+   ------------------------------------------------------------------------ */
+
+html, body {
+  background: #FFFFFF !important;
+  color: #1F2937 !important;
+  font-family: 'Inter', -apple-system, 'Segoe UI', system-ui, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.55;
+}
+
+.kit h1,
+.kit h2,
+.kit h3,
+.kit h4 {
+  font-family: 'Source Serif Pro', Georgia, serif;
+  color: #0F4C4A;
+  font-weight: 700;
+  line-height: 1.2;
+  break-after: avoid;
+}
+
+.kit h1 { font-size: 22pt; margin-top: 0; }
+.kit h2 { font-size: 16pt; margin-top: 0.4in; }
+.kit h3 { font-size: 12pt; margin-top: 0.25in; }
+.kit h4 { font-size: 10.5pt; margin-top: 0.2in; text-transform: uppercase; letter-spacing: 0.04em; color: #115E59; }
+
+.kit p {
+  margin: 0 0 9pt 0;
+  orphans: 3;
+  widows: 3;
+}
+
+.kit ul, .kit ol { margin: 0 0 9pt 0; padding-left: 18pt; }
+.kit li { margin-bottom: 4pt; }
+
+.kit a { color: #115E59; text-decoration: underline; }
+
+/* Eyebrow label that opens each section — mirrors the site's pattern. */
+.kit-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 8.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  color: #115E59;
+  margin-bottom: 6pt;
+}
+
+/* Inline citation footnote-style marker. */
+.kit-cite {
+  font-size: 8.5pt;
+  color: #6B7280;
+  font-style: italic;
+}
+
+/* Callout box used for "do this / not that" and warning patterns. */
+.kit-callout {
+  border-left: 3pt solid #115E59;
+  background: #F0FDFA;
+  padding: 10pt 12pt;
+  margin: 12pt 0;
+  font-size: 10pt;
+  break-inside: avoid;
+}
+.kit-callout--warning {
+  border-left-color: #B45309;
+  background: #FEF3C7;
+}
+.kit-callout--rule {
+  border-left-color: #6B7280;
+  background: #F9FAFB;
+}
+
+.kit-callout p:last-child { margin-bottom: 0; }
+
+/* Cover-page composition. */
+.kit-cover-inner {
+  height: 11in;
+  width: 8.5in;
+  padding: 1.4in 1in 1in 1in;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #FAFAF7 0%, #FAFAF7 60%, #FFFFFF 100%);
+  border-top: 0.4in solid #115E59;
+}
+.kit-cover-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 12pt;
+  font-family: 'Source Serif Pro', serif;
+  font-size: 14pt;
+  font-weight: 700;
+  color: #0F4C4A;
+}
+.kit-cover-mark-square {
+  display: inline-block;
+  width: 36pt;
+  height: 36pt;
+  border-radius: 4pt;
+  background: #115E59;
+  color: #FFFFFF;
+  text-align: center;
+  line-height: 36pt;
+  font-family: 'Source Serif Pro', serif;
+  font-weight: 700;
+  font-size: 18pt;
+}
+.kit-cover-title {
+  font-family: 'Source Serif Pro', serif;
+  font-weight: 700;
+  font-size: 34pt;
+  line-height: 1.1;
+  color: #0F4C4A;
+  margin: 0;
+}
+.kit-cover-subtitle {
+  font-family: 'Source Serif Pro', serif;
+  font-size: 16pt;
+  line-height: 1.3;
+  color: #1F2937;
+  margin-top: 18pt;
+  max-width: 5.5in;
+}
+.kit-cover-meta {
+  border-top: 0.5pt solid #D1D5DB;
+  padding-top: 16pt;
+  font-family: 'Inter', sans-serif;
+  font-size: 9pt;
+  color: #1F2937;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4pt 24pt;
+}
+.kit-cover-meta dt { color: #6B7280; text-transform: uppercase; letter-spacing: 0.08em; font-size: 7.5pt; }
+.kit-cover-meta dd { margin: 0 0 8pt 0; font-weight: 600; }
+
+/* Worksheet table styling. */
+.kit-worksheet {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9.5pt;
+  margin: 12pt 0;
+  break-inside: avoid;
+}
+.kit-worksheet th, .kit-worksheet td {
+  border: 0.5pt solid #D1D5DB;
+  padding: 6pt 8pt;
+  text-align: left;
+  vertical-align: top;
+}
+.kit-worksheet th {
+  background: #F0FDFA;
+  font-weight: 600;
+  color: #0F4C4A;
+}
+.kit-worksheet td.kit-fillable {
+  height: 24pt;
+  background: #FFFFFF;
+}
+
+/* Table-of-contents list. */
+.kit-toc-list { list-style: none; padding: 0; margin: 0; }
+.kit-toc-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 4pt 0;
+  border-bottom: 0.25pt dotted #D1D5DB;
+  font-size: 10pt;
+}
+.kit-toc-list .toc-title { font-weight: 600; color: #0F4C4A; }
+.kit-toc-list .toc-page { font-family: 'Inter', sans-serif; font-size: 9pt; color: #6B7280; }

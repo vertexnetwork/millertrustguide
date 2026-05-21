@@ -24,6 +24,7 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 Disallow: /thanks
 Disallow: /thanks/
 Disallow: /admin/
@@ -37,40 +38,48 @@ Crawl-delay: 1
 User-agent: Googlebot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 Disallow: /thanks
 Disallow: /admin/
 
 User-agent: Googlebot-Image
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 User-agent: Googlebot-News
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # Google-Extended: Gemini training opt-IN (we want the training inclusion).
 User-agent: Google-Extended
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # GoogleOther: general-purpose Google fetcher (R&D + Vertex AI).
 User-agent: GoogleOther
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 User-agent: Google-CloudVertexBot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # ---------- Microsoft / Bing ----------
 User-agent: Bingbot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 Disallow: /thanks
 
 User-agent: msnbot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # Microsoft Copilot fetches (currently piggybacks Bingbot; included for clarity).
 User-agent: BingPreview
@@ -80,20 +89,24 @@ Allow: /
 User-agent: DuckDuckBot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 User-agent: DuckAssistBot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # ---------- Brave ----------
 User-agent: BraveBot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # ---------- Apple ----------
 User-agent: Applebot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # Applebot-Extended: Apple Intelligence training opt-in.
 User-agent: Applebot-Extended
@@ -104,116 +117,139 @@ Allow: /
 User-agent: GPTBot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 Disallow: /thanks
 
 # OAI-SearchBot: ChatGPT Search index (citations with traffic).
 User-agent: OAI-SearchBot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # ChatGPT-User: user-initiated fetch (link clicked from ChatGPT).
 User-agent: ChatGPT-User
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # ---------- Anthropic ----------
 # ClaudeBot: Claude training corpus.
 User-agent: ClaudeBot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 Disallow: /thanks
 
 # Claude-User: user-initiated fetch from Claude.ai (cites with traffic).
 User-agent: Claude-User
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # Claude-SearchBot: Claude web search retrieval.
 User-agent: Claude-SearchBot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # anthropic-ai: legacy UA, still observed in 2026.
 User-agent: anthropic-ai
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # claude-code: Claude Code CLI fetches.
 User-agent: claude-code
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # ---------- Perplexity ----------
 User-agent: PerplexityBot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 Disallow: /thanks
 
 User-agent: Perplexity-User
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # ---------- Common Crawl (used by many LLMs) ----------
 User-agent: CCBot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 Disallow: /thanks
 
 # ---------- Meta / Facebook ----------
 User-agent: Meta-ExternalAgent
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 User-agent: Meta-ExternalFetcher
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 User-agent: FacebookBot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 User-agent: facebookexternalhit
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # ---------- Amazon ----------
 User-agent: Amazonbot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # ---------- Cohere ----------
 User-agent: cohere-ai
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 User-agent: cohere-training-data-crawler
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # ---------- Mistral ----------
 User-agent: MistralAI-User
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # ---------- You.com ----------
 User-agent: YouBot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # ---------- Timpi ----------
 User-agent: Timpibot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # ---------- Diffbot ----------
 User-agent: Diffbot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # ---------- Image scrapers (low risk for text site) ----------
 User-agent: ImagesiftBot
 Allow: /
 Disallow: /api/
+Disallow: /kits/
 
 # =====================================================================
 # Blocked: opaque or abusive UAs

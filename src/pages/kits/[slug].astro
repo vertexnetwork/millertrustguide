@@ -1,0 +1,35 @@
+---
+/* Print-only route used by scripts/build-pdfs.mjs to render each state's
+   kit PDF via Paged.js + Playwright. This route is:
+
+   1) prerendered at build time so the headless renderer hits static HTML,
+   2) excluded from the sitemap and robots.txt,
+   3) carries <meta robots noindex,nofollow,noarchive>,
+   4) returns a 404 in production via the Astro adapter unless we keep the
+      file shipped (we keep it shipped so a manual buyer-support re-render
+      is one URL away — but search engines are told to ignore it).
+
+   Privacy posture: obscurity, not authentication. The actual kit PDFs are
+   stored privately in Vercel Blob and delivered via signed URLs to buyers
+   only — this HTML route is the *source* the PDFs are rendered from, not
+   the delivered product. */
+
+import { getCollection } from 'astro:content';
+import KitPdfLayout from '~/layouts/KitPdfLayout.astro';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const states = await getCollection('states');
+  return states
+    .filter((s) => s.data.status === 'live')
+    .map((s) => ({
+      params: { slug: s.slug },
+      props: { state: { ...s.data, slug: s.slug } },
+    }));
+}
+
+const { state } = Astro.props;
+---
+
+<KitPdfLayout state={state} />
