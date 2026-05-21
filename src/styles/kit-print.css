@@ -38,19 +38,10 @@
   }
 }
 
-/* Front-matter pages (cover, disclaimer, TOC) have no running header. */
-@page :first,
-@page front-matter {
-  @top-right { content: ""; border-bottom: none; }
-}
-
-@page cover {
-  margin: 0;
-  @bottom-center { content: ""; }
-  @bottom-right { content: ""; }
-}
-
-/* Capture the section title and state into running-header strings. */
+/* Capture the section title and state into running-header strings. We hide
+   the source elements off-screen rather than display:none so Paged.js's
+   string-set engine reliably picks them up (display:none was inconsistent
+   in some Paged.js versions). */
 .kit-section-title {
   string-set: kit-section-title content();
 }
@@ -70,15 +61,18 @@
 }
 
 /* Cover page uses the dedicated @page cover rule. */
+/* Cover is just the first section. The next section (disclaimer) uses
+   .kit-page-break to force a fresh page after the cover. We deliberately
+   do NOT set page: cover or break-after: page here — Paged.js was
+   interpreting that combo as "leave page 1 empty and start the cover on
+   page 2." Simpler is more reliable. */
 .kit-cover {
-  page: cover;
-  break-after: page;
+  /* no special pagination — let it render as page 1 */
 }
 
-/* Disclaimer, how-to-use, glossary, and the TOC live in front matter. */
-.kit-front-matter {
-  page: front-matter;
-}
+/* .kit-front-matter is kept on disclaimer/glossary/TOC sections in case we
+   want to selectively style them later, but no page-type rule is attached —
+   running headers/footers appear on every page for now. */
 
 /* ----------------------------------------------------------------------------
    Typography — designed for printed legal-publication legibility, not screen.
@@ -91,6 +85,21 @@ html, body {
   font-family: 'Inter', -apple-system, 'Segoe UI', system-ui, sans-serif;
   font-size: 10.5pt;
   line-height: 1.55;
+  /* Tell the browser's print-to-PDF dialog to keep colors and backgrounds.
+     Chrome/Edge strip them by default unless the user explicitly enables
+     "Background graphics" — these rules make the document opt-in by default. */
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+/* Same rule on the callouts and accent blocks where color carries meaning. */
+.kit-callout,
+.kit-cover-mark-square,
+.kit-cover-inner,
+.kit-worksheet th,
+.kit-toc-list li {
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
 }
 
 .kit h1,
@@ -109,6 +118,10 @@ html, body {
 .kit h3 { font-size: 12pt; margin-top: 0.25in; }
 .kit h4 { font-size: 10.5pt; margin-top: 0.2in; text-transform: uppercase; letter-spacing: 0.04em; color: #115E59; }
 
+/* Pagination control. Headings should never be the last line on a page,
+   and lists should stay together when reasonable. */
+.kit h2, .kit h3, .kit h4 { break-after: avoid; }
+
 .kit p {
   margin: 0 0 9pt 0;
   orphans: 3;
@@ -116,7 +129,7 @@ html, body {
 }
 
 .kit ul, .kit ol { margin: 0 0 9pt 0; padding-left: 18pt; }
-.kit li { margin-bottom: 4pt; }
+.kit li { margin-bottom: 4pt; break-inside: avoid; }
 
 .kit a { color: #115E59; text-decoration: underline; }
 
@@ -158,17 +171,18 @@ html, body {
 
 .kit-callout p:last-child { margin-bottom: 0; }
 
-/* Cover-page composition. */
+/* Cover-page composition. Uses standard @page margins; the inner sizes
+   itself to content. Min-height keeps the meta dl pinned toward the bottom
+   of the page rather than floating up under a short subtitle. */
 .kit-cover-inner {
-  height: 11in;
-  width: 8.5in;
-  padding: 1.4in 1in 1in 1in;
+  min-height: 9in;
+  padding: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   box-sizing: border-box;
-  background: linear-gradient(180deg, #FAFAF7 0%, #FAFAF7 60%, #FFFFFF 100%);
-  border-top: 0.4in solid #115E59;
+  border-top: 0.25in solid #115E59;
+  padding-top: 0.4in;
 }
 .kit-cover-mark {
   display: inline-flex;
@@ -248,12 +262,95 @@ html, body {
 /* Table-of-contents list. */
 .kit-toc-list { list-style: none; padding: 0; margin: 0; }
 .kit-toc-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
   padding: 4pt 0;
   border-bottom: 0.25pt dotted #D1D5DB;
   font-size: 10pt;
 }
+.kit-toc-list a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  text-decoration: none;
+  color: #0F4C4A;
+}
+.kit-toc-list a:hover { text-decoration: underline; }
 .kit-toc-list .toc-title { font-weight: 600; color: #0F4C4A; }
 .kit-toc-list .toc-page { font-family: 'Inter', sans-serif; font-size: 9pt; color: #6B7280; }
+
+/* ============================================================================
+   Screen-only styles. Paged.js renders pages as .pagedjs_page boxes that
+   are exactly 8.5in × 11in. On a typical laptop screen those columns sit
+   on the left margin by default. The styles below give the screen preview a
+   grey backdrop, center the pages, and draw a page shadow so the operator
+   can see exactly how each page will render to PDF.
+   ----------------------------------------------------------------------------
+   These styles are scoped to @media screen so they have zero impact on
+   the printed/PDF output.
+   ========================================================================= */
+
+@media screen {
+  body {
+    background: #E5E7EB;
+  }
+
+  .pagedjs_pages {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0;
+    gap: 1rem;
+  }
+
+  .pagedjs_page {
+    background: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
+    margin: 0 !important;
+  }
+
+  /* Floating Save-as-PDF button (browser print dialog). Screen only. */
+  .kit-print-button {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 9999;
+    background: #115E59;
+    color: #FFFFFF;
+    padding: 0.625rem 1rem;
+    border-radius: 0.5rem;
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .kit-print-button:hover { background: #0F4C4A; }
+  .kit-print-button svg { width: 1rem; height: 1rem; }
+
+  .kit-print-hint {
+    position: fixed;
+    top: 3.5rem;
+    right: 1rem;
+    z-index: 9998;
+    background: #FFFFFF;
+    color: #1F2937;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    max-width: 18rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #E5E7EB;
+    line-height: 1.4;
+  }
+}
+
+@media print {
+  .kit-print-button,
+  .kit-print-hint {
+    display: none !important;
+  }
+}

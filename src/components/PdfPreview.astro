@@ -1,92 +1,95 @@
 ---
-// Text-based table of contents for the kit PDF. We deliberately avoid
-// placeholder "preview" image boxes — paid ad traffic reads them as an
-// unfinished site. When real PDF page screenshots are produced, swap this
-// component for an image grid (aspect-ratio reserved so CLS stays clean).
+// Gallery of actual kit-page screenshots. Filesystem-driven: any image
+// present at /public/kit-previews/{state-slug}/0N-*.png gets rendered with
+// the matching caption from the previews[] array below.
+//
+// To add or change a preview, drop a PNG into public/kit-previews/{state}/
+// using one of the filenames listed below. No code change required.
 
-const sections = [
+interface Props {
+  stateSlug?: string;
+}
+
+const { stateSlug = 'texas' } = Astro.props;
+
+// Per-state preview manifest. Captions are conversion copy — they tell the
+// buyer what the page is *for*, not just what page it is.
+const previews = [
   {
-    label: 'Section 1',
-    title: 'What a Miller Trust does, in plain English',
-    body: 'How income-cap states use a QIT to qualify a Medicaid applicant whose income exceeds the threshold, with the federal statute and state agency citations.',
+    file: '01-cover.png',
+    title: 'Cover & key facts',
+    caption: 'Version, last-reviewed date, the 2026 income cap, and the disclaimer — all on page 1.',
   },
   {
-    label: 'Section 2',
-    title: 'Download the official state template',
-    body: 'Direct .gov link, the version date to check for, and why we never host the template ourselves.',
+    file: '02-toc.png',
+    title: 'Table of contents',
+    caption: 'Nine operational sections plus three reference appendices. Every section in the order you\'ll use it.',
   },
   {
-    label: 'Section 3',
-    title: 'Filling in the obvious fields',
-    body: 'Applicant, trustee, listed income sources, reversion clause — every field, with what the state actually wants in each blank, plus the state agency\'s own guidance on trustee selection.',
+    file: '03-glossary.png',
+    title: 'Plain-English glossary',
+    caption: 'Eleven key terms translated for a non-attorney reader. The vocabulary the rest of the kit assumes.',
   },
   {
-    label: 'Section 4',
-    title: 'The monthly funding worksheet',
-    body: 'Pre-filled with the 2026 income cap so you know exactly how much income to redirect, how much stays as the Personal Needs Allowance, and how much goes to the nursing facility each month.',
-  },
-  {
-    label: 'Section 5',
+    file: '04-section5-intro.png',
     title: 'The bank-account walkthrough',
-    body: 'Why most branches refuse on first request, the verbatim opening script citing state policy and the federal statute, five common refusals with the response to each, and a printable resolution letter for the branch manager.',
+    caption: 'The opening of the section most buyers tell other buyers about — what to bring, what to expect at the counter.',
   },
   {
-    label: 'Section 6',
-    title: 'Funding the trust month by month',
-    body: 'The direct-deposit redirect process for Social Security, pension, VA benefits, and annuities. The monthly distribution checklist. What happens — and what to do — if you miss a month.',
+    file: '05-section7-checklist-top.png',
+    title: 'Pre-submission checklist',
+    caption: 'The day-before-you-file checklist that catches the most common denial causes.',
   },
   {
-    label: 'Section 7',
-    title: 'Common denials and how to avoid each',
-    body: 'Every state-specific denial reason the agency cites, with the policy section behind each, plus a pre-submission checklist to run the day before you file the Medicaid application.',
-  },
-  {
-    label: 'Section 8',
-    title: 'Post-death distribution',
-    body: 'What happens to the QIT when the applicant dies. The trustee\'s duties, the order of distributions, and how the residual-beneficiary clause works against state Medicaid spending.',
-  },
-  {
-    label: 'Section 9',
-    title: 'When to call an attorney',
-    body: 'Eight scenarios where a licensed elder-law attorney is the right call — and how to find one through the state bar referral service, NAELA, and the CELA directory.',
+    file: '06-appendix-a.png',
+    title: 'Citations index',
+    caption: 'Every operational claim sourced to a primary HHSC, CMS, SSA, or federal-statute citation.',
   },
 ];
 
-const appendices = [
-  { label: 'Appendix A', title: 'State agency citations index' },
-  { label: 'Appendix B', title: 'Trustee record-keeping checklist' },
-  { label: 'Appendix C', title: 'Version history' },
-];
+// Build URL for each preview against the requested state's folder. We do
+// not import-glob the images because Astro's prerender pass needs the URLs
+// to resolve at build time; missing files simply 404 and the <img> shows
+// alt-text (the caption already conveys the value).
+const previewsWithUrl = previews.map((p) => ({
+  ...p,
+  url: `/kit-previews/${stateSlug}/${p.file}`,
+}));
 ---
 
 <section aria-labelledby="preview-heading" class="my-12">
-  <h2 id="preview-heading">What's inside the kit</h2>
+  <p class="text-xs font-semibold uppercase tracking-wider text-primary">What it actually looks like</p>
+  <h2 id="preview-heading" class="!mt-1">Sample pages from the kit</h2>
   <p class="mt-2 text-ink-muted">
-    A focused operational PDF — instant download after purchase. Nine sections in the order you'll use them, plus
-    three appendices for reference.
+    Real pages from the {stateSlug.charAt(0).toUpperCase() + stateSlug.slice(1)} kit PDF. Click any page to enlarge.
   </p>
-  <ol class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+
+  <ul class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
     {
-      sections.map((s) => (
-        <li class="rounded-md border border-border bg-surface-elevated p-4">
-          <p class="text-xs font-semibold uppercase tracking-wide text-primary">{s.label}</p>
-          <p class="mt-1 font-semibold text-ink-heading">{s.title}</p>
-          <p class="mt-1 text-sm leading-snug text-ink">{s.body}</p>
+      previewsWithUrl.map((p) => (
+        <li class="overflow-hidden rounded-lg border border-border bg-surface-elevated shadow-sm">
+          <a href={p.url} target="_blank" rel="noopener" class="block no-underline">
+            <div
+              class="relative w-full overflow-hidden border-b border-border bg-primary-tint/20"
+              style="aspect-ratio: 8.5 / 11;"
+            >
+              <img
+                src={p.url}
+                alt={`${p.title} — sample page from the Miller Trust Setup Kit`}
+                class="h-full w-full object-cover object-top"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="p-3">
+              <p class="text-sm font-semibold text-ink-heading">{p.title}</p>
+              <p class="mt-1 text-xs leading-snug text-ink">{p.caption}</p>
+            </div>
+          </a>
         </li>
       ))
     }
-  </ol>
-
-  <div class="mt-4 rounded-md border border-border bg-surface-elevated p-4">
-    <p class="text-xs font-semibold uppercase tracking-wide text-primary">Appendices</p>
-    <ul class="mt-2 grid grid-cols-1 gap-1 text-sm text-ink sm:grid-cols-3">
-      {appendices.map((a) => (
-        <li>
-          <span class="font-semibold text-ink-heading">{a.label}.</span> {a.title}
-        </li>
-      ))}
-    </ul>
-  </div>
+  </ul>
 
   <p class="mt-4 text-xs text-ink-muted">
     Print-friendly, readable on a phone or tablet, and designed to be taken to the bank. Every operational claim

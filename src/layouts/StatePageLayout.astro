@@ -280,7 +280,7 @@ if (isLive) {
       )
     }
 
-    {!blocked && <PdfPreview />}
+    {!blocked && <PdfPreview stateSlug={state.slug} />}
 
     {!blocked && <ComparisonTable stateName={state.name} price={state.price} />}
 

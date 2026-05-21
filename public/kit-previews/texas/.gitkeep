@@ -1,0 +1,4 @@
+# Drop kit-page screenshots in this folder.
+# See src/components/PdfPreview.astro for the expected filenames:
+# 01-cover.png, 02-toc.png, 03-glossary.png, 04-section5-intro.png,
+# 05-section7-checklist-top.png, 06-appendix-a.png

@@ -32,14 +32,63 @@ const fmt = (n: number) => n.toLocaleString('en-US');
     {/* Paged.js: turns this HTML into paginated, header/footer/page-numbered
        output that Playwright captures to PDF. Loaded only at build time. */}
     <script src="https://unpkg.com/pagedjs@0.4.3/dist/paged.polyfill.js" defer is:inline></script>
+
+    {/* Floating print-UI injector. Lives in <head> so it runs at parse time
+       (independent of any body manipulation by Paged.js), attaches to
+       documentElement rather than body (Paged.js applies transforms inside
+       body that can trap position:fixed on body descendants), and fires
+       both on the pagedjs-rendered event and on a 1.5s fallback timer. */}
+    <script is:inline>
+      (function () {
+        function injectPrintUi() {
+          if (document.getElementById('kit-print-button')) return;
+          var btn = document.createElement('button');
+          btn.id = 'kit-print-button';
+          btn.className = 'kit-print-button';
+          btn.type = 'button';
+          btn.setAttribute('aria-label', 'Open print dialog to save as PDF');
+          btn.innerHTML =
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">' +
+              '<path d="M6 9V2h12v7" stroke-linecap="round" stroke-linejoin="round" />' +
+              '<rect x="4" y="9" width="16" height="9" rx="1" />' +
+              '<path d="M6 18v4h12v-4" stroke-linecap="round" stroke-linejoin="round" />' +
+            '</svg> Save as PDF';
+          btn.onclick = function () { window.print(); };
+
+          var hint = document.createElement('p');
+          hint.id = 'kit-print-hint';
+          hint.className = 'kit-print-hint';
+          hint.textContent =
+            'Tip: in your browser print dialog, choose "Save as PDF" and enable "Background graphics" so colors print.';
+
+          // documentElement (the <html>) is outside the body subtree that
+          // Paged.js transforms, so position:fixed works reliably from here.
+          document.documentElement.appendChild(btn);
+          document.documentElement.appendChild(hint);
+        }
+
+        function ready(fn) {
+          if (document.readyState !== 'loading') fn();
+          else document.addEventListener('DOMContentLoaded', fn);
+        }
+
+        ready(function () {
+          document.addEventListener('pagedjs-rendered', injectPrintUi);
+          window.setTimeout(injectPrintUi, 1500);
+        });
+      })();
+    </script>
   </head>
   <body class="kit">
-    {/* Strings consumed by the @page running headers/footers (see kit-print.css). */}
-    <span class="kit-state-string" style="display:none">{state.name}</span>
-    <span class="kit-version-string" style="display:none">{state.kitVersion}</span>
 
     {/* ============================== COVER ============================== */}
     <section class="kit-cover">
+      {/* Strings consumed by the @page running headers/footers. Placed inside
+         the first section (not before it) so Paged.js doesn't treat them as
+         floating pre-content that needs its own page. */}
+      <span class="kit-state-string" aria-hidden="true" style="position:absolute;left:-9999px;width:0;height:0;overflow:hidden">{state.name}</span>
+      <span class="kit-version-string" aria-hidden="true" style="position:absolute;left:-9999px;width:0;height:0;overflow:hidden">{state.kitVersion}</span>
+
       <div class="kit-cover-inner">
         <div>
           <div class="kit-cover-mark">
@@ -83,8 +132,8 @@ const fmt = (n: number) => n.toLocaleString('en-US');
     </section>
 
     {/* ====================== DISCLAIMER / RULE 4 ======================== */}
-    <section class="kit-page-break kit-front-matter">
-      <p class="kit-eyebrow">Page 1 &middot; Required reading</p>
+    <section id="disclaimer" class="kit-page-break kit-front-matter">
+      <p class="kit-eyebrow">Required reading</p>
       <h1>Disclaimer and consent acknowledgment</h1>
 
       <p>
@@ -135,8 +184,8 @@ const fmt = (n: number) => n.toLocaleString('en-US');
     </section>
 
     {/* ============================ HOW TO USE =========================== */}
-    <section class="kit-page-break kit-front-matter">
-      <p class="kit-eyebrow">Page 2 &middot; Orientation</p>
+    <section id="how-to-use" class="kit-page-break kit-front-matter">
+      <p class="kit-eyebrow">Orientation</p>
       <h1>How to use this kit</h1>
 
       <p>
@@ -173,8 +222,8 @@ const fmt = (n: number) => n.toLocaleString('en-US');
     </section>
 
     {/* ============================= GLOSSARY ============================ */}
-    <section class="kit-page-break kit-front-matter">
-      <p class="kit-eyebrow">Page 3 &middot; Plain-English glossary</p>
+    <section id="glossary" class="kit-page-break kit-front-matter">
+      <p class="kit-eyebrow">Plain-English glossary</p>
       <h1>Key terms</h1>
 
       <dl>
@@ -217,28 +266,28 @@ const fmt = (n: number) => n.toLocaleString('en-US');
     </section>
 
     {/* ========================== TABLE OF CONTENTS ====================== */}
-    <section class="kit-page-break kit-front-matter">
-      <p class="kit-eyebrow">Page 4 &middot; What's inside</p>
+    <section id="toc" class="kit-page-break kit-front-matter">
+      <p class="kit-eyebrow">What's inside</p>
       <h1>Table of contents</h1>
 
       <ul class="kit-toc-list">
-        <li><span class="toc-title">Section 1 &middot; What a {state.name} Miller Trust does</span></li>
-        <li><span class="toc-title">Section 2 &middot; Where to download the official {state.agencyAbbreviation} template</span></li>
-        <li><span class="toc-title">Section 3 &middot; Filling in the obvious fields</span></li>
-        <li><span class="toc-title">Section 4 &middot; The monthly funding worksheet</span></li>
-        <li><span class="toc-title">Section 5 &middot; The bank-account walkthrough</span></li>
-        <li><span class="toc-title">Section 6 &middot; Funding the trust month by month</span></li>
-        <li><span class="toc-title">Section 7 &middot; Common {state.name} Medicaid denials</span></li>
-        <li><span class="toc-title">Section 8 &middot; Post-death distribution</span></li>
-        <li><span class="toc-title">Section 9 &middot; When to call an attorney</span></li>
-        <li><span class="toc-title">Appendix A &middot; {state.agencyAbbreviation} citations index</span></li>
-        <li><span class="toc-title">Appendix B &middot; Trustee record-keeping checklist</span></li>
-        <li><span class="toc-title">Appendix C &middot; Version history</span></li>
+        <li><a href="#section-1"><span class="toc-title">Section 1 &middot; What a {state.name} Miller Trust does</span></a></li>
+        <li><a href="#section-2"><span class="toc-title">Section 2 &middot; Where to download the official {state.agencyAbbreviation} template</span></a></li>
+        <li><a href="#section-3"><span class="toc-title">Section 3 &middot; Filling in the obvious fields</span></a></li>
+        <li><a href="#section-4"><span class="toc-title">Section 4 &middot; The monthly funding worksheet</span></a></li>
+        <li><a href="#section-5"><span class="toc-title">Section 5 &middot; The bank-account walkthrough</span></a></li>
+        <li><a href="#section-6"><span class="toc-title">Section 6 &middot; Funding the trust month by month</span></a></li>
+        <li><a href="#section-7"><span class="toc-title">Section 7 &middot; Common {state.name} Medicaid denials</span></a></li>
+        <li><a href="#section-8"><span class="toc-title">Section 8 &middot; Post-death distribution</span></a></li>
+        <li><a href="#section-9"><span class="toc-title">Section 9 &middot; When to call an attorney</span></a></li>
+        <li><a href="#appendix-a"><span class="toc-title">Appendix A &middot; {state.agencyAbbreviation} citations index</span></a></li>
+        <li><a href="#appendix-b"><span class="toc-title">Appendix B &middot; Trustee record-keeping checklist</span></a></li>
+        <li><a href="#appendix-c"><span class="toc-title">Appendix C &middot; Version history</span></a></li>
       </ul>
     </section>
 
     {/* ============================ SECTION 1 ============================ */}
-    <section class="kit-page-break">
+    <section id="section-1" class="kit-page-break">
       <p class="kit-eyebrow kit-section-title">Section 1 &middot; What a {state.name} Miller Trust does</p>
       <h1>What a {state.name} Miller Trust does, in plain English</h1>
 
@@ -280,21 +329,23 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         </li>
       </ul>
 
-      <h3>How the diversion works, mechanically</h3>
-      <p>
-        Each month, the trustee deposits the applicant's countable income into the QIT bank account. From the QIT
-        account, the trustee distributes:
-      </p>
-      <ol>
-        <li>The Personal Needs Allowance to the applicant (${fmt(state.personalNeedsAllowance)}/month).</li>
-        <li>Any spousal allowance to the community spouse, if applicable.</li>
-        <li>The remainder to the nursing facility as the applicant's "patient liability" or "share of cost."</li>
-      </ol>
-      <p>
-        Income that passes through the QIT this way is not counted toward the income cap. The QIT is therefore an
-        accounting and routing structure, not a savings vehicle. <strong>At the end of each month the trust account
-        balance is typically zero or near-zero.</strong>
-      </p>
+      <div class="kit-no-break">
+        <h3>How the diversion works, mechanically</h3>
+        <p>
+          Each month, the trustee deposits the applicant's countable income into the QIT bank account. From the
+          QIT account, the trustee distributes:
+        </p>
+        <ol>
+          <li>The Personal Needs Allowance to the applicant (${fmt(state.personalNeedsAllowance)}/month).</li>
+          <li>Any spousal allowance to the community spouse, if applicable.</li>
+          <li>The remainder to the nursing facility as the applicant's "patient liability" or "share of cost."</li>
+        </ol>
+        <p>
+          Income that passes through the QIT this way is not counted toward the income cap. The QIT is therefore
+          an accounting and routing structure, not a savings vehicle. <strong>At the end of each month the trust
+          account balance is typically zero or near-zero.</strong>
+        </p>
+      </div>
 
       <div class="kit-callout">
         <p>
@@ -320,7 +371,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
     </section>
 
     {/* ============================ SECTION 2 ============================ */}
-    <section class="kit-page-break">
+    <section id="section-2" class="kit-page-break">
       <p class="kit-eyebrow kit-section-title">Section 2 &middot; Where to download the official {state.agencyAbbreviation} template</p>
       <h1>Where to download the official {state.agencyAbbreviation} template</h1>
 
@@ -368,7 +419,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
     </section>
 
     {/* ============================ SECTION 3 ============================ */}
-    <section class="kit-page-break">
+    <section id="section-3" class="kit-page-break">
       <p class="kit-eyebrow kit-section-title">Section 3 &middot; Filling in the obvious fields</p>
       <h1>Filling in the obvious fields</h1>
 
@@ -451,22 +502,24 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         letter or statement for each source.
       </p>
 
-      <h3>4. Residual beneficiary</h3>
-      <p>
-        Federal law requires the QIT to name the state Medicaid agency as the residual beneficiary <strong>up to
-        the total amount of medical assistance paid on the applicant's behalf</strong>. The {state.agencyAbbreviation}
-        template contains this clause pre-drafted. <strong>Do not edit, weaken, or remove it</strong> — a
-        defective residual-beneficiary clause is a documented denial cause (Section 7).
-      </p>
-
-      <p>
-        Anything remaining after the state's recovery passes to whatever party the template's secondary residual
-        clause names. Some state templates leave this blank for the trustor to fill in (e.g., children, named
-        family members); others default to the applicant's probate estate. Read the template's instructions on
-        this point. If you are unsure who to name, leave the field as the template's default — secondary residual
-        designations are an estate-planning decision, not a Medicaid-qualification decision, and you can address
-        them later without delaying eligibility.
-      </p>
+      <div class="kit-no-break">
+        <h3>4. Residual beneficiary</h3>
+        <p>
+          Federal law requires the QIT to name the state Medicaid agency as the residual beneficiary
+          <strong> up to the total amount of medical assistance paid on the applicant's behalf</strong>. The
+          {state.agencyAbbreviation} template contains this clause pre-drafted. <strong>Do not edit, weaken,
+          or remove it</strong> — a defective residual-beneficiary clause is a documented denial cause
+          (Section 7).
+        </p>
+        <p>
+          Anything remaining after the state's recovery passes to whatever party the template's secondary
+          residual clause names. Some state templates leave this blank for the trustor to fill in (e.g.,
+          children, named family members); others default to the applicant's probate estate. Read the
+          template's instructions on this point. If you are unsure who to name, leave the field as the
+          template's default — secondary residual designations are an estate-planning decision, not a
+          Medicaid-qualification decision, and you can address them later without delaying eligibility.
+        </p>
+      </div>
 
       <h3>5. Signature, date, and witnessing</h3>
       <p>
@@ -478,7 +531,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
     </section>
 
     {/* ============================ SECTION 4 ============================ */}
-    <section class="kit-page-break">
+    <section id="section-4" class="kit-page-break">
       <p class="kit-eyebrow kit-section-title">Section 4 &middot; The monthly funding worksheet</p>
       <h1>The monthly funding worksheet</h1>
 
@@ -570,7 +623,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
     </section>
 
     {/* ============================ SECTION 5 ============================ */}
-    <section class="kit-page-break">
+    <section id="section-5" class="kit-page-break">
       <p class="kit-eyebrow kit-section-title">Section 5 &middot; The bank-account walkthrough</p>
       <h1>The bank-account walkthrough</h1>
 
@@ -730,7 +783,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
     </section>
 
     {/* ============================ SECTION 6 ============================ */}
-    <section class="kit-page-break">
+    <section id="section-6" class="kit-page-break">
       <p class="kit-eyebrow kit-section-title">Section 6 &middot; Funding the trust month by month</p>
       <h1>Funding the trust month by month</h1>
 
@@ -773,23 +826,25 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         or by calling VA. The VA also accepts mailed forms.
       </p>
 
-      <h3>The first month — what to expect</h3>
-      <p>
-        The first month is the most error-prone because income redirects rarely process in time. Two important
-        accommodations {state.agencyAbbreviation} makes for the initial month:
-      </p>
-      <ul>
-        <li>
-          <strong>A partial deposit in the initial month is allowed.</strong> If only part of an income source
-          made it into the QIT in the first month — for example, the applicant already paid some bills before the
-          trust was established — the QIT is still valid and the entire amount of that income source is
-          disregarded from countable income for that month.
-        </li>
-        <li>
-          <strong>In every month after the initial month, the entire listed source must be deposited.</strong> A
-          partial deposit of a listed source in any non-initial month invalidates the QIT for that month.
-        </li>
-      </ul>
+      <div class="kit-no-break">
+        <h3>The first month — what to expect</h3>
+        <p>
+          The first month is the most error-prone because income redirects rarely process in time. Two important
+          accommodations {state.agencyAbbreviation} makes for the initial month:
+        </p>
+        <ul>
+          <li>
+            <strong>A partial deposit in the initial month is allowed.</strong> If only part of an income source
+            made it into the QIT in the first month — for example, the applicant already paid some bills before
+            the trust was established — the QIT is still valid and the entire amount of that income source is
+            disregarded from countable income for that month.
+          </li>
+          <li>
+            <strong>In every month after the initial month, the entire listed source must be deposited.</strong>
+            A partial deposit of a listed source in any non-initial month invalidates the QIT for that month.
+          </li>
+        </ul>
+      </div>
       <p>
         Most families also manually transfer the first month's income into the QIT from the applicant's personal
         account in the same calendar month the trust is signed, to start the eligibility clock without waiting
@@ -814,41 +869,44 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         </p>
       </div>
 
-      <h3>The monthly distribution checklist</h3>
-      <p>By the last day of the month following each deposit, the trustee should have:</p>
-      <ol>
-        <li>Confirmed the month's income deposited into the QIT account (check the bank statement).</li>
-        <li>Distributed the Personal Needs Allowance (${fmt(state.personalNeedsAllowance)}) to the applicant.</li>
-        <li>Distributed any spousal allowance (the Minimum Monthly Maintenance Needs Allowance, where applicable) to the community spouse.</li>
-        <li>Distributed any court-ordered guardianship fees, if applicable.</li>
-        <li>Distributed the cost of medical assistance (patient liability / share of cost) to the nursing facility.</li>
-        <li>Saved the bank statement and any check copies in the trustee's monthly file (see Appendix B).</li>
-      </ol>
+      <div class="kit-no-break">
+        <h3>The monthly distribution checklist</h3>
+        <p>By the last day of the month following each deposit, the trustee should have:</p>
+        <ol>
+          <li>Confirmed the month's income deposited into the QIT account (check the bank statement).</li>
+          <li>Distributed the Personal Needs Allowance (${fmt(state.personalNeedsAllowance)}) to the applicant.</li>
+          <li>Distributed any spousal allowance (the Minimum Monthly Maintenance Needs Allowance, where applicable) to the community spouse.</li>
+          <li>Distributed any court-ordered guardianship fees, if applicable.</li>
+          <li>Distributed the cost of medical assistance (patient liability / share of cost) to the nursing facility.</li>
+          <li>Saved the bank statement and any check copies in the trustee's monthly file (see Appendix B).</li>
+        </ol>
 
-      <p>
-        After required distributions, the account should return to a near-zero balance. A residual balance of a
-        few cents to a few dollars is normal and acceptable. Any residual amount left after the required
-        distributions may be applied to the cost of trust administration — but {state.agencyAbbreviation} does
-        not allow deductions for trust administration costs when computing the beneficiary's share of cost.
-      </p>
+        <p>
+          After required distributions, the account should return to a near-zero balance. A residual balance of
+          a few cents to a few dollars is normal and acceptable. Any residual amount left after the required
+          distributions may be applied to the cost of trust administration — but {state.agencyAbbreviation}
+          does not allow deductions for trust administration costs when computing the beneficiary's share of
+          cost.
+        </p>
 
-      <h3>What happens if a month's income is not deposited</h3>
-      <p>
-        If a month's income is not deposited into the QIT (e.g., the redirect didn't process and the income
-        landed in the applicant's personal account), HHSC will count the income as the applicant's for that
-        month, and the applicant will be income-ineligible for that month. Coverage for that month is denied. You
-        cannot cure the month by transferring the money later — the deposit must have occurred in the calendar
-        month the income was received.
-      </p>
+        <h3>What happens if a month's income is not deposited</h3>
+        <p>
+          If a month's income is not deposited into the QIT (e.g., the redirect didn't process and the income
+          landed in the applicant's personal account), HHSC will count the income as the applicant's for that
+          month, and the applicant will be income-ineligible for that month. Coverage for that month is denied.
+          You cannot cure the month by transferring the money later — the deposit must have occurred in the
+          calendar month the income was received.
+        </p>
 
-      <p>
-        Resume normal funding the following month and the applicant's eligibility resumes for that month. The
-        lost month is usually billed at private-pay rates by the nursing facility.
-      </p>
+        <p>
+          Resume normal funding the following month and the applicant's eligibility resumes for that month. The
+          lost month is usually billed at private-pay rates by the nursing facility.
+        </p>
+      </div>
     </section>
 
     {/* ============================ SECTION 7 ============================ */}
-    <section class="kit-page-break">
+    <section id="section-7" class="kit-page-break">
       <p class="kit-eyebrow kit-section-title">Section 7 &middot; Common {state.name} Medicaid denials</p>
       <h1>The {state.commonDenialReasons.length} most common {state.name} Medicaid denials — and how to avoid each</h1>
 
@@ -889,7 +947,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
     </section>
 
     {/* ============================ SECTION 8 ============================ */}
-    <section class="kit-page-break">
+    <section id="section-8" class="kit-page-break">
       <p class="kit-eyebrow kit-section-title">Section 8 &middot; Post-death distribution</p>
       <h1>What happens to the QIT when the applicant dies</h1>
 
@@ -937,27 +995,29 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         {' '}<a href="https://www.hhs.texas.gov/regulations/forms/4000-4999/form-h4100-money-receipt">https://www.hhs.texas.gov/regulations/forms/4000-4999/form-h4100-money-receipt</a>
       </p>
 
-      <h3>On estate recovery generally</h3>
-      <p>
-        The QIT residual-beneficiary clause is one piece of the larger Medicaid estate-recovery framework.
-        {' '}{state.name}, like every state, has the right to seek recovery of Medicaid spending from the
-        applicant's estate (the assets owned at death). Estate recovery rules are fact-intensive and vary by
-        situation: homestead protections, surviving-spouse exemptions, dependent-relative exemptions, and
-        hardship waivers all interact with the analysis.
-      </p>
-
-      <div class="kit-callout kit-callout--warning">
+      <div class="kit-no-break">
+        <h3>On estate recovery generally</h3>
         <p>
-          <strong>This kit does not address estate recovery beyond the QIT's own distribution clause.</strong>
-          If the applicant owns a home, has assets outside the QIT, or has a surviving spouse with potential
-          estate interests, consult a {state.name}-licensed elder-law attorney for the estate-recovery analysis.
-          The State Bar of {state.name} referral service is below.
+          The QIT residual-beneficiary clause is one piece of the larger Medicaid estate-recovery framework.
+          {' '}{state.name}, like every state, has the right to seek recovery of Medicaid spending from the
+          applicant's estate (the assets owned at death). Estate recovery rules are fact-intensive and vary by
+          situation: homestead protections, surviving-spouse exemptions, dependent-relative exemptions, and
+          hardship waivers all interact with the analysis.
         </p>
+
+        <div class="kit-callout kit-callout--warning">
+          <p>
+            <strong>This kit does not address estate recovery beyond the QIT's own distribution clause.</strong>
+            If the applicant owns a home, has assets outside the QIT, or has a surviving spouse with potential
+            estate interests, consult a {state.name}-licensed elder-law attorney for the estate-recovery
+            analysis. The State Bar of {state.name} referral service is below.
+          </p>
+        </div>
       </div>
     </section>
 
     {/* ============================ SECTION 9 ============================ */}
-    <section class="kit-page-break">
+    <section id="section-9" class="kit-page-break">
       <p class="kit-eyebrow kit-section-title">Section 9 &middot; When to call an attorney</p>
       <h1>When to call an attorney — and how to find one</h1>
 
@@ -1028,7 +1088,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           NAELA members specialize in elder law as a practice area. Useful for vetting credentials.
         </li>
         <li>
-          <a href="https://www.nelf.org/find-a-cela">National Elder Law Foundation (NELF) — Certified Elder Law Attorneys</a>:
+          <a href="https://www.nelf.org/attorney-directory-search">National Elder Law Foundation (NELF) — Certified Elder Law Attorneys</a>:
           CELA certification is the recognized specialty credential for elder-law practice. CELAs are credentialed
           through a process the ABA accredits.
         </li>
@@ -1055,7 +1115,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
     </section>
 
     {/* =========================== APPENDIX A ============================ */}
-    <section class="kit-page-break">
+    <section id="appendix-a" class="kit-page-break">
       <p class="kit-eyebrow kit-section-title">Appendix A &middot; {state.agencyAbbreviation} citations index</p>
       <h1>Appendix A — {state.agencyAbbreviation} citations index</h1>
 
@@ -1120,13 +1180,13 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         </li>
         <li>
           <strong>NELF — National Elder Law Foundation (CELA directory)</strong> &middot;{' '}
-          <a href="https://www.nelf.org/find-a-cela">https://www.nelf.org/find-a-cela</a>
+          <a href="https://www.nelf.org/attorney-directory-search">https://www.nelf.org/attorney-directory-search</a>
         </li>
       </ul>
     </section>
 
     {/* =========================== APPENDIX B ============================ */}
-    <section class="kit-page-break">
+    <section id="appendix-b" class="kit-page-break">
       <p class="kit-eyebrow kit-section-title">Appendix B &middot; Trustee record-keeping checklist</p>
       <h1>Appendix B — Trustee record-keeping checklist</h1>
 
@@ -1169,7 +1229,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
     </section>
 
     {/* =========================== APPENDIX C ============================ */}
-    <section class="kit-page-break">
+    <section id="appendix-c" class="kit-page-break">
       <p class="kit-eyebrow kit-section-title">Appendix C &middot; Version history</p>
       <h1>Appendix C — Version history</h1>
 
