@@ -1,0 +1,51 @@
+---
+// Honest social-proof line. Two states, no fabrication:
+//
+//  - Below the display threshold: "Launched [month] — be one of our first
+//    [State] families." Frames newness as an invitation, not a void.
+//  - At/above the threshold: "Used by [N] [State] families." The count is
+//    the real operator-maintained units-sold figure from frontmatter.
+//
+// We deliberately do NOT show fake reviews, invented case studies, or a
+// padded count — that erodes the exact trust this line is meant to build.
+
+interface Props {
+  stateName: string;
+  unitsSold: number;
+  displayThreshold: number;
+  launchLabel: string;
+}
+
+const { stateName, unitsSold, displayThreshold, launchLabel } = Astro.props;
+
+const showCount = unitsSold >= displayThreshold;
+---
+
+<p
+  class="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary-tint/30 px-3 py-1.5 text-sm text-ink"
+  role="note"
+>
+  <svg
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+    class="h-4 w-4 flex-shrink-0 text-primary"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+  {
+    showCount ? (
+      <span>
+        Used by <strong>{unitsSold.toLocaleString('en-US')}</strong> {stateName} families.
+      </span>
+    ) : (
+      <span>
+        Launched {launchLabel} — <strong>be one of our first {stateName} families.</strong>
+      </span>
+    )
+  }
+</p>

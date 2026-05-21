@@ -104,6 +104,16 @@ const stateSchema = z.object({
       changes: z.array(z.string()),
     })
   ),
+
+  // social proof — honest, no fabricated reviews/case studies.
+  // unitsSold is operator-maintained; bump it and redeploy. The visible
+  // buyer count only renders once unitsSold >= displayThreshold; below the
+  // threshold the page shows honest "be one of our first" launch framing.
+  socialProof: z.object({
+    unitsSold: z.number().default(0),
+    displayThreshold: z.number().default(25),
+    launchLabel: z.string(),
+  }),
 });
 
 export const collections = {

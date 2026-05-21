@@ -6,6 +6,8 @@ import ReassuranceBlock from '~/components/ReassuranceBlock.astro';
 import MoneyBackGuarantee from '~/components/MoneyBackGuarantee.astro';
 import PdfPreview from '~/components/PdfPreview.astro';
 import StickyBuyBar from '~/components/StickyBuyBar.astro';
+import SocialProof from '~/components/SocialProof.astro';
+import LeadMagnetForm from '~/components/LeadMagnetForm.astro';
 import {
   articleSchema,
   faqPageSchema,
@@ -180,6 +182,19 @@ if (isLive) {
         $1,000–$2,500 for an attorney to do what is, in practice, a few hours of paperwork and one trip to the bank.
         Built directly around the official {state.agencyAbbreviation} template. <strong>Informational only — not legal advice.</strong>
       </p>
+
+      {
+        isLive && (
+          <div class="mt-5">
+            <SocialProof
+              stateName={state.name}
+              unitsSold={state.socialProof.unitsSold}
+              displayThreshold={state.socialProof.displayThreshold}
+              launchLabel={state.socialProof.launchLabel}
+            />
+          </div>
+        )
+      }
     </header>
 
     {
@@ -405,6 +420,16 @@ if (isLive) {
         </li>
       </ul>
     </section>
+
+    {/* Email capture — recovers the not-ready-today visitor */}
+    {
+      isLive && (
+        <LeadMagnetForm
+          stateSlug={state.slug}
+          blurb={`A handful of short, plain-English emails on how ${state.name} Miller Trusts actually work — the funding-month rule, the bank step, the denial traps. No sales pressure. Unsubscribe anytime.`}
+        />
+      )
+    }
 
     {/* Buy CTA repeat */}
     {

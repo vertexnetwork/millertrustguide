@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '~/layouts/BaseLayout.astro';
+import LeadMagnetForm from '~/components/LeadMagnetForm.astro';
 import {
   faqPageSchemaFromPairs,
   articleSchema,
@@ -126,8 +127,7 @@ const jsonLd = [
     {
       live.length === 0 ? (
         <p class="mt-2 text-ink-muted">
-          No kits are currently published.{' '}
-          <a href="#email-signup" class="underline">Join the email list</a> to be notified when we launch.
+          No kits are currently published. Join the free email series below to be notified when we launch.
         </p>
       ) : (
         <ul class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -191,6 +191,13 @@ const jsonLd = [
     </ul>
   </section>
 
+  <section class="mx-auto max-w-3xl px-4">
+    <LeadMagnetForm
+      heading="Not ready to buy? Start with the free email series."
+      blurb="A handful of short, plain-English emails on how Miller Trusts actually work — the funding-month rule, the bank step, the denial traps. No sales pressure. Unsubscribe anytime."
+    />
+  </section>
+
   <section class="mx-auto max-w-3xl px-4 py-10" aria-labelledby="home-faq-heading">
     <h2 id="home-faq-heading">Frequently asked questions</h2>
     <dl class="mt-4 divide-y divide-border">
@@ -228,9 +235,14 @@ const jsonLd = [
         </a>
       </li>
       <li>
-        <a href="https://www.nj.gov/humanservices/dmahs/clients/Qualified_Income_Trust_Template.pdf"
+        <a href="https://www.nj.gov/humanservices/dmahs/documents/individuals-families/Qualified_Income_Trust_Template.pdf"
           rel="external nofollow noopener">
           New Jersey DMAHS — QIT template (PDF)
+        </a>
+        {' '}&middot;{' '}
+        <a href="https://www.nj.gov/humanservices/dmahs/individuals-families/mtrusts.shtml"
+          rel="external nofollow noopener">
+          Medicaid trusts overview
         </a>
       </li>
       <li>

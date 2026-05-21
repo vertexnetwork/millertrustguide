@@ -2,7 +2,7 @@
 /**
  * IndexNow submission script.
  *
- * Reads the built sitemap-index.xml + sitemap-0.xml from dist/, collects all
+ * Reads the built sitemap.xml from dist/, collects all
  * URLs, and POSTs them to https://api.indexnow.org/IndexNow. Bing, Yandex,
  * DuckDuckGo, Seznam, Naver, and Yep consume IndexNow. Google does not.
  *
@@ -25,10 +25,7 @@ const HOST = process.env.INDEXNOW_HOST ?? 'millertrustguide.com';
 const KEY = process.env.INDEXNOW_KEY;
 const KEY_LOCATION = process.env.INDEXNOW_KEY_LOCATION ?? `https://${HOST}/${KEY}.txt`;
 const ENDPOINT = 'https://api.indexnow.org/IndexNow';
-const SITEMAP_PATHS = [
-  resolve('dist', 'client', 'sitemap-index.xml'),
-  resolve('dist', 'client', 'sitemap-0.xml'),
-];
+const SITEMAP_PATHS = [resolve('dist', 'client', 'sitemap.xml')];
 
 async function readUrlsFromSitemap(path) {
   try {

@@ -36,7 +36,7 @@ Editorial posture: every operational claim cites a primary state agency document
 
 ## Machine-readable index
 
-- [Site sitemap (XML)](https://millertrustguide.com/sitemap-index.xml): All canonical pages.
+- [Site sitemap (XML)](https://millertrustguide.com/sitemap.xml): All canonical pages.
 - [llms-full.txt](https://millertrustguide.com/llms-full.txt): Expanded LLM-friendly content index.
 
 ## Optional

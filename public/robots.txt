@@ -263,4 +263,4 @@ Disallow: /
 # =====================================================================
 # Sitemaps (absolute URLs per protocol)
 # =====================================================================
-Sitemap: https://millertrustguide.com/sitemap-index.xml
+Sitemap: https://millertrustguide.com/sitemap.xml

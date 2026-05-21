@@ -1,6 +1,6 @@
 ---
 // Human-readable HTML sitemap. Complements the machine-readable
-// /sitemap-index.xml. Useful for AI crawlers that prefer link traversal
+// /sitemap.xml. Useful for AI crawlers that prefer link traversal
 // over XML parsing, and for users who want a single overview page.
 
 import { getCollection } from 'astro:content';
@@ -62,7 +62,7 @@ const jsonLd = [
 
     <h2>Machine-readable indexes</h2>
     <ul>
-      <li><a href="/sitemap-index.xml">XML sitemap</a></li>
+      <li><a href="/sitemap.xml">XML sitemap</a></li>
       <li><a href="/llms.txt">llms.txt</a> (LLM-friendly index)</li>
       <li><a href="/llms-full.txt">llms-full.txt</a> (expanded LLM-friendly content)</li>
       <li><a href="/robots.txt">robots.txt</a></li>

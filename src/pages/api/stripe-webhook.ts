@@ -2,7 +2,7 @@
 //   1. Verify signature (Stripe → us).
 //   2. Look up the state by Stripe Price ID OR session metadata.state_slug.
 //   3. Generate a 7-day signed Vercel Blob URL for the kit PDF.
-//   4. Send the Postmark delivery email containing the download link.
+//   4. Send the Resend delivery email containing the download link.
 //
 // Signature verification needs the raw request body (bytes), which Astro
 // exposes via `request.text()` — we MUST NOT call `request.json()` first.
@@ -11,7 +11,7 @@ import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { getStripe, getWebhookSecret } from '~/lib/stripe';
 import { getSignedKitUrl } from '~/lib/blob';
-import { sendKitDeliveryEmail } from '~/lib/postmark';
+import { sendKitDeliveryEmail } from '~/lib/resend';
 
 export const prerender = false;
 
@@ -89,7 +89,7 @@ export const POST: APIRoute = async ({ request }) => {
       orderId: session.id,
     });
   } catch (err) {
-    console.error('[stripe-webhook] Postmark send failed:', err);
+    console.error('[stripe-webhook] Resend send failed:', err);
     return new Response('Email delivery failed.', { status: 500 });
   }
 
