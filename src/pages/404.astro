@@ -1,0 +1,70 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+// Prerender the 404 so unmatched routes don't burn an SSR function call.
+// Astro's Vercel adapter serves this with HTTP 404 automatically.
+export const prerender = true;
+
+const liveStates = (await getCollection('states'))
+  .map((s) => ({ ...s.data, slug: s.slug }))
+  .filter((s) => s.status === 'live')
+  .sort((a, b) => a.name.localeCompare(b.name));
+---
+
+<BaseLayout
+  title="Page not found — Miller Trust Guide"
+  description="The page you requested isn't here. Browse the available state Miller Trust setup guides or return to the home page."
+  noindex
+>
+  <article class="mx-auto max-w-3xl px-4 pt-8 pb-16 md:pt-12">
+    <p class="text-xs font-semibold uppercase tracking-wider text-primary">404 &middot; Page not found</p>
+    <h1 class="mt-2 !text-3xl md:!text-5xl">
+      That page isn't here.
+    </h1>
+
+    <p class="mt-5 text-base leading-relaxed text-ink">
+      The URL you followed may have been mistyped, removed, or replaced. If you arrived from a search engine or an
+      external link, the most useful next step is probably below.
+    </p>
+
+    {
+      liveStates.length > 0 && (
+        <section class="mt-10" aria-labelledby="states-heading">
+          <p class="text-xs font-semibold uppercase tracking-wider text-primary">Available kits</p>
+          <h2 id="states-heading" class="!mt-1">State Miller Trust setup guides</h2>
+          <ul class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {liveStates.map((s) => (
+              <li class="rounded-lg border border-border bg-surface-elevated p-4">
+                <a
+                  href={`/states/${s.slug}`}
+                  class="font-semibold no-underline hover:underline"
+                  aria-label={`${s.name} Miller Trust Setup Guide — $${s.price}`}
+                >
+                  {s.name} Miller Trust Kit &mdash; ${s.price}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <section class="mt-10" aria-labelledby="elsewhere-heading">
+      <p class="text-xs font-semibold uppercase tracking-wider text-primary">Or go to</p>
+      <h2 id="elsewhere-heading" class="!mt-1">Other pages</h2>
+      <ul class="mt-3 list-disc space-y-2 pl-6 text-base">
+        <li><a href="/">Home</a> — what we publish, the 2026 income cap, and frequently asked questions.</li>
+        <li><a href="/about">About</a> — who runs Miller Trust Guide and how we work.</li>
+        <li><a href="/editorial-process">Editorial process</a> — sourcing standards, review cadence, correction policy.</li>
+        <li><a href="/refund-policy">Refund policy</a> — money-back terms.</li>
+      </ul>
+    </section>
+
+    <p class="mt-10 text-sm text-ink-muted">
+      Think this page should exist? Email{' '}
+      <a href="mailto:support@millertrustguide.com">support@millertrustguide.com</a> with the URL you were trying to
+      reach and we'll fix the link.
+    </p>
+  </article>
+</BaseLayout>
