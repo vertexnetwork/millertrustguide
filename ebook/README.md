@@ -3,7 +3,7 @@
 This directory contains the upload-ready manuscript and cover copy for the
 **Miller Trust Basics** ebook — the $9.99 top-of-funnel SKU distributed via
 Amazon KDP, Apple Books, Google Play Books, and Kobo. **Distinct from the
-$79 Miller Trust Setup Kit** sold at millertrustguide.com.
+$129 Miller Trust Setup Kit** sold at millertrustguide.com.
 
 ## Files
 
@@ -26,7 +26,7 @@ The product is a Nolo-class informational book about a federal-statute mechanism
 
 ## What this ebook deliberately does NOT contain
 
-The following operational deliverables are reserved for the $79 kit and must NEVER appear in this ebook:
+The following operational deliverables are reserved for the $129 kit and must NEVER appear in this ebook:
 
 - The bank-refusal script (verbatim language for the counter)
 - The resolution letter for the branch manager
@@ -37,7 +37,7 @@ The following operational deliverables are reserved for the $79 kit and must NEV
 - The pre-submission checklist (specific line-by-line items)
 - Any state-specific operational walkthrough beyond a high-level overview
 
-If a passage would be useful enough that a buyer could skip the $79 kit, it belongs in the kit, not here.
+If a passage would be useful enough that a buyer could skip the $129 kit, it belongs in the kit, not here.
 
 ## Conversion to upload formats
 
@@ -99,6 +99,6 @@ Three jobs:
 
 1. **Discovery.** Rank in Amazon search for "miller trust", "qualified income trust", "medicaid eligibility income", etc. Catch the Persona A search that doesn't reach our site.
 2. **Trust signal.** "Available on Amazon" is a credibility marker for our demographic. Reviews on Amazon become social proof we can reference.
-3. **Funnel.** The back-matter CTA routes interested readers to the state-specific $79 kit at millertrustguide.com. The ebook teaches *what*; the kit teaches *how* for a specific state.
+3. **Funnel.** The back-matter CTA routes interested readers to the state-specific $129 kit at millertrustguide.com. The ebook teaches *what*; the kit teaches *how* for a specific state.
 
 Conversion target: 5–10% of ebook buyers click through to the kit landing page within 30 days. Of those clicks, expected kit conversion at site-normal rates.

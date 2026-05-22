@@ -609,7 +609,7 @@ Three paths, depending on where you are.
 
 **Path 1: You're confident a Miller Trust is what your family needs, and you want to set it up yourself.**
 
-Get the Miller Trust Setup Kit for your state at [millertrustguide.com](https://millertrustguide.com). The kit covers the state-specific operational details that this book doesn't: the exact template to download, the verbatim language for the bank, the state's specific list of denial causes with policy citations, the pre-submission checklist, and the monthly distribution checklist for the trustee. The kit is $79 per state, instant download, with a full refund if the state Medicaid agency rejects the QIT for any reason traceable to following the kit.
+Get the Miller Trust Setup Kit for your state at [millertrustguide.com](https://millertrustguide.com). The kit covers the state-specific operational details that this book doesn't: the exact template to download, the verbatim language for the bank, the state's specific list of denial causes with policy citations, the pre-submission checklist, and the monthly distribution checklist for the trustee. The kit is $129 per state, instant download, with a full refund if the state Medicaid agency rejects the QIT for any reason traceable to following the kit.
 
 **Path 2: You're uncertain whether a Miller Trust is the right tool, or your situation has any of the complications from Chapter 9.**
 
@@ -726,7 +726,7 @@ Good luck.
 **The state-specific setup kits**
 
 - Miller Trust Setup Kits, one per state — millertrustguide.com
-- $79 per state, instant download, money-back if your state Medicaid agency rejects the QIT for any reason traceable to following the kit
+- $129 per state, instant download, money-back if your state Medicaid agency rejects the QIT for any reason traceable to following the kit
 
 ---
 
@@ -758,7 +758,7 @@ Each setup kit includes:
 - **The month-by-month income redirect process** for Social Security, pension, VA benefits, and annuity sources.
 - **The state agency citations index** — every operational claim in the kit cites a primary state agency document.
 
-Each kit is $79 for a single state. A two-state bundle is $149; three states are $199. Instant download after purchase.
+Each kit is $129 for a single state. A two-state bundle is $219; three states are $299. Instant download after purchase.
 
 **Money-back guarantee**: if your state Medicaid agency rejects the QIT for any reason traceable to following the kit, we refund the full purchase price within one business day of receiving the agency's stated denial reason.
 

@@ -113,6 +113,12 @@ const stateSchema = z.object({
     unitsSold: z.number().default(0),
     displayThreshold: z.number().default(25),
     launchLabel: z.string(),
+    // Founder pricing. While unitsSold < founderUnitLimit, the state page
+    // shows the founder offer; Stripe enforces the actual discount via a
+    // max-redemptions coupon (see create-checkout.ts). Optional — a state
+    // with no founder offer simply omits these.
+    founderPrice: z.number().optional(),
+    founderUnitLimit: z.number().optional(),
   }),
 });
 

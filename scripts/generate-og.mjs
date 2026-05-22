@@ -161,7 +161,7 @@ const ASSETS = [
     path: 'og-default.png',
     svg: ogSvg({
       headlineLines: ['State-specific guides for', 'Medicaid Qualified', 'Income Trusts.'],
-      dataLine: '24 income-cap states  ·  2026 income cap: $2,982/mo  ·  $79 per state',
+      dataLine: '24 income-cap states  ·  2026 income cap: $2,982/mo  ·  $129 per state',
       footerLine: 'LAST REVIEWED 2026-05-20    ·    INFORMATIONAL ONLY    ·    NOT LEGAL ADVICE',
     }),
     width: 1200,
@@ -172,8 +172,8 @@ const ASSETS = [
     path: 'og/states/texas.png',
     svg: ogSvg({
       headlineLines: ['Texas Miller Trust', 'Setup Guide'],
-      dataLine: '$79  ·  2026 income cap: $2,982/mo  ·  Money-back if HHSC rejects',
-      footerLine: 'TEXAS HHSC  ·  APPENDIX XXXVI + F-6800  ·  LAST REVIEWED 2026-05-20',
+      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if HHSC rejects',
+      footerLine: 'TEXAS HHSC  ·  APPENDIX XXXVI REV 26-1  ·  LAST REVIEWED 2026-05-21',
     }),
     width: 1200,
   },

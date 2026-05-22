@@ -1,8 +1,9 @@
 // Stripe webhook receiver. On `checkout.session.completed` we:
 //   1. Verify signature (Stripe → us).
 //   2. Look up the state by Stripe Price ID OR session metadata.state_slug.
-//   3. Generate a 7-day signed Vercel Blob URL for the kit PDF.
-//   4. Send the Resend delivery email containing the download link.
+//   3. Confirm the kit PDF exists in Blob storage.
+//   4. Mint a 7-day signed download token and email the buyer a link to
+//      our own /api/download endpoint (the Blob URL is never exposed).
 //
 // Signature verification needs the raw request body (bytes), which Astro
 // exposes via `request.text()` — we MUST NOT call `request.json()` first.
@@ -10,7 +11,8 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { getStripe, getWebhookSecret } from '~/lib/stripe';
-import { getSignedKitUrl } from '~/lib/blob';
+import { kitBlobExists } from '~/lib/blob';
+import { createDownloadToken } from '~/lib/download-token';
 import { sendKitDeliveryEmail } from '~/lib/resend';
 
 export const prerender = false;
@@ -69,14 +71,26 @@ export const POST: APIRoute = async ({ request }) => {
   }
   const state = { ...entry.data, slug: entry.slug };
 
-  // Generate signed Vercel Blob URL.
-  let signed;
+  // Confirm the kit PDF actually exists before we promise the buyer a
+  // download. If it's missing we fail loudly (Stripe will retry) so the
+  // operator notices and uploads it, rather than emailing a dead link.
   try {
-    signed = await getSignedKitUrl(state.pdfBlobKey);
+    const exists = await kitBlobExists(state.pdfBlobKey);
+    if (!exists) {
+      console.error('[stripe-webhook] kit PDF missing at blob key:', state.pdfBlobKey);
+      return new Response('Kit file not available.', { status: 500 });
+    }
   } catch (err) {
-    console.error('[stripe-webhook] failed to generate signed URL:', err);
+    console.error('[stripe-webhook] blob existence check failed:', err);
     return new Response('Storage error.', { status: 500 });
   }
+
+  // Mint a 7-day signed download token and build the link to our own
+  // /api/download endpoint. The Blob URL itself is never sent to the buyer.
+  const siteUrl =
+    import.meta.env.SITE_URL?.replace(/\/$/, '') || 'https://millertrustguide.com';
+  const { token, expiresAt } = createDownloadToken(state.slug, session.id);
+  const downloadUrl = `${siteUrl}/api/download?token=${encodeURIComponent(token)}`;
 
   // Send the delivery email.
   try {
@@ -84,8 +98,8 @@ export const POST: APIRoute = async ({ request }) => {
       to: buyerEmail,
       stateName: state.name,
       agencyAbbreviation: state.agencyAbbreviation,
-      downloadUrl: signed.url,
-      expiresAt: signed.expiresAt,
+      downloadUrl,
+      expiresAt,
       orderId: session.id,
     });
   } catch (err) {

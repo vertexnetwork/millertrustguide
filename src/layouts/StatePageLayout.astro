@@ -32,6 +32,18 @@ const draft = state.status === 'draft';
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 
+// Founder pricing. The display is gated on the operator-maintained
+// unitsSold count; Stripe's max-redemptions coupon is the actual charge
+// enforcement (see create-checkout.ts). Keep unitsSold current so the
+// displayed offer never outlives the coupon.
+const sp = state.socialProof;
+const founderActive =
+  isLive &&
+  sp.founderPrice != null &&
+  sp.founderUnitLimit != null &&
+  sp.unitsSold < sp.founderUnitLimit;
+const founderSpotsLeft = founderActive ? sp.founderUnitLimit! - sp.unitsSold : 0;
+
 // GEO/AI-citation lede. First ~80 words must directly answer the primary
 // query — Princeton GEO + 2026 AI Overview research both prioritize
 // answer-first content. We mark this passage as speakable so voice/AI
@@ -262,6 +274,17 @@ if (isLive) {
               </li>
             </ul>
 
+            <div class="rounded-lg border border-border bg-surface-elevated p-4 text-sm">
+              <p class="!mt-0">
+                <strong>If your spouse is the one entering care:</strong> this kit covers the Qualified Income Trust
+                — the income side of qualifying. If you're the spouse staying at home (the "community spouse"), the
+                kit walks you through the trust itself and Section&nbsp;9 orients you on the separate
+                resource-allowance rules that protect your home and savings — but those rules are fact-specific, and
+                for them you'll likely also want a {state.name} elder-law attorney. The kit tells you exactly what to
+                bring to that conversation.
+              </p>
+            </div>
+
             <h2>The {state.asOf} {state.name} income cap</h2>
             <p>
               The {state.name} {state.asOf} Medicaid long-term-care income limit is{' '}
@@ -279,14 +302,33 @@ if (isLive) {
               <div class="h-1 bg-primary" aria-hidden="true"></div>
               <div class="p-6">
                 <p class="text-xs font-semibold uppercase tracking-wider text-primary">{state.name} Kit</p>
-                <p class="mt-2 text-4xl font-bold text-ink-heading">
-                  <span aria-label={`${state.price} dollars`}>${state.price}</span>
-                </p>
+                {
+                  founderActive ? (
+                    <>
+                      <p class="mt-2 flex items-baseline gap-2">
+                        <span class="text-4xl font-bold text-ink-heading" aria-label={`${state.socialProof.founderPrice} dollars founder price`}>
+                          ${state.socialProof.founderPrice}
+                        </span>
+                        <span class="text-lg text-ink-muted line-through" aria-label={`regular price ${state.price} dollars`}>
+                          ${state.price}
+                        </span>
+                      </p>
+                      <p class="mt-1 text-sm font-medium text-primary">
+                        Founding price — first {state.socialProof.founderUnitLimit} {state.name} families.
+                        {' '}{founderSpotsLeft} {founderSpotsLeft === 1 ? 'spot' : 'spots'} left.
+                      </p>
+                    </>
+                  ) : (
+                    <p class="mt-2 text-4xl font-bold text-ink-heading">
+                      <span aria-label={`${state.price} dollars`}>${state.price}</span>
+                    </p>
+                  )
+                }
                 <p class="mt-1 text-sm text-ink-muted">
                   Instant download &middot; Money-back if {state.agencyAbbreviation} rejects
                 </p>
                 <div class="mt-5">
-                  <ConsentBuyButton stateSlug={state.slug} price={state.price} />
+                  <ConsentBuyButton stateSlug={state.slug} price={founderActive ? state.socialProof.founderPrice! : state.price} />
                 </div>
               </div>
             </div>

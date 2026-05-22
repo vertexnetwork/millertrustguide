@@ -52,6 +52,13 @@
   string-set: kit-version content();
 }
 
+/* The kit PDF is rendered by driving Playwright against `astro dev`, which
+   injects the Astro dev toolbar. Hide it so it can never appear in the PDF.
+   Harmless in production (no dev toolbar exists there). */
+astro-dev-toolbar {
+  display: none !important;
+}
+
 /* Page-break controls — sections start on a fresh page. */
 .kit-page-break {
   break-before: page;

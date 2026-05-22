@@ -70,7 +70,7 @@ Each denial reason cites a specific HHSC policy section. The state-specific oper
 ## What Miller Trust Guide publishes — and what it does not
 
 We publish:
-- State-specific operational guides built around publicly-published state QIT templates ($79 per state digital download).
+- State-specific operational guides built around publicly-published state QIT templates ($129 per state digital download).
 - Pillar pSEO articles covering state-specific operational mechanics: bank-account setup, monthly funding, denial avoidance, post-death distribution, comparison to attorney-prepared QITs.
 - Lead-magnet PDFs ("The 7 Reasons [State] Medicaid Denies Miller Trust Funding") gated by email opt-in.
 
@@ -89,10 +89,9 @@ We do not:
 
 ## Pricing
 
-- Single-state digital download: $79.
-- Two-state bundle: $149.
-- Three-state bundle: $199.
-- B2B unlimited subscription (post-launch, after ≥3 states live): $499/year.
+- Single-state digital download: $129.
+- Two-state bundle: $219.
+- Three-state bundle: $299.
 - Lead magnet: free, email-gated.
 
 ## Money-back guarantee

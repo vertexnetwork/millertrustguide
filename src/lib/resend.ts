@@ -176,7 +176,7 @@ WHAT'S COMING IN THIS SERIES
 - Who can serve as trustee, and what they do each month
 - When the situation calls for an attorney instead
 
-If you'd rather not wait for the series, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet — for $79, with a money-back guarantee if the state rejects the trust. It's at millertrustguide.com.
+If you'd rather not wait for the series, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet — for $129, with a money-back guarantee if the state rejects the trust. It's at millertrustguide.com.
 
 No pressure either way. The emails are genuinely useful on their own.
 
@@ -208,7 +208,7 @@ ${DISCLAIMER_TEXT}
     <li>When the situation calls for an attorney instead</li>
   </ul>
 
-  <p>If you'd rather not wait for the series, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet — for $79, with a money-back guarantee if the state rejects the trust. It's at <a href="https://millertrustguide.com">millertrustguide.com</a>.</p>
+  <p>If you'd rather not wait for the series, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet — for $129, with a money-back guarantee if the state rejects the trust. It's at <a href="https://millertrustguide.com">millertrustguide.com</a>.</p>
   <p>No pressure either way. The emails are genuinely useful on their own.</p>
 
   <p style="color: #6B7280; font-size: 13px;">- James Whitfield, Miller Trust Guide, support@millertrustguide.com</p>

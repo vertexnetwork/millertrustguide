@@ -107,7 +107,7 @@ stripe listen --forward-to localhost:4321/api/stripe-webhook
    - Events: `checkout.session.completed`
    - Paste the resulting `whsec_...` into Vercel as `STRIPE_WEBHOOK_SECRET`.
 5. Upload kit PDFs to Vercel Blob at the canonical key (e.g. `kits/texas/v1.pdf`).
-6. In Stripe, create a Product + Price for each live state (`$79` one-time, USD).
+6. In Stripe, create a Product + Price for each live state (`$129` one-time, USD).
    Paste the Price ID into the state's frontmatter (`stripePriceId`).
 7. Push to `main` — Vercel deploys automatically.
 

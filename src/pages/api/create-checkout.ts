@@ -66,6 +66,23 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const siteUrl =
     import.meta.env.SITE_URL?.replace(/\/$/, '') || 'https://millertrustguide.com';
 
+  // --- Founder pricing -----------------------------------------------------
+  // If a founder coupon is configured AND still valid, apply it. Stripe's
+  // max_redemptions on the coupon enforces the "first N buyers" cutoff: once
+  // the limit is reached Stripe flips coupon.valid to false, and from then on
+  // checkout proceeds at full price with no code change. Any failure here is
+  // non-fatal — checkout always falls back to full price.
+  let founderDiscount: { coupon: string }[] | undefined;
+  const founderCouponId = import.meta.env.STRIPE_FOUNDER_COUPON_ID;
+  if (founderCouponId) {
+    try {
+      const coupon = await stripe.coupons.retrieve(founderCouponId);
+      if (coupon.valid) founderDiscount = [{ coupon: founderCouponId }];
+    } catch (err) {
+      console.error('[create-checkout] founder coupon lookup failed; full price:', err);
+    }
+  }
+
   const consentTimestamp =
     typeof body.consentTimestamp === 'string' ? body.consentTimestamp : new Date().toISOString();
 
@@ -75,6 +92,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       line_items: [{ price: state.stripePriceId, quantity: 1 }],
+      ...(founderDiscount ? { discounts: founderDiscount } : {}),
       success_url: `${siteUrl}/thanks?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/states/${state.slug}`,
       automatic_tax: { enabled: true },

@@ -1,39 +1,47 @@
-// Vercel Blob signed-URL helper. Kit PDFs are uploaded privately and a
-// 7-day signed URL is generated per delivery email — refund-proof expiry,
-// no customer-account system needed.
+// Vercel Blob access for kit PDFs.
+//
+// The kit PDF's Blob storage URL is NEVER sent to a buyer. The delivery
+// email links to /api/download?token=..., and that endpoint calls
+// getKitBlobStream() to fetch the PDF server-side and proxy the bytes back.
+// The buyer's only access path is the signed, expiring token — see
+// download-token.ts. Access control is enforced by us, not by the storage
+// layer, so a blob URL can never be forwarded or outlive its 7-day window.
+//
+// We resolve blobs with list({ prefix }) rather than head(): list reliably
+// accepts a pathname, head's pathname support is less certain across SDK
+// versions. The dynamic import keeps the Node-only SDK off the SSR boundary.
 
-// We avoid a top-level static import of `@vercel/blob` to keep the SSR
-// boundary clean; the dynamic import happens only inside the webhook
-// handler where Node-only modules are guaranteed available.
-
-const SIGNED_URL_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
-
-export interface SignedKitUrl {
-  url: string;
-  expiresAt: string;
+/** True if a kit PDF is present at the given Blob pathname. */
+export async function kitBlobExists(pdfBlobKey: string): Promise<boolean> {
+  const { list } = await import('@vercel/blob');
+  const { blobs } = await list({ prefix: pdfBlobKey });
+  return blobs.some((b) => b.pathname === pdfBlobKey);
 }
 
-export async function getSignedKitUrl(pdfBlobKey: string): Promise<SignedKitUrl> {
-  const { list, head } = await import('@vercel/blob');
+export interface KitBlobStream {
+  body: ReadableStream<Uint8Array>;
+  contentType: string;
+  size: number | null;
+}
 
-  // Find the blob by its pathname (state authoring uploads at the canonical key).
-  const headRes = await head(pdfBlobKey).catch(() => null);
-  if (headRes?.url) {
-    // Vercel Blob URLs are signed via the `?download=...&_t=...` token system on access;
-    // since the default `head().url` returns a CDN URL with token-style auth, we surface that.
-    return {
-      url: headRes.url,
-      expiresAt: new Date(Date.now() + SIGNED_URL_TTL_SECONDS * 1000).toISOString(),
-    };
-  }
-
-  // Fallback: list with prefix and pick the matching key.
-  const listed = await list({ prefix: pdfBlobKey });
-  const match = listed.blobs.find((b) => b.pathname === pdfBlobKey);
+/**
+ * Resolve the kit PDF at `pdfBlobKey` and return its byte stream for the
+ * download endpoint to proxy. Throws if the blob is missing or unfetchable.
+ */
+export async function getKitBlobStream(pdfBlobKey: string): Promise<KitBlobStream> {
+  const { list } = await import('@vercel/blob');
+  const { blobs } = await list({ prefix: pdfBlobKey });
+  const match = blobs.find((b) => b.pathname === pdfBlobKey);
   if (!match) throw new Error(`Kit PDF not found at blob key: ${pdfBlobKey}`);
 
+  const res = await fetch(match.url);
+  if (!res.ok || !res.body) {
+    throw new Error(`Failed to fetch kit blob (HTTP ${res.status}) for key: ${pdfBlobKey}`);
+  }
+
   return {
-    url: match.url,
-    expiresAt: new Date(Date.now() + SIGNED_URL_TTL_SECONDS * 1000).toISOString(),
+    body: res.body,
+    contentType: res.headers.get('content-type') || 'application/pdf',
+    size: match.size ?? null,
   };
 }
