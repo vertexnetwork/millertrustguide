@@ -144,92 +144,62 @@ export async function addSubscriberToAudience(email: string) {
   );
 }
 
+// Exposed for the nurture series (nurture.ts) so every email carries the
+// same Rule-4 disclaimer and sender identity.
+export { FROM_ADDRESS, DISCLAIMER_TEXT };
+
 /**
- * Send the first nurture email immediately on signup. This is email #1 of
- * the educational series; emails #2+ are sent as Resend Broadcasts to the
- * audience on a schedule (operator-managed in the Resend dashboard).
- *
- * The content is informational only. It gives one genuinely useful insight
- * (the same-calendar-month funding rule), sets expectations for the series,
- * and ends with a soft, no-pressure pointer to the kit. No personalized
- * advice — the email is byte-identical for every subscriber in a state.
+ * Generic email send for the lifecycle/nurture series. Adds the standard
+ * sender, reply-to, and a List-Unsubscribe header. Used by nurture.ts.
  */
-export async function sendNurtureWelcomeEmail(email: string, stateName: string) {
-  const subject = `The 30-day window most ${stateName} families miss`;
-
-  const textBody = `Hi,
-
-Thanks for joining the Miller Trust Guide email series. Over the next few weeks you'll get a handful of short, plain-English emails about how ${stateName} Miller Trusts actually work — no sales pressure, unsubscribe anytime.
-
-Here's the single most useful thing to know first.
-
-THE FUNDING-MONTH RULE
-
-A Miller Trust (Qualified Income Trust) only does its job for a given month if it is BOTH signed AND funded within that same calendar month. Medicaid does not back-date eligibility to before the trust was working. So if a family signs the trust on the 28th of a month and the bank account isn't funded until the 2nd of the next month, the first month does not qualify — and that month is billed at the private-pay nursing-home rate, often $7,500 to $11,000.
-
-Most families lose a month not because they were ineligible, but because of this timing gap. The fix is simple once you know it: sign early in a month, fund the same day or within a few days, and if income redirects haven't processed yet, manually move that month's income into the trust account before the month ends.
-
-WHAT'S COMING IN THIS SERIES
-
-- What actually happens at the bank when you open a Miller Trust account
-- Why most Medicaid denials are paperwork errors, not eligibility problems
-- Who can serve as trustee, and what they do each month
-- When the situation calls for an attorney instead
-
-If you'd rather not wait for the series, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet — for $129, with a money-back guarantee if the state rejects the trust. It's at millertrustguide.com.
-
-No pressure either way. The emails are genuinely useful on their own.
-
-- James Whitfield
-Miller Trust Guide
-support@millertrustguide.com
-
-To unsubscribe, reply to this email with "unsubscribe" and we'll remove you within one business day.
-
----
-${DISCLAIMER_TEXT}
-`;
-
-  const htmlBody = `<!doctype html>
-<html><body style="font-family: -apple-system, Segoe UI, system-ui, sans-serif; color: #1F2937; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 24px;">
-  <h1 style="font-family: Georgia, serif; color: #0F4C4A; font-size: 22px;">The 30-day window most ${stateName} families miss</h1>
-  <p>Thanks for joining the Miller Trust Guide email series. Over the next few weeks you'll get a handful of short, plain-English emails about how ${stateName} Miller Trusts actually work — no sales pressure, unsubscribe anytime.</p>
-  <p>Here's the single most useful thing to know first.</p>
-
-  <h2 style="font-family: Georgia, serif; color: #0F4C4A; font-size: 17px;">The funding-month rule</h2>
-  <p>A Miller Trust (Qualified Income Trust) only does its job for a given month if it is <strong>both signed and funded within that same calendar month</strong>. Medicaid does not back-date eligibility to before the trust was working. So if a family signs the trust on the 28th and the bank account isn't funded until the 2nd of the next month, the first month does not qualify — and that month is billed at the private-pay nursing-home rate, often $7,500 to $11,000.</p>
-  <p>Most families lose a month not because they were ineligible, but because of this timing gap. The fix is simple once you know it: sign early in a month, fund the same day or within a few days, and if income redirects haven't processed yet, manually move that month's income into the trust account before the month ends.</p>
-
-  <h2 style="font-family: Georgia, serif; color: #0F4C4A; font-size: 17px;">What's coming in this series</h2>
-  <ul>
-    <li>What actually happens at the bank when you open a Miller Trust account</li>
-    <li>Why most Medicaid denials are paperwork errors, not eligibility problems</li>
-    <li>Who can serve as trustee, and what they do each month</li>
-    <li>When the situation calls for an attorney instead</li>
-  </ul>
-
-  <p>If you'd rather not wait for the series, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet — for $129, with a money-back guarantee if the state rejects the trust. It's at <a href="https://millertrustguide.com">millertrustguide.com</a>.</p>
-  <p>No pressure either way. The emails are genuinely useful on their own.</p>
-
-  <p style="color: #6B7280; font-size: 13px;">- James Whitfield, Miller Trust Guide, support@millertrustguide.com</p>
-  <p style="color: #6B7280; font-size: 12px;">To unsubscribe, reply to this email with "unsubscribe" and we'll remove you within one business day.</p>
-  <hr style="border:none;border-top:1px solid #E5E7EB;margin:24px 0;" />
-  <p style="color: #78350F; background:#FEF3C7; padding:12px; border-radius:6px; font-size: 12px;">${DISCLAIMER_TEXT}</p>
-</body></html>`;
-
+export async function sendEmail(opts: {
+  to: string;
+  subject: string;
+  text: string;
+  html: string;
+}) {
   return unwrap(
     client().emails.send({
       from: FROM,
-      to: email,
+      to: opts.to,
       replyTo: FROM_ADDRESS,
-      subject,
-      text: textBody,
-      html: htmlBody,
+      subject: opts.subject,
+      text: opts.text,
+      html: opts.html,
       headers: {
-        // RFC 8058 one-click unsubscribe target. Honored manually at MVP volume;
-        // ongoing series emails run as Resend Broadcasts which manage this natively.
+        // RFC 8058 unsubscribe target. Honored manually at MVP volume.
         'List-Unsubscribe': `<mailto:${FROM_ADDRESS}?subject=unsubscribe>`,
       },
     })
   );
+}
+
+export interface AudienceContact {
+  email: string;
+  createdAt: string;
+  unsubscribed: boolean;
+}
+
+/**
+ * List every contact in the nurture Audience. The drip cron
+ * (/api/cron/nurture) uses each contact's createdAt to decide which email
+ * is due. Assumes a single page — fine at MVP volume; revisit with cursor
+ * pagination if the audience grows past Resend's per-page limit.
+ */
+export async function listAudienceContacts(): Promise<AudienceContact[]> {
+  const audienceId = import.meta.env.RESEND_AUDIENCE_ID;
+  if (!audienceId) throw new Error('RESEND_AUDIENCE_ID is not configured.');
+  const result = (await unwrap(client().contacts.list({ audienceId }))) as {
+    data?: Array<{ email?: string; created_at?: string; unsubscribed?: boolean }>;
+  };
+  const rows = result?.data ?? [];
+  return rows
+    .filter((r): r is { email: string; created_at: string; unsubscribed?: boolean } =>
+      typeof r.email === 'string' && typeof r.created_at === 'string'
+    )
+    .map((r) => ({
+      email: r.email,
+      createdAt: r.created_at,
+      unsubscribed: Boolean(r.unsubscribed),
+    }));
 }

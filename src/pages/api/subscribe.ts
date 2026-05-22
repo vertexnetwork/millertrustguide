@@ -9,7 +9,8 @@
 
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
-import { addSubscriberToAudience, sendNurtureWelcomeEmail } from '~/lib/resend';
+import { addSubscriberToAudience } from '~/lib/resend';
+import { sendNurtureEmail } from '~/lib/nurture';
 
 export const prerender = false;
 
@@ -52,10 +53,11 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  // Send nurture email #1. A failure here is non-fatal — the contact is
-  // already on the list and will still receive the scheduled series emails.
+  // Send nurture email #1 (the welcome). A failure here is non-fatal — the
+  // contact is already on the list and the daily drip cron will still send
+  // emails #2-5 on schedule.
   try {
-    await sendNurtureWelcomeEmail(email, stateName);
+    await sendNurtureEmail(1, email, stateName);
   } catch (err) {
     console.error('[subscribe] welcome email send failed (contact still subscribed):', err);
     return json(
