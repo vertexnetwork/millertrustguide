@@ -316,6 +316,8 @@ export function productSchema(opts: {
   price: number;
   stateAbbreviation: string;
   inStock?: boolean;
+  /** Absolute URLs. At least one is required for Merchant Listing eligibility. */
+  images: string[];
 }) {
   return {
     '@context': 'https://schema.org',
@@ -323,7 +325,12 @@ export function productSchema(opts: {
     '@id': `${opts.url}#product`,
     name: opts.name,
     description: opts.description,
-    brand: { '@id': ORG_ID },
+    image: opts.images,
+    // brand must be a Brand or a minimal Organization (just @type + name).
+    // Passing { '@id': ORG_ID } resolved to the full publisher Organization
+    // and tripped Google's "Invalid object type for brand" check, so we
+    // inline a minimal Organization here.
+    brand: { '@type': 'Organization', name: SITE_NAME },
     category: 'Informational guide',
     offers: {
       '@type': 'Offer',
@@ -332,6 +339,29 @@ export function productSchema(opts: {
       price: opts.price.toFixed(2),
       availability: opts.inStock ?? true ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       seller: { '@id': ORG_ID },
+      // Digital download — free, instant. Required by Google Merchant Listing
+      // rich-result eligibility even for digital goods.
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingRate: { '@type': 'MonetaryAmount', value: '0', currency: 'USD' },
+        shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'US' },
+        deliveryTime: {
+          '@type': 'ShippingDeliveryTime',
+          handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'HUR' },
+          transitTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'HUR' },
+        },
+      },
+      // 30-day money-back per /refund-policy. Models the refund window —
+      // the buyer keeps the file, so "return" is conceptual; Google accepts
+      // this for digital products.
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        applicableCountry: 'US',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 30,
+        returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/FreeReturn',
+      },
     },
     areaServed: {
       '@type': 'State',

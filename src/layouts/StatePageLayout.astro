@@ -100,6 +100,12 @@ if (isLive) {
       price: state.price,
       stateAbbreviation: state.abbreviation,
       inStock: true,
+      // Product images — cover-page screenshot first (literally the
+      // product), per-state OG card second. Both absolute URLs.
+      images: [
+        `https://millertrustguide.com/kit-previews/${state.slug}/01-cover.png`,
+        `https://millertrustguide.com/og/states/${state.slug}.png`,
+      ],
     })
   );
   jsonLd.push(
