@@ -55,3 +55,6 @@ coverage/
 
 # --- Internal go-live tracker (operator-only) ---
 TODO.md
+
+# --- Search-performance exports (GSC/Bing) — local-only, never commit (public repo). One zip ~monthly. ---
+/gsc-exports/

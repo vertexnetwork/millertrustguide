@@ -123,6 +123,34 @@ ${DISCLAIMER_TEXT}
 }
 
 // ============================================================================
+// Operational — webhook-failure alert
+// ============================================================================
+//
+// Fires to the operator whenever a PAID order fails to deliver, so a
+// paid-but-undelivered checkout can never again fail silently (this bug was
+// found from a screenshot, not an alert). Best-effort: never throws — if
+// Resend itself is the failure, we log and move on so the alert path can't
+// mask the original webhook error.
+
+export async function sendOperatorAlert(opts: { subject: string; lines: string[] }) {
+  const to = import.meta.env.OPERATOR_ALERT_EMAIL || FROM_ADDRESS;
+  try {
+    return await unwrap(
+      client().emails.send({
+        from: FROM,
+        to,
+        replyTo: FROM_ADDRESS,
+        subject: opts.subject,
+        text: opts.lines.join('\n'),
+      })
+    );
+  } catch (err) {
+    console.error('[operator-alert] failed to send alert email:', err);
+    return null;
+  }
+}
+
+// ============================================================================
 // Lifecycle — nurture welcome email + audience subscription
 // ============================================================================
 

@@ -13,6 +13,7 @@
     "indexnow:submit": "node scripts/indexnow-submit.mjs",
     "og:generate": "node scripts/generate-og.mjs",
     "kits:build": "node scripts/build-pdfs.mjs",
+    "kit:upload": "node scripts/upload-kit.mjs",
     "postbuild": "node scripts/indexnow-submit.mjs || true"
   },
   "dependencies": {

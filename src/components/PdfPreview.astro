@@ -64,17 +64,24 @@ const previewsWithUrl = previews.map((p) => ({
       previewsWithUrl.map((p) => (
         <li class="overflow-hidden rounded-lg border border-border bg-surface-elevated shadow-sm">
           <a href={p.url} target="_blank" rel="noopener" class="block no-underline">
+            {/* Crop+zoom to the top-left of the page (~1.3x) so the heading and
+               first lines render legibly. Showing a full 8.5x11 page in a ~275px
+               card shrinks body text to ~2px and reads as a blur. Source PNGs are
+               1632x2112 (sharp); this is a display-fidelity fix, not a re-export. */}
             <div
-              class="relative w-full overflow-hidden border-b border-border bg-primary-tint/20"
-              style="aspect-ratio: 8.5 / 11;"
+              class="relative w-full overflow-hidden border-b border-border bg-white"
+              style="aspect-ratio: 4 / 3;"
             >
               <img
                 src={p.url}
                 alt={`${p.title} — sample page from the Miller Trust Setup Kit`}
-                class="h-full w-full object-cover object-top"
+                class="absolute left-0 top-0 max-w-none"
+                style="width: 130%;"
                 loading="lazy"
                 decoding="async"
               />
+              {/* Soft fade hints the page continues below the crop. */}
+              <div class="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white to-transparent"></div>
             </div>
             <div class="p-3">
               <p class="text-sm font-semibold text-ink-heading">{p.title}</p>

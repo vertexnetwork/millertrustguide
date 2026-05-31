@@ -56,6 +56,37 @@ const tldr = blocked
 // JSON-LD array (2026 entity-binding signal).
 const citationUrls = [state.officialTemplateUrl, state.policyManualUrl];
 
+// ── Long-tail FAQ expansion (ADDITIVE — does not change head-term targeting) ──
+// Surfaces vetted per-state frontmatter (EIN, trustee, funding-month, post-death,
+// DIY/cost) as query-matched Q&As. These capture the operational long-tail
+// searches the kit actually answers — "do you need an EIN for a miller trust",
+// "who can be trustee", "when does coverage begin", "without a lawyer" — and feed
+// the FAQPage + speakable schema for AI Overviews / "People also ask". Built from
+// required frontmatter fields, so every state gets them automatically (pSEO).
+const derivedFaq: Array<{ question: string; answer: string }> = [
+  {
+    question: `Do you need an EIN to open a ${state.name} Miller Trust account?`,
+    answer: state.einRequiredNote,
+  },
+  {
+    question: `Who can serve as trustee of a ${state.name} Miller Trust?`,
+    answer: state.trusteeGuidanceNote,
+  },
+  {
+    question: `When does ${state.name} Medicaid coverage begin after the Qualified Income Trust is set up?`,
+    answer: `Coverage begins the calendar month the QIT is signed, the trust account is opened, and enough of the applicant's income is deposited to bring remaining countable income below the ${state.asOf} special income limit of $${fmt(state.incomeCap2026)}/month — all in the same calendar month. There is no back-dating, so every month of delay is another month of full private-pay care ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/month in ${state.name}). Source: ${state.agencyAbbreviation} ${state.policyManualSection}.`,
+  },
+  {
+    question: `What happens to the money in a ${state.name} Miller Trust when the beneficiary dies?`,
+    answer: state.postDeathDistribution,
+  },
+  {
+    question: `Can you set up a ${state.name} Miller Trust without a lawyer?`,
+    answer: `For the core Qualified Income Trust setup, the task is following ${state.agencyAbbreviation}'s publicly-published template and opening a specific kind of bank account — work many families do themselves. Attorneys typically charge $1,000–$2,500 for it. For complex situations (significant assets, prior gifting, second marriages, multi-state property), consult a ${state.name}-licensed elder-law attorney. Miller Trust Guide is informational only and is not legal advice; we do not draft the trust or advise on individual situations.`,
+  },
+];
+const allFaq = [...state.faq, ...derivedFaq];
+
 const jsonLd: object[] = [
   articleSchema({
     headline: state.metaTitle,
@@ -82,7 +113,7 @@ const jsonLd: object[] = [
     agencyName: state.agencyName,
     policyManualUrl: state.policyManualUrl,
   }),
-  faqPageSchema(state.faq),
+  faqPageSchema(allFaq),
   breadcrumbSchema([
     { name: 'Home', url: 'https://millertrustguide.com/' },
     { name: 'State Guides', url: 'https://millertrustguide.com/#states' },
@@ -433,7 +464,7 @@ if (isLive) {
           <p class="text-xs font-semibold uppercase tracking-wider text-primary">Questions</p>
           <h2 id="faq-heading" class="!mt-1">Frequently asked questions</h2>
           <dl>
-            {state.faq.map((f) => (
+            {allFaq.map((f) => (
               <div class="mt-6">
                 <dt class="faq-question font-semibold text-ink-heading">{f.question}</dt>
                 <dd class="faq-answer mt-1">{f.answer}</dd>
