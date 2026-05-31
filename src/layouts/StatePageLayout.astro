@@ -18,6 +18,7 @@ import {
   howToSchema,
 } from '~/lib/schema';
 import type { StateData } from '~/content/config';
+import { FOUNDER } from '~/config/founder';
 
 interface Props {
   state: StateData;
@@ -37,19 +38,16 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 // enforcement (see create-checkout.ts). Keep unitsSold current so the
 // displayed offer never outlives the coupon.
 const sp = state.socialProof;
-const founderActive =
-  isLive &&
-  sp.founderPrice != null &&
-  sp.founderUnitLimit != null &&
-  sp.unitsSold < sp.founderUnitLimit;
-const founderSpotsLeft = founderActive ? sp.founderUnitLimit! - sp.unitsSold : 0;
-
+// GLOBAL founder offer (shared across ALL states) — see src/config/founder.ts.
+// founderActive / spotsLeft / displayPrice all read the global counter, so the
+// first 25 buyers across the whole site get $99, then every state flips to full
+// price together. The shared Stripe coupon enforces the actual charge.
+const founderActive = isLive && FOUNDER.unitsSold < FOUNDER.unitLimit;
+const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold : 0;
 // Founder-aware price for ALL visible price displays (top panel, bottom CTA,
-// sticky bar, comparison table) so they stay congruent — they all read $99
-// while the founder coupon is valid, then all flip to $129 once it's used up.
-// NOTE: this is display only; the actual charge is controlled server-side in
-// create-checkout (Stripe price + founder coupon), which already discounts both.
-const displayPrice = founderActive ? sp.founderPrice! : state.price;
+// sticky bar, comparison table) so they stay congruent. Display only; the actual
+// charge is server-side (create-checkout: Stripe price + the shared founder coupon).
+const displayPrice = founderActive ? FOUNDER.price : state.price;
 
 // GEO/AI-citation lede. First ~80 words must directly answer the primary
 // query — Princeton GEO + 2026 AI Overview research both prioritize
@@ -350,15 +348,15 @@ if (isLive) {
                   founderActive ? (
                     <>
                       <p class="mt-2 flex items-baseline gap-2">
-                        <span class="text-4xl font-bold text-ink-heading" aria-label={`${state.socialProof.founderPrice} dollars founder price`}>
-                          ${state.socialProof.founderPrice}
+                        <span class="text-4xl font-bold text-ink-heading" aria-label={`${FOUNDER.price} dollars founder price`}>
+                          ${FOUNDER.price}
                         </span>
                         <span class="text-lg text-ink-muted line-through" aria-label={`regular price ${state.price} dollars`}>
                           ${state.price}
                         </span>
                       </p>
                       <p class="mt-1 text-sm font-medium text-primary">
-                        Founding price — first {state.socialProof.founderUnitLimit} {state.name} families.
+                        Founding price — first {FOUNDER.unitLimit} customers across all states.
                         {' '}{founderSpotsLeft} {founderSpotsLeft === 1 ? 'spot' : 'spots'} left.
                       </p>
                     </>
@@ -372,7 +370,7 @@ if (isLive) {
                   Instant download &middot; Money-back if {state.agencyAbbreviation} rejects
                 </p>
                 <div class="mt-5">
-                  <ConsentBuyButton stateSlug={state.slug} price={founderActive ? state.socialProof.founderPrice! : state.price} />
+                  <ConsentBuyButton stateSlug={state.slug} price={displayPrice} />
                 </div>
               </div>
             </div>
@@ -528,7 +526,7 @@ if (isLive) {
           <p>
             {founderActive ? (
               <>
-                <strong>${sp.founderPrice} founding price</strong> (first {sp.founderUnitLimit} {state.name} families —
+                <strong>${FOUNDER.price} founding price</strong> (first {FOUNDER.unitLimit} customers across all states —
                 {' '}{founderSpotsLeft} {founderSpotsLeft === 1 ? 'spot' : 'spots'} left), then ${state.price}.
               </>
             ) : (
