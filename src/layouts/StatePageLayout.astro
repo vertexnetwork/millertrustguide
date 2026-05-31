@@ -44,6 +44,13 @@ const founderActive =
   sp.unitsSold < sp.founderUnitLimit;
 const founderSpotsLeft = founderActive ? sp.founderUnitLimit! - sp.unitsSold : 0;
 
+// Founder-aware price for ALL visible price displays (top panel, bottom CTA,
+// sticky bar, comparison table) so they stay congruent — they all read $99
+// while the founder coupon is valid, then all flip to $129 once it's used up.
+// NOTE: this is display only; the actual charge is controlled server-side in
+// create-checkout (Stripe price + founder coupon), which already discounts both.
+const displayPrice = founderActive ? sp.founderPrice! : state.price;
+
 // GEO/AI-citation lede. First ~80 words must directly answer the primary
 // query — Princeton GEO + 2026 AI Overview research both prioritize
 // answer-first content. We mark this passage as speakable so voice/AI
@@ -376,7 +383,7 @@ if (isLive) {
 
     {!blocked && <PdfPreview stateSlug={state.slug} />}
 
-    {!blocked && <ComparisonTable stateName={state.name} price={state.price} />}
+    {!blocked && <ComparisonTable stateName={state.name} price={displayPrice} />}
 
     {/* Bank-refusal teaser (the moat) */}
     {
@@ -519,14 +526,22 @@ if (isLive) {
         >
           <h2 id="cta-heading" class="!mt-0">Ready to start?</h2>
           <p>
-            ${state.price}. Instant download. Money-back if {state.agencyAbbreviation} rejects your QIT for any reason
-            traceable to following the kit.
+            {founderActive ? (
+              <>
+                <strong>${sp.founderPrice} founding price</strong> (first {sp.founderUnitLimit} {state.name} families —
+                {' '}{founderSpotsLeft} {founderSpotsLeft === 1 ? 'spot' : 'spots'} left), then ${state.price}.
+              </>
+            ) : (
+              <>${state.price}.</>
+            )}{' '}
+            Instant download. Money-back if {state.agencyAbbreviation} rejects your QIT for any reason traceable to
+            following the kit.
           </p>
           <div class="mt-6">
             <ConsentBuyButton
               stateSlug={state.slug}
-              price={state.price}
-              buttonLabel={`Get the ${state.name} kit — $${state.price}`}
+              price={displayPrice}
+              buttonLabel={`Get the ${state.name} kit — $${displayPrice}`}
             />
           </div>
         </section>
@@ -537,7 +552,7 @@ if (isLive) {
     isLive && (
       <StickyBuyBar
         stateName={state.name}
-        price={state.price}
+        price={displayPrice}
         agencyAbbreviation={state.agencyAbbreviation}
       />
     )
