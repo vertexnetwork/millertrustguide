@@ -26,6 +26,25 @@ const stateSchema = z.object({
   officialTemplateNote: z.string(),
   policyManualUrl: z.string().url(),
   policyManualSection: z.string(),
+  // Short citation phrase used INLINE throughout the kit body (e.g. TX
+  // "Appendix XXXVI"; NJ "QIT FAQ and model instrument"). Keeps per-state
+  // citations accurate without leaking another state's section names.
+  policyCitationShort: z.string(),
+  // The state's LTC-Medicaid program label, used in the glossary (TX: MEPD /
+  // "Medicaid for the Elderly and People with Disabilities"; NJ: MLTSS /
+  // "Managed Long Term Services and Supports").
+  ltcProgramAbbrev: z.string(),
+  ltcProgramName: z.string(),
+  // Where the spousal-allowance calculation lives, per state (TX: "Section 8 of
+  // the HHSC handbook"; NJ: "the DMAHS Personal Responsibility (PR) form").
+  spousalCalcRef: z.string(),
+  // Post-death residuary payment instruction (how/where the trustee pays the
+  // State its residuary share). State-specific prose.
+  residuaryPaymentNote: z.string(),
+  // Optional official "money receipt" / payment form the agency uses for
+  // residuary payments (TX: Form H4100). Omit for states with no such form.
+  residuaryFormName: z.string().optional(),
+  residuaryFormUrl: z.string().url().optional(),
 
   // 2026 figures (annual update target)
   incomeCap2026: z.number(),

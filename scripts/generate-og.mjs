@@ -177,6 +177,17 @@ const ASSETS = [
     }),
     width: 1200,
   },
+
+  // OG per-state — New Jersey
+  {
+    path: 'og/states/new-jersey.png',
+    svg: ogSvg({
+      headlineLines: ['New Jersey Miller', 'Trust Setup Guide'],
+      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if DMAHS rejects',
+      footerLine: 'NJ DMAHS  ·  QIT MODEL INSTRUMENT  ·  LAST REVIEWED 2026-06-01',
+    }),
+    width: 1200,
+  },
 ];
 
 async function renderOne({ path, svg, width }) {

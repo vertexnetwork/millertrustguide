@@ -18,7 +18,7 @@
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { put } from '@vercel/blob';
+import { put, del, list } from '@vercel/blob';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 
@@ -84,11 +84,27 @@ if (!existsSync(pdfPath)) {
 const bytes = readFileSync(pdfPath);
 console.log(`Uploading ${pdfPath} (${(bytes.length / 1024).toFixed(0)} KB) -> Blob "${blobKey}" ...`);
 
+// Delete any existing blob at this pathname FIRST. Vercel Blob CDN-caches public
+// blobs (default ~30 days); a plain overwrite leaves the edge serving the stale
+// copy, which the webhook would then deliver. del() purges it; we then re-put
+// with cacheControlMaxAge: 0 so the fulfillment artifact is always current.
+try {
+  const { blobs } = await list({ prefix: blobKey, token });
+  const existing = blobs.find((b) => b.pathname === blobKey);
+  if (existing) {
+    await del(existing.url, { token });
+    console.log(`  (deleted stale blob to bust CDN cache)`);
+  }
+} catch (e) {
+  console.warn('  (pre-delete check failed; continuing):', e?.message || e);
+}
+
 const res = await put(blobKey, bytes, {
   access: 'public',
   addRandomSuffix: false, // pathname MUST equal pdfBlobKey exactly (webhook matches on it)
   allowOverwrite: true,
   contentType: 'application/pdf',
+  cacheControlMaxAge: 0, // fulfillment artifact must always be fresh, never edge-cached stale
   token,
 });
 

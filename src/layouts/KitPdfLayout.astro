@@ -254,8 +254,8 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         <dt><strong>{state.policyManualSection}</strong></dt>
         <dd>The {state.agencyAbbreviation} policy manual section(s) that govern Qualified Income Trusts in {state.name}. Cited throughout this kit and indexed in Appendix A.</dd>
 
-        <dt><strong>MEPD</strong></dt>
-        <dd>Medicaid for the Elderly and People with Disabilities — the {state.agencyAbbreviation} program category that covers long-term-care Medicaid eligibility.</dd>
+        <dt><strong>{state.ltcProgramAbbrev}</strong></dt>
+        <dd>{state.ltcProgramName} — the {state.agencyAbbreviation} program category that covers long-term-care Medicaid eligibility.</dd>
 
         <dt><strong>Look-back period</strong></dt>
         <dd>A 60-month (5-year) window before the Medicaid application date during which uncompensated asset transfers may trigger a transfer penalty (period of ineligibility). The QIT does not affect the look-back analysis. If the applicant has made gifts or transfers in the last five years, consult an attorney — see Section 9.</dd>
@@ -325,7 +325,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           <strong>Effective date:</strong> The income disregard begins the first month a valid QIT is signed, the
           QIT account is opened, and enough income is deposited to bring the remaining countable income below the
           special income limit. If all three were true in months <em>before</em> the Medicaid application was
-          filed, HHSC can apply the income disregard up to <strong>three months retroactive</strong> to the file
+          filed, {state.agencyAbbreviation} can apply the income disregard up to <strong>three months retroactive</strong> to the file
           date — provided all other eligibility requirements were met in those months.
         </li>
       </ul>
@@ -487,7 +487,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
       <div class="kit-callout kit-callout--warning">
         <p style="font-weight: 600; margin-bottom: 6pt;">VA aid and attendance caveat</p>
         <p style="margin-bottom: 0;">
-          {state.agencyAbbreviation} Appendix XXXVI specifies that VA aid and attendance benefits, housebound
+          {state.agencyAbbreviation} {state.policyCitationShort} specifies that VA aid and attendance benefits, housebound
           allowances, and reimbursements for unusual or continuing medical expenses are <strong>exempt</strong>
           from both Medicaid eligibility and the co-payment calculation. <strong>Do not deposit these specific
           benefits into the QIT account</strong> — depositing them makes them countable for the co-payment
@@ -587,7 +587,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
             <td>${fmt(state.personalNeedsAllowance)}</td>
           </tr>
           <tr>
-            <td><strong>J.</strong> Spousal allowance distribution from QIT to community spouse (if applicable; see Section 8 of the {state.agencyAbbreviation} handbook for the calculation)</td>
+            <td><strong>J.</strong> Spousal allowance distribution from QIT to community spouse (if applicable; see {state.spousalCalcRef} for the calculation)</td>
             <td class="kit-fillable">$ ______</td>
           </tr>
           <tr>
@@ -695,8 +695,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
       </div>
 
       <p class="kit-cite">
-        Source for the opening-deposit allowance: {state.agencyAbbreviation} Appendix XXXVI,
-        "Establishing a Bank or Other Financial Account as the QIT Account."
+        Source for the opening-deposit allowance: {state.agencyAbbreviation} {state.policyCitationShort}.
       </p>
 
       <h3>The five most common refusals — and how to respond</h3>
@@ -759,10 +758,10 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         <p style="font-style: italic;">
           I am requesting a checking account opened in the name of the trust, with me as the sole authorized
           signer. If your bank requires a small opening deposit to open a new account, that is acceptable —
-          {' '}{state.agencyAbbreviation} Appendix XXXVI expressly allows the standard $10–$20 opening deposit
+          {' '}{state.agencyAbbreviation} {state.policyCitationShort} expressly allows the standard $10–$20 opening deposit
           banks require and states it is not counted as a resource or income to the beneficiary. {state.einRequired
             ? `Per ${state.agencyAbbreviation} policy, the account requires a separate EIN, which I have obtained from the IRS and have provided with this letter.`
-            : `Per ${state.agencyAbbreviation} Appendix XXXVI, the QIT account is set up using the applicant's Social Security number — no separate EIN is required.`}
+            : `Per ${state.agencyAbbreviation} ${state.policyCitationShort}, the QIT account is set up using the applicant's Social Security number — no separate EIN is required.`}
         </p>
         <p style="font-style: italic;">
           After the account is open, the trust will receive only the applicant's monthly Medicaid-countable
@@ -893,7 +892,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         <h3>What happens if a month's income is not deposited</h3>
         <p>
           If a month's income is not deposited into the QIT (e.g., the redirect didn't process and the income
-          landed in the applicant's personal account), HHSC will count the income as the applicant's for that
+          landed in the applicant's personal account), {state.agencyAbbreviation} will count the income as the applicant's for that
           month, and the applicant will be income-ineligible for that month. Coverage for that month is denied.
           You cannot cure the month by transferring the money later — the deposit must have occurred in the
           calendar month the income was received.
@@ -976,10 +975,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         </li>
         <li>
           <strong>Pay {state.agencyAbbreviation} the residual balance</strong> up to the total of medical
-          assistance paid. Per {state.agencyAbbreviation} Appendix XXXVI, payments to the agency as residuary
-          beneficiary should be made in <strong>whole dollar amounts</strong> by <strong>cashier's check, money
-          order, or personal check</strong>. {state.agencyAbbreviation} receipts these payments on
-          <strong> Form H4100 (Money Receipt)</strong> — keep the receipt as part of the permanent trust file.
+          assistance paid. {state.residuaryPaymentNote}
         </li>
         <li>
           <strong>Distribute any remainder</strong> to the secondary residual beneficiary named in the trust.
@@ -991,9 +987,13 @@ const fmt = (n: number) => n.toLocaleString('en-US');
       </ol>
 
       <p class="kit-cite">
-        Source: {state.agencyAbbreviation} Appendix XXXVI ("Characteristics of the Trust" — reversion clause).
-        Form H4100 reference:
-        {' '}<a href="https://www.hhs.texas.gov/regulations/forms/4000-4999/form-h4100-money-receipt">https://www.hhs.texas.gov/regulations/forms/4000-4999/form-h4100-money-receipt</a>
+        Source: {state.agencyAbbreviation} {state.policyCitationShort} (reversion clause).
+        {state.residuaryFormUrl && (
+          <Fragment>
+            {' '}{state.residuaryFormName} reference:
+            {' '}<a href={state.residuaryFormUrl}>{state.residuaryFormUrl}</a>
+          </Fragment>
+        )}
       </p>
 
       <div class="kit-no-break">
@@ -1150,7 +1150,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         <>
           <h3>Low-income legal aid resources {state.agencyAbbreviation} names</h3>
           <p>
-            {state.agencyAbbreviation} Appendix XXXVI specifically directs people with low or limited income to
+            {state.agencyAbbreviation} {state.policyCitationShort} specifically directs people with low or limited income to
             consider the following resources in addition to the state bar referral service:
           </p>
           <ul>
@@ -1264,12 +1264,14 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           this kit's source-controlling claims (irrevocability, reversion clause, opening-deposit allowance,
           distribution timing, transfer-of-assets risk for late distribution) lives in this Appendix.</span>
         </li>
-        <li>
-          <strong>{state.agencyAbbreviation} Form H4100 — Money Receipt</strong><br />
-          <a href="https://www.hhs.texas.gov/regulations/forms/4000-4999/form-h4100-money-receipt">https://www.hhs.texas.gov/regulations/forms/4000-4999/form-h4100-money-receipt</a><br />
-          <span class="kit-cite">Used by {state.agencyAbbreviation} to receipt residuary-beneficiary payments
-          made by the trustee on the beneficiary's death (Section 8).</span>
-        </li>
+        {state.residuaryFormUrl && (
+          <li>
+            <strong>{state.agencyAbbreviation} {state.residuaryFormName}</strong><br />
+            <a href={state.residuaryFormUrl}>{state.residuaryFormUrl}</a><br />
+            <span class="kit-cite">Used by {state.agencyAbbreviation} to receipt residuary-beneficiary payments
+            made by the trustee on the beneficiary's death (Section 8).</span>
+          </li>
+        )}
       </ul>
 
       <h3>Federal sources</h3>
