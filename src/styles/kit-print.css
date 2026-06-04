@@ -129,6 +129,12 @@ html, body {
    and lists should stay together when reasonable. */
 .kit h2, .kit h3, .kit h4 { break-after: avoid; }
 
+/* A heading keeps with its following block, but the intro PARAGRAPH right
+   after a heading was still allowed to break before the list/letter/callout
+   it introduces — stranding "heading + intro" at a page bottom. Glue that
+   intro paragraph to whatever follows it too. */
+.kit h1 + p, .kit h2 + p, .kit h3 + p, .kit h4 + p { break-after: avoid; }
+
 .kit p {
   margin: 0 0 9pt 0;
   orphans: 3;

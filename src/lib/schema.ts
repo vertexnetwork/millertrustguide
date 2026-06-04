@@ -347,8 +347,11 @@ export function productSchema(opts: {
         shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'US' },
         deliveryTime: {
           '@type': 'ShippingDeliveryTime',
-          handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'HUR' },
-          transitTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'HUR' },
+          // Google's ShippingDeliveryTime enum only accepts unitCode 'DAY' for
+          // handling/transit time. 'HUR' (hours) is a valid UN/CEFACT code but
+          // not in Google's enum -> "Invalid enum value". 0 days = instant download.
+          handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'DAY' },
+          transitTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'DAY' },
         },
       },
       // 30-day money-back per /refund-policy. Models the refund window —
