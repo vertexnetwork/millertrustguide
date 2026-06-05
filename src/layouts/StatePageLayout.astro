@@ -19,6 +19,8 @@ import {
 } from '~/lib/schema';
 import type { StateData } from '~/content/config';
 import { FOUNDER } from '~/config/founder';
+import { firstSentence } from '~/lib/text';
+import { REVIEWER } from '~/config/identity';
 
 interface Props {
   state: StateData;
@@ -99,8 +101,8 @@ const jsonLd: object[] = [
     url: canonical,
     dateModified: state.reviewedDate,
     lastReviewed: state.reviewedDate,
-    reviewedBy: null, // anonymity doctrine; replace when a credentialed reviewer is wired in
-    speakableCssSelectors: ['#tldr', '.faq-question', '.faq-answer'],
+    reviewedBy: REVIEWER, // from src/config/identity.ts (null per anonymity doctrine)
+    speakableCssSelectors: ['#tldr', '.faq-question', '.faq-answer__lead'],
     citations: citationUrls,
   }),
   medicalWebPageSchema({
@@ -109,7 +111,7 @@ const jsonLd: object[] = [
     description: state.metaDescription,
     dateModified: state.reviewedDate,
     lastReviewed: state.reviewedDate,
-    reviewedBy: null,
+    reviewedBy: REVIEWER,
     audience: 'Patient',
   }),
   governmentServiceSchema({
@@ -469,12 +471,18 @@ if (isLive) {
           <p class="text-xs font-semibold uppercase tracking-wider text-primary">Questions</p>
           <h2 id="faq-heading" class="!mt-1">Frequently asked questions</h2>
           <dl>
-            {allFaq.map((f) => (
-              <div class="mt-6">
-                <dt class="faq-question font-semibold text-ink-heading">{f.question}</dt>
-                <dd class="faq-answer mt-1">{f.answer}</dd>
-              </div>
-            ))}
+            {allFaq.map((f) => {
+              const { lead, rest } = firstSentence(f.answer);
+              return (
+                <div class="mt-6">
+                  <dt class="faq-question font-semibold text-ink-heading">{f.question}</dt>
+                  <dd class="faq-answer mt-1">
+                    <span class="faq-answer__lead">{lead}</span>
+                    {rest && <> {rest}</>}
+                  </dd>
+                </div>
+              );
+            })}
           </dl>
         </section>
       )

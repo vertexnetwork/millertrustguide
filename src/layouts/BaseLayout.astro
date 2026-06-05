@@ -115,9 +115,20 @@ const ldBlocks = [organizationSchema(), websiteSchema(), personSchema(), ...json
     <link rel="alternate" type="text/markdown" title="LLM-friendly site index" href="/llms.txt" />
     <link rel="alternate" type="text/markdown" title="LLM-friendly full index" href="/llms-full.txt" />
 
-    {/* Fonts: rsms.me Inter; the body has Source Serif Pro fallback chain. */}
-    <link rel="preconnect" href="https://rsms.me" crossorigin />
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    {/* Content feeds (RSS + JSON Feed) */}
+    <link rel="alternate" type="application/rss+xml" title="Miller Trust Guide — RSS" href="/rss.xml" />
+    <link rel="alternate" type="application/feed+json" title="Miller Trust Guide — JSON Feed" href="/feed.json" />
+
+    {/* Fonts: self-hosted Inter (variable, OFL) at /fonts. Preload the upright
+       face so it is fetched in parallel with CSS; @font-face (font-display:
+       swap) lives in global.css. No third-party font origin / no render block. */}
+    <link
+      rel="preload"
+      href="/fonts/InterVariable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
 
     {/* JSON-LD */}
     {

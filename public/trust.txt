@@ -1,0 +1,11 @@
+# trust.txt for millertrustguide.com (canonical location: /trust.txt)
+# Mirror of /.well-known/trust.txt. JournalList spec:
+# https://journallist.net/specification-and-documentation
+# Last reviewed: 2026-06-04.
+
+control=https://millertrustguide.com/
+disclosure=https://millertrustguide.com/about
+disclosure=https://millertrustguide.com/editorial-process
+disclosure=https://millertrustguide.com/disclaimer
+contact=mailto:support@millertrustguide.com
+datetime=2026-06-04T00:00:00Z

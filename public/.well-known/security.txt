@@ -7,6 +7,8 @@ Expires: 2027-05-20T00:00:00.000Z
 Preferred-Languages: en
 Canonical: https://millertrustguide.com/.well-known/security.txt
 Policy: https://millertrustguide.com/disclaimer
+Encryption: https://millertrustguide.com/.well-known/openpgpkey/support-pubkey.asc
+Encryption: openpgp4fpr:E97AC1D7B4DB46066BDDA382D36B2416214A4BA6
 
 # We are a single-author informational publisher. We do not run a bug bounty.
 # We respond to good-faith security reports within five business days. Please

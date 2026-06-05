@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+  Bing Webmaster Tools site verification.
+
+  ACTION REQUIRED (one-time): in Bing Webmaster Tools
+  (https://www.bing.com/webmasters) choose "Add your site manually" → "Add a
+  XML file to your website", copy the token Bing shows, and replace
+  REPLACE_WITH_BING_WEBMASTER_TOKEN below. Until then this file is inert and
+  harmless (Bing simply will not verify ownership).
+
+  Note: Bing also imports Google Search Console verifications, so if GSC is
+  already verified you may be able to skip this and "Import from GSC" instead.
+-->
+<users>
+  <user>REPLACE_WITH_BING_WEBMASTER_TOKEN</user>
+</users>

@@ -263,4 +263,9 @@ Disallow: /
 # =====================================================================
 # Sitemaps (absolute URLs per protocol)
 # =====================================================================
+# Main sitemap carries inline image: entries (per-state OG cards + kit covers).
 Sitemap: https://millertrustguide.com/sitemap.xml
+# News sitemap: usually empty by design — only lists guides published/updated
+# in the last 48h, and only acts once accepted in the Google News Publisher
+# Center. See src/pages/news-sitemap.xml.ts.
+Sitemap: https://millertrustguide.com/news-sitemap.xml

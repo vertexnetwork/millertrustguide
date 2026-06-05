@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Self-hosted Inter (variable). Replaces the third-party rsms.me stylesheet —
+   removes a render-blocking cross-origin request and lets us set font-display:
+   swap so text paints immediately (kills the LCP/CLS risk from FOIT).
+   Font files: public/fonts/InterVariable*.woff2 (Inter, OFL). */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/InterVariable.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/InterVariable-Italic.woff2') format('woff2-variations');
+}
+
 :root {
   --color-primary: #115E59;
   --color-primary-dark: #0F4C4A;

@@ -1,0 +1,27 @@
+# trust.txt for millertrustguide.com
+# JournalList trust.txt spec: https://journallist.net/specification-and-documentation
+# Also served at /trust.txt. Last reviewed: 2026-06-04.
+#
+# Miller Trust Guide is an independent, single-author informational publisher.
+# It belongs to no media network and is controlled by no parent entity.
+
+# --- Entities this publisher controls ---
+control=https://millertrustguide.com/
+
+# --- Memberships / parent orgs (none) ---
+# belongto= (intentionally empty — independent)
+# controlledby= (intentionally empty — no parent company)
+
+# --- Disclosures (ownership, editorial, ethics, corrections) ---
+disclosure=https://millertrustguide.com/about
+disclosure=https://millertrustguide.com/editorial-process
+disclosure=https://millertrustguide.com/disclaimer
+
+# --- Contact ---
+contact=mailto:support@millertrustguide.com
+
+# --- Social (none) ---
+# This site is published under a pseudonymous researcher byline and maintains
+# no social accounts. See /humans.txt for the anonymity rationale.
+
+datetime=2026-06-04T00:00:00Z

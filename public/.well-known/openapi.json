@@ -1,0 +1,151 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Miller Trust Guide — Public Read API",
+    "version": "1.0.0",
+    "summary": "Read-only access to state-specific Qualified Income Trust (Miller Trust) facts and guides.",
+    "description": "Public, unauthenticated, read-only surface for AI assistants and agentic tools. Exposes only information already published on the site (income caps, state Medicaid agency, official .gov template URL, guide status and price). Miller Trust Guide is a researcher-run informational publisher, NOT a law firm; nothing here is legal advice, and the state agency template is always the authoritative form. Every operational fact is sourced from the relevant state Medicaid policy manual.",
+    "termsOfService": "https://millertrustguide.com/disclaimer",
+    "contact": {
+      "name": "Miller Trust Guide support",
+      "email": "support@millertrustguide.com",
+      "url": "https://millertrustguide.com/about"
+    },
+    "license": {
+      "name": "Content © Miller Trust Guide — informational use; cite the source",
+      "url": "https://millertrustguide.com/editorial-process"
+    }
+  },
+  "servers": [
+    { "url": "https://millertrustguide.com", "description": "Production" }
+  ],
+  "externalDocs": {
+    "description": "LLM-friendly site index (llms.txt)",
+    "url": "https://millertrustguide.com/llms.txt"
+  },
+  "paths": {
+    "/data/states.json": {
+      "get": {
+        "operationId": "listStateGuides",
+        "summary": "List every documented state Qualified Income Trust guide",
+        "description": "Returns the structured index of all states the site documents, including 2026 income caps, the responsible state Medicaid agency, the official .gov template URL, guide availability (live/draft/blocked) and price. This is the structured-data twin of /llms.txt.",
+        "responses": {
+          "200": {
+            "description": "The state index.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/StateIndex" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/states/{slug}": {
+      "get": {
+        "operationId": "getStateGuide",
+        "summary": "Fetch a single state's Miller Trust guide (HTML)",
+        "description": "Returns the full human-readable operational guide for one state, including the answer-first summary, step-by-step HowTo, common denial reasons, bank-refusal handling, and FAQ. JSON-LD (Article, MedicalWebPage, GovernmentService, FAQPage, HowTo, Product) is embedded in the page.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "description": "Lowercase, hyphenated state name, e.g. 'texas' or 'new-jersey'. Use listStateGuides to enumerate valid slugs.",
+            "schema": { "type": "string", "pattern": "^[a-z-]+$", "example": "texas" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The state guide page.",
+            "content": { "text/html": { "schema": { "type": "string" } } }
+          },
+          "404": {
+            "description": "No guide exists for that slug."
+          }
+        }
+      }
+    },
+    "/llms.txt": {
+      "get": {
+        "operationId": "getLlmsIndex",
+        "summary": "LLM-friendly Markdown site index",
+        "description": "Curated Markdown index of the site's key facts, scope, state guides, and primary source citations, written for AI ingestion.",
+        "responses": {
+          "200": {
+            "description": "Markdown index.",
+            "content": { "text/markdown": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/sitemap.xml": {
+      "get": {
+        "operationId": "getSitemap",
+        "summary": "XML sitemap of all canonical pages",
+        "responses": {
+          "200": {
+            "description": "XML sitemap.",
+            "content": { "application/xml": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "StateIndex": {
+        "type": "object",
+        "required": ["publisher", "states", "liveStateCount", "totalDocumentedStates"],
+        "properties": {
+          "publisher": { "type": "string", "const": "Miller Trust Guide" },
+          "description": { "type": "string" },
+          "disclaimer": { "type": "string" },
+          "federalIncomeCapBasis": { "type": "string" },
+          "liveStateCount": { "type": "integer", "description": "States currently purchasable." },
+          "totalDocumentedStates": { "type": "integer" },
+          "states": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/StateGuide" }
+          }
+        }
+      },
+      "StateGuide": {
+        "type": "object",
+        "required": ["name", "abbreviation", "slug", "url", "status"],
+        "properties": {
+          "name": { "type": "string", "example": "Texas" },
+          "abbreviation": { "type": "string", "minLength": 2, "maxLength": 2, "example": "TX" },
+          "slug": { "type": "string", "example": "texas" },
+          "url": { "type": "string", "format": "uri" },
+          "status": { "type": "string", "enum": ["live", "draft", "blocked"] },
+          "purchasable": { "type": "boolean" },
+          "price": { "type": ["number", "null"], "description": "USD; null unless live." },
+          "priceCurrency": { "type": "string", "const": "USD" },
+          "incomeCap2026Single": { "type": "number", "description": "Monthly LTC Medicaid income cap, single applicant." },
+          "incomeCap2026Couple": { "type": "number" },
+          "incomeCapAsOf": { "type": "string" },
+          "ltcProgram": {
+            "type": "object",
+            "properties": {
+              "abbreviation": { "type": "string", "example": "MEPD" },
+              "name": { "type": "string" }
+            }
+          },
+          "agency": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "example": "Texas Health and Human Services Commission" },
+              "abbreviation": { "type": "string", "example": "HHSC" }
+            }
+          },
+          "officialTemplateUrl": { "type": "string", "format": "uri", "description": "The authoritative state-published .gov QIT template." },
+          "policyManualUrl": { "type": "string", "format": "uri" },
+          "policyManualSection": { "type": "string" },
+          "reviewedDate": { "type": "string" },
+          "blockedReason": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

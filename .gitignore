@@ -58,3 +58,9 @@ TODO.md
 
 # --- Search-performance exports (GSC/Bing) — local-only, never commit (public repo). One zip ~monthly. ---
 /gsc-exports/
+
+# --- Visibility/SEO audit report (internal strategy; pricing + competitive posture) — local-only ---
+VISIBILITY_AUDIT.md
+
+# --- OpenPGP project keyring + secret-key backups (NEVER commit) ---
+/_secrets/

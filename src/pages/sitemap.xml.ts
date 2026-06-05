@@ -7,6 +7,11 @@
 //
 // Adding a new static page means adding a line to STATIC_ROUTES below.
 // State pages are enumerated automatically from the content collection.
+//
+// Image sitemap: per Google's image-sitemap guidance we declare images
+// inline on their containing <url> with the image: namespace (a separate
+// image sitemap file is not needed and is the older pattern). Each live state
+// page advertises its kit cover-preview and per-state OG card.
 
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
@@ -22,6 +27,7 @@ interface SitemapEntry {
   priority: number;
   changefreq: ChangeFreq;
   lastmod: string;
+  images?: string[];
 }
 
 const BUILD_DATE = new Date().toISOString().slice(0, 10);
@@ -29,7 +35,7 @@ const BUILD_DATE = new Date().toISOString().slice(0, 10);
 // Static routes. Excludes /api/*, /thanks, /404, and /kits/* by omission —
 // those are intentionally not in the sitemap.
 const STATIC_ROUTES: Omit<SitemapEntry, 'lastmod'>[] = [
-  { path: '/', priority: 1.0, changefreq: 'weekly' },
+  { path: '/', priority: 1.0, changefreq: 'weekly', images: [`${SITE}/og-default.png`] },
   { path: '/about', priority: 0.6, changefreq: 'monthly' },
   { path: '/editorial-process', priority: 0.6, changefreq: 'monthly' },
   { path: '/authors/james-whitfield', priority: 0.6, changefreq: 'monthly' },
@@ -62,22 +68,32 @@ export const GET: APIRoute = async () => {
         priority: 0.9,
         changefreq: 'weekly' as ChangeFreq,
         lastmod: s.data.reviewedDate || BUILD_DATE,
+        // Per-state OG card + kit cover preview (live states only — the cover
+        // preview asset is generated for purchasable kits).
+        images:
+          s.data.status === 'live'
+            ? [`${SITE}/og/states/${s.slug}.png`, `${SITE}/kit-previews/${s.slug}/01-cover.png`]
+            : [`${SITE}/og/states/${s.slug}.png`],
       })),
   ];
 
   const urls = entries
-    .map(
-      (e) => `  <url>
+    .map((e) => {
+      const imageTags = (e.images ?? [])
+        .map((img) => `    <image:image>\n      <image:loc>${xmlEscape(img)}</image:loc>\n    </image:image>`)
+        .join('\n');
+      return `  <url>
     <loc>${xmlEscape(SITE + e.path)}</loc>
     <lastmod>${e.lastmod}</lastmod>
     <changefreq>${e.changefreq}</changefreq>
-    <priority>${e.priority.toFixed(1)}</priority>
-  </url>`
-    )
+    <priority>${e.priority.toFixed(1)}</priority>${imageTags ? '\n' + imageTags : ''}
+  </url>`;
+    })
     .join('\n');
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${urls}
 </urlset>
 `;

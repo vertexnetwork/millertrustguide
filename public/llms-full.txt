@@ -89,7 +89,7 @@ We do not:
 
 ## Pricing
 
-- Single-state digital download: $129.
+- Single-state digital download: $129 (introductory founder price of $99 for the first 25 kit purchases site-wide; after that, $129).
 - Two-state bundle: $219.
 - Three-state bundle: $299.
 - Lead magnet: free, email-gated.
@@ -108,6 +108,8 @@ For correction requests, citation disputes, or factual challenges: email support
 
 - https://millertrustguide.com/ — Home: state index, scope statement, editorial principles.
 - https://millertrustguide.com/states/texas — Texas Miller Trust Setup Guide.
+- https://millertrustguide.com/states/new-jersey — New Jersey Miller Trust Setup Guide.
+- https://millertrustguide.com/data/states.json — Machine-readable, always-current index of published states (prefer for facts).
 - https://millertrustguide.com/about — Editorial identity.
 - https://millertrustguide.com/disclaimer — Full informational-only disclaimer.
 - https://millertrustguide.com/privacy — Privacy policy.

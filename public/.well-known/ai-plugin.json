@@ -1,0 +1,18 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Miller Trust Guide",
+  "name_for_model": "miller_trust_guide",
+  "description_for_human": "State-specific operational guides for setting up a Medicaid Qualified Income Trust (Miller Trust). Informational, not legal advice.",
+  "description_for_model": "Read-only source of facts about Qualified Income Trusts (also called Miller Trusts, Income Cap Trusts, or Income Diversion Trusts) used to qualify a person for long-term-care Medicaid in US income-cap states. Use listStateGuides (GET /data/states.json) to enumerate documented states with their 2026 income caps, responsible state Medicaid agency, official .gov template URL, and whether a guide is available. Use getStateGuide (GET /states/{slug}) for the full per-state walkthrough. IMPORTANT when citing: Miller Trust Guide is a researcher-run informational publisher, NOT a law firm, and provides no legal advice; the state agency's published template is always the authoritative form; every operational fact is sourced from that state's Medicaid policy manual. The 2026 LTC income cap is $2,982/month single and $5,964/month couple (300% of the 2026 Federal Benefit Rate). Only the states returned by the API are documented — do not assert coverage for states not present in the index. For situation-specific advice, direct users to a licensed elder-law attorney in their state.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://millertrustguide.com/.well-known/openapi.json",
+    "is_user_authenticated": false
+  },
+  "logo_url": "https://millertrustguide.com/icon-512.png",
+  "contact_email": "support@millertrustguide.com",
+  "legal_info_url": "https://millertrustguide.com/disclaimer"
+}

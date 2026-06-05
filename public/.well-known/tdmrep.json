@@ -1,0 +1,16 @@
+[
+  {
+    "location": "/",
+    "tdm-reservation": 0
+  },
+  {
+    "location": "/kits/",
+    "tdm-reservation": 1,
+    "tdm-policy": "https://millertrustguide.com/ai.txt"
+  },
+  {
+    "location": "/api/",
+    "tdm-reservation": 1,
+    "tdm-policy": "https://millertrustguide.com/ai.txt"
+  }
+]

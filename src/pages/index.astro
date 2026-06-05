@@ -2,11 +2,13 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import LeadMagnetForm from '~/components/LeadMagnetForm.astro';
+import IncomeCapCheck from '~/components/IncomeCapCheck.astro';
 import {
   faqPageSchemaFromPairs,
   articleSchema,
   breadcrumbSchema,
 } from '~/lib/schema';
+import { firstSentence } from '~/lib/text';
 
 export const prerender = true;
 
@@ -81,7 +83,7 @@ const jsonLd = [
     url: canonical,
     dateModified: '2026-05-20',
     lastReviewed: '2026-05-20',
-    speakableCssSelectors: ['#tldr', '.faq-question', '.faq-answer'],
+    speakableCssSelectors: ['#tldr', '.faq-question', '.faq-answer__lead'],
   }),
   faqPageSchemaFromPairs(homeFaq),
   breadcrumbSchema([{ name: 'Home', url: canonical }]),
@@ -121,6 +123,8 @@ const jsonLd = [
       new Federal Benefit Rate.
     </p>
   </section>
+
+  <IncomeCapCheck />
 
   <section id="states" class="mx-auto max-w-3xl px-4 py-6">
     <h2>Pick your state to start</h2>
@@ -202,15 +206,21 @@ const jsonLd = [
     <h2 id="home-faq-heading">Frequently asked questions</h2>
     <dl class="mt-4 divide-y divide-border">
       {
-        homeFaq.map((f, i) => (
-          <details class="group py-4" open={i === 0}>
-            <summary class="faq-question cursor-pointer list-none font-semibold text-ink-heading marker:hidden">
-              <span class="inline-block transition-transform group-open:rotate-90" aria-hidden="true">▸</span>{' '}
-              {f.question}
-            </summary>
-            <div class="faq-answer mt-2 pl-5 leading-relaxed text-ink">{f.answer}</div>
-          </details>
-        ))
+        homeFaq.map((f, i) => {
+          const { lead, rest } = firstSentence(f.answer);
+          return (
+            <details class="group py-4" open={i === 0}>
+              <summary class="faq-question cursor-pointer list-none font-semibold text-ink-heading marker:hidden">
+                <span class="inline-block transition-transform group-open:rotate-90" aria-hidden="true">▸</span>{' '}
+                {f.question}
+              </summary>
+              <div class="faq-answer mt-2 pl-5 leading-relaxed text-ink">
+                <span class="faq-answer__lead">{lead}</span>
+                {rest && <> {rest}</>}
+              </div>
+            </details>
+          );
+        })
       }
     </dl>
   </section>

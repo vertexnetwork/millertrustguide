@@ -18,6 +18,10 @@
 //     credentialed reviewer can be added later without template changes).
 
 import type { StateData } from '~/content/config';
+// External-identity E-E-A-T signals live in ONE place (src/config/identity.ts),
+// intentionally empty under the anonymity doctrine. Populate that file to flow
+// sameAs / reviewedBy into all schema below without touching this file.
+import { ORG_SAME_AS, AUTHOR_SAME_AS } from '~/config/identity';
 
 const SITE_NAME = 'Miller Trust Guide';
 const SITE_URL = 'https://millertrustguide.com';
@@ -45,8 +49,9 @@ export function organizationSchema() {
       'Medicaid Estate Recovery',
     ],
     email: 'support@millertrustguide.com',
-    // sameAs intentionally empty per V5.3 anonymity doctrine.
-    sameAs: [] as string[],
+    // Single source of truth: src/config/identity.ts (empty per V5.3 anonymity
+    // doctrine). Add owned/verifiable profile URLs there to flow them here.
+    sameAs: ORG_SAME_AS,
     logo: {
       '@type': 'ImageObject',
       url: `${SITE_URL}/icon-512.png`,
@@ -99,9 +104,9 @@ export function personSchema(opts: { jobTitle?: string; description?: string } =
       opts.description ??
       'Researcher and sole author of Miller Trust Guide. Reads state Medicaid policy manuals and publishes plain-English operational guides for Qualified Income Trusts. Not an attorney; does not advise on individual situations.',
     worksFor: { '@id': ORG_ID },
-    // Empty per anonymity doctrine. Add state bar / ORCID / LinkedIn URLs
-    // here if and when a credentialed reviewer is added.
-    sameAs: [] as string[],
+    // Single source of truth: src/config/identity.ts (empty per anonymity
+    // doctrine). Add state bar / ORCID / LinkedIn URLs there.
+    sameAs: AUTHOR_SAME_AS,
     knowsAbout: [
       'Qualified Income Trust',
       'Miller Trust',
