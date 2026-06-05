@@ -38,23 +38,23 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         <legend class="text-sm font-medium text-ink">Who is applying?</legend>
         <div class="mt-1 flex gap-3 text-sm">
           <label class="inline-flex items-center gap-1.5">
-            <input type="radio" name="household" value="single" checked /> One person
+            <input type="radio" name="who" value="single" checked /> One person
           </label>
           <label class="inline-flex items-center gap-1.5">
-            <input type="radio" name="household" value="couple" /> A couple
+            <input type="radio" name="who" value="couple" /> A couple
           </label>
         </div>
       </fieldset>
 
       <div class="min-w-0">
-        <label for="capcheck-income" class="text-sm font-medium text-ink">
+        <label for="capcheck-amount" class="text-sm font-medium text-ink">
           Gross monthly income (Social Security + pension + everything)
         </label>
         <div class="mt-1 flex items-center gap-2">
           <span aria-hidden="true" class="text-ink-muted">$</span>
           <input
-            id="capcheck-income"
-            name="income"
+            id="capcheck-amount"
+            name="amount"
             type="number"
             inputmode="numeric"
             min="0"
@@ -85,7 +85,8 @@ const fmt = (n: number) => n.toLocaleString('en-US');
       Not sure how to total income, or have an unusual situation?
       <a class="underline" href="/states">See the state guides</a> or read
       <a class="underline" href="/about">what we do and don't help with</a>.
-      This check is informational, not legal advice.
+      This check runs entirely in your browser — nothing you type is sent or
+      saved. Informational, not legal advice.
     </p>
   </div>
 
@@ -129,11 +130,14 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 
       form.addEventListener('submit', function (e) {
         e.preventDefault();
+        // Read by the inputs' name attributes ("who" / "amount"). Field names
+        // are deliberately generic + non-PII (Rule 2 guardrail): this is a
+        // local, ephemeral calculator — nothing here is submitted or stored.
         var data = new FormData(form);
-        var household = data.get('household') === 'couple' ? 'couple' : 'single';
-        var cap = household === 'couple' ? CAP_COUPLE_2026 : CAP_SINGLE_2026;
-        var income = parseInt(String(data.get('income') || '').replace(/[^0-9]/g, ''), 10);
-        var r = classify(income, cap);
+        var who = data.get('who') === 'couple' ? 'couple' : 'single';
+        var cap = who === 'couple' ? CAP_COUPLE_2026 : CAP_SINGLE_2026;
+        var amount = parseInt(String(data.get('amount') || '').replace(/[^0-9]/g, ''), 10);
+        var r = classify(amount, cap);
         out.className = 'mt-4 rounded-lg border p-4 text-sm leading-relaxed ' + r.tone;
         out.innerHTML = r.html;
       });
