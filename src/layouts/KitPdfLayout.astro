@@ -927,6 +927,11 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         ))}
       </ol>
 
+      {/* Heading + intro + checklist box kept on one page. The hN+p break-after
+          CSS rule alone was unreliable here because the 11-item callout is tall:
+          it would jump to the next page (break-inside:avoid) and strand the
+          heading+intro. Wrapping the trio in .kit-no-break moves them together. */}
+      <div class="kit-no-break">
       <h3>Pre-submission checklist</h3>
       <p>Run this checklist the day before you file the Medicaid application:</p>
       <div class="kit-callout">
@@ -943,6 +948,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           <li>Trust uses the current {state.agencyAbbreviation} template, downloaded fresh on the day of signing.</li>
           <li>Trustee has a monthly distribution reminder set to ensure deposits are distributed by the last day of the following month.</li>
         </ul>
+      </div>
       </div>
     </section>
 
