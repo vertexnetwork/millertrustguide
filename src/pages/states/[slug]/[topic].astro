@@ -1,0 +1,119 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import ArticleBody from '~/components/ArticleBody.astro';
+import {
+  ARTICLE_TOPICS,
+  getArticleMeta,
+  getArticleLede,
+  getArticleJsonLd,
+  getAllArticleMeta,
+  type ArticleTopic,
+} from '~/lib/articles';
+import type { StateData } from '~/content/config';
+
+export const prerender = true;
+
+// Articles exist only for LIVE states (draft pages render noindex; blocked
+// states sell nothing). Each live state × every topic = one article. Adding a
+// state is still a pure data drop — its articles appear automatically.
+export async function getStaticPaths() {
+  const states = await getCollection('states');
+  return states
+    .filter((s) => s.data.status === 'live')
+    .flatMap((s) =>
+      ARTICLE_TOPICS.map((topic) => ({
+        params: { slug: s.slug, topic },
+        props: { state: { ...s.data, slug: s.slug } as StateData, topic },
+      }))
+    );
+}
+
+interface Props {
+  state: StateData;
+  topic: ArticleTopic;
+}
+
+const { state, topic } = Astro.props as Props;
+
+const meta = getArticleMeta(state, topic);
+const lede = getArticleLede(state, topic);
+const jsonLd = getArticleJsonLd(state, topic);
+
+// Sibling articles for the "related guides" footer (everything but this one).
+const siblings = getAllArticleMeta(state).filter((a) => a.topic !== topic);
+---
+
+<BaseLayout
+  title={meta.metaTitle}
+  description={meta.metaDescription}
+  canonical={meta.url}
+  jsonLd={jsonLd}
+  ogType="article"
+  ogImage={`https://millertrustguide.com/og/states/${state.slug}.png`}
+  ogImageAlt={`${state.name} Miller Trust — ${meta.navLabel}.`}
+  publishedTime={meta.datePublished}
+  modifiedTime={meta.dateModified}
+>
+  <article class="mx-auto max-w-3xl px-4 pb-16 pt-6 md:pt-10">
+    {/* Breadcrumb (visible + schema-aligned) */}
+    <nav aria-label="Breadcrumb" class="mb-3 text-sm text-ink-muted">
+      <ol class="flex flex-wrap items-center gap-x-2">
+        <li><a href="/" class="no-underline hover:underline">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href="/#states" class="no-underline hover:underline">State guides</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href={`/states/${state.slug}`} class="no-underline hover:underline">{state.name}</a></li>
+        <li aria-hidden="true">/</li>
+        <li aria-current="page" class="text-ink">{meta.navLabel}</li>
+      </ol>
+    </nav>
+
+    <header class="prose-content">
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <span class="inline-flex items-center rounded-sm bg-primary px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-white">
+          {state.abbreviation} &middot; Guide
+        </span>
+        <span class="text-xs uppercase tracking-wide text-ink-muted">
+          Last reviewed <time datetime={state.reviewedDate}>{state.reviewedDate}</time>
+        </span>
+      </div>
+      <h1 class="mt-3 !text-3xl md:!text-4xl">{meta.h1}</h1>
+
+      {/* Answer-first lede. Speakable. */}
+      <p
+        id="tldr"
+        class="mt-5 rounded-lg border border-primary/20 bg-primary-tint/30 p-4 text-base leading-relaxed text-ink"
+      >
+        {lede}
+      </p>
+    </header>
+
+    <div class="mt-8">
+      <ArticleBody state={state} topic={topic} />
+    </div>
+
+    {/* Related guides — keeps operational queries clustered under the state. */}
+    <nav class="mt-12 border-t border-border pt-6" aria-labelledby="related-heading">
+      <h2 id="related-heading" class="text-sm font-semibold uppercase tracking-wide text-ink-muted">
+        More {state.name} Miller Trust guides
+      </h2>
+      <ul class="mt-3 space-y-2">
+        <li>
+          <a href={`/states/${state.slug}`} class="font-medium text-primary">
+            The complete {state.name} Miller Trust setup guide &amp; kit &rarr;
+          </a>
+        </li>
+        {
+          siblings.map((s) => (
+            <li>
+              <a href={s.path} class="font-medium text-primary">
+                {s.h1} &rarr;
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </article>
+</BaseLayout>

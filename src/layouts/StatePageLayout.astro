@@ -21,6 +21,7 @@ import type { StateData } from '~/content/config';
 import { FOUNDER } from '~/config/founder';
 import { firstSentence } from '~/lib/text';
 import { REVIEWER } from '~/config/identity';
+import { getAllArticleMeta } from '~/lib/articles';
 
 interface Props {
   state: StateData;
@@ -50,6 +51,11 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
 // sticky bar, comparison table) so they stay congruent. Display only; the actual
 // charge is server-side (create-checkout: Stripe price + the shared founder coupon).
 const displayPrice = founderActive ? FOUNDER.price : state.price;
+
+// Operational long-tail articles for this state (live states only). Linked from
+// the body so the deeper queries cluster under the state hub and pass relevance
+// back with descriptive, head-term-bearing anchor text.
+const articleLinks = isLive ? getAllArticleMeta(state) : [];
 
 // GEO/AI-citation lede. First ~80 words must directly answer the primary
 // query — Princeton GEO + 2026 AI Overview research both prioritize
@@ -331,6 +337,7 @@ if (isLive) {
 
             <h2>The {state.asOf} {state.name} income cap</h2>
             <p>
+              Setting up a Miller Trust in {state.name} starts with one number — the income cap.
               The {state.name} {state.asOf} Medicaid long-term-care income limit is{' '}
               <strong>${fmt(state.incomeCap2026)}/month</strong> for a single applicant. If your family member's
               countable monthly income exceeds this limit, a properly drafted, signed, and funded QIT diverts the excess
@@ -338,6 +345,24 @@ if (isLive) {
               <strong>${fmt(state.personalNeedsAllowance)}/month</strong>. Source:{' '}
               <a href={state.policyManualUrl} rel="external nofollow">{state.agencyAbbreviation} {state.policyManualSection}</a>.
             </p>
+
+            {
+              articleLinks.length > 0 && (
+                <>
+                  <h2>Step-by-step {state.name} guides</h2>
+                  <p>
+                    Free operational walkthroughs that go deeper on the questions families ask most before they buy:
+                  </p>
+                  <ul>
+                    {articleLinks.map((a) => (
+                      <li>
+                        <a href={a.path}>{a.h1}</a>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )
+            }
           </div>
 
           {/* Sticky buy panel on desktop */}
@@ -358,8 +383,7 @@ if (isLive) {
                         </span>
                       </p>
                       <p class="mt-1 text-sm font-medium text-primary">
-                        Founding price — first {FOUNDER.unitLimit} customers across all states.
-                        {' '}{founderSpotsLeft} {founderSpotsLeft === 1 ? 'spot' : 'spots'} left.
+                        Founding price — only {founderSpotsLeft} {founderSpotsLeft === 1 ? 'spot' : 'spots'} left at this rate.
                       </p>
                     </>
                   ) : (
@@ -534,8 +558,7 @@ if (isLive) {
           <p>
             {founderActive ? (
               <>
-                <strong>${FOUNDER.price} founding price</strong> (first {FOUNDER.unitLimit} customers across all states —
-                {' '}{founderSpotsLeft} {founderSpotsLeft === 1 ? 'spot' : 'spots'} left), then ${state.price}.
+                <strong>${FOUNDER.price} founding price</strong> ({founderSpotsLeft} {founderSpotsLeft === 1 ? 'spot' : 'spots'} left at this rate), then ${state.price}.
               </>
             ) : (
               <>${state.price}.</>

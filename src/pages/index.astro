@@ -9,8 +9,13 @@ import {
   breadcrumbSchema,
 } from '~/lib/schema';
 import { firstSentence } from '~/lib/text';
+import { FOUNDER } from '~/config/founder';
 
 export const prerender = true;
+
+// GLOBAL founder offer (shared across all states) — see src/config/founder.ts.
+// Display-only; Stripe's coupon is the hard enforcement of the discounted charge.
+const founderActive = FOUNDER.unitsSold < FOUNDER.unitLimit;
 
 const states = (await getCollection('states'))
   .map((s) => ({ ...s.data, slug: s.slug }))
@@ -141,12 +146,22 @@ const jsonLd = [
                 <a
                   href={`/states/${s.slug}`}
                   class="text-lg font-semibold no-underline hover:underline"
-                  aria-label={`${s.name} Miller Trust Setup Guide — $${s.price}`}
+                  aria-label={`${s.name} Miller Trust Setup Guide — $${founderActive ? FOUNDER.price : s.price}`}
                 >
                   {s.name} Miller Trust Kit
                 </a>
-                <span class="text-lg font-bold text-ink-heading">${s.price}</span>
+                {founderActive ? (
+                  <span class="flex items-baseline gap-1.5 whitespace-nowrap">
+                    <span class="text-lg font-bold text-ink-heading">${FOUNDER.price}</span>
+                    <span class="text-sm text-ink-muted line-through">${s.price}</span>
+                  </span>
+                ) : (
+                  <span class="text-lg font-bold text-ink-heading">${s.price}</span>
+                )}
               </div>
+              {founderActive && (
+                <p class="mt-1 text-xs font-medium text-primary">Founding price — limited early-customer offer.</p>
+              )}
               <p class="mt-2 text-sm text-ink">
                 Built around the official {s.agencyAbbreviation} template. Bank-refusal script, monthly funding
                 worksheet, denial-avoidance checklist. Instant download, money-back if {s.agencyAbbreviation} rejects.

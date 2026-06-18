@@ -1,0 +1,193 @@
+---
+// Renders the body of an operational article from state frontmatter. One
+// component, three topic variants — all content is derived from already-vetted
+// state data, so it stays inside the four hard rules (no drafted trust text, no
+// advice, links to the .gov template). The site-wide disclaimer/footer come
+// from BaseLayout, so Rule 4 is satisfied without anything here.
+import type { StateData } from '~/content/config';
+import { getHowToSteps, getArticleFaq, articlePath, type ArticleTopic } from '~/lib/articles';
+
+interface Props {
+  state: StateData;
+  topic: ArticleTopic;
+}
+
+const { state, topic } = Astro.props;
+const fmt = (n: number) => n.toLocaleString('en-US');
+
+const statePath = `/states/${state.slug}`;
+const bankPath = articlePath(state.slug, 'what-to-say-at-the-bank');
+const howLongPath = articlePath(state.slug, 'how-long-to-set-up');
+const howToPath = articlePath(state.slug, 'how-to-set-up');
+
+const steps = topic === 'how-to-set-up' ? getHowToSteps(state) : [];
+const faq = getArticleFaq(state, topic);
+---
+
+<div class="prose-content">
+  {
+    topic === 'how-to-set-up' && (
+      <>
+        <p>
+          Setting up a Miller Trust in {state.name} is an operational task, not a legal one, as long as you use{' '}
+          {state.agencyName}'s own published template and do not deviate from it. Here is the full sequence, with the{' '}
+          {state.agencyAbbreviation} fact behind each step.
+        </p>
+
+        <ol class="not-prose mt-6 space-y-5">
+          {steps.map((s, i) => (
+            <li class="flex gap-4">
+              <span
+                aria-hidden="true"
+                class="mt-0.5 flex h-8 w-8 flex-none items-center justify-center rounded-full bg-primary text-sm font-bold text-white"
+              >
+                {i + 1}
+              </span>
+              <div>
+                <p class="font-semibold text-ink-heading">{s.name}</p>
+                <p class="mt-1 text-ink">{s.text}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <div class="mt-6 rounded-lg border border-border bg-surface-elevated p-4 text-sm">
+          <p class="!mt-0">
+            The two steps families get stuck on are <a href={bankPath}>opening the bank account in {state.name}</a> and
+            funding the trust before the calendar month closes — see{' '}
+            <a href={howLongPath}>how long setting up a {state.name} Miller Trust takes</a> for the timing rules.
+          </p>
+        </div>
+
+        <h2>Get the official {state.agencyAbbreviation} template</h2>
+        <p>
+          Download the model Qualified Income Trust instrument directly from {state.agencyName}:{' '}
+          <a href={state.officialTemplateUrl} rel="external nofollow">
+            {state.agencyAbbreviation} Qualified Income Trust template
+          </a>
+          . {state.officialTemplateNote}
+        </p>
+      </>
+    )
+  }
+
+  {
+    topic === 'how-long-to-set-up' && (
+      <>
+        <h2>The short answer</h2>
+        <p>
+          The paperwork is fast — completing {state.agencyName}'s template is usually under an hour, and signing it takes
+          minutes. What stretches the timeline is two things: <strong>opening the bank account</strong> and{' '}
+          <strong>the calendar-month deadline</strong>. When both go smoothly, families complete a {state.name} Miller
+          Trust in a few days. When the bank balks, it can take a week or more — which is why knowing{' '}
+          <a href={bankPath}>what to say at the bank</a> up front matters.
+        </p>
+
+        <h2>The one deadline that actually controls eligibility</h2>
+        <p>
+          A {state.name} Qualified Income Trust only diverts income in a calendar month where it is <em>signed</em>, has a{' '}
+          <em>funded</em> bank account, and receives enough of the applicant's income to bring remaining countable income
+          below the {state.asOf} cap of <strong>${fmt(state.incomeCap2026)}/month</strong> — all within that same month.
+          Per {state.agencyAbbreviation} {state.policyManualSection}, there is no back-dating: coverage begins the month
+          you complete funding, not the month you started the paperwork.
+        </p>
+
+        <h2>What slows families down</h2>
+        <ul>
+          <li>
+            <strong>The bank.</strong> Most branches have never opened a Qualified Income Trust account and refuse or
+            stall on the first request. This is the single biggest source of delay — and it is avoidable.
+          </li>
+          {state.commonDenialReasons.slice(0, 2).map((d) => (
+            <li>
+              <strong>{d.title}.</strong> {d.description}
+            </li>
+          ))}
+        </ul>
+
+        <div class="mt-6 rounded-lg border-l-4 border-primary bg-primary-tint/30 p-5">
+          <p class="!mt-0">
+            <strong>Why the delay is expensive:</strong> {state.name} private-pay nursing care runs{' '}
+            <strong>${fmt(state.privatePayMonthlyLow)}–${fmt(state.privatePayMonthlyHigh)} a month.</strong> Because
+            eligibility cannot be back-dated, every calendar month you miss is a five-figure check your family pays out of
+            pocket. The next step is the <a href={howToPath}>step-by-step setup</a>.
+          </p>
+        </div>
+      </>
+    )
+  }
+
+  {
+    topic === 'what-to-say-at-the-bank' && (
+      <>
+        <h2>Why the bank says no</h2>
+        <p>
+          Opening a {state.name} Miller Trust account is not legally complicated, but it is unfamiliar to most branch
+          staff — they rarely see a Qualified Income Trust, so the default reaction is caution. The fix is almost never
+          arguing; it is handing the branch the right {state.agencyAbbreviation} document and asking for the right account
+          type. Below are the {state.bankRefusalNotes.length} refusals families hit most often in {state.name}.
+        </p>
+
+        <div class="not-prose mt-6 space-y-4">
+          {state.bankRefusalNotes.map((b, i) => (
+            <div class="rounded-lg border border-border bg-surface-elevated p-4">
+              <p class="text-sm font-semibold uppercase tracking-wide text-primary">Refusal {i + 1}</p>
+              <p class="mt-1 font-semibold text-ink-heading">{b.refusalType}</p>
+              <p class="mt-2 text-ink">
+                <strong>What to say:</strong> {b.response}
+              </p>
+              {b.documentNeeded && (
+                <p class="mt-2 text-sm text-ink-muted">
+                  <strong>Bring:</strong> {b.documentNeeded}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <h2>If the branch still won't open it</h2>
+        <p>
+          Ask for the bank's trust department, or switch to a community bank or credit union — their account opening
+          tends to involve a human review rather than a screen-driven template, so they accommodate unusual account types
+          more readily. The account itself is ordinary: a dedicated checking account titled to the trust, opened with the
+          beneficiary's Social Security number.
+        </p>
+      </>
+    )
+  }
+
+  {
+    faq.length > 0 && (
+      <section class="mt-10" aria-labelledby="article-faq-heading">
+        <h2 id="article-faq-heading">Common questions</h2>
+        <dl class="mt-4 space-y-5">
+          {faq.map((f) => (
+            <div>
+              <dt class="faq-question font-semibold text-ink-heading">{f.question}</dt>
+              <dd class="faq-answer mt-1 text-ink">{f.answer}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    )
+  }
+
+  {/* CTA back to the purchasable state kit (the buy flow lives there, not here). */}
+  <aside class="mt-10 rounded-lg border border-primary/30 bg-primary-tint/20 p-6">
+    <h2 class="!mt-0 !text-xl">The {state.name} kit does this for you</h2>
+    <p class="mt-2">
+      The {state.name} Miller Trust Kit packages all of this — the verbatim bank script and resolution letter, the
+      monthly funding worksheet, the {state.commonDenialReasons.length} {state.agencyAbbreviation} denial traps with
+      citations, and the direct link to the official template — in one instant download.{' '}
+      <strong>Informational only — not legal advice.</strong>
+    </p>
+    <p class="mt-4">
+      <a
+        href={statePath}
+        class="inline-flex items-center rounded-md bg-primary px-5 py-2.5 font-semibold text-white no-underline hover:bg-primary-dark"
+      >
+        See the {state.name} kit &rarr;
+      </a>
+    </p>
+  </aside>
+</div>

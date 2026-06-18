@@ -15,6 +15,7 @@
 
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
+import { ARTICLE_TOPICS } from '~/lib/articles';
 
 export const prerender = true;
 
@@ -75,6 +76,18 @@ export const GET: APIRoute = async () => {
             ? [`${SITE}/og/states/${s.slug}.png`, `${SITE}/kit-previews/${s.slug}/01-cover.png`]
             : [`${SITE}/og/states/${s.slug}.png`],
       })),
+    // Operational long-tail articles — one per topic, live states only (the
+    // [slug]/[topic] route is generated for live states). Mirrors that filter.
+    ...states
+      .filter((s) => s.data.status === 'live')
+      .flatMap((s) =>
+        ARTICLE_TOPICS.map((topic) => ({
+          path: `/states/${s.slug}/${topic}`,
+          priority: 0.7,
+          changefreq: 'monthly' as ChangeFreq,
+          lastmod: s.data.reviewedDate || BUILD_DATE,
+        }))
+      ),
   ];
 
   const urls = entries
