@@ -46,6 +46,23 @@ const stateSchema = z.object({
   residuaryFormName: z.string().optional(),
   residuaryFormUrl: z.string().url().optional(),
 
+  // Some states split the QIT into MORE THAN ONE official document — e.g. Ohio
+  // publishes a trust-instrument *template* (officialTemplateUrl) separately
+  // from an agency *verification form* (ODM 10193) the trustee files with the
+  // county. List those additional official .gov documents here; each renders
+  // alongside the primary template on the state page and in the kit's source
+  // appendices. TX/NJ have a single document and simply omit this. Keep every
+  // url on a .gov/.us host to honor Rule 1 (link to the state's own publication).
+  supplementalOfficialDocs: z
+    .array(
+      z.object({
+        label: z.string(),
+        url: z.string().url(),
+        note: z.string(),
+      })
+    )
+    .default([]),
+
   // 2026 figures (annual update target)
   incomeCap2026: z.number(),
   incomeCapCouple2026: z.number(),

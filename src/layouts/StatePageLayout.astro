@@ -534,6 +534,15 @@ if (isLive) {
           </a>{' '}
           (section {state.policyManualSection}).
         </li>
+        {state.supplementalOfficialDocs.map((doc) => (
+          <li>
+            <strong>{doc.label}:</strong>{' '}
+            <a href={doc.url} rel="external nofollow noopener">
+              {state.agencyAbbreviation} — {doc.label}
+            </a>
+            . {doc.note}
+          </li>
+        ))}
       </ul>
     </section>
 

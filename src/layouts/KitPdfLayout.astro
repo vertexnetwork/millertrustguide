@@ -398,6 +398,14 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           <span class="kit-cite">Refer to {state.policyManualSection} for the operational rules and the
           {' '}requirements your trust must satisfy.</span>
         </li>
+        {state.supplementalOfficialDocs.map((doc) => (
+          <li>
+            <strong>{doc.label}:</strong>{' '}
+            <a href={doc.url}>{doc.url}</a>
+            <br />
+            <span class="kit-cite">{doc.note}</span>
+          </li>
+        ))}
       </ul>
 
       <div class="kit-callout kit-callout--warning">
@@ -1270,6 +1278,13 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           this kit's source-controlling claims (irrevocability, reversion clause, opening-deposit allowance,
           distribution timing, transfer-of-assets risk for late distribution) lives in this Appendix.</span>
         </li>
+        {state.supplementalOfficialDocs.map((doc) => (
+          <li>
+            <strong>{state.agencyAbbreviation} — {doc.label}</strong><br />
+            <a href={doc.url}>{doc.url}</a><br />
+            <span class="kit-cite">{doc.note}</span>
+          </li>
+        ))}
         {state.residuaryFormUrl && (
           <li>
             <strong>{state.agencyAbbreviation} {state.residuaryFormName}</strong><br />

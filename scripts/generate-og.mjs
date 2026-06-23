@@ -188,6 +188,17 @@ const ASSETS = [
     }),
     width: 1200,
   },
+
+  // OG per-state — Ohio
+  {
+    path: 'og/states/ohio.png',
+    svg: ogSvg({
+      headlineLines: ['Ohio Miller Trust', 'Setup Guide'],
+      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if ODM rejects',
+      footerLine: 'OHIO ODM  ·  OAC 5160:1-6-03.2  ·  LAST REVIEWED 2026-06-23',
+    }),
+    width: 1200,
+  },
 ];
 
 async function renderOne({ path, svg, width }) {
