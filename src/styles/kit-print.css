@@ -144,6 +144,12 @@ html, body {
 .kit ul, .kit ol { margin: 0 0 9pt 0; padding-left: 18pt; }
 .kit li { margin-bottom: 4pt; break-inside: avoid; }
 
+/* Glossary: glue each term to its definition and never split a single
+   definition across a page (was stranding e.g. the "ABD" term at a page
+   bottom with its description carried to the next page). */
+.kit-glossary dt { break-after: avoid; }
+.kit-glossary dd { break-inside: avoid; }
+
 .kit a { color: #115E59; text-decoration: underline; }
 
 /* Eyebrow label that opens each section — mirrors the site's pattern. */
