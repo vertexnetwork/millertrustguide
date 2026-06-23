@@ -38,14 +38,20 @@ const errorId = `${formId}-error`;
     </span>
   </label>
 
+  {/*
+    The button is intentionally NOT `disabled`: a disabled button fires no
+    click event, so a visitor who misses the checkbox taps a dead control and
+    gets no feedback (a silent abandon). Instead it stays clickable but looks
+    gated (aria-disabled + reduced opacity, managed in the script); clicking
+    without consent surfaces guidance and flashes the checkbox.
+  */}
   <button
     type="button"
     id={buttonId}
     data-state-slug={stateSlug}
     data-consent-id={consentId}
     data-error-id={errorId}
-    class="btn-cta mt-5 w-full"
-    disabled
+    class="btn-cta mt-5 w-full opacity-60"
     aria-disabled="true"
   >
     {buttonLabel}
@@ -64,6 +70,8 @@ const errorId = `${formId}-error`;
 </div>
 
 <script>
+  import { trackEvent } from '~/lib/analytics-client';
+
   // Wire every ConsentBuyButton instance on the page.
   document.querySelectorAll<HTMLButtonElement>('[data-state-slug]').forEach((button) => {
     const consentId = button.dataset.consentId!;
@@ -74,22 +82,41 @@ const errorId = `${formId}-error`;
     const errorEl = document.getElementById(errorId) as HTMLParagraphElement | null;
     if (!checkbox || !errorEl) return;
 
+    let submitting = false;
+
+    // Reflect consent state in the button's LOOK only — never the `disabled`
+    // property, so the click handler always runs and can give feedback.
     const sync = () => {
       const checked = checkbox.checked;
-      button.disabled = !checked;
       button.setAttribute('aria-disabled', String(!checked));
+      button.classList.toggle('opacity-60', !checked);
       if (checked) errorEl.classList.add('hidden');
     };
     checkbox.addEventListener('change', sync);
     sync();
 
     button.addEventListener('click', async () => {
+      if (submitting) return;
+
       if (!checkbox.checked) {
-        errorEl.textContent = 'Please confirm the acknowledgment above before continuing.';
+        errorEl.textContent =
+          'Please check the box above to confirm you understand this is an informational guide, then continue.';
         errorEl.classList.remove('hidden');
+        // Draw the eye to the checkbox.
+        checkbox.focus();
+        const label = checkbox.closest('label');
+        label?.classList.add('ring-2', 'ring-primary', 'ring-offset-2', 'rounded-md');
+        window.setTimeout(
+          () => label?.classList.remove('ring-2', 'ring-primary', 'ring-offset-2', 'rounded-md'),
+          1400
+        );
         return;
       }
-      button.disabled = true;
+
+      submitting = true;
+      trackEvent('buy_click', { state: stateSlug });
+      button.setAttribute('aria-disabled', 'true');
+      button.classList.add('opacity-60');
       button.textContent = 'Redirecting to secure checkout…';
       try {
         const res = await fetch('/api/create-checkout', {
@@ -107,13 +134,16 @@ const errorId = `${formId}-error`;
         }
         const data = (await res.json()) as { url?: string };
         if (!data.url) throw new Error('No checkout URL returned.');
+        trackEvent('checkout_redirect', { state: stateSlug });
         window.location.href = data.url;
       } catch (err) {
         const message =
           err instanceof Error ? err.message : 'Something went wrong. Please try again or email support@millertrustguide.com.';
         errorEl.textContent = message;
         errorEl.classList.remove('hidden');
-        button.disabled = false;
+        submitting = false;
+        button.classList.remove('opacity-60');
+        button.setAttribute('aria-disabled', 'false');
         button.textContent = 'Try again';
       }
     });

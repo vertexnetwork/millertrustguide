@@ -81,4 +81,27 @@ if (sessionId) {
       a licensed elder-law attorney in your state.
     </p>
   </article>
+
+  {/*
+    Conversion event — joins confirmed purchases to the Vercel Web Analytics
+    funnel (buy_click → checkout_redirect → purchase). Fires only on a paid
+    session and dedupes on the Stripe session id so a page refresh can't
+    double-count. Inline (define:vars) because it needs the server-side values.
+  */}
+  {
+    paymentConfirmed && sessionId && (
+      <script is:inline define:vars={{ sessionId, stateName }}>
+        try {
+          const key = 'mtg_purchase_tracked:' + sessionId;
+          if (!sessionStorage.getItem(key)) {
+            window.va &&
+              window.va('event', { name: 'purchase', data: stateName ? { state: stateName } : {} });
+            sessionStorage.setItem(key, '1');
+          }
+        } catch (e) {
+          /* analytics must never break the page */
+        }
+      </script>
+    )
+  }
 </BaseLayout>

@@ -7,6 +7,7 @@
 // sending subdomain — see .env.example and the deploy notes.
 
 import { Resend } from 'resend';
+import { createUnsubscribeToken } from '~/lib/unsubscribe-token';
 
 let cached: Resend | null = null;
 
@@ -172,6 +173,22 @@ export async function addSubscriberToAudience(email: string) {
   );
 }
 
+/**
+ * Mark a contact unsubscribed. Backs the one-click unsubscribe endpoint
+ * (/api/unsubscribe) so the List-Unsubscribe header actually stops the drip.
+ */
+export async function unsubscribeContact(email: string) {
+  const audienceId = import.meta.env.RESEND_AUDIENCE_ID;
+  if (!audienceId) throw new Error('RESEND_AUDIENCE_ID is not configured.');
+  return unwrap(
+    client().contacts.update({
+      audienceId,
+      email: email.toLowerCase(),
+      unsubscribed: true,
+    })
+  );
+}
+
 // Exposed for the nurture series (nurture.ts) so every email carries the
 // same Rule-4 disclaimer and sender identity.
 export { FROM_ADDRESS, DISCLAIMER_TEXT };
@@ -186,6 +203,15 @@ export async function sendEmail(opts: {
   text: string;
   html: string;
 }) {
+  // RFC 8058 one-click unsubscribe. The HTTPS target lets Gmail/Yahoo/Apple
+  // render a native "Unsubscribe" button that POSTs to our endpoint and
+  // genuinely stops the drip; the mailto is the fallback. The List-Unsubscribe-Post
+  // header is what signals true one-click support to the mailbox provider.
+  const siteBase =
+    import.meta.env.SITE_URL?.replace(/\/$/, '') || 'https://millertrustguide.com';
+  const unsubUrl = `${siteBase}/api/unsubscribe?token=${encodeURIComponent(
+    createUnsubscribeToken(opts.to)
+  )}`;
   return unwrap(
     client().emails.send({
       from: FROM,
@@ -195,8 +221,8 @@ export async function sendEmail(opts: {
       text: opts.text,
       html: opts.html,
       headers: {
-        // RFC 8058 unsubscribe target. Honored manually at MVP volume.
-        'List-Unsubscribe': `<mailto:${FROM_ADDRESS}?subject=unsubscribe>`,
+        'List-Unsubscribe': `<${unsubUrl}>, <mailto:${FROM_ADDRESS}?subject=unsubscribe>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
     })
   );

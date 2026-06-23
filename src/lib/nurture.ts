@@ -47,6 +47,24 @@ const SIGNOFF_HTML = `  <p style="color: #6B7280; font-size: 13px;">- James Whit
   <hr style="border:none;border-top:1px solid #E5E7EB;margin:24px 0;" />
   <p style="color: #78350F; background:#FEF3C7; padding:12px; border-radius:6px; font-size: 12px;">${DISCLAIMER_TEXT}</p>`;
 
+const SITE = 'https://millertrustguide.com';
+
+// Deep-link a lead back to the page they came from when we know it (email 1,
+// where the state is known at signup), otherwise the homepage.
+function stateUrl(slug?: string): string {
+  return slug ? `${SITE}/states/${slug}` : SITE;
+}
+
+// Styled button CTA — matches the kit-delivery email's button so the series
+// has a real call-to-action instead of a bare inline link.
+function ctaButton(href: string, label: string): string {
+  return `  <p style="margin:24px 0;"><a href="${href}" style="background:#B45309;color:#fff;padding:12px 22px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block;">${label}</a></p>`;
+}
+
+// One-line guarantee, reused across the series to de-risk the click.
+const GUARANTEE_LINE =
+  'Every kit is backed by a money-back guarantee — if the state rejects the trust for a reason traceable to following the kit, you get a full refund.';
+
 /** Wrap an HTML body fragment in the standard email shell. */
 function htmlShell(headingText: string, bodyHtml: string): string {
   return `<!doctype html>
@@ -61,7 +79,21 @@ ${SIGNOFF_HTML}
 // Email 1 — Welcome (day 0, sent at signup). State-specific.
 // ============================================================================
 
-function email1(stateName: string): EmailContent {
+interface Email1Ctx {
+  slug?: string;
+  privatePayLow?: number;
+  privatePayHigh?: number;
+}
+
+function email1(stateName: string, ctx: Email1Ctx = {}): EmailContent {
+  const url = stateUrl(ctx.slug);
+  // State-specific private-pay range when we have it, so the figure here can
+  // never contradict the state page or the kit. Falls back to a safe generic.
+  const payPhrase =
+    ctx.privatePayLow && ctx.privatePayHigh
+      ? `often $${ctx.privatePayLow.toLocaleString('en-US')} to $${ctx.privatePayHigh.toLocaleString('en-US')}`
+      : 'often many thousands of dollars';
+
   const subject = `The 30-day window most ${stateName} families miss`;
   const text = `Hi,
 
@@ -71,7 +103,7 @@ Here's the single most useful thing to know first.
 
 THE FUNDING-MONTH RULE
 
-A Miller Trust (Qualified Income Trust) only does its job for a given month if it is BOTH signed AND funded within that same calendar month. Medicaid does not back-date eligibility to before the trust was working. So if a family signs the trust on the 28th of a month and the bank account isn't funded until the 2nd of the next month, the first month does not qualify — and that month is billed at the private-pay nursing-home rate, often $7,500 to $11,000.
+A Miller Trust (Qualified Income Trust) only does its job for a given month if it is BOTH signed AND funded within that same calendar month. Medicaid does not back-date eligibility to before the trust was working. So if a family signs the trust on the 28th of a month and the bank account isn't funded until the 2nd of the next month, the first month does not qualify — and that month is billed at the private-pay nursing-home rate, ${payPhrase} a month.
 
 Most families lose a month not because they were ineligible, but because of this timing gap. The fix is simple once you know it: sign early in a month, fund the same day or within a few days, and if income redirects haven't processed yet, manually move that month's income into the trust account before the month ends.
 
@@ -82,7 +114,9 @@ WHAT'S COMING IN THIS SERIES
 - Who can serve as trustee, and what they do each month
 - When the situation calls for an attorney instead
 
-If you'd rather not wait, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet — for $129, with a money-back guarantee if the state rejects the trust. It's at millertrustguide.com.
+If you'd rather not wait, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}
+
+See the ${stateName} kit: ${url}
 
 No pressure either way. The emails are genuinely useful on their own.
 
@@ -93,7 +127,7 @@ ${SIGNOFF_TEXT}`;
     `  <p>Thanks for joining the Miller Trust Guide email series. Over the next three weeks you'll get four more short, plain-English emails about how ${stateName} Miller Trusts actually work — no sales pressure, unsubscribe anytime.</p>
   <p>Here's the single most useful thing to know first.</p>
   <h2 style="font-family: Georgia, serif; color: #0F4C4A; font-size: 17px;">The funding-month rule</h2>
-  <p>A Miller Trust (Qualified Income Trust) only does its job for a given month if it is <strong>both signed and funded within that same calendar month</strong>. Medicaid does not back-date eligibility to before the trust was working. So if a family signs the trust on the 28th and the bank account isn't funded until the 2nd of the next month, the first month does not qualify — and that month is billed at the private-pay nursing-home rate, often $7,500 to $11,000.</p>
+  <p>A Miller Trust (Qualified Income Trust) only does its job for a given month if it is <strong>both signed and funded within that same calendar month</strong>. Medicaid does not back-date eligibility to before the trust was working. So if a family signs the trust on the 28th and the bank account isn't funded until the 2nd of the next month, the first month does not qualify — and that month is billed at the private-pay nursing-home rate, ${payPhrase} a month.</p>
   <p>Most families lose a month not because they were ineligible, but because of this timing gap. The fix is simple once you know it: sign early in a month, fund the same day or within a few days, and if income redirects haven't processed yet, manually move that month's income into the trust account before the month ends.</p>
   <h2 style="font-family: Georgia, serif; color: #0F4C4A; font-size: 17px;">What's coming in this series</h2>
   <ul>
@@ -102,8 +136,9 @@ ${SIGNOFF_TEXT}`;
     <li>Who can serve as trustee, and what they do each month</li>
     <li>When the situation calls for an attorney instead</li>
   </ul>
-  <p>If you'd rather not wait, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet — for $129, with a money-back guarantee if the state rejects the trust. It's at <a href="https://millertrustguide.com">millertrustguide.com</a>.</p>
-  <p>No pressure either way. The emails are genuinely useful on their own.</p>`
+  <p>If you'd rather not wait, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}</p>
+${ctaButton(url, `See the ${stateName} kit`)}
+  <p style="color:#6B7280;font-size:13px;">No pressure either way — the emails are genuinely useful on their own.</p>`
   );
 
   return { subject, text, html };
@@ -127,6 +162,10 @@ The families who get the account open on the first or second try are the ones wh
 
 The kit's bank section is built entirely around this: a word-for-word script for the counter, the five most common refusals with the response to each, and a one-page letter you can hand the branch manager to escalate inside their own bank. It's the part buyers most often tell other families about.
 
+${GUARANTEE_LINE}
+
+See the kits: ${SITE}
+
 ${SIGNOFF_TEXT}`;
 
   const html = htmlShell(
@@ -135,7 +174,8 @@ ${SIGNOFF_TEXT}`;
   <p>Here's the reality. When you take the signed trust in to open the account, the first visit is usually refused. Not because anything is wrong with your trust. Most branch staff have simply never opened a Qualified Income Trust account — it isn't one of the account types on their screen. So they improvise: they ask for an EIN you don't need, or say you have to bring a lawyer, or tell you their system has no option for this kind of account.</p>
   <p><strong>None of that is a Medicaid rule.</strong> It's a gap in the branch's training. And it's fixable.</p>
   <p>The families who get the account open on the first or second try are the ones who walk in knowing three things: the exact account they're asking for, the specific state policy section that authorizes it, and what to say when the branch pushes back. The families who don't can lose weeks going back and forth — and weeks matter, because of the funding-month rule from the last email.</p>
-  <p>The kit's bank section is built entirely around this: a word-for-word script for the counter, the five most common refusals with the response to each, and a one-page letter you can hand the branch manager to escalate inside their own bank. It's the part buyers most often tell other families about. <a href="https://millertrustguide.com">See the kits at millertrustguide.com.</a></p>`
+  <p>The kit's bank section is built entirely around this: a word-for-word script for the counter, the five most common refusals with the response to each, and a one-page letter you can hand the branch manager to escalate inside their own bank. It's the part buyers most often tell other families about. ${GUARANTEE_LINE}</p>
+${ctaButton(SITE, 'See the kits')}`
   );
 
   return { subject, text, html };
@@ -165,6 +205,10 @@ The practical takeaway: if your family member's income is over the limit and the
 
 The kit lists every common denial reason for your state with the exact policy citation behind it, plus a checklist to run the day before you file. That checklist exists for one reason: to catch a paperwork error while it's still free to fix, instead of after the denial letter arrives.
 
+${GUARANTEE_LINE}
+
+See the kits: ${SITE}
+
 ${SIGNOFF_TEXT}`;
 
   const html = htmlShell(
@@ -180,7 +224,8 @@ ${SIGNOFF_TEXT}`;
   </ul>
   <p>Notice what is <em>not</em> on that list: "your family member earns too much" or "they don't need this level of care." Genuine eligibility is rarely the thing that fails.</p>
   <p>The practical takeaway: if your family member's income is over the limit and they need long-term care, the QIT path almost certainly works. What determines whether it goes smoothly is getting the mechanical steps right, and in the right order.</p>
-  <p>The kit lists every common denial reason for your state with the exact policy citation behind it, plus a checklist to run the day before you file — to catch a paperwork error while it's still free to fix. <a href="https://millertrustguide.com">millertrustguide.com</a></p>`
+  <p>The kit lists every common denial reason for your state with the exact policy citation behind it, plus a checklist to run the day before you file — to catch a paperwork error while it's still free to fix. ${GUARANTEE_LINE}</p>
+${ctaButton(SITE, 'See the kits')}`
   );
 
   return { subject, text, html };
@@ -210,6 +255,10 @@ It is a routine, not a burden. But it is a routine someone has to own, and it's 
 
 The kit walks the trustee through the monthly rhythm step by step, and includes a record-keeping checklist so that if the state ever asks for documentation, it's already in one place.
 
+${GUARANTEE_LINE}
+
+See the kits: ${SITE}
+
 ${SIGNOFF_TEXT}`;
 
   const html = htmlShell(
@@ -223,7 +272,8 @@ ${SIGNOFF_TEXT}`;
     <li>File the statement.</li>
   </ul>
   <p>There is exactly one rule that matters: it has to happen <strong>every month, on time</strong>. A missed month is a denied month of coverage. So the trustee's real job is not complexity — it's reliability. Most families set a recurring monthly reminder and treat it like paying a utility bill.</p>
-  <p>It is a routine, not a burden — but a routine someone has to own. The kit walks the trustee through the monthly rhythm and includes a record-keeping checklist. <a href="https://millertrustguide.com">millertrustguide.com</a></p>`
+  <p>It is a routine, not a burden — but a routine someone has to own. The kit walks the trustee through the monthly rhythm and includes a record-keeping checklist. ${GUARANTEE_LINE}</p>
+${ctaButton(SITE, 'See the kits')}`
   );
 
   return { subject, text, html };
@@ -253,7 +303,9 @@ If your situation is the straightforward kind — income over the limit, a clear
 
 Either way, you now know enough to tell which situation you're in. That was the point of these emails. The kit's final section spells out exactly when to involve an attorney and how to find the right one; the rest of it handles everything else.
 
-Thank you for reading. If a kit would help, they're at millertrustguide.com — and the money-back guarantee means the only real risk is bounded.
+Thank you for reading. If a kit would help, the money-back guarantee means the only real risk is bounded.
+
+See the kits: ${SITE}
 
 ${SIGNOFF_TEXT}`;
 
@@ -270,7 +322,8 @@ ${SIGNOFF_TEXT}`;
   </ul>
   <p>If any of those describe your situation, an attorney is the right call — and that is not a failure of the do-it-yourself approach. It's matching the tool to the job. Plenty of families use a guide for the trust and an attorney for the one genuinely complex piece.</p>
   <p>If your situation is the straightforward kind — income over the limit, a clear need for care, no tangled assets — a kit is very likely all you need. Either way, you now know enough to tell which situation you're in.</p>
-  <p>Thank you for reading. If a kit would help, they're at <a href="https://millertrustguide.com">millertrustguide.com</a> — and the money-back guarantee means the only real risk is bounded.</p>`
+  <p>Thank you for reading. If a kit would help, the money-back guarantee means the only real risk is bounded.</p>
+${ctaButton(SITE, 'See the kits')}`
   );
 
   return { subject, text, html };
@@ -281,10 +334,14 @@ ${SIGNOFF_TEXT}`;
  * (the welcome, sent at signup where the state is known); emails 2-5 are
  * state-generic because the drip cron has no per-contact state.
  */
-function nurtureEmailContent(emailNumber: number, stateName: string): EmailContent {
+function nurtureEmailContent(
+  emailNumber: number,
+  stateName: string,
+  ctx: Email1Ctx = {}
+): EmailContent {
   switch (emailNumber) {
     case 1:
-      return email1(stateName);
+      return email1(stateName, ctx);
     case 2:
       return email2();
     case 3:
@@ -305,8 +362,9 @@ function nurtureEmailContent(emailNumber: number, stateName: string): EmailConte
 export async function sendNurtureEmail(
   emailNumber: number,
   to: string,
-  stateName = 'your state'
+  stateName = 'your state',
+  ctx: Email1Ctx = {}
 ) {
-  const content = nurtureEmailContent(emailNumber, stateName);
+  const content = nurtureEmailContent(emailNumber, stateName, ctx);
   return sendEmail({ to, ...content });
 }

@@ -66,6 +66,8 @@ const formId = `lead-${Math.random().toString(36).slice(2, 8)}`;
 </section>
 
 <script>
+  import { trackEvent } from '~/lib/analytics-client';
+
   document.querySelectorAll<HTMLFormElement>('form[data-state-slug]').forEach((form) => {
     const emailInput = form.querySelector<HTMLInputElement>('input[name="email"]');
     const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
@@ -108,6 +110,7 @@ const formId = `lead-${Math.random().toString(36).slice(2, 8)}`;
         }
 
         form.reset();
+        trackEvent('lead_submit', stateSlug ? { state: stateSlug } : undefined);
         showFeedback(
           data.note ||
             'You\'re on the list. Check your inbox — the first email is on its way.',

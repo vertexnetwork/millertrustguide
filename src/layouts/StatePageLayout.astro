@@ -7,6 +7,7 @@ import MoneyBackGuarantee from '~/components/MoneyBackGuarantee.astro';
 import PdfPreview from '~/components/PdfPreview.astro';
 import StickyBuyBar from '~/components/StickyBuyBar.astro';
 import SocialProof from '~/components/SocialProof.astro';
+import TrustStrip from '~/components/TrustStrip.astro';
 import LeadMagnetForm from '~/components/LeadMagnetForm.astro';
 import {
   articleSchema,
@@ -257,6 +258,8 @@ if (isLive) {
           </div>
         )
       }
+
+      {isLive && <TrustStrip agencyAbbreviation={state.agencyAbbreviation} />}
     </header>
 
     {
@@ -398,6 +401,19 @@ if (isLive) {
                 <div class="mt-5">
                   <ConsentBuyButton stateSlug={state.slug} price={displayPrice} />
                 </div>
+                {/* Guarantee at the decision point — the #1 de-risker for a
+                    $-purchase from a new publisher, surfaced next to the button
+                    rather than only further down the page. */}
+                <div class="mt-4 flex items-start gap-2 rounded-md border border-primary/20 bg-primary-tint/30 p-3">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" class="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="12" cy="12" r="10" />
+                  </svg>
+                  <p class="!my-0 text-xs leading-relaxed text-ink">
+                    <strong>If {state.agencyAbbreviation} rejects the trust, you pay nothing.</strong> Full refund
+                    within one business day — no forms, no phone tag.
+                  </p>
+                </div>
               </div>
             </div>
           </aside>
@@ -407,7 +423,14 @@ if (isLive) {
 
     {!blocked && <PdfPreview stateSlug={state.slug} />}
 
-    {!blocked && <ComparisonTable stateName={state.name} price={displayPrice} />}
+    {!blocked && (
+      <ComparisonTable
+        stateName={state.name}
+        price={displayPrice}
+        privatePayMonthlyLow={state.privatePayMonthlyLow}
+        privatePayMonthlyHigh={state.privatePayMonthlyHigh}
+      />
+    )}
 
     {/* Bank-refusal teaser (the moat) */}
     {

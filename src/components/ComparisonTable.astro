@@ -2,9 +2,16 @@
 interface Props {
   stateName: string;
   price: number;
+  privatePayMonthlyLow: number;
+  privatePayMonthlyHigh: number;
 }
 
-const { stateName, price } = Astro.props;
+const { stateName, price, privatePayMonthlyLow, privatePayMonthlyHigh } = Astro.props;
+
+const fmt = (n: number) => n.toLocaleString('en-US');
+// State-specific private-pay range, kept in sync with the state page + kit so
+// the figure can never contradict them.
+const privatePayRange = `$${fmt(privatePayMonthlyLow)}–$${fmt(privatePayMonthlyHigh)}`;
 ---
 
 <section aria-labelledby="comparison-heading" class="my-12">
@@ -26,7 +33,7 @@ const { stateName, price } = Astro.props;
           <td class="py-3 pr-4">${price}</td>
           <td class="py-3 pr-4">$1,000–2,500</td>
           <td class="py-3 pr-4">$0</td>
-          <td class="py-3 pr-4">$0, then $9K–15K/mo private-pay</td>
+          <td class="py-3 pr-4">$0, then {privatePayRange}/mo private-pay</td>
         </tr>
         <tr>
           <th scope="row" class="py-3 pr-4 font-medium">Time to qualified</th>

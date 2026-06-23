@@ -31,14 +31,24 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ error: 'Please enter a valid email address.' }, 400);
   }
 
-  // Resolve the state name for the welcome-email copy. Defaults to a generic
-  // phrasing if no/unknown slug is passed.
+  // Resolve the state for the welcome-email copy + deep link. Defaults to a
+  // generic phrasing if no/unknown slug is passed. We pass the slug (so email 1
+  // deep-links back to the state page) and the state's private-pay range (so the
+  // loss-frame figure matches the state page and kit — never a stale hardcode).
   let stateName = 'your state';
+  let ctx: { slug?: string; privatePayLow?: number; privatePayHigh?: number } = {};
   const slug = typeof payload.stateSlug === 'string' ? payload.stateSlug.toLowerCase() : '';
   if (slug) {
     const states = await getCollection('states');
     const entry = states.find((s) => s.slug === slug);
-    if (entry) stateName = entry.data.name;
+    if (entry) {
+      stateName = entry.data.name;
+      ctx = {
+        slug,
+        privatePayLow: entry.data.privatePayMonthlyLow,
+        privatePayHigh: entry.data.privatePayMonthlyHigh,
+      };
+    }
   }
 
   // Add to the audience. If this fails we stop — no point sending a welcome
@@ -57,7 +67,7 @@ export const POST: APIRoute = async ({ request }) => {
   // contact is already on the list and the daily drip cron will still send
   // emails #2-5 on schedule.
   try {
-    await sendNurtureEmail(1, email, stateName);
+    await sendNurtureEmail(1, email, stateName, ctx);
   } catch (err) {
     console.error('[subscribe] welcome email send failed (contact still subscribed):', err);
     return json(
