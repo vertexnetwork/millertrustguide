@@ -150,6 +150,11 @@ html, body {
 .kit-glossary dt { break-after: avoid; }
 .kit-glossary dd { break-inside: avoid; }
 
+/* Generic "keep this block on one page" wrapper — for short heading+paragraph
+   units that should never split across a page break (e.g. the closing
+   "Reporting an error" block). */
+.kit-keep { break-inside: avoid; }
+
 .kit a { color: #115E59; text-decoration: underline; }
 
 /* Eyebrow label that opens each section — mirrors the site's pattern. */
