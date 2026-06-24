@@ -1,0 +1,160 @@
+---
+slug: "south-carolina"
+name: "South Carolina"
+abbreviation: "SC"
+
+status: "live"
+
+stripePriceId: "price_1TlsUDBitfBHN1Yud0CgYziI"
+pdfBlobKey: "kits/south-carolina/v1.pdf"
+price: 129
+multiStateBundleEligible: true
+
+agencyName: "South Carolina Department of Health and Human Services"
+agencyAbbreviation: "SCDHHS"
+officialTemplateUrl: "https://img1.scdhhs.gov/forms/FM%20905.pdf"
+officialTemplateNote: "South Carolina publishes an official Income Trust Agreement — DHHS Form 905 (January 2026) — the fill-in instrument an applicant completes and returns to the Medicaid office; SCDHHS reviews every completed trust to confirm it meets the legal criteria. The form states it is not required to use an attorney. A completed Schedule A (DHHS Form 3270 ME) listing the income and the trust bank account is required for the trust's validity, and the trust must be funded solely with income — placing any asset in it renders the trust invalid. Eligibility cannot be established before the month the trust is signed, so it should be completed as soon as possible."
+policyManualUrl: "https://www.scdhhs.gov/members/program-eligibility-and-income-limits"
+policyManualSection: "SCDHHS Healthy Connections Nursing Home / HCBS eligibility (Medicaid Cap = 300% of the SSI Federal Benefit Rate) and DHHS Form 905, the Income Trust Agreement (January 2026)"
+policyCitationShort: "DHHS Form 905"
+ltcProgramAbbrev: "ABD"
+ltcProgramName: "Aged, Blind, and Disabled Medicaid — Nursing Home and Home & Community-Based / Community Long Term Care (CLTC) services"
+spousalCalcRef: "the post-eligibility deductions in DHHS Form 905 paragraph 5.02 (personal needs allowance; community-spouse or dependent allowance under 42 U.S.C. §1396r-5; and special health-insurance and medical costs under 42 U.S.C. §1396a(r))"
+residuaryPaymentNote: "Per DHHS Form 905 paragraph 5.05 and the Statement of Trustee, the trust ends at the beneficiary's death. The trustee must promptly notify SCDHHS of the death and may not use or distribute any remaining funds until SCDHHS's reimbursement claim is resolved; the trustee then pays SCDHHS (the named 'Secondary Beneficiary') an amount up to the total previously un-reimbursed medical assistance, and only the balance remaining after SCDHHS is reimbursed in full passes to the beneficiary's estate. The SCDHHS forms do not print a specific remittance address — confirm the current payment instructions with SCDHHS at termination and keep proof of payment in the permanent trust file."
+
+supplementalOfficialDocs:
+  - label: "DHHS Form 906 — Income Trust Information & Trustee Checklist"
+    url: "https://img1.scdhhs.gov/forms/FM%20906.pdf"
+    note: "SCDHHS's plain-English explanation plus the trustee's checklist — how to set up and title the separate account (only the applicant/beneficiary and trustee may be on it), how income flows in (direct deposit, deposit of the check, or transfer from another account are all allowed), what counts as an allowable expense, and the rule that the account may not be used like a personal checking account or write checks to third parties. (Some SCDHHS form links open the PDF directly in the browser.)"
+  - label: "DHHS Form 3270 ME — Schedule A (income & account)"
+    url: "https://img1.scdhhs.gov/forms/FM%203270%20ME.pdf"
+    note: "The income schedule attached to the trust — lists each income source (gross/net/partial), the designated bank and account number, and the trustee's signature. A completed Schedule A is REQUIRED for the trust's validity, and it states in bold that funding the trust with any asset (stocks, bonds, CDs, property) renders it invalid."
+  - label: "DHHS Form 907 — Income Trust Checklist"
+    url: "https://img1.scdhhs.gov/forms/FM%20907.pdf"
+    note: "The checklist the Medicaid worker runs against a submitted Income Trust — useful to self-verify before you file: income over the Medicaid Cap, no assets in the account, applicant listed as Settlor/principal beneficiary, SCDHHS as secondary beneficiary, the $10/month maintenance line, all signatures and the notarized Statement of Trustee, and Schedule A attached."
+
+incomeCap2026: 2982
+incomeCapCouple2026: 5964
+personalNeedsAllowance: 60
+asOf: "CMS January 2026 figures"
+
+federalStatuteCitation: "42 U.S.C. § 1396p(d)(4)(B)"
+federalStatuteUrl: "https://www.law.cornell.edu/uscode/text/42/1396p"
+
+trusteeGuidanceNote: "Per DHHS Form 905, the applicant/beneficiary cannot serve as their own trustee — a separate trustee must be appointed (a family member, an attorney-in-fact under a Durable Power of Attorney, a guardian or conservator, or another willing person). The trustee is responsible for having the income deposited, withdrawing only allowed deductions, and accounting for every dollar in and out; the Statement of Trustee must be signed, witnessed, and notarized, and the trustee is personally liable for any misuse of trust funds. No bond is required. A successor trustee is named by agreement of the beneficiary (or representative) and SCDHHS, or by the probate court if they cannot agree. South Carolina allows the income to flow into the trust account by direct deposit, by depositing the check, or by transfer from another account — each month the income must flow through the account for any month coverage is sought. A $10/month maintenance reserve may be retained for bank charges, a tax return, or trustee compensation if no one will serve without pay (SCDHHS may authorize more)."
+einRequired: false
+einRequiredNote: "DHHS Form 905 puts the trust account in the names of the applicant/beneficiary and the trustee only, and does not specify a separate tax identification number. A Miller-type income trust is a grantor trust reported under the beneficiary's Social Security number — the trust itself does not create an EIN. (South Carolina's forms do not state a tax-ID requirement; this reflects standard IRS treatment of a grantor income trust, so if a bank asks, the beneficiary's SSN is the identifier.) The account need not be opened through a bank's trust department."
+stateBarLrsName: "South Carolina Bar — Find a Lawyer (Lawyer Referral Service)"
+stateBarLrsUrl: "https://www.scbar.org/for-the-public/quicklinks/get-legal-help/"
+additionalLegalAidReferrals:
+  - "South Carolina Legal Services (sclegal.org) — free civil legal aid for eligible low-income residents"
+  - "South Carolina Department on Aging — legal assistance for residents 60+ via the Area Agencies on Aging (aging.sc.gov)"
+  - "GetCareSC — SC's Aging & Disability Resource Connection / Area Agencies on Aging service finder (getcaresc.com)"
+  - "National Academy of Elder Law Attorneys (NAELA)"
+
+privatePayMonthlyLow: 9034
+privatePayMonthlyHigh: 9612
+
+commonDenialReasons:
+  - title: "An asset (not income) is placed in the trust"
+    description: "The single most explicit invalidator in South Carolina. Schedule A states in bold that the trust is to be funded SOLELY with income, and that placing any asset — stocks, bonds, certificates of deposit, real or personal property — into the trust renders it invalid for the Income Trust exception. The trust document repeats that no property other than income shall be used to fund it."
+    agencyCitation: "SC DHHS Form 3270 ME (Schedule A); DHHS Form 905, Trust Estate"
+  - title: "Income does not flow through the trust in the month coverage is sought"
+    description: "Eligibility cannot be established before the month the trust is signed, and the applicant must provide verification that the income for any month coverage is desired was actually deposited into the trust account — SCDHHS requires this before the application can be approved. A month in which the income did not flow through the trust is not covered."
+    agencyCitation: "SC DHHS Form 905 (Memorandum of Understanding); DHHS Form 906 (Trustee Checklist)"
+  - title: "Schedule A is missing or incomplete"
+    description: "A completed Schedule A — listing the income assigned to the trust and the designated bank and account number, signed by the trustee — is a stated requirement for the trust's validity. A trust submitted without it is not acceptable."
+    agencyCitation: "SC DHHS Form 905, Trust Estate; DHHS Form 3270 ME (Schedule A)"
+  - title: "The account is used like a personal checking account"
+    description: "The trust account's funds may be used only for expenses authorized by Medicaid. The trustee may write a check for the personal needs allowance to the beneficiary, or a spousal allocation check to the community spouse, but may NOT write checks to third parties on their behalf (for example, the electric company or a doctor's office). Misusing the account this way violates the trust."
+    agencyCitation: "SC DHHS Form 906 (Trustee Checklist)"
+  - title: "Trust is not irrevocable or is improperly executed"
+    description: "The trust must be irrevocable (it may be modified or terminated during the beneficiary's life only by agreement of the beneficiary, the trustee, and SCDHHS, or by the probate court). Execution must be complete: the document and the Statement of Trustee must be signed, the settlor's and the trustee's signatures each require two witnesses, and the Statement of Trustee must be notarized. Missing signatures, witnesses, or notarization make the trust unacceptable."
+    agencyCitation: "SC DHHS Form 905 (execution + paragraph 8.02); DHHS Form 907 (Checklist)"
+  - title: "Applicant named as their own trustee"
+    description: "DHHS Form 905 and the SCDHHS information sheet both state the applicant/beneficiary cannot serve as their own trustee. A separate trustee must be appointed."
+    agencyCitation: "SC DHHS Form 905; DHHS Form 906"
+  - title: "Missing SCDHHS secondary-beneficiary (payback) clause"
+    description: "The trust must name the single state Medicaid agency (SCDHHS) as the 'Secondary Beneficiary' with an interest in the trust up to the total medical assistance paid for the beneficiary, with only the excess passing to the estate. DHHS Form 905 already contains this clause; removing or altering it makes the trust unacceptable."
+    agencyCitation: "SC DHHS Form 905, Trust Beneficiaries and paragraph 5.05"
+
+bankRefusalNotes:
+  - refusalType: "Branch asks for a tax ID (EIN) for the trust"
+    response: "DHHS Form 905 opens the account in the names of the applicant/beneficiary and the trustee, and does not require a separate tax ID. A Miller-type income trust is a grantor trust reported under the beneficiary's Social Security number, so the SSN is the identifier. Show the branch DHHS Form 905 and the Form 906 account guidance."
+    documentNeeded: "DHHS Form 905 (Income Trust Agreement) and DHHS Form 906 (Income Trust Information)"
+  - refusalType: "Branch sends you to its trust department"
+    response: "Per DHHS Form 905, the account does not have to be established through a bank's trust department — it is an ordinary separate account in the names of the applicant/beneficiary and the trustee, holding only the applicant's income. Ask the retail desk to open a separate, separately-identifiable account."
+    documentNeeded: "DHHS Form 905 (account requirements)"
+  - refusalType: "Branch is unsure how to title the account or who may be on it"
+    response: "The account may be in the name of the applicant/beneficiary and their trustee only, and it must be separately identifiable so the only money in it is the applicant's income. An existing account may be designated or a new one opened."
+    documentNeeded: "DHHS Form 905 / DHHS Form 906 (account titling)"
+  - refusalType: "Branch is unsure how income should arrive in the account"
+    response: "South Carolina allows the income to flow in by direct deposit, by depositing the check, or by transfer from another account — whatever is reliable. The key requirement is that the income flows through the trust account every month coverage is sought; set up the method early in the month."
+    documentNeeded: "DHHS Form 906 (Trustee Checklist — Income Trust Bank Account)"
+  - refusalType: "Branch has never opened an Income Trust account"
+    response: "It is a routine, separately-identifiable checking account the trustee manages, holding only the applicant's income and paying toward care each month. Ask for a full-service branch; community banks and credit unions are often more flexible. SCDHHS reviews the trust itself — the bank only provides the account."
+
+postDeathDistribution: "The Income Trust terminates upon the beneficiary's death (DHHS Form 905, paragraph 5.05). The trustee must promptly notify SCDHHS and may not use or distribute any remaining trust funds until SCDHHS's reimbursement claim is resolved. The trustee then pays SCDHHS — the named Secondary Beneficiary — an amount up to the total previously un-reimbursed medical assistance paid for the beneficiary, and only the balance remaining after SCDHHS is reimbursed in full passes to the beneficiary's estate. If the trust account was a joint account, any survivorship rights take effect only after the trust's obligations to SCDHHS are satisfied. The forms do not print a specific remittance address; confirm the current instructions with SCDHHS at termination."
+
+metaTitle: "South Carolina Income Trust (Miller Trust) Setup Guide — $129 — Qualify for Medicaid Long-Term Care"
+metaDescription: "Step-by-step South Carolina Income Trust (Miller Trust / QIT) operational guide, built around the official SCDHHS Form 905 template. Bank-account walkthrough, monthly funding worksheet, denial-avoidance. Informational, not legal advice."
+
+primaryKeyword: "south carolina income trust"
+secondaryKeywords:
+  - "sc income trust"
+  - "south carolina medicaid income trust"
+  - "income trust south carolina"
+  - "south carolina miller trust"
+  - "miller trust south carolina"
+  - "qualified income trust south carolina"
+  - "sc dhhs form 905"
+  - "fm 905 income trust"
+
+reviewedDate: "2026-06-24"
+uplNotes: "South Carolina is distinctive: there is no statute defining 'the practice of law' — authority rests with the SC Supreme Court. The most on-point authority is Medlock v. LegalZoom (SC Sup. Ct., 2014), which held that selling self-help legal documents is NOT UPL, emphasizing that the forms are available on government websites and that the seller exercises no judgment over a customer's specific situation. That maps directly onto this kit — which explains South Carolina's OWN published Form 905. SCDHHS and the SC Department on Aging both state an attorney is not required to establish an Income Trust. The countervailing nuance: SC is comparatively strict on non-lawyer document PREPARATION for a specific client (State v. Buyers Service, 1987; Doe v. McMaster, 2003), so the risk is entirely in execution — never apply judgment to an individual's facts, never review or correct a buyer's completed form, never advise whether a trust is right for them. The kit operates under the same 4 hard rules as TX/NJ/OH/GA: no drafted/customized trust, no personalized intake, no email/chat advice, disclaimer + consent gate. CONFIRM SC UPL comfort before flipping live."
+
+socialProof:
+  unitsSold: 0
+  displayThreshold: 25
+  launchLabel: "2026"
+
+kitVersion: "v1.0"
+kitVersionDate: "2026-06-24"
+kitChangelog:
+  - version: "v1.0"
+    date: "2026-06-24"
+    changes:
+      - "Initial South Carolina release."
+      - "Reconciled against the SCDHHS Income Trust forms: DHHS Form 905 (January 2026), DHHS Form 906 (October 2016), DHHS Form 907, and DHHS Form 3270 ME / Schedule A (January 2026)."
+      - "South Carolina's term is 'Income Trust' (functionally a Miller Trust / Qualified Income Trust under 42 U.S.C. §1396p(d)(4)(B)); the kit uses SCDHHS's term in all citations."
+      - "2026 Medicaid Cap $2,982/month single ($5,964 couple), confirmed on the SCDHHS eligibility page (300% of the CMS 2026 Federal Benefit Rate); Personal Needs Allowance $60/month, confirmed by SCDHHS bulletin MB# 25-029 (increased from $30, effective Oct. 1, 2025)."
+      - "Full pass-through model: the income flows through the trust each month and pays patient liability. Schedule A is required for validity; funding the trust with any asset invalidates it."
+      - "South Carolina allows income to reach the trust by direct deposit, deposited check, or transfer; the applicant may not be their own trustee; a $10/month maintenance reserve is permitted."
+      - "Private-pay nursing-home range from the CareScout/Genworth 2025 South Carolina Cost of Care data (~$9,034 semi-private / ~$9,612 private per month)."
+
+faq:
+  - question: "Is the South Carolina Income Trust Kit legal advice?"
+    answer: "No. This kit is informational only and is not legal advice. We are not attorneys and we do not practice law. The kit teaches you how to use South Carolina's publicly-published Income Trust forms (DHHS Form 905 and its companions). For advice on your specific situation, consult a South Carolina-licensed elder-law attorney."
+  - question: "What does the kit include?"
+    answer: "A step-by-step operational guide: a plain-English explanation of how a South Carolina Income Trust works, direct links to the official SCDHHS Form 905 template plus the trustee information sheet (Form 906), Schedule A (Form 3270 ME), and the worker checklist (Form 907), instructions for filling the numbered blanks, a monthly funding worksheet, the bank-account walkthrough with a branch script, the month-by-month funding process, and a South-Carolina-specific list of common denial reasons. Delivered as a single PDF."
+  - question: "Do you provide the trust template itself?"
+    answer: "No. We never author or host trust instrument text. The kit links you to the SCDHHS-published Form 905 on the state's .gov site. You download the template directly from SCDHHS. We explain how to use it, fund it, and keep it compliant. SCDHHS's own forms say it is not required to use an attorney."
+  - question: "Who has to set up an Income Trust in South Carolina?"
+    answer: "An applicant for Nursing Home or Home & Community-Based (Community Long Term Care) Medicaid whose gross monthly income is over the Medicaid Cap ($2,982/month in 2026) must establish an Income Trust to become income-eligible, provided they meet the other requirements. The applicant cannot serve as their own trustee."
+  - question: "How does the money work?"
+    answer: "Each month the applicant's income flows through the trust account and is used to pay toward the cost of care, after allowable deductions — the $60 personal needs allowance, any community-spouse or dependent allowance, and certain medical/health-insurance costs. Income that flows through the trust does not count toward the Medicaid Cap. A small $10/month maintenance reserve may stay in the trust; any other excess is retained in the trust, not spent."
+  - question: "Does a South Carolina Income Trust need an EIN?"
+    answer: "No separate EIN is created by the trust. SCDHHS puts the account in the names of the applicant/beneficiary and the trustee, and a Miller-type income trust is a grantor trust reported under the beneficiary's Social Security number. The account does not have to be opened through a bank's trust department."
+  - question: "When does coverage begin?"
+    answer: "Eligibility cannot be established before the month the trust document is signed — there is no back-dating — and the applicant must show that the income actually flowed through the trust for any month coverage is sought, which SCDHHS requires before approving the application. So complete the trust and route the income through it as early in the month as possible."
+  - question: "What if my bank refuses to open the trust account?"
+    answer: "Bank refusal is common on a first attempt. The kit includes a branch script and the most common refusal types (EIN demand, being sent to a trust department, titling confusion, how income should arrive) with the SCDHHS facts that resolve each — the account is an ordinary separate account in the names of the applicant/beneficiary and trustee, holds only income, and need not go through a trust department."
+  - question: "Do you offer a refund?"
+    answer: "Yes — money back if SCDHHS rejects the Income Trust for any reason traceable to following the kit. Email support@millertrustguide.com with the agency's stated denial reason and we issue a full refund within one business day."
+  - question: "Will you talk to me on the phone about my situation?"
+    answer: "No. We do not offer phone support and we do not advise on individual situations. For advice on your specific situation, consult a South Carolina-licensed elder-law attorney — you can find one through the South Carolina Bar's Find a Lawyer service or South Carolina Legal Services."
+---
+
+import StatePageLayout from '~/layouts/StatePageLayout.astro';
+
+This file's frontmatter is the canonical South Carolina data source. The body is intentionally minimal — all conversion-surface rendering happens in `StatePageLayout.astro`, which reads from frontmatter. This keeps states homogeneous and prevents drift between states.
