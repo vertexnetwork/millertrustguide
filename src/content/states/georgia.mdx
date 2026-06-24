@@ -1,0 +1,164 @@
+---
+slug: "georgia"
+name: "Georgia"
+abbreviation: "GA"
+
+status: "live"
+
+stripePriceId: "price_1TlfcFBitfBHN1YuNcAfyvb4"
+pdfBlobKey: "kits/georgia/v1.pdf"
+price: 129
+multiStateBundleEligible: true
+
+agencyName: "Georgia Department of Community Health"
+agencyAbbreviation: "DCH"
+officialTemplateUrl: "https://pamms.dhs.ga.gov/dfcs/medicaid/_attachments/form-948.pdf"
+officialTemplateNote: "Georgia publishes an approved Qualified Income Trust template — Form 948 (Revised 08/2024), the irrevocable Medically Needy/Qualified Income Trust agreement that names the Georgia Department of Community Health as residuary beneficiary. It is the DCH-approved template, published in the DFCS Medicaid Policy Manual (Section 2407) and handed to applicants by the county DFCS office. Georgia's own policy states it is not necessary to hire a lawyer: the caseworker provides a fill-in-the-blank template. A QIT that is identical to Form 948 is approved with the Form 936 certification; a QIT that deviates from the template must be reviewed and approved by the DCH Trust Unit (via Form 947) before the case is approved."
+policyManualUrl: "https://pamms.dhs.ga.gov/dfcs/medicaid/2407/"
+policyManualSection: "DFCS Medicaid Policy Manual, Section 2407 (Qualified Income Trust; effective May 2026, MT 79)"
+policyCitationShort: "Section 2407"
+ltcProgramAbbrev: "LA-D"
+ltcProgramName: "Long-Term Care Aged, Blind, and Disabled (LA-D) Medicaid (the DFCS class of assistance covering nursing-facility, hospice, and Elderly & Disabled Waiver care)"
+spousalCalcRef: "the DFCS spousal-diversion and patient-liability rules (Section 2554, Diversion of Income, and Section 2552, Patient Liability/Cost Share Deductions)"
+residuaryPaymentNote: "Per Form 948 and Section 2407, at the applicant's death the trustee writes a check for the QIT balance payable to the 'Georgia Department of Community Health' — up to the total medical assistance Medicaid paid on the applicant's behalf — with a copy of the bank statement and a cover letter identifying the decedent by name, Social Security number, and/or Medicaid number. Georgia's documents give two destinations: the Trustee Guide (Form 945) directs the check to DCH Third Party Administration, Estate Recovery Program; Section 2407 routes termination paperwork to the DCH Trust Unit. Confirm the current remittance address with DCH at the time of termination, and keep proof of payment in the permanent trust file. Only funds remaining after DCH is reimbursed pass to the residuary beneficiaries named in the trust."
+
+supplementalOfficialDocs:
+  - label: "Form 945 — QIT: A Guide for Trustees"
+    url: "https://pamms.dhs.ga.gov/dfcs/medicaid/_attachments/form-945.pdf"
+    note: "DCH/DFCS guide for the trustee — opening and titling the QIT bank account, getting income in (note: Georgia does NOT allow direct deposit from the income source — the trustee transfers each month's income in from another account), allowable payments, accounting, and termination. (Some links open the PDF as a direct download.)"
+  - label: "Form 946 — QIT Worksheet & FAQ"
+    url: "https://pamms.dhs.ga.gov/dfcs/medicaid/_attachments/form-946.pdf"
+    note: "The official worksheet for computing the minimum monthly deposit (total income minus the Medicaid Cap, minus a dollar) plus a plain-English FAQ and the list of allowable QIT disbursements."
+  - label: "Form 936 — Certification of DCH-Approved QIT"
+    url: "https://pamms.dhs.ga.gov/dfcs/medicaid/_attachments/form-936.pdf"
+    note: "The certification page submitted with a Form 948 QIT that is identical to the approved template; including it lets the case proceed without a separate DCH Trust Unit deviation review."
+
+incomeCap2026: 2982
+incomeCapCouple2026: 5964
+personalNeedsAllowance: 70
+asOf: "CMS January 2026 figures"
+
+federalStatuteCitation: "42 U.S.C. § 1396p(d)(4)(B)"
+federalStatuteUrl: "https://www.law.cornell.edu/uscode/text/42/1396p"
+
+trusteeGuidanceNote: "Per Section 2407, the applicant/recipient may NOT serve as his or her own trustee. A spouse, anyone named in the trust who is willing and capable, or a nursing-home representative may serve (a nursing home may be trustee but may not establish the trust). Whoever establishes the QIT for the applicant must show a Power of Attorney, court-appointed guardianship, or conservatorship. The trustee is the authorized signer on the QIT bank account, makes the monthly deposits and the allowable disbursements, keeps records (bank statements, cancelled checks, receipts), and accounts to the county DFCS office on behalf of DCH at the twelve-month review. A distinctive Georgia rule: income may NOT be direct-deposited into the QIT from the income source — each month the current month's income is transferred into the QIT account from the applicant's regular bank account. The template requires no trustee bond and provides for successor trustees."
+einRequired: false
+einRequiredNote: "Form 948 establishes the trust under the grantor's (applicant's) Social Security number, and a Miller-type QIT is a grantor trust reported under that SSN — no separate EIN is created by the trust itself. Note a Georgia-specific nuance: the official Trustee Guide (Form 945) states the bank 'may require that a tax identification number be obtained from IRS,' so some Georgia banks ask for a TIN/EIN when opening the account. Either way the account holds only the applicant's income, is titled to identify it as the Qualified Income Trust, and lists the trustee as the authorized signer; do not obtain a debit or credit card on the account."
+stateBarLrsName: "State Bar of Georgia — Find a Lawyer"
+stateBarLrsUrl: "https://www.gabar.org/public/find-a-lawyer"
+additionalLegalAidReferrals:
+  - "GeorgiaLegalAid.org — free legal information and a local legal-aid finder"
+  - "Georgia Legal Services Program (glsp.org) — civil legal aid for the 154 counties outside metro Atlanta"
+  - "Atlanta Legal Aid Society — metro Atlanta counties"
+  - "Georgia Division of Aging Services — Aging & Disability Resource Connection (ADRC)"
+  - "National Academy of Elder Law Attorneys (NAELA)"
+
+privatePayMonthlyLow: 8821
+privatePayMonthlyHigh: 9429
+
+commonDenialReasons:
+  - title: "QIT not established AND funded before the end of the benefit month"
+    description: "Per Section 2407, an application is denied for excess income for any month in which a QIT was not both established and funded by the end of that month and the applicant's income is at or above the Medicaid Cap. 'Properly funded' means depositing at least the difference between the income cap (minus a dollar) and the applicant's total income. There is no back-dating — the QIT is effective beginning the month it is completed and signed."
+    agencyCitation: "GA DFCS Medicaid Policy Manual, Section 2407"
+  - title: "Patient Liability / Cost Share not paid on time"
+    description: "The applicant's care payment (Patient Liability/Cost Share) must be paid by the end of the month following the month the income is received. If the required payments are not made, the applicant is not following the provisions of the trust and is not eligible for Medicaid; DFCS acts to close the case for the first month timely notice permits."
+    agencyCitation: "GA DFCS Medicaid Policy Manual, Section 2407"
+  - title: "An inappropriate payment is made from the trust"
+    description: "Paying lawyer fees, mortgage payments, costs of doing business, or other non-allowable items from the QIT invalidates it; those amounts are then counted as income to the applicant, making them ineligible. The only allowable disbursements are the Patient Liability/Cost Share to the facility, the Personal Needs Allowance, diversion to a community spouse or dependent children, certain medical expenses, and bank fees."
+    agencyCitation: "GA DFCS Medicaid Policy Manual, Section 2407"
+  - title: "Trust is revocable, not irrevocable"
+    description: "A revocable QIT does not meet the criteria and is treated as a countable resource under the OBRA '93 trust rules. Form 948 is irrevocable by its terms."
+    agencyCitation: "GA DFCS Medicaid Policy Manual, Section 2407"
+  - title: "Resources placed in the trust"
+    description: "The QIT may contain only the applicant's income. Money from an existing account, a non-liquid resource, or a resource converted to cash cannot be placed in the trust. Depositing resources invalidates the QIT."
+    agencyCitation: "GA DFCS Medicaid Policy Manual, Section 2407"
+  - title: "Applicant named as their own trustee"
+    description: "Section 2407 states the applicant/recipient may not act as his or her own trustee. A QIT in which the beneficiary is the trustee does not meet Georgia's requirements."
+    agencyCitation: "GA DFCS Medicaid Policy Manual, Section 2407"
+  - title: "Trust backdated or established in another state"
+    description: "A QIT may not be backdated — it is effective only from the month all required parties sign. A QIT established in another state cannot be used to qualify for Georgia Medicaid; the applicant must establish a Georgia QIT."
+    agencyCitation: "GA DFCS Medicaid Policy Manual, Section 2407"
+  - title: "Missing DCH remainder (payback) clause"
+    description: "The trust must provide that at the applicant's death the remainder goes to the Georgia Department of Community Health up to the total Medicaid paid for the applicant's care. A QIT without the DCH remainder provision does not qualify; Form 948 already contains the required clause."
+    agencyCitation: "GA DFCS Medicaid Policy Manual, Section 2407"
+
+bankRefusalNotes:
+  - refusalType: "Branch asks for a tax ID (EIN) for the trust"
+    response: "Form 948 establishes the trust under the applicant's Social Security number, and a Miller-type QIT is a grantor trust reported under that SSN. Georgia's own Trustee Guide (Form 945), however, acknowledges that a bank 'may require that a tax identification number be obtained from IRS' — so if the branch insists, a TIN/EIN can be obtained, and the account still holds only the applicant's income. Show the branch the Form 945 guidance and Form 948."
+    documentNeeded: "Form 945 (QIT: A Guide for Trustees) and Form 948 (the template's identification line)"
+  - refusalType: "Branch is unsure how to title the account"
+    response: "Per Form 945 the account is titled to identify it as the Qualified Income Trust (e.g., 'The Qualified Income Trust'), with the trustee as the authorized signer; checks are imprinted with the same title. Ideally it is a non-interest-bearing checking account with no service charge."
+    documentNeeded: "Form 945 (account-titling and signer guidance)"
+  - refusalType: "Branch wants to set up direct deposit of Social Security into the trust"
+    response: "Georgia does not allow income to be direct-deposited into the QIT from the source. Each month the trustee deposits a check (or arranges an electronic transfer if the QIT is at the same bank as the regular account) from the applicant's regular checking account into the QIT account — early in the month to protect eligibility. Set up the account as an ordinary checking account, not a benefit-direct-deposit account."
+    documentNeeded: "Form 945 (How to Get the Income into the QIT Bank Account)"
+  - refusalType: "Branch has never opened a QIT / Miller Trust account"
+    response: "It is an ordinary checking account the trustee manages, holding only the applicant's income and depleted toward care each month. Ask for a full-service branch or the bank's trust department; community banks and credit unions are often more flexible. Do not request a debit or credit card on the account."
+    documentNeeded: "Form 945; Form 946 (QIT Worksheet & FAQ)"
+  - refusalType: "Branch instructs the customer to bring an attorney"
+    response: "Georgia's own policy and Desk Guide state it is not necessary to hire a lawyer to set up a QIT — the county DFCS office provides the fill-in-the-blank Form 948 template. This is a bank-procedure issue, not a Medicaid requirement; escalate to the bank's trust department or use a community bank or credit union."
+
+postDeathDistribution: "The QIT terminates only upon the applicant's death or DCH's express written approval. On death, the trustee stops depositing funds, notifies the county DFCS office and DCH of the reason for termination, and writes a check for the trust balance payable to the 'Georgia Department of Community Health' — up to the total medical assistance Medicaid paid on the applicant's behalf — enclosing a copy of the bank statement and a cover letter identifying the decedent by name, Social Security number, and/or Medicaid number. No other checks are written from the QIT account after death. Per the Trustee Guide (Form 945) the check is mailed to DCH's Third Party Administration / Estate Recovery Program; Section 2407 routes termination paperwork to the DCH Trust Unit — confirm the current address with DCH at termination. Only funds remaining after DCH is reimbursed pass to the residuary beneficiaries named in the trust."
+
+metaTitle: "Georgia Qualified Income Trust (QIT) Setup Guide — $129 — Qualify for Medicaid Long-Term Care"
+metaDescription: "Step-by-step Georgia Qualified Income Trust (Miller Trust) operational guide, built around the official DCH Form 948 template. Bank-account walkthrough, monthly funding worksheet, denial-avoidance. Informational, not legal advice."
+
+primaryKeyword: "georgia qualified income trust"
+secondaryKeywords:
+  - "qualified income trust georgia"
+  - "georgia miller trust"
+  - "miller trust georgia"
+  - "georgia qit"
+  - "form 948 georgia"
+  - "georgia medicaid income trust"
+  - "qit georgia medicaid"
+  - "georgia qualified income trust template"
+
+reviewedDate: "2026-06-23"
+uplNotes: "Georgia defines the practice of law in O.C.G.A. § 15-19-50 (incl. giving legal advice and preparing legal instruments for others) and forbids UPL in § 15-19-51; the scrivener exception (§ 15-19-52) is fee-free-only, so the kit does not rely on it. The kit is a generic, no-individualized-advice explainer for Georgia's OWN published Form 948 — squarely within the forms-publishing/First-Amendment line (the Dacey rule) and reinforced here because Georgia's policy (Section 2407) and Desk Guide state it is NOT necessary to hire an attorney and the county provides a fill-in-the-blank template. The kit operates under the same 4 hard rules as TX/NJ/OH: no drafted/customized trust, no personalized intake, no email/chat advice, disclaimer + consent gate. No directly on-point binding Georgia holding exists (Dacey is persuasive national authority) — CONFIRM Georgia UPL comfort before flipping live."
+
+socialProof:
+  unitsSold: 0
+  displayThreshold: 25
+  launchLabel: "2026"
+
+kitVersion: "v1.0"
+kitVersionDate: "2026-06-23"
+kitChangelog:
+  - version: "v1.0"
+    date: "2026-06-23"
+    changes:
+      - "Initial Georgia release."
+      - "Reconciled against DFCS Medicaid Policy Manual Section 2407 (effective May 2026, MT 79), Form 948 (Revised 08/2024), and Forms 945 & 946 (Revised 06/2024)."
+      - "Captures Georgia's multi-form structure: Form 948 (template), Form 936 (certification), Form 945 (trustee guide), Form 946 (worksheet/FAQ), and Form 947 (deviation review)."
+      - "Personal Needs Allowance $70/month, confirmed verbatim in the Form 948 template; 2026 income cap $2,982/month single ($5,964 couple), 300% of the CMS 2026 Federal Benefit Rate."
+      - "Georgia diversion model is flexible — all income OR just the excess over the Medicaid Cap may go into the QIT (depositing all is recommended to reduce errors)."
+      - "Distinctive Georgia rule: income may not be direct-deposited into the QIT from the source; the trustee transfers each month's income in from another account. Eligibility review moved to every twelve months (effective June 1, 2025)."
+      - "Private-pay nursing-home range from the Genworth/CareScout 2024 Georgia Cost of Care Survey (~$8,821 semi-private / ~$9,429 private per month)."
+
+faq:
+  - question: "Is the Georgia QIT Kit legal advice?"
+    answer: "No. This kit is informational only and is not legal advice. We are not attorneys and we do not practice law. The kit teaches you how to use Georgia's publicly-published Qualified Income Trust template (Form 948) and its companion forms. For advice on your specific situation, consult a Georgia-licensed elder-law attorney."
+  - question: "What does the kit include?"
+    answer: "A step-by-step operational guide: a plain-English explanation of how a Georgia QIT works, direct links to the official DCH Form 948 template plus the trustee guide (Form 945), worksheet/FAQ (Form 946), and certification (Form 936), instructions for filling the obvious fields, a monthly funding worksheet, the bank-account walkthrough with a branch script, the month-by-month funding process, and a Georgia-specific list of common denial reasons. Delivered as a single PDF."
+  - question: "Do you provide the trust template itself?"
+    answer: "No. We never author or host trust instrument text. The kit links you to the DCH-published Form 948 on Georgia's .gov site. You download the template directly from the state. We explain how to use it, fund it, and keep it compliant. Georgia's own policy says it is not necessary to hire a lawyer — the county provides the fill-in-the-blank template."
+  - question: "Who has to set up a QIT in Georgia?"
+    answer: "An applicant for nursing-facility, hospice, or Elderly & Disabled Waiver Medicaid whose gross monthly income is at or above Georgia's Medicaid Cap ($2,982/month in 2026) must establish a Qualified Income Trust to become income-eligible. A QIT is established for an individual, not a couple; resources must also be within the limit."
+  - question: "How much of my income goes into the trust?"
+    answer: "At minimum, the difference between your total income and the Medicaid Cap (minus a dollar) — that is the Form 946 worksheet calculation. Georgia lets you deposit all of your income or just that excess, but the state strongly recommends depositing all of it each month to reduce errors. The QIT must be funded every month you want coverage."
+  - question: "Does a Georgia QIT need an EIN?"
+    answer: "The Form 948 template sets the trust up under the applicant's Social Security number, and a Miller-type QIT is a grantor trust reported under that SSN. Georgia's Trustee Guide notes that a bank may still ask for a tax ID from the IRS, so some Georgia banks request one — either way the account holds only the applicant's income."
+  - question: "When does coverage begin?"
+    answer: "The QIT must be established and funded by the end of the month you are seeking eligibility — there is no back-dating. Georgia also does not allow income to be direct-deposited into the QIT from the source, so each month the trustee transfers that month's income into the QIT from the regular account, early in the month, and pays the care cost by the end of the following month."
+  - question: "What if my bank refuses to open the trust account?"
+    answer: "Bank refusal is common on a first attempt. The kit includes a branch script, the most common refusal types (tax-ID demand, titling confusion, direct-deposit setup, unfamiliarity) and how to respond to each, and the Georgia facts that resolve them — the account is titled as the Qualified Income Trust, the trustee is the authorized signer, and only the applicant's income goes in."
+  - question: "Do you offer a refund?"
+    answer: "Yes — money back if DCH/DFCS rejects the QIT for any reason traceable to following the kit. Email support@millertrustguide.com with the agency's stated denial reason and we issue a full refund within one business day."
+  - question: "Will you talk to me on the phone about my situation?"
+    answer: "No. We do not offer phone support and we do not advise on individual situations. For advice on your specific situation, consult a Georgia-licensed elder-law attorney — you can find one through the State Bar of Georgia's Find a Lawyer service or GeorgiaLegalAid.org."
+---
+
+import StatePageLayout from '~/layouts/StatePageLayout.astro';
+
+This file's frontmatter is the canonical Georgia data source. The body is intentionally minimal — all conversion-surface rendering happens in `StatePageLayout.astro`, which reads from frontmatter. This keeps states homogeneous and prevents drift between states.

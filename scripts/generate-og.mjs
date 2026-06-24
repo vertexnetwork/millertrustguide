@@ -199,6 +199,17 @@ const ASSETS = [
     }),
     width: 1200,
   },
+
+  // OG per-state — Georgia
+  {
+    path: 'og/states/georgia.png',
+    svg: ogSvg({
+      headlineLines: ['Georgia Qualified', 'Income Trust Guide'],
+      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if DCH rejects',
+      footerLine: 'GEORGIA DCH  ·  DFCS SECTION 2407 · FORM 948  ·  LAST REVIEWED 2026-06-23',
+    }),
+    width: 1200,
+  },
 ];
 
 async function renderOne({ path, svg, width }) {
