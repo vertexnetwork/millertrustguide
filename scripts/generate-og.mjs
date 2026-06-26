@@ -243,6 +243,17 @@ const ASSETS = [
     }),
     width: 1200,
   },
+
+  // OG per-state — Alabama
+  {
+    path: 'og/states/alabama.png',
+    svg: ogSvg({
+      headlineLines: ['Alabama Qualifying', 'Income Trust Guide'],
+      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if Alabama Medicaid rejects',
+      footerLine: 'ALABAMA MEDICAID  ·  FORM 262 QIT  ·  LAST REVIEWED 2026-06-26',
+    }),
+    width: 1200,
+  },
 ];
 
 async function renderOne({ path, svg, width }) {
