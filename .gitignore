@@ -6,6 +6,9 @@ PLAN.md
 /docs/**
 /private/
 /private/**
+# Operator playbook entry point — auto-loads locally; references the gitignored
+# docs/ runbook, so keep it local too (the repo is public).
+CLAUDE.md
 
 # --- Environment / secrets ---
 .env
