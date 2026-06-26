@@ -232,6 +232,17 @@ const ASSETS = [
     }),
     width: 1200,
   },
+
+  // OG per-state — Colorado
+  {
+    path: 'og/states/colorado.png',
+    svg: ogSvg({
+      headlineLines: ['Colorado Income', 'Trust Setup Guide'],
+      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if HCPF rejects',
+      footerLine: 'COLORADO HCPF  ·  10 CCR 2505-10 §8.100.7  ·  LAST REVIEWED 2026-06-26',
+    }),
+    width: 1200,
+  },
 ];
 
 async function renderOne({ path, svg, width }) {
