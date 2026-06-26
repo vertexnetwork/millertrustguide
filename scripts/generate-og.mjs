@@ -221,6 +221,17 @@ const ASSETS = [
     }),
     width: 1200,
   },
+
+  // OG per-state — Indiana
+  {
+    path: 'og/states/indiana.png',
+    svg: ogSvg({
+      headlineLines: ['Indiana Miller', 'Trust Setup Guide'],
+      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if FSSA rejects',
+      footerLine: 'INDIANA FSSA  ·  405 IAC 2-3-29 · MILLER TRUST  ·  LAST REVIEWED 2026-06-26',
+    }),
+    width: 1200,
+  },
 ];
 
 async function renderOne({ path, svg, width }) {
