@@ -64,3 +64,6 @@ VISIBILITY_AUDIT.md
 
 # --- OpenPGP project keyring + secret-key backups (NEVER commit) ---
 /_secrets/
+
+# --- URL-verification tool: screenshots + scraped .gov content, operator-only (public repo) ---
+/url-verify/
