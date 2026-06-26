@@ -135,6 +135,10 @@ html, body {
    intro paragraph to whatever follows it too. */
 .kit h1 + p, .kit h2 + p, .kit h3 + p, .kit h4 + p { break-after: avoid; }
 
+/* Keep a section's eyebrow label glued to its heading, so a tall section can
+   never strand the eyebrow alone on an otherwise-blank page. */
+.kit-eyebrow { break-after: avoid; }
+
 .kit p {
   margin: 0 0 9pt 0;
   orphans: 3;
@@ -265,8 +269,12 @@ html, body {
   border-collapse: collapse;
   font-size: 9.5pt;
   margin: 12pt 0;
-  break-inside: avoid;
 }
+/* Let a tall worksheet flow across a page break rather than being shoved whole
+   to the next page (which stranded Section 4's heading on a near-blank page).
+   The header row repeats on each page and individual rows never split. */
+.kit-worksheet thead { display: table-header-group; }
+.kit-worksheet tr { break-inside: avoid; }
 .kit-worksheet th, .kit-worksheet td {
   border: 0.5pt solid #D1D5DB;
   padding: 6pt 8pt;
