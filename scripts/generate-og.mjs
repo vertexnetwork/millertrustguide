@@ -254,6 +254,17 @@ const ASSETS = [
     }),
     width: 1200,
   },
+
+  // OG per-state — Mississippi
+  {
+    path: 'og/states/mississippi.png',
+    svg: ogSvg({
+      headlineLines: ['Mississippi Income', 'Trust Setup Guide'],
+      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if Mississippi Medicaid rejects',
+      footerLine: 'MISSISSIPPI DOM  ·  APPENDIX A-8-1  ·  LAST REVIEWED 2026-06-26',
+    }),
+    width: 1200,
+  },
 ];
 
 async function renderOne({ path, svg, width }) {
