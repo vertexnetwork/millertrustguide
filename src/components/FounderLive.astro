@@ -1,0 +1,27 @@
+---
+// Progressive enhancement: keeps the GLOBAL founder "spots left" count live
+// without redeploying. Reads the edge-cached /api/founder-status (backed by the
+// Stripe coupon's times_redeemed) and writes the current number into the
+// [data-founder-spots] / [data-founder-spot-word] hooks on the page. No-ops if
+// the page has no founder UI or the fetch fails — the build-time number stays.
+---
+<script>
+  (async () => {
+    const spotEls = document.querySelectorAll('[data-founder-spots]');
+    if (spotEls.length === 0) return;
+    try {
+      const res = await fetch('/api/founder-status', { headers: { accept: 'application/json' } });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (typeof data.spotsLeft !== 'number') return;
+      spotEls.forEach((el) => {
+        el.textContent = String(data.spotsLeft);
+      });
+      document.querySelectorAll('[data-founder-spot-word]').forEach((el) => {
+        el.textContent = data.spotsLeft === 1 ? 'spot' : 'spots';
+      });
+    } catch (_err) {
+      /* leave the build-time number in place */
+    }
+  })();
+</script>

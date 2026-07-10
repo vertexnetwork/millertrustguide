@@ -20,6 +20,7 @@ import {
 } from '~/lib/schema';
 import type { StateData } from '~/content/config';
 import { FOUNDER } from '~/config/founder';
+import FounderLive from '~/components/FounderLive.astro';
 import { firstSentence } from '~/lib/text';
 import { REVIEWER } from '~/config/identity';
 import { getAllArticleMeta } from '~/lib/articles';
@@ -386,7 +387,7 @@ if (isLive) {
                         </span>
                       </p>
                       <p class="mt-1 text-sm font-medium text-primary">
-                        Founding price — only {founderSpotsLeft} {founderSpotsLeft === 1 ? 'spot' : 'spots'} left at this rate.
+                        Founding price — only <span data-founder-spots>{founderSpotsLeft}</span> <span data-founder-spot-word>{founderSpotsLeft === 1 ? 'spot' : 'spots'}</span> left at this rate.
                       </p>
                     </>
                   ) : (
@@ -590,7 +591,7 @@ if (isLive) {
           <p>
             {founderActive ? (
               <>
-                <strong>${FOUNDER.price} founding price</strong> ({founderSpotsLeft} {founderSpotsLeft === 1 ? 'spot' : 'spots'} left at this rate), then ${state.price}.
+                <strong>${FOUNDER.price} founding price</strong> (<span data-founder-spots>{founderSpotsLeft}</span> <span data-founder-spot-word>{founderSpotsLeft === 1 ? 'spot' : 'spots'}</span> left at this rate), then ${state.price}.
               </>
             ) : (
               <>${state.price}.</>
@@ -618,4 +619,5 @@ if (isLive) {
       />
     )
   }
+  <FounderLive />
 </BaseLayout>
