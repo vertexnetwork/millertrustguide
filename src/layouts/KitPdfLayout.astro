@@ -667,9 +667,9 @@ const fmt = (n: number) => n.toLocaleString('en-US');
       {state.einRequired ? (
         <div class="kit-callout kit-callout--warning">
           <p>
-            <strong>{state.name} requires a separate EIN for QIT accounts.</strong> {state.einRequiredNote}
-            Obtain the EIN online at the IRS (irs.gov) before your bank visit. The process takes about ten minutes
-            and is free.
+            <strong>{state.name}'s trust is set up to file its own fiduciary tax return, so it generally needs its
+            own EIN.</strong> {state.einRequiredNote} You can obtain the EIN online at the IRS (irs.gov) before your
+            bank visit — the process takes about ten minutes and is free.
           </p>
         </div>
       ) : (
@@ -768,7 +768,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           signer. If your bank requires a small opening deposit to open a new account, that is acceptable —
           {' '}{state.agencyAbbreviation} {state.policyCitationShort} expressly allows the standard $10–$20 opening deposit
           banks require and states it is not counted as a resource or income to the beneficiary. {state.einRequired
-            ? `Per ${state.agencyAbbreviation} policy, the account requires a separate EIN, which I have obtained from the IRS and have provided with this letter.`
+            ? `Because ${state.name}'s trust files its own fiduciary tax return, I have obtained a separate EIN for the trust from the IRS and have provided it with this letter.`
             : `Per ${state.agencyAbbreviation} ${state.policyCitationShort}, the QIT account is set up using the applicant's Social Security number — no separate EIN is required.`}
         </p>
         <p style="font-style: italic;">

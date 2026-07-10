@@ -265,6 +265,17 @@ const ASSETS = [
     }),
     width: 1200,
   },
+
+  // OG per-state — Arkansas
+  {
+    path: 'og/states/arkansas.png',
+    svg: ogSvg({
+      headlineLines: ['Arkansas Income', 'Trust Setup Guide'],
+      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if Arkansas DHS rejects',
+      footerLine: 'ARKANSAS DHS  ·  FORM DCO-9938  ·  LAST REVIEWED 2026-07-10',
+    }),
+    width: 1200,
+  },
 ];
 
 async function renderOne({ path, svg, width }) {
