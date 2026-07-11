@@ -114,6 +114,30 @@ const stateSchema = z.object({
   primaryKeyword: z.string(),
   secondaryKeywords: z.array(z.string()),
 
+  // ── Per-state persona/targeting modifiers ────────────────────────────────
+  // Research-backed emphasis flags — see docs/state-persona-modifiers-research.md
+  // for the cited source behind every value (never fabricated). These flex COPY
+  // EMPHASIS, not regional culture: the buyer usually lives OUT of state (the
+  // Phoenix daughter buying the Texas kit — see ad-campaign-playbook.md), so we
+  // never regionalize ("Yeehaw, Texans"). The axis that actually varies per
+  // state is structural, not cultural.
+  //
+  // medicaidStructure: does LTC Medicaid here use a hard income cap (QIT
+  //   REQUIRED to qualify over the cap) vs medically-needy spend-down (no QIT)
+  //   vs hybrid (QIT only for certain programs, e.g. HCBS waivers). All live
+  //   states are income-cap by definition of selling a QIT kit; this records the
+  //   verified classification and guards future state selection.
+  // personaLean: which buyer the page should lead its fear-frame toward —
+  //   'daughter' (adult child of a widowed parent → denial/ejection fear),
+  //   'community-spouse' (married, home-owning → protect-the-house fear), or
+  //   'balanced'. Derived conservatively from cited Census 65+ marital/
+  //   homeownership data; defaults to 'balanced' when no clear signal.
+  // primaryTerm: the instrument term the state agency itself uses / locals
+  //   search ("Miller Trust" | "Qualified Income Trust" | "Income Trust").
+  medicaidStructure: z.enum(['income-cap', 'spend-down', 'hybrid']).optional(),
+  personaLean: z.enum(['daughter', 'community-spouse', 'balanced']).default('balanced'),
+  primaryTerm: z.string().optional(),
+
   // legal / UPL safety
   reviewedDate: z.string(),
   uplNotes: z.string().optional(),

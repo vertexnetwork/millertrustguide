@@ -2,6 +2,7 @@
 # These docs contain pricing strategy, legal posture rationale, persona PII,
 # competitor analysis, and the UPL-defense playbook. Keep local only.
 PLAN.md
+/brand/
 /docs/
 /docs/**
 /private/
@@ -14,6 +15,7 @@ CLAUDE.md
 .env
 .env.*
 !.env.example
+.continueignore
 
 # --- Node / Next.js ---
 node_modules/

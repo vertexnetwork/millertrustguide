@@ -1,24 +1,31 @@
 ---
-// Email-only capture for the nurture series. Rule 2 enforced by design:
-// the form has exactly one field — email. No name, no income, no age, no
-// family facts. The stateSlug is a page-level prop (not a user input) and
-// only selects the welcome-email copy.
+// Bottom-of-page email capture for the nurture series + the free checklist.
+// Rule 2 enforced by design: exactly one field — email. No name, no income,
+// no age, no family facts. `stateSlug` is a page-level prop (not user input);
+// it only selects the welcome-email copy and the checklist deep-link.
 //
-// Posts to /api/subscribe; shows inline success/error without a page nav.
+// This is the PASSIVE anchor capture. The interruptive surfaces (slide-in,
+// exit-intent) and the mid-page inline variant share the same offer and the
+// same wiring (src/lib/lead-capture.ts) but layer on trigger/placement logic.
+//
+// Posts to /api/subscribe; shows inline success/error (with an instant link to
+// the checklist) without a page nav.
 
 interface Props {
   stateSlug?: string;
   heading?: string;
   blurb?: string;
+  buttonLabel?: string;
 }
 
 const {
   stateSlug = '',
-  heading = 'Not ready to buy? Start with the free email series.',
-  blurb = 'A handful of short, plain-English emails on how Miller Trusts actually work — the funding-month rule, the bank step, the denial traps. No sales pressure. Unsubscribe anytime.',
+  heading = 'Not ready to buy? Get the free denial-trap checklist.',
+  blurb = 'One page: the most common reasons Medicaid denies a Miller Trust, each with the state-agency citation behind it — plus a few short, plain-English emails on the funding-month rule, the bank step, and the traps. No sales pressure. Unsubscribe anytime.',
+  buttonLabel = 'Email me the checklist',
 } = Astro.props;
 
-const formId = `lead-${Math.random().toString(36).slice(2, 8)}`;
+const formId = `lead-main-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
 <section
@@ -28,12 +35,7 @@ const formId = `lead-${Math.random().toString(36).slice(2, 8)}`;
   <h2 id={`${formId}-heading`} class="!mt-0 !text-2xl">{heading}</h2>
   <p class="mt-2 text-ink">{blurb}</p>
 
-  <form
-    id={formId}
-    class="mt-5"
-    data-state-slug={stateSlug}
-    novalidate
-  >
+  <form id={formId} class="mt-5" data-capture="main" data-state-slug={stateSlug} novalidate>
     <div class="flex flex-col gap-3 sm:flex-row">
       <label class="sr-only" for={`${formId}-email`}>Email address</label>
       <input
@@ -47,16 +49,11 @@ const formId = `lead-${Math.random().toString(36).slice(2, 8)}`;
         class="w-full flex-1 rounded-md border border-border-strong bg-surface-elevated px-4 py-3 text-base text-ink placeholder:text-ink-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
       />
       <button type="submit" class="btn-cta whitespace-nowrap">
-        Send me the series
+        {buttonLabel}
       </button>
     </div>
 
-    <p
-      class="mt-3 hidden text-sm"
-      data-feedback
-      role="status"
-      aria-live="polite"
-    ></p>
+    <p class="mt-3 hidden text-sm" data-feedback role="status" aria-live="polite"></p>
 
     <p class="mt-3 text-xs text-ink-muted">
       Email only — we never ask for income, age, or any detail about your family, and we never sell your
@@ -66,64 +63,9 @@ const formId = `lead-${Math.random().toString(36).slice(2, 8)}`;
 </section>
 
 <script>
-  import { trackEvent } from '~/lib/analytics-client';
+  import { wireLeadForm } from '~/lib/lead-capture';
 
-  document.querySelectorAll<HTMLFormElement>('form[data-state-slug]').forEach((form) => {
-    const emailInput = form.querySelector<HTMLInputElement>('input[name="email"]');
-    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
-    const feedback = form.querySelector<HTMLParagraphElement>('[data-feedback]');
-    if (!emailInput || !button || !feedback) return;
-
-    const stateSlug = form.dataset.stateSlug ?? '';
-    const buttonDefault = button.textContent;
-
-    const showFeedback = (message: string, ok: boolean) => {
-      feedback.textContent = message;
-      feedback.classList.remove('hidden');
-      feedback.classList.toggle('text-error', !ok);
-      feedback.classList.toggle('text-success', ok);
-    };
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = emailInput.value.trim();
-      if (!email || !emailInput.checkValidity()) {
-        showFeedback('Please enter a valid email address.', false);
-        emailInput.focus();
-        return;
-      }
-
-      button.disabled = true;
-      button.textContent = 'Sending…';
-      feedback.classList.add('hidden');
-
-      try {
-        const res = await fetch('/api/subscribe', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ email, stateSlug }),
-        });
-        const data = (await res.json().catch(() => ({}))) as { error?: string; note?: string };
-
-        if (!res.ok) {
-          throw new Error(data.error || 'Something went wrong. Please try again.');
-        }
-
-        form.reset();
-        trackEvent('lead_submit', stateSlug ? { state: stateSlug } : undefined);
-        showFeedback(
-          data.note ||
-            'You\'re on the list. Check your inbox — the first email is on its way.',
-          true
-        );
-        button.textContent = 'Sent ✓';
-      } catch (err) {
-        const message =
-          err instanceof Error ? err.message : 'Something went wrong. Please try again.';
-        showFeedback(message, false);
-        button.disabled = false;
-        button.textContent = buttonDefault;
-      }
-    });
-  });
+  document
+    .querySelectorAll<HTMLFormElement>('form[data-capture="main"]')
+    .forEach((form) => wireLeadForm(form, { source: 'main' }));
 </script>

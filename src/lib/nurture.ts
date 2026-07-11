@@ -94,10 +94,30 @@ function email1(stateName: string, ctx: Email1Ctx = {}): EmailContent {
       ? `often $${ctx.privatePayLow.toLocaleString('en-US')} to $${ctx.privatePayHigh.toLocaleString('en-US')}`
       : 'often many thousands of dollars';
 
-  const subject = `The 30-day window most ${stateName} families miss`;
+  // The checklist the capture form promised — the tangible lead magnet. Only
+  // present when we know the state (always true at signup from a state page).
+  const checklistUrl = ctx.slug ? `${SITE}/checklist/${ctx.slug}` : '';
+  const checklistText = checklistUrl
+    ? `
+
+Here's the free ${stateName} denial-trap checklist you asked for:
+${checklistUrl}
+
+It's one page — the most common reasons ${stateName} Medicaid denies a Miller Trust, each with the state-agency citation behind it. Save or print it before you visit the bank.`
+    : '';
+  const checklistHtml = checklistUrl
+    ? `  <p>Here's the free ${stateName} denial-trap checklist you asked for — one page: the most common reasons ${stateName} Medicaid denies a Miller Trust, each with the state-agency citation behind it. Save or print it before you visit the bank.</p>
+${ctaButton(checklistUrl, `Open your ${stateName} checklist`)}`
+    : '';
+
+  const subject = checklistUrl
+    ? `Your ${stateName} Miller Trust checklist is inside`
+    : `The 30-day window most ${stateName} families miss`;
   const text = `Hi,
 
-Thanks for joining the Miller Trust Guide email series. Over the next three weeks you'll get four more short, plain-English emails about how ${stateName} Miller Trusts actually work — no sales pressure, unsubscribe anytime.
+Thanks for joining the Miller Trust Guide email series.${checklistText}
+
+Over the next three weeks you'll get four more short, plain-English emails about how ${stateName} Miller Trusts actually work — no sales pressure, unsubscribe anytime.
 
 Here's the single most useful thing to know first.
 
@@ -124,7 +144,9 @@ ${SIGNOFF_TEXT}`;
 
   const html = htmlShell(
     `The 30-day window most ${stateName} families miss`,
-    `  <p>Thanks for joining the Miller Trust Guide email series. Over the next three weeks you'll get four more short, plain-English emails about how ${stateName} Miller Trusts actually work — no sales pressure, unsubscribe anytime.</p>
+    `  <p>Thanks for joining the Miller Trust Guide email series.</p>
+${checklistHtml}
+  <p>Over the next three weeks you'll get four more short, plain-English emails about how ${stateName} Miller Trusts actually work — no sales pressure, unsubscribe anytime.</p>
   <p>Here's the single most useful thing to know first.</p>
   <h2 style="font-family: Georgia, serif; color: #0F4C4A; font-size: 17px;">The funding-month rule</h2>
   <p>A Miller Trust (Qualified Income Trust) only does its job for a given month if it is <strong>both signed and funded within that same calendar month</strong>. Medicaid does not back-date eligibility to before the trust was working. So if a family signs the trust on the 28th and the bank account isn't funded until the 2nd of the next month, the first month does not qualify — and that month is billed at the private-pay nursing-home rate, ${payPhrase} a month.</p>

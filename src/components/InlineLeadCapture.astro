@@ -1,0 +1,76 @@
+---
+// Mid-page inline capture — the emotional-peak placement. Rendered right after
+// the bank-refusal / denial-reasons sections, where the reader has just felt
+// "I could get this wrong and lose a month," but isn't ready for the $-purchase.
+// That's the moment the free checklist converts. Loss-framed, per DEMOGRAPHICS
+// (fear-of-loss beats gain-frame ~2x for this decision).
+//
+// Passive surface (not interruptive) — a slimmer sibling of LeadMagnetForm that
+// shares the same offer + wiring (src/lib/lead-capture.ts). data-capture="inline".
+
+interface Props {
+  stateSlug: string;
+  stateName: string;
+  agencyAbbreviation: string;
+}
+
+const { stateSlug, stateName, agencyAbbreviation } = Astro.props;
+const formId = `lead-inline-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<section
+  class="my-12 rounded-lg border-l-4 border-primary bg-surface-elevated p-5 shadow-sm"
+  aria-labelledby={`${formId}-heading`}
+>
+  <div class="flex items-start gap-3">
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      class="mt-0.5 h-6 w-6 flex-shrink-0 text-primary"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path d="M9 11l3 3L22 4" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <div class="min-w-0">
+      <h2 id={`${formId}-heading`} class="!mt-0 !mb-1 !text-xl">
+        Not ready to buy? Get the {stateName} denial-trap checklist first.
+      </h2>
+      <p class="!mt-0 text-sm text-ink">
+        Most denials are paperwork, not eligibility. This free one-pager lists every {agencyAbbreviation}
+        denial trap with the citation behind it — so you can verify before you file. Emailed now, no pressure.
+      </p>
+
+      <form id={formId} class="mt-4" data-capture="inline" data-state-slug={stateSlug} novalidate>
+        <div class="flex flex-col gap-3 sm:flex-row">
+          <label class="sr-only" for={`${formId}-email`}>Email address</label>
+          <input
+            type="email"
+            id={`${formId}-email`}
+            name="email"
+            required
+            autocomplete="email"
+            inputmode="email"
+            placeholder="you@example.com"
+            class="w-full flex-1 rounded-md border border-border-strong bg-surface px-4 py-2.5 text-base text-ink placeholder:text-ink-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+          />
+          <button type="submit" class="btn-cta whitespace-nowrap">Email me the checklist</button>
+        </div>
+        <p class="mt-2 hidden text-sm" data-feedback role="status" aria-live="polite"></p>
+        <p class="mt-2 text-xs text-ink-muted">
+          Email only — we never ask for income, age, or family details, and never sell your address.
+        </p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { wireLeadForm } from '~/lib/lead-capture';
+
+  document
+    .querySelectorAll<HTMLFormElement>('form[data-capture="inline"]')
+    .forEach((form) => wireLeadForm(form, { source: 'inline' }));
+</script>

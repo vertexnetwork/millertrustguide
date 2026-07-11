@@ -1,0 +1,182 @@
+---
+// Desktop exit-intent — catches the mouse user who's leaving before they
+// reached the bottom capture (the lunch-break / at-desk searcher, Persona A on
+// desktop + Persona C). Fires on cursor-toward-browser-chrome, which ONLY
+// exists with a fine pointer, so this is deliberately desktop-only; the mobile
+// "about to leave" case is covered by the engagement slide-in instead.
+//
+// Shares the single interruptive-prompt budget with the slide-in (see
+// src/lib/lead-capture.ts): a visitor sees at most one pop total, ever, across
+// both surfaces and all visits. Never fires for a subscriber. Framed as help,
+// not "WAIT!" — with a neutral dismiss, never a confirmshame decline.
+
+interface Props {
+  stateSlug: string;
+  stateName: string;
+  agencyAbbreviation: string;
+}
+
+const { stateSlug, stateName, agencyAbbreviation } = Astro.props;
+const formId = `lead-exit-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<div
+  id={formId}
+  class="lead-exit fixed inset-0 z-[60] hidden items-center justify-center p-4"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby={`${formId}-heading`}
+>
+  <div class="lead-exit-backdrop absolute inset-0 bg-black/50" data-dismiss></div>
+
+  <div class="lead-exit-card relative w-full max-w-md rounded-2xl border border-border bg-surface-elevated p-7 shadow-2xl">
+    <button
+      type="button"
+      data-dismiss
+      class="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-md text-ink-muted hover:bg-primary-tint/40 hover:text-ink focus:outline-none focus:ring-2 focus:ring-primary/30"
+      aria-label="Close"
+    >
+      <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />
+      </svg>
+    </button>
+
+    <p class="text-xs font-semibold uppercase tracking-wider text-primary">Free checklist</p>
+    <h2 id={`${formId}-heading`} class="!mt-1 !mb-2 !text-2xl pr-6">
+      Before you go — take the {stateName} checklist
+    </h2>
+    <p class="!mt-0 text-ink">
+      The {agencyAbbreviation} denial traps that cost families a month of benefits, on one page — each with the
+      citation behind it, so you can verify before you file. We'll email it now.
+    </p>
+
+    <form id={`${formId}-form`} class="mt-5" data-capture="exit" data-state-slug={stateSlug} novalidate>
+      <label class="sr-only" for={`${formId}-email`}>Email address</label>
+      <input
+        type="email"
+        id={`${formId}-email`}
+        name="email"
+        required
+        autocomplete="email"
+        inputmode="email"
+        placeholder="you@example.com"
+        class="w-full rounded-md border border-border-strong bg-surface px-4 py-3 text-base text-ink placeholder:text-ink-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+      />
+      <button type="submit" class="btn-cta mt-3 w-full">Email me the checklist</button>
+      <p class="mt-3 hidden text-sm" data-feedback role="status" aria-live="polite"></p>
+      <div class="mt-3 flex items-center justify-between">
+        <p class="text-xs text-ink-muted">Email only. No income or family details. Unsubscribe anytime.</p>
+        <button type="button" data-dismiss class="text-xs font-medium text-ink-muted underline hover:text-ink">
+          No thanks
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  .lead-exit.is-visible { display: flex; }
+  .lead-exit-card {
+    transform: translateY(0.5rem) scale(0.98);
+    opacity: 0;
+    transition: transform 200ms ease, opacity 200ms ease;
+  }
+  .lead-exit.is-visible .lead-exit-card {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lead-exit-card { transition: none; }
+  }
+</style>
+
+<script>
+  import {
+    wireLeadForm,
+    canShowInterruptivePrompt,
+    markInterruptivePromptShown,
+    SUBSCRIBED_EVENT,
+    PROMPT_SHOWN_EVENT,
+  } from '~/lib/lead-capture';
+  import { trackEvent } from '~/lib/analytics-client';
+
+  const ARM_DELAY_MS = 4_000; // ignore accidental cursor-exits right after load
+
+  document.querySelectorAll<HTMLElement>('.lead-exit').forEach((modal) => {
+    const form = modal.querySelector<HTMLFormElement>('form[data-capture="exit"]');
+    if (!form) return;
+    wireLeadForm(form, { source: 'exit' });
+
+    // Desktop / fine-pointer only. Coarse-pointer (touch) devices have no
+    // cursor to leave the viewport, and the slide-in already serves them.
+    const finePointer = window.matchMedia?.('(pointer: fine)').matches ?? false;
+    if (!finePointer || !canShowInterruptivePrompt()) return;
+
+    let armed = false;
+    let lastFocused: HTMLElement | null = null;
+    window.setTimeout(() => { armed = true; }, ARM_DELAY_MS);
+
+    const focusable = () =>
+      Array.from(
+        modal.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => el.offsetParent !== null);
+
+    const onKeydown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { hide(); return; }
+      if (e.key !== 'Tab') return;
+      const items = focusable();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    const show = () => {
+      disarm();
+      markInterruptivePromptShown(); // claim the shared budget on SHOW
+      lastFocused = document.activeElement as HTMLElement;
+      modal.classList.remove('hidden');
+      requestAnimationFrame(() => modal.classList.add('is-visible'));
+      modal.querySelector<HTMLInputElement>('input[name="email"]')?.focus();
+      document.addEventListener('keydown', onKeydown);
+      trackEvent('lead_prompt_view', { source: 'exit' });
+    };
+
+    const hide = () => {
+      modal.classList.remove('is-visible');
+      document.removeEventListener('keydown', onKeydown);
+      window.setTimeout(() => modal.classList.add('hidden'), 220);
+      lastFocused?.focus?.();
+    };
+
+    const onMouseOut = (e: MouseEvent) => {
+      if (!armed) return;
+      // Re-check at fire time: the slide-in may have claimed the shared budget
+      // (or the visitor subscribed) after we armed.
+      if (!canShowInterruptivePrompt()) { disarm(); return; }
+      // Cursor left through the TOP of the viewport toward the tab/URL bar.
+      if (e.clientY > 0) return;
+      if (e.relatedTarget || (e as unknown as { toElement?: unknown }).toElement) return;
+      show();
+    };
+
+    const disarm = () => {
+      armed = false;
+      document.removeEventListener('mouseout', onMouseOut);
+    };
+
+    document.addEventListener('mouseout', onMouseOut);
+    modal.querySelectorAll('[data-dismiss]').forEach((el) => el.addEventListener('click', hide));
+    document.addEventListener(SUBSCRIBED_EVENT, hide);
+    // If the slide-in fires first, stand down (shared single budget).
+    document.addEventListener(PROMPT_SHOWN_EVENT, disarm);
+  });
+</script>

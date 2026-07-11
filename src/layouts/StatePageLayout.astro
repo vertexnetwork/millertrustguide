@@ -9,6 +9,9 @@ import StickyBuyBar from '~/components/StickyBuyBar.astro';
 import SocialProof from '~/components/SocialProof.astro';
 import TrustStrip from '~/components/TrustStrip.astro';
 import LeadMagnetForm from '~/components/LeadMagnetForm.astro';
+import InlineLeadCapture from '~/components/InlineLeadCapture.astro';
+import LeadCaptureSlideIn from '~/components/LeadCaptureSlideIn.astro';
+import ExitIntentModal from '~/components/ExitIntentModal.astro';
 import {
   articleSchema,
   faqPageSchema,
@@ -70,6 +73,20 @@ const tldr = blocked
 // Authoritative citations used in this article — feeds the Article@citation
 // JSON-LD array (2026 entity-binding signal).
 const citationUrls = [state.officialTemplateUrl, state.policyManualUrl];
+
+// Persona-tuned emphasis line (research-backed personaLean; see
+// docs/state-persona-modifiers-research.md). Flexes WHICH fear the page leads
+// with — never regional culture (the buyer usually lives out of state). Renders
+// only for a state with a verified directional lean; the 8 'balanced' states
+// show nothing extra, so their carefully-tuned hero copy is untouched. The
+// sentence itself is universally accurate (it doesn't cite a per-state statistic),
+// so it stays true even if a lean were later reclassified.
+const personaLede =
+  state.personaLean === 'community-spouse'
+    ? `Is it your husband or wife entering care? This kit handles the income side — the ${state.primaryTerm ?? 'Qualified Income Trust'} — and points you to the separate spousal rules that protect the home and savings you keep as the spouse staying home.`
+    : state.personaLean === 'daughter'
+      ? `Doing this for a parent? It's the step-by-step way to qualify them before the next facility bill — without paying $1,000–$2,500 for what is, in practice, mostly paperwork.`
+      : null;
 
 // ── Long-tail FAQ expansion (ADDITIVE — does not change head-term targeting) ──
 // Surfaces vetted per-state frontmatter (EIN, trustee, funding-month, post-death,
@@ -246,6 +263,14 @@ if (isLive) {
         $1,000–$2,500 for an attorney to do what is, in practice, a few hours of paperwork and one trip to the bank.
         Built directly around the official {state.agencyAbbreviation} template. <strong>Informational only — not legal advice.</strong>
       </p>
+
+      {
+        personaLede && (
+          <p class="mt-3 rounded-md border-l-4 border-primary/40 bg-primary-tint/20 p-3 text-base text-ink">
+            {personaLede}
+          </p>
+        )
+      }
 
       {
         isLive && (
@@ -494,6 +519,19 @@ if (isLive) {
       )
     }
 
+    {/* Emotional-peak inline capture — placed right after the bank-refusal +
+        denial-reasons fear content, where the not-ready-to-buy reader is most
+        motivated to take the free checklist. */}
+    {
+      isLive && (
+        <InlineLeadCapture
+          stateSlug={state.slug}
+          stateName={state.name}
+          agencyAbbreviation={state.agencyAbbreviation}
+        />
+      )
+    }
+
     {/* About the kit author */}
     <section class="prose-content my-12" aria-labelledby="author-heading">
       <p class="text-xs font-semibold uppercase tracking-wider text-primary">The author</p>
@@ -575,7 +613,8 @@ if (isLive) {
       isLive && (
         <LeadMagnetForm
           stateSlug={state.slug}
-          blurb={`A handful of short, plain-English emails on how ${state.name} Miller Trusts actually work — the funding-month rule, the bank step, the denial traps. No sales pressure. Unsubscribe anytime.`}
+          heading={`Not ready to buy? Get the free ${state.name} denial-trap checklist.`}
+          blurb={`One page: the ${state.name} denial traps with the ${state.agencyAbbreviation} citation behind each — plus a few short, plain-English emails on the funding-month rule, the bank step, and the traps. No sales pressure. Unsubscribe anytime.`}
         />
       )
     }
@@ -617,6 +656,26 @@ if (isLive) {
         price={displayPrice}
         agencyAbbreviation={state.agencyAbbreviation}
       />
+    )
+  }
+
+  {/* Interruptive capture surfaces — engagement slide-in (all devices) and
+      desktop exit-intent. They share ONE prompt budget: a visitor sees at most
+      one pop, ever, and never after subscribing (see src/lib/lead-capture.ts). */}
+  {
+    isLive && (
+      <>
+        <LeadCaptureSlideIn
+          stateSlug={state.slug}
+          stateName={state.name}
+          agencyAbbreviation={state.agencyAbbreviation}
+        />
+        <ExitIntentModal
+          stateSlug={state.slug}
+          stateName={state.name}
+          agencyAbbreviation={state.agencyAbbreviation}
+        />
+      </>
     )
   }
   <FounderLive />
