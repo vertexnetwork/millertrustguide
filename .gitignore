@@ -7,6 +7,11 @@ PLAN.md
 /docs/**
 /private/
 /private/**
+# Ebook manuscript source — kept local so the full $9.99 book text is NOT
+# freely readable in the public repo (Amazon KDP restricts books whose content
+# is freely available on the web). Publish via KDP/Apple/Google/Kobo, not here.
+/ebook/
+/ebook/**
 # Operator playbook entry point — auto-loads locally; references the gitignored
 # docs/ runbook, so keep it local too (the repo is public).
 CLAUDE.md
