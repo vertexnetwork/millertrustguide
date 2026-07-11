@@ -1,0 +1,30 @@
+---
+// Google Ads global site tag (gtag.js) — the measurement foundation for paid
+// search (see docs/ad-campaign-playbook.md §0.5). Renders ONLY when
+// PUBLIC_GOOGLE_ADS_ID is set, so with no env var the site is completely
+// unaffected (inert — nothing is injected). Loaded site-wide from BaseLayout
+// <head> so it captures the gclid on the ad-click landing page and stores it in
+// a first-party cookie; the /thanks page then fires the purchase conversion
+// against that cookie. The AW-… id and label are NOT secrets (they ship in the
+// page source of every site that runs Google Ads), hence the PUBLIC_ prefix.
+//
+// NOTE: PUBLIC_ env vars are inlined at BUILD time — after setting the value in
+// Vercel you must REDEPLOY for the tag to arm.
+const adsId = import.meta.env.PUBLIC_GOOGLE_ADS_ID;
+---
+{
+  adsId && (
+    <>
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${adsId}`} />
+      <script is:inline define:vars={{ adsId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          dataLayer.push(arguments);
+        }
+        window.gtag = window.gtag || gtag;
+        gtag('js', new Date());
+        gtag('config', adsId);
+      </script>
+    </>
+  )
+}

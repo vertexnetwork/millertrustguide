@@ -12,6 +12,10 @@ const sessionId = Astro.url.searchParams.get('session_id');
 let stateName: string | null = null;
 let paymentConfirmed = false;
 let lookupError = false;
+// Actual charged amount for the Google Ads conversion value — reads from Stripe
+// so it's always correct ($99 founder / $129 full / any tax), never hard-coded.
+let amountTotal: number | null = null;
+let currency = 'USD';
 
 if (sessionId) {
   try {
@@ -23,10 +27,17 @@ if (sessionId) {
       (session.metadata?.state_slug
         ? String(session.metadata.state_slug).charAt(0).toUpperCase() + String(session.metadata.state_slug).slice(1)
         : null);
+    if (typeof session.amount_total === 'number') amountTotal = session.amount_total / 100;
+    if (session.currency) currency = session.currency.toUpperCase();
   } catch {
     lookupError = true;
   }
 }
+
+// Google Ads conversion identifiers — the purchase conversion fires below only
+// when both are set (see docs/ad-campaign-playbook.md §0.5 + GoogleAdsTag.astro).
+const adsId = import.meta.env.PUBLIC_GOOGLE_ADS_ID;
+const adsPurchaseLabel = import.meta.env.PUBLIC_GOOGLE_ADS_PURCHASE_LABEL;
 ---
 
 <BaseLayout
@@ -96,6 +107,33 @@ if (sessionId) {
           if (!sessionStorage.getItem(key)) {
             window.va &&
               window.va('event', { name: 'purchase', data: stateName ? { state: stateName } : {} });
+            sessionStorage.setItem(key, '1');
+          }
+        } catch (e) {
+          /* analytics must never break the page */
+        }
+      </script>
+    )
+  }
+
+  {/*
+    Google Ads purchase conversion — fires only on a paid session AND when the
+    conversion id + label are configured. Dedupes per Stripe session id (a page
+    refresh can't double-count); Google also dedupes on transaction_id. Dynamic
+    value = the actual amount Stripe charged. Inert if the env vars are unset.
+  */}
+  {
+    paymentConfirmed && sessionId && adsId && adsPurchaseLabel && (
+      <script is:inline define:vars={{ adsId, adsPurchaseLabel, sessionId, amountTotal, currency }}>
+        try {
+          const key = 'mtg_gads_tracked:' + sessionId;
+          if (window.gtag && !sessionStorage.getItem(key)) {
+            window.gtag('event', 'conversion', {
+              send_to: adsId + '/' + adsPurchaseLabel,
+              value: typeof amountTotal === 'number' ? amountTotal : undefined,
+              currency: currency || 'USD',
+              transaction_id: sessionId,
+            });
             sessionStorage.setItem(key, '1');
           }
         } catch (e) {

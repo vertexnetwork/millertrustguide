@@ -9,7 +9,7 @@ export const prerender = true;
 >
   <article class="prose-content mx-auto max-w-3xl px-4 py-12">
     <h1>Privacy Policy</h1>
-    <p class="text-sm text-ink-muted">Last updated 2026-05-20.</p>
+    <p class="text-sm text-ink-muted">Last updated 2026-07-11.</p>
 
     <h2>What we collect</h2>
     <ul>
@@ -26,15 +26,23 @@ export const prerender = true;
         logs and in Stripe's order metadata.
       </li>
       <li>
-        <strong>Aggregate, cookie-less analytics</strong> via Vercel Web Analytics. No cookies. No personally identifying
-        information. Pageview counts and referrer URLs only.
+        <strong>Aggregate analytics</strong> via Vercel Web Analytics — no cookies, no personally identifying
+        information; pageview counts and referrer URLs only.
+      </li>
+      <li>
+        <strong>Search-ad conversion measurement.</strong> When we run search ads, the ad platform's conversion tag
+        (Google's <code>gtag.js</code>, and Microsoft's if enabled) loads on our pages and may set a first-party cookie
+        so we can tell whether an ad click led to a purchase. On a completed purchase it reports the sale amount and an
+        opaque order id — never your name, email, or any family or financial details. We use it only to measure whether
+        our ads work; we do not retarget you or build a profile. Details in
+        <a href="#advertising-measurement">Advertising measurement</a> below.
       </li>
     </ul>
 
     <h2>What we do NOT collect</h2>
     <ul>
       <li>We do not ask for the applicant's name, income, Social Security number, age, family situation, or any other personal information about your family.</li>
-      <li>We do not run third-party tracking pixels, advertising trackers, or behavioral profiling tools.</li>
+      <li>We do not run behavioral profiling tools, and we do not use advertising cookies to retarget you or build a profile of you. The only third-party tag we run is the search-ad conversion tag described above — and only to measure whether an ad led to a sale.</li>
       <li>We do not maintain user accounts. There is no login.</li>
     </ul>
 
@@ -50,12 +58,25 @@ export const prerender = true;
       companies, advertisers, affiliates, or any third party. Ever.
     </p>
 
+    <h2 id="advertising-measurement">Advertising measurement</h2>
+    <p>
+      We may run ads on Google Search (and later Microsoft/Bing). So we don't waste money on ads that don't work, we use
+      the ad platform's standard conversion tag to learn whether an ad click actually led to a kit purchase. Precisely
+      what that involves:
+    </p>
+    <ul>
+      <li>Google's tag (<code>gtag.js</code>) loads on our pages and may store a first-party cookie remembering that you arrived from an ad.</li>
+      <li>When a purchase completes, we tell the ad platform that a sale happened, its dollar amount, and an opaque order reference. We do <strong>not</strong> send your name, email, or any information about your family or finances.</li>
+      <li>We do not use this to retarget you with ads elsewhere, and we do not build a behavioral profile of you.</li>
+      <li>You can manage ad personalization at <a href="https://myadcenter.google.com" rel="noopener" target="_blank">Google My Ad Center</a>, and you can block cookies in your browser at any time — it will not affect your ability to buy or download a kit.</li>
+    </ul>
+
     <h2>Service providers</h2>
     <ul>
       <li><strong>Stripe</strong> — payment processing and tax calculation.</li>
-      <li><strong>Postmark</strong> — transactional email delivery (order receipts, kit download links).</li>
-      <li><strong>Buttondown</strong> — educational email sequences for lead-magnet subscribers.</li>
+      <li><strong>Resend</strong> — transactional email (order receipts, kit download links) and the educational email sequence for lead-magnet subscribers.</li>
       <li><strong>Vercel</strong> — site hosting, file storage for the kit PDF, and cookie-less analytics.</li>
+      <li><strong>Google</strong> — search-ad conversion measurement only (the conversion tag described in <a href="#advertising-measurement">Advertising measurement</a>); we do not sell or share your data with Google for any other purpose.</li>
     </ul>
 
     <h2>Your rights</h2>

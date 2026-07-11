@@ -3,6 +3,7 @@ import '~/styles/global.css';
 import DisclaimerBanner from '~/components/DisclaimerBanner.astro';
 import SiteHeader from '~/components/SiteHeader.astro';
 import Footer from '~/components/Footer.astro';
+import GoogleAdsTag from '~/components/GoogleAdsTag.astro';
 import { organizationSchema, websiteSchema, personSchema } from '~/lib/schema';
 
 interface Props {
@@ -136,6 +137,9 @@ const ldBlocks = [organizationSchema(), websiteSchema(), personSchema(), ...json
         <script type="application/ld+json" set:html={JSON.stringify(block)} />
       ))
     }
+
+    {/* Google Ads gtag — inert unless PUBLIC_GOOGLE_ADS_ID is set. */}
+    <GoogleAdsTag />
   </head>
   <body class="flex min-h-screen flex-col">
     {/* Skip-to-content link (a11y heuristic #7 — user control + nav). */}
