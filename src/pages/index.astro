@@ -243,36 +243,23 @@ const jsonLd = [
   <section class="mx-auto max-w-3xl px-4 py-10">
     <h2>Editorial sources</h2>
     <p class="text-ink-muted">
-      Every claim on this site cites a primary state agency document or a recognized source. Selected primary
-      sources:
+      Every claim on this site cites a primary state agency document or a recognized source. The official
+      state-agency template behind each state we cover:
     </p>
+    {/* Data-driven from the live-states collection so this list stays current
+        automatically as states are added — no hand-maintained URLs to go stale.
+        Each link is the state's URL-verified officialTemplateUrl (.gov/.us). */}
     <ul class="mt-3 list-disc space-y-1 pl-6 text-sm">
-      <li>
-        <a href="https://www.hhs.texas.gov/handbooks/medicaid-elderly-people-disabilities-handbook/appendix-xxxvi-qits-mepd-information"
-          rel="external nofollow noopener">
-          Texas HHSC — Appendix XXXVI, QITs and MEPD Information
-        </a>
-      </li>
-      <li>
-        <a href="https://www.in.gov/fssa/ompp/files/Qualified_Income_Trust_Miller_Trust_template.pdf"
-          rel="external nofollow noopener">
-          Indiana FSSA — Miller Trust template + instructions (PDF)
-        </a>
-      </li>
-      <li>
-        <a href="https://www.nj.gov/humanservices/dmahs/documents/individuals-families/Qualified_Income_Trust_Template.pdf"
-          rel="external nofollow noopener">
-          New Jersey DMAHS — QIT template (PDF)
-        </a>
-        {' '}&middot;{' '}
-        <a href="https://www.nj.gov/humanservices/dmahs/individuals-families/mtrusts.shtml"
-          rel="external nofollow noopener">
-          Medicaid trusts overview
-        </a>
-      </li>
+      {live.map((s) => (
+        <li>
+          <a href={s.officialTemplateUrl} rel="external nofollow noopener">
+            {s.name} — {s.agencyAbbreviation} {s.policyCitationShort}
+          </a>
+        </li>
+      ))}
       <li>
         <a href="https://www.medicaidplanningassistance.org/miller-trusts/" rel="external nofollow noopener">
-          Medicaid Planning Assistance — Miller Trusts overview
+          American Council on Aging — Miller Trusts / income-cap states overview
         </a>
       </li>
     </ul>
