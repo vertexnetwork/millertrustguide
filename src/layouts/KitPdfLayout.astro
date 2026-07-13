@@ -348,6 +348,29 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         </p>
       </div>
 
+      <div class="kit-callout kit-no-break">
+        <p style="font-weight: 600; margin-bottom: 6pt;">Worked example — where the money actually goes</p>
+        <p style="margin-bottom: 6pt;">
+          The single most common misunderstanding: families assume the whole deposit is handed to the nursing
+          facility. It is not. Say a <strong>single</strong> applicant in a nursing facility has
+          <strong>$4,000/month</strong> in gross income, all of it deposited into the QIT (figures are illustrative).
+          Each month the trustee pays out, <strong>in this order</strong>:
+        </p>
+        <ol style="margin-bottom: 6pt;">
+          <li>Personal Needs Allowance to the applicant — <strong>${fmt(state.personalNeedsAllowance)}</strong>.</li>
+          <li>The community-spouse allowance, <em>if</em> the applicant is married and a spouse remains at home (see Section&nbsp;4, worksheet line&nbsp;J).</li>
+          <li>Any allowable health-insurance premium — for example, the Medicare Part&nbsp;B premium.</li>
+          <li>Everything that remains — the <strong>patient-liability / share of cost</strong> — to the nursing facility.</li>
+        </ol>
+        <p style="margin-bottom: 0;">
+          So with a ${fmt(state.personalNeedsAllowance)} Personal Needs Allowance and no community spouse, the
+          facility would receive roughly <strong>${fmt(4000 - state.personalNeedsAllowance)}</strong> — the $4,000
+          minus the allowance and any health-insurance premium — <strong>not</strong> the full $4,000. The exact
+          amounts are set by {state.agencyAbbreviation} on your post-eligibility budget; the arithmetic here only
+          shows the order, and that the facility receives the <em>remainder</em>, never the gross deposit.
+        </p>
+      </div>
+
       <div class="kit-callout">
         <p>
           <strong>The QIT does not affect asset eligibility.</strong> The QIT is an <em>income</em>-management tool.
@@ -620,6 +643,30 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           applicant's share of the cost of care. Medicaid covers the remainder.
         </li>
       </ul>
+
+      <div class="kit-no-break">
+        <h3>Gross income — and what happens to the Medicare premium</h3>
+        <p>
+          Two questions come up here constantly, so let's answer them head-on.
+        </p>
+        <p>
+          <strong>Do I count income gross or net?</strong> Gross. Medicaid counts each source at its
+          <strong> full, before-deductions amount</strong>. Enter your Social Security on line&nbsp;A at the
+          <em>gross</em> benefit — the figure before the Medicare Part&nbsp;B premium is withheld — and every other
+          source at its gross amount too. That is why line&nbsp;A reads "gross, before Medicare premium."
+        </p>
+        <p>
+          <strong>So where does the Medicare premium go?</strong> It is <em>not</em> subtracted before you fund the
+          trust. You deposit the gross income; the health-insurance premium (Medicare Part&nbsp;B, or any other) is
+          handled <strong>later</strong>, as an allowable deduction in the monthly distribution order — it is paid
+          out of the trust <em>before</em> the patient-liability share. The federal post-eligibility rules
+          (42&nbsp;CFR&nbsp;§§&nbsp;435.725–435.726) list health-insurance premiums as a permitted deduction. In
+          practice, because Social Security often already has the Part&nbsp;B premium withheld before the check
+          arrives, your {state.agencyAbbreviation} eligibility worker reconciles the exact monthly figures when
+          they set your post-eligibility budget. Use gross figures on this worksheet; the worker confirms the final
+          numbers.
+        </p>
+      </div>
 
       <h3>When you do <em>not</em> need a QIT</h3>
       <p>
