@@ -105,7 +105,7 @@ secondaryKeywords:
   - "mltss qualified income trust"
   - "new jersey medicaid income trust"
 
-reviewedDate: "2026-05-31"
+reviewedDate: "2026-07-12"
 uplNotes: "NJ DMAHS itself publishes a fillable model QIT instrument for individuals to complete and print, and states the information 'is not intended as legal or tax advice,' encouraging (not requiring) consultation with a lawyer; DMAHS staff are themselves barred from giving legal advice (which they note could be UPL). The kit operates under the same 4 hard rules as TX: no drafted/customized trust, no personalized intake, no email/chat advice, disclaimer + consent gate. The kit explains how to use NJ's OWN published template. CONFIRM NJ UPL comfort before flipping live."
 
 socialProof:
@@ -113,9 +113,14 @@ socialProof:
   displayThreshold: 25
   launchLabel: "2026"
 
-kitVersion: "v1.0"
-kitVersionDate: "2026-05-31"
+kitVersion: "v1.1"
+kitVersionDate: "2026-07-12"
 kitChangelog:
+  - version: "v1.1"
+    date: "2026-07-12"
+    changes:
+      - "Added three plain-English FAQs on QIT funding mechanics, prompted by early-buyer feedback: (1) fund only the income needed to clear the cap, but each named source in full — not partially (DMAHS QIT FAQ #10); (2) income is counted gross — the Medicare Part B / health-insurance premium is a Step-5 post-eligibility deduction, not netted before funding (FAQ #31); (3) the monthly disbursement waterfall — PNA, bank fee, spousal allowance, premiums, then cost share to the facility — not the whole balance to the provider (FAQ #31, worked Example 1)."
+      - "Re-verified the funding and post-eligibility sections against the live DMAHS QIT FAQ and QIT Overview; source captured in docs/state-sources/new-jersey-source-documents.md."
   - version: "v1.0"
     date: "2026-05-31"
     changes:
@@ -136,6 +141,12 @@ faq:
     answer: "No. The QIT bank account is opened using the beneficiary's Social Security number — a separate EIN is not required. DMAHS provides a bank memo you can give the branch to confirm this."
   - question: "When does coverage begin?"
     answer: "The QIT must be funded in the month you are seeking eligibility — income received that month must be deposited into the QIT by the end of that month. There is no back-dating, and the account must be funded every month to keep benefits."
+  - question: "Do I have to put all of my income into the New Jersey QIT, or only enough to get under the cap?"
+    answer: "Only the income needed to get under the cap — with one firm rule: whatever income source you name, the entire amount of that source must go into the QIT, never a partial slice. Per DMAHS QIT FAQ #10, 'an individual can direct all or some of their income to the QIT but all of the income from any source (e.g. the entire monthly amount of a pension check or the entire Social Security benefit check) must be deposited into the QIT.' So if depositing your whole Social Security check alone brings you under the $2,982 limit, you may leave a pension out — but you cannot deposit only part of the Social Security check. Only what is actually deposited is disregarded when DMAHS counts your income. Many families deposit every source anyway, because running all income through one account is simpler to document month to month."
+  - question: "Is income counted gross or net — for example, is Social Security counted before or after the Medicare Part B premium?"
+    answer: "Gross. DMAHS figures the cost share from 'the individual's total gross income,' and notes that 'gross income includes income disregarded in determining eligibility' (QIT FAQ #31). The Medicare Part B / health-insurance premium is not treated as a reduction of your countable income; it is an allowable deduction taken afterward — Step 5 (health insurance premiums) in the post-eligibility order on your Personal Responsibility (PR) form. In DMAHS's own nursing-home example, gross income is deposited into the trust and the health-insurance premium is then paid out of it. Your county Eligibility Determination Agency sets the exact monthly figures on the PR form; the kit walks you through how the deductions stack up so the numbers are not a surprise."
+  - question: "Each month, does the whole trust balance go to the nursing home, or only part of it?"
+    answer: "Only part — and in a set order. The trust does not simply pay the facility everything deposited. DMAHS follows the federal post-eligibility order (42 CFR 435.725 and 435.726), and the trustee pays, in sequence (QIT FAQ #31): (1) the Personal Needs Allowance — $50/month in a nursing facility — plus up to $20/month for the QIT bank fee; (2) a Community Spouse Allowance if a spouse remains at home; (3) allowances for other dependents; (4) a home-maintenance allowance if the person is returning home within six months; (5) uncovered state-approved medical expenses and health-insurance premiums; and only then (6) the Cost Share — whatever remains — which the trustee pays to the nursing facility or assisted-living facility, or to DMAHS if the person lives at home. In DMAHS's example, $5,100 is deposited and, after the allowance, bank fee, spousal allowance, and premium, $3,098 remains as the cost share paid to the facility. One catch worth knowing: the cost share is calculated on your total gross income — even income you did not route through the QIT — which is why many families find it simpler to run every income source through the trust."
   - question: "What if my bank refuses to open the trust account?"
     answer: "Bank refusal is common on a first attempt. The kit includes the strategy around DMAHS's official bank memo and 'what to tell a bank' guidance, the most common refusal types (EIN demand, large-deposit demand, unfamiliarity) and how to respond to each, and who is authorized to open it (the beneficiary, a guardian, or a POA agent)."
   - question: "Do you offer a refund?"
