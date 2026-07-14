@@ -1,0 +1,66 @@
+---
+// Single, real customer testimonial. Driven by src/config/testimonials.ts, which
+// is 'off' by default — this component only ever receives a testimonial the
+// operator has switched on (attributed or anonymized). See getTestimonial().
+//
+// Deliberately renders NO Review / AggregateRating JSON-LD. One genuine quote is
+// honest social proof; self-serving review markup on your own product is a
+// distinct thing (strict Google rules, penalty risk) and not what this is.
+import type { Testimonial } from '~/config/testimonials';
+
+interface Props {
+  testimonial: Testimonial;
+  stateName: string;
+  // compact = home-page grid card: fills its cell, no vertical margin (the grid
+  // gap handles spacing), slightly smaller quote. Default = full-width state-page block.
+  compact?: boolean;
+}
+
+const { testimonial, stateName, compact = false } = Astro.props;
+
+// Attributed only when the operator both set status='attributed' AND filled a real
+// name (blank name in the public repo means consent not yet given) — otherwise fall
+// back to the non-identifying anonymized label.
+const showAttributed =
+  testimonial.status === 'attributed' && testimonial.attributed.name.trim().length > 0;
+---
+
+<figure class:list={['rounded-lg border border-primary/20 bg-primary-tint/20 p-6 md:p-8', compact ? 'h-full' : 'my-12']}>
+  <svg
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+    class="h-8 w-8 text-primary/40"
+    fill="currentColor"
+  >
+    <path d="M9.5 6C6.5 6 4 8.5 4 11.5c0 2.6 1.9 4.5 4.3 4.5.4 0 .8-.05 1.1-.15-.5 1.4-1.8 2.5-3.6 3.1a.5.5 0 0 0 .3.95c3.6-1 5.9-3.9 5.9-7.7C12 8.5 11 6 9.5 6Zm9 0C15.5 6 13 8.5 13 11.5c0 2.6 1.9 4.5 4.3 4.5.4 0 .8-.05 1.1-.15-.5 1.4-1.8 2.5-3.6 3.1a.5.5 0 0 0 .3.95c3.6-1 5.9-3.9 5.9-7.7C21 8.5 20 6 18.5 6Z" />
+  </svg>
+
+  <blockquote class="mt-3">
+    <p class:list={['leading-relaxed text-ink', compact ? 'text-base md:text-lg' : 'text-lg md:text-xl']}>
+      {testimonial.quote}
+    </p>
+  </blockquote>
+
+  <figcaption class="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+    {
+      showAttributed ? (
+        <>
+          <span class="font-semibold text-ink-heading">{testimonial.attributed.name}</span>
+          <span class="text-ink-muted">
+            {testimonial.attributed.credential} &middot; {testimonial.attributed.location}
+          </span>
+        </>
+      ) : (
+        <span class="font-medium text-ink-heading">{testimonial.anonymized.label}</span>
+      )
+    }
+    <span
+      class="inline-flex items-center gap-1 rounded-full border border-primary/25 bg-surface-elevated px-2 py-0.5 text-xs font-medium text-primary"
+    >
+      <svg aria-hidden="true" viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      Verified {stateName} buyer
+    </span>
+  </figcaption>
+</figure>

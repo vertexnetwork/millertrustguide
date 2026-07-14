@@ -7,6 +7,7 @@ import MoneyBackGuarantee from '~/components/MoneyBackGuarantee.astro';
 import PdfPreview from '~/components/PdfPreview.astro';
 import StickyBuyBar from '~/components/StickyBuyBar.astro';
 import SocialProof from '~/components/SocialProof.astro';
+import Testimonial from '~/components/Testimonial.astro';
 import TrustStrip from '~/components/TrustStrip.astro';
 import LeadMagnetForm from '~/components/LeadMagnetForm.astro';
 import InlineLeadCapture from '~/components/InlineLeadCapture.astro';
@@ -26,6 +27,7 @@ import { FOUNDER } from '~/config/founder';
 import FounderLive from '~/components/FounderLive.astro';
 import { firstSentence } from '~/lib/text';
 import { REVIEWER } from '~/config/identity';
+import { getTestimonial } from '~/config/testimonials';
 import { getAllArticleMeta } from '~/lib/articles';
 
 interface Props {
@@ -61,6 +63,10 @@ const displayPrice = founderActive ? FOUNDER.price : state.price;
 // the body so the deeper queries cluster under the state hub and pass relevance
 // back with descriptive, head-term-bearing anchor text.
 const articleLinks = isLive ? getAllArticleMeta(state) : [];
+
+// Real customer testimonial for this state, or null. Config is 'off' by default
+// (src/config/testimonials.ts); only live states ever show one.
+const testimonial = isLive ? getTestimonial(state.slug) : null;
 
 // GEO/AI-citation lede. First ~80 words must directly answer the primary
 // query — Princeton GEO + 2026 AI Overview research both prioritize
@@ -448,6 +454,11 @@ if (isLive) {
     }
 
     {!blocked && <PdfPreview stateSlug={state.slug} />}
+
+    {/* Real buyer testimonial — renders only when switched on in
+        src/config/testimonials.ts (off by default). Sits right after the product
+        preview: strongest spot for a genuine buyer voice, still high on the page. */}
+    {testimonial && <Testimonial testimonial={testimonial} stateName={state.name} />}
 
     {!blocked && (
       <ComparisonTable

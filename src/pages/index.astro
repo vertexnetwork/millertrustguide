@@ -10,6 +10,8 @@ import {
 } from '~/lib/schema';
 import { firstSentence } from '~/lib/text';
 import { FOUNDER } from '~/config/founder';
+import Testimonial from '~/components/Testimonial.astro';
+import { getEnabledTestimonials } from '~/config/testimonials';
 
 export const prerender = true;
 
@@ -24,6 +26,16 @@ const states = (await getCollection('states'))
 const live = states.filter((s) => s.status === 'live');
 const draft = states.filter((s) => s.status === 'draft');
 const blocked = states.filter((s) => s.status === 'blocked');
+
+// Brand-level proof: every switched-on testimonial, resolved to its state's
+// display name and limited to live states. One config drives both the state page
+// and this grid; it grows as states are added and flipped on. Empty today (all
+// 'off') → the whole section is gated out below, so no empty shell renders.
+const nameBySlug = new Map(states.map((s) => [s.slug, s]));
+const homeTestimonials = getEnabledTestimonials().flatMap((testimonial) => {
+  const s = nameBySlug.get(testimonial.stateSlug);
+  return s && s.status === 'live' ? [{ testimonial, stateName: s.name }] : [];
+});
 
 const SITE_URL = 'https://millertrustguide.com';
 
@@ -177,6 +189,27 @@ const jsonLd = [
       )
     }
   </section>
+
+  {/* Brand-level proof grid — real, permissioned buyers across states, each
+      state-labeled. Grows as testimonials are switched on; hidden entirely when
+      none are (config is 'off' by default). Not a rotator by design: a static grid
+      shows all proof at once and needs no JS. */}
+  {
+    homeTestimonials.length > 0 && (
+      <section class="mx-auto max-w-3xl px-4 py-8" aria-labelledby="proof-heading">
+        <h2 id="proof-heading">What early buyers say</h2>
+        <p class="mt-2 text-sm text-ink-muted">
+          Real buyers, in their own words. We only publish verified customers who gave permission — no invented
+          reviews, no stock quotes.
+        </p>
+        <div class:list={['mt-5 grid gap-6', homeTestimonials.length > 1 && 'md:grid-cols-2']}>
+          {homeTestimonials.map(({ testimonial, stateName }) => (
+            <Testimonial testimonial={testimonial} stateName={stateName} compact />
+          ))}
+        </div>
+      </section>
+    )
+  }
 
   {
     draft.length > 0 && (
