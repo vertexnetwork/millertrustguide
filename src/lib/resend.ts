@@ -152,6 +152,33 @@ export async function sendOperatorAlert(opts: { subject: string; lines: string[]
 }
 
 // ============================================================================
+// Operational — kit feedback form submission
+// ============================================================================
+//
+// Routes a /api/feedback submission to the operator inbox (OPERATOR_ALERT_EMAIL,
+// falling back to support@). Throws on send failure so the endpoint can tell the
+// submitter to retry (feedback we can't capture should not fail silently). When
+// the submitter left a reply address, we set it as replyTo so the operator can
+// answer them directly from the inbox.
+
+export async function sendFeedbackEmail(opts: {
+  subject: string;
+  text: string;
+  replyTo?: string;
+}) {
+  const to = import.meta.env.OPERATOR_ALERT_EMAIL || FROM_ADDRESS;
+  return unwrap(
+    client().emails.send({
+      from: FROM,
+      to,
+      replyTo: opts.replyTo || FROM_ADDRESS,
+      subject: opts.subject,
+      text: opts.text,
+    })
+  );
+}
+
+// ============================================================================
 // Lifecycle — nurture welcome email + audience subscription
 // ============================================================================
 

@@ -16,6 +16,7 @@
     "leadmagnets:build": "node scripts/build-lead-magnets.mjs",
     "kits:previews": "node scripts/build-previews.mjs",
     "kit:upload": "node scripts/upload-kit.mjs",
+    "checkin": "node scripts/generate-checkin.mjs",
     "postbuild": "node scripts/indexnow-submit.mjs || true"
   },
   "dependencies": {

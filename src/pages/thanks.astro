@@ -10,6 +10,7 @@ import { getStripe } from '~/lib/stripe';
 
 const sessionId = Astro.url.searchParams.get('session_id');
 let stateName: string | null = null;
+let stateSlug: string | null = null;
 let paymentConfirmed = false;
 let lookupError = false;
 // Actual charged amount for the Google Ads conversion value — reads from Stripe
@@ -27,6 +28,7 @@ if (sessionId) {
       (session.metadata?.state_slug
         ? String(session.metadata.state_slug).charAt(0).toUpperCase() + String(session.metadata.state_slug).slice(1)
         : null);
+    stateSlug = (session.metadata?.state_slug as string | undefined) ?? null;
     if (typeof session.amount_total === 'number') amountTotal = session.amount_total / 100;
     if (session.currency) currency = session.currency.toUpperCase();
   } catch {
@@ -61,6 +63,11 @@ const adsPurchaseLabel = import.meta.env.PUBLIC_GOOGLE_ADS_PURCHASE_LABEL;
           <p class="text-sm text-ink-muted">
             One practical next step: open the PDF on the device you'll take to the bank. The bank-refusal script in
             Section 5 is what you'll want at the counter.
+          </p>
+          <p class="text-sm text-ink-muted">
+            Once you've had a chance to use it, we'd value your read on the kit:{' '}
+            <a href={stateSlug ? `/feedback?state=${stateSlug}` : '/feedback'}>tell us how it went</a>. A real person
+            reads every note, and it shapes the next version.
           </p>
         </>
       ) : lookupError || !sessionId ? (

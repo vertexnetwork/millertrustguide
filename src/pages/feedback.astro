@@ -1,0 +1,259 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+// SSR so we can personalize from the ?state= link the check-in email uses, and
+// tag the submission with ?order= when present. Both are optional.
+export const prerender = false;
+
+const stateSlug = (Astro.url.searchParams.get('state') || '').toLowerCase();
+const order = (Astro.url.searchParams.get('order') || '').slice(0, 120);
+
+const liveStates = (await getCollection('states'))
+  .filter((s) => s.data.status === 'live')
+  .map((s) => ({ slug: s.slug, name: s.data.name }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+const known = liveStates.find((s) => s.slug === stateSlug) || null;
+const stateName = known?.name ?? null;
+
+const heading = stateName
+  ? `How did the ${stateName} kit work for you?`
+  : 'How did your kit work for you?';
+---
+
+<BaseLayout
+  title="Share feedback on your kit | Miller Trust Guide"
+  description="Tell us how the kit worked and what we can make clearer. Two minutes, no account needed."
+  noindex={true}
+>
+  <article class="mx-auto max-w-2xl px-4 py-12 md:py-16">
+    <p class="text-xs font-semibold uppercase tracking-wider text-primary">Your feedback</p>
+    <h1 class="mt-1 !text-3xl md:!text-4xl">{heading}</h1>
+    <p class="mt-4 text-base leading-relaxed text-ink">
+      You are one of the people this kit is built for, so your read on it matters more than anyone's.
+      A couple of minutes here directly shapes the next version. There is no account and no sign-up.
+    </p>
+
+    <div class="mt-5 rounded-md border border-border bg-surface-elevated p-4 text-sm leading-relaxed text-ink-muted">
+      A quick note so we stay in our lane: this form is about the kit itself, not your family's specific
+      situation. We are researchers, not attorneys, and we cannot advise on an individual case. For that,
+      a licensed elder-law attorney in your state is the right call.
+    </div>
+
+    <form id="feedback-form" class="mt-8 space-y-8" novalidate>
+      {/* Honeypot: hidden from people, catnip for bots. Any value here is treated as spam. */}
+      <div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">
+        <label>Company<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+      </div>
+
+      <input type="hidden" name="order" value={order} />
+
+      {/* Which kit */}
+      {
+        known ? (
+          <input type="hidden" name="state" value={known.slug} />
+        ) : (
+          <div>
+            <label for="state" class="block font-semibold text-ink-heading">Which state kit is this about?</label>
+            <select
+              id="state"
+              name="state"
+              class="mt-2 w-full rounded-md border border-border bg-surface-elevated px-3 py-2 text-ink"
+            >
+              <option value="">Select your state</option>
+              {liveStates.map((s) => (
+                <option value={s.slug}>{s.name}</option>
+              ))}
+            </select>
+          </div>
+        )
+      }
+
+      {/* Downloaded / opened */}
+      <fieldset>
+        <legend class="font-semibold text-ink-heading">Did the kit download and open without trouble?</legend>
+        <div class="mt-3 space-y-2">
+          {[
+            ['yes', 'Yes, no trouble'],
+            ['minor', 'Opened, but the link or file was fiddly'],
+            ['no', 'No, I had real trouble getting to it'],
+          ].map(([val, label]) => (
+            <label class="flex items-start gap-2 text-ink">
+              <input type="radio" name="opened" value={val} class="mt-1" />
+              <span>{label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      {/* Clarity */}
+      <fieldset>
+        <legend class="font-semibold text-ink-heading">How clear was the walkthrough to actually act on?</legend>
+        <div class="mt-3 space-y-2">
+          {[
+            ['very', 'Very clear, I knew what to do'],
+            ['mostly', 'Mostly clear, a few spots slowed me down'],
+            ['confusing', 'Confusing in places'],
+            ['stuck', 'I got stuck'],
+          ].map(([val, label]) => (
+            <label class="flex items-start gap-2 text-ink">
+              <input type="radio" name="clarity" value={val} class="mt-1" />
+              <span>{label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      {/* Improve */}
+      <div>
+        <label for="improve" class="block font-semibold text-ink-heading">
+          What tripped you up, or what would have made it clearer?
+        </label>
+        <textarea
+          id="improve"
+          name="improve"
+          rows="4"
+          class="mt-2 w-full rounded-md border border-border bg-surface-elevated px-3 py-2 text-ink"
+          placeholder="Even one sentence helps. The specific spot that slowed you down is gold."
+        ></textarea>
+      </div>
+
+      {/* Worked */}
+      <div>
+        <label for="worked" class="block font-semibold text-ink-heading">What worked well?</label>
+        <textarea
+          id="worked"
+          name="worked"
+          rows="3"
+          class="mt-2 w-full rounded-md border border-border bg-surface-elevated px-3 py-2 text-ink"
+          placeholder="What actually helped, in your words."
+        ></textarea>
+      </div>
+
+      {/* Testimonial permission */}
+      <fieldset>
+        <legend class="font-semibold text-ink-heading">
+          May we share your comment (about the kit) with other families?
+        </legend>
+        <div class="mt-3 space-y-2">
+          {[
+            ['named', 'Yes, and you may use my first name and state'],
+            ['anon', 'Yes, but keep me anonymous'],
+            ['no', 'No, please keep it private'],
+          ].map(([val, label]) => (
+            <label class="flex items-start gap-2 text-ink">
+              <input type="radio" name="permission" value={val} class="mt-1" />
+              <span>{label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      {/* Optional identity */}
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="name" class="block font-semibold text-ink-heading">Your name (optional)</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            autocomplete="name"
+            class="mt-2 w-full rounded-md border border-border bg-surface-elevated px-3 py-2 text-ink"
+          />
+        </div>
+        <div>
+          <label for="email" class="block font-semibold text-ink-heading">Email (optional)</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            autocomplete="email"
+            class="mt-2 w-full rounded-md border border-border bg-surface-elevated px-3 py-2 text-ink"
+            placeholder="Only if you would like a reply"
+          />
+        </div>
+      </div>
+
+      <div>
+        <button
+          type="submit"
+          id="feedback-submit"
+          class="rounded-md bg-primary px-6 py-3 font-semibold text-white transition hover:bg-primary/90 disabled:opacity-60"
+        >
+          Send feedback
+        </button>
+        <p id="feedback-error" class="mt-3 text-sm text-warning" role="alert" hidden></p>
+      </div>
+    </form>
+
+    <div id="feedback-success" class="mt-8 rounded-lg border border-primary/25 bg-primary-tint/30 p-6" hidden>
+      <h2 class="!mt-0 !text-xl">Thank you. This genuinely helps.</h2>
+      <p class="mt-2 text-ink">
+        A real person reads every one of these, and it goes straight into the next version of the kit.
+        If you asked for a reply, we will be in touch.
+      </p>
+    </div>
+  </article>
+
+  <script is:inline>
+    (function () {
+      var form = document.getElementById('feedback-form');
+      if (!form) return;
+      var errEl = document.getElementById('feedback-error');
+      var btn = document.getElementById('feedback-submit');
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        errEl.hidden = true;
+
+        var data = {};
+        new FormData(form).forEach(function (value, key) {
+          data[key] = value;
+        });
+
+        // Client-side nudge: ask for at least one real answer before sending.
+        if (!data.improve && !data.worked && !data.opened && !data.clarity) {
+          errEl.textContent = 'Please answer at least one question before sending.';
+          errEl.hidden = false;
+          return;
+        }
+
+        btn.disabled = true;
+        var original = btn.textContent;
+        btn.textContent = 'Sending...';
+
+        fetch('/api/feedback', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(data),
+        })
+          .then(function (r) {
+            return r.json().then(function (body) {
+              return { ok: r.ok, body: body };
+            });
+          })
+          .then(function (res) {
+            if (res.ok) {
+              form.hidden = true;
+              document.getElementById('feedback-success').hidden = false;
+              document.getElementById('feedback-success').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+              errEl.textContent =
+                (res.body && res.body.error) || 'Something went wrong. Please try again in a moment.';
+              errEl.hidden = false;
+              btn.disabled = false;
+              btn.textContent = original;
+            }
+          })
+          .catch(function () {
+            errEl.textContent =
+              'We could not reach the server. Please check your connection and try again, or email support@millertrustguide.com.';
+            errEl.hidden = false;
+            btn.disabled = false;
+            btn.textContent = original;
+          });
+      });
+    })();
+  </script>
+</BaseLayout>
