@@ -42,7 +42,7 @@ export const TESTIMONIALS: Testimonial[] = [
     // docs/customer-feedback-log.md). Confirm this exact wording in the permission
     // ask so what ships is what he signed off on.
     quote:
-      "Your Setup Kit turned out to be extremely useful. It got us to the New Jersey QIT template right away — and that was big. We used the Kit to work through the template and the practical questions about how a QIT actually works, and we were able to draft it, get it executed, open a bank account, and submit it with the application in just two or three days. It was an essential need for us, and the Kit helped us accomplish it very quickly.",
+      "Your Setup Kit turned out to be extremely useful. It got us to the New Jersey QIT template right away, and that was big. We used the Kit to work through the template and the practical questions about how a QIT actually works, and we were able to draft it, get it executed, open a bank account, and submit it with the application in just two or three days. It was an essential need for us, and the Kit helped us accomplish it very quickly.",
     attributed: {
       name: '', // ← fill ONLY with explicit consent to be named, at flip time
       credential: 'Retired attorney & CPA',
