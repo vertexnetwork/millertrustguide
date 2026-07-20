@@ -27,7 +27,7 @@ import { FOUNDER } from '~/config/founder';
 import FounderLive from '~/components/FounderLive.astro';
 import { firstSentence } from '~/lib/text';
 import { REVIEWER } from '~/config/identity';
-import { getTestimonial } from '~/config/testimonials';
+import { getResolvedTestimonials, orderForState } from '~/lib/testimonials-display';
 import { getAllArticleMeta } from '~/lib/articles';
 
 interface Props {
@@ -64,9 +64,13 @@ const displayPrice = founderActive ? FOUNDER.price : state.price;
 // back with descriptive, head-term-bearing anchor text.
 const articleLinks = isLive ? getAllArticleMeta(state) : [];
 
-// Real customer testimonial for this state, or null. Config is 'off' by default
-// (src/config/testimonials.ts); only live states ever show one.
-const testimonial = isLive ? getTestimonial(state.slug) : null;
+// Brand-level proof stack: all switched-on testimonials, THIS state's own first,
+// up to six. Each is labeled with its OWN state's badge (honest cross-state
+// framing), so one real buyer can provide proof site-wide until each state earns
+// its own. Config is 'off' by default; empty → the section is gated out below.
+const proofTestimonials = isLive
+  ? orderForState(await getResolvedTestimonials(), state.slug, 6)
+  : [];
 
 // GEO/AI-citation lede. First ~80 words must directly answer the primary
 // query — Princeton GEO + 2026 AI Overview research both prioritize
@@ -455,10 +459,25 @@ if (isLive) {
 
     {!blocked && <PdfPreview stateSlug={state.slug} />}
 
-    {/* Real buyer testimonial — renders only when switched on in
-        src/config/testimonials.ts (off by default). Sits right after the product
-        preview: strongest spot for a genuine buyer voice, still high on the page. */}
-    {testimonial && <Testimonial testimonial={testimonial} stateName={state.name} />}
+    {/* Brand-level proof stack — real, permissioned buyers, THIS state's own
+        first, each labeled with its TRUE state badge (a New Jersey quote shown
+        here reads "Verified New Jersey buyer", never a false same-state claim).
+        Renders only when at least one is switched on (config off by default).
+        Sits right after the product preview: strongest spot for a buyer voice. */}
+    {proofTestimonials.length > 0 && (
+      <section class="mx-auto max-w-3xl px-4 py-8" aria-labelledby="proof-heading">
+        <h2 id="proof-heading">What early buyers say</h2>
+        <p class="mt-2 text-sm text-ink-muted">
+          Real buyers, in their own words. We only publish verified customers who gave permission — no invented
+          reviews, no stock quotes.
+        </p>
+        <div class:list={['mt-5 grid gap-6', proofTestimonials.length > 1 && 'md:grid-cols-2']}>
+          {proofTestimonials.map(({ testimonial, stateName }) => (
+            <Testimonial testimonial={testimonial} stateName={stateName} compact />
+          ))}
+        </div>
+      </section>
+    )}
 
     {!blocked && (
       <ComparisonTable

@@ -17,7 +17,14 @@ import { getCollection } from 'astro:content';
 import { getStripe, getWebhookSecret } from '~/lib/stripe';
 import { kitBlobExists } from '~/lib/blob';
 import { createDownloadToken } from '~/lib/download-token';
-import { sendKitDeliveryEmail, sendOperatorAlert } from '~/lib/resend';
+import {
+  sendKitDeliveryEmail,
+  sendOperatorAlert,
+  sendB2BWelcomeEmail,
+  sendDunningEmail,
+} from '~/lib/resend';
+import { kvGetJSON, kvSetJSON } from '~/lib/kv';
+import { B2B_PRODUCT_KIND } from '~/config/b2b';
 
 export const prerender = false;
 
@@ -69,14 +76,39 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
+  // --- B2B subscription lifecycle (side-effect-only) ------------------------
+  // Access is read LIVE from Stripe at request time (see src/lib/stripe-b2b.ts),
+  // so these handlers never write entitlement state — duplicate/out-of-order
+  // events are harmless. They only send account emails, de-duped via KV.
+  if (event.type === 'customer.subscription.created') {
+    return handleSubscriptionCreated(
+      event.data.object as import('stripe').Stripe.Subscription
+    );
+  }
+  if (event.type === 'invoice.payment_failed') {
+    return handlePaymentFailed(event.data.object as import('stripe').Stripe.Invoice);
+  }
+  if (
+    event.type === 'customer.subscription.updated' ||
+    event.type === 'customer.subscription.deleted' ||
+    event.type === 'invoice.paid'
+  ) {
+    // Nothing to persist — access is resolved live. Acknowledge.
+    return ok({ received: true, noted: event.type });
+  }
+
   if (event.type !== 'checkout.session.completed') {
-    return new Response(JSON.stringify({ received: true, ignored: event.type }), {
-      status: 200,
-      headers: { 'content-type': 'application/json' },
-    });
+    return ok({ received: true, ignored: event.type });
   }
 
   const session = event.data.object as import('stripe').Stripe.Checkout.Session;
+
+  // B2B subscription checkouts also fire checkout.session.completed. They are
+  // fulfilled via customer.subscription.created above — never through the B2C
+  // kit-delivery path below (which would false-alarm on the missing state_slug).
+  if (session.mode === 'subscription' || session.metadata?.product_kind === B2B_PRODUCT_KIND) {
+    return ok({ received: true, ignored: 'b2b_checkout' });
+  }
 
   // Pull the buyer's email and state info from the session.
   const buyerEmail =
@@ -147,9 +179,15 @@ export const POST: APIRoute = async ({ request }) => {
 
   // Mint a 7-day signed download token and build the link to our own
   // /api/download endpoint. The Blob URL itself is never sent to the buyer.
+  // Embed the buyer's identity so /api/download can watermark the delivered
+  // PDF ("Social DRM") with no extra Stripe round-trip.
   const siteUrl =
     import.meta.env.SITE_URL?.replace(/\/$/, '') || 'https://millertrustguide.com';
-  const { token, expiresAt } = createDownloadToken(state.slug, session.id);
+  const buyerName = session.customer_details?.name ?? null;
+  const { token, expiresAt } = createDownloadToken(state.slug, session.id, {
+    email: buyerEmail,
+    name: buyerName,
+  });
   const downloadUrl = `${siteUrl}/api/download?token=${encodeURIComponent(token)}`;
 
   // Send the delivery email.
@@ -171,8 +209,81 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  return new Response(JSON.stringify({ received: true, delivered: true }), {
+  return ok({ received: true, delivered: true });
+};
+
+function ok(body: Record<string, unknown>): Response {
+  return new Response(JSON.stringify(body), {
     status: 200,
     headers: { 'content-type': 'application/json' },
   });
-};
+}
+
+// Resolve a Stripe customer's email from an id or an expandable field.
+async function customerEmail(
+  customer: string | import('stripe').Stripe.Customer | import('stripe').Stripe.DeletedCustomer | null
+): Promise<string | null> {
+  if (!customer) return null;
+  if (typeof customer !== 'string') {
+    return 'email' in customer ? (customer.email ?? null) : null;
+  }
+  try {
+    const c = await getStripe().customers.retrieve(customer);
+    return c && !c.deleted ? (c.email ?? null) : null;
+  } catch (err) {
+    console.error('[stripe-webhook] customer retrieve failed:', err);
+    return null;
+  }
+}
+
+// B2B: subscription created → send the welcome email once (KV-deduped).
+async function handleSubscriptionCreated(
+  sub: import('stripe').Stripe.Subscription
+): Promise<Response> {
+  const dedupeKey = `welcomed:${sub.id}`;
+  if (await kvGetJSON<number>(dedupeKey)) return ok({ received: true, deduped: 'welcome' });
+
+  const email = await customerEmail(sub.customer);
+  if (!email) {
+    // No email to welcome — not fatal (they can still sign in). Log only.
+    console.error('[stripe-webhook] subscription.created without customer email:', sub.id);
+    return ok({ received: true, warn: 'no_email' });
+  }
+
+  const siteUrl =
+    import.meta.env.SITE_URL?.replace(/\/$/, '') || 'https://millertrustguide.com';
+  try {
+    await sendB2BWelcomeEmail({
+      to: email,
+      facilityName: sub.metadata?.facility_name || undefined,
+      loginUrl: `${siteUrl}/business/login?welcome=1`,
+    });
+    await kvSetJSON(dedupeKey, 1, 60 * 60 * 24 * 7); // 7-day dedupe window
+  } catch (err) {
+    console.error('[stripe-webhook] B2B welcome email failed:', err);
+    // Best-effort — do not 5xx (would retry and risk a dupe); they can sign in.
+  }
+  return ok({ received: true, welcomed: true });
+}
+
+// B2B: invoice payment failed → send a dunning email once per invoice.
+async function handlePaymentFailed(
+  invoice: import('stripe').Stripe.Invoice
+): Promise<Response> {
+  const dedupeKey = `dunned:${invoice.id}`;
+  if (await kvGetJSON<number>(dedupeKey)) return ok({ received: true, deduped: 'dunning' });
+
+  const email = invoice.customer_email || (await customerEmail(invoice.customer));
+  if (!email) return ok({ received: true, warn: 'no_email' });
+
+  const siteUrl =
+    import.meta.env.SITE_URL?.replace(/\/$/, '') || 'https://millertrustguide.com';
+  try {
+    // Link to sign-in; they open the Stripe portal from inside the account.
+    await sendDunningEmail({ to: email, portalUrl: `${siteUrl}/business/login` });
+    await kvSetJSON(dedupeKey, 1, 60 * 60 * 24 * 7);
+  } catch (err) {
+    console.error('[stripe-webhook] B2B dunning email failed:', err);
+  }
+  return ok({ received: true, dunned: true });
+}

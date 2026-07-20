@@ -11,7 +11,7 @@ import {
 import { firstSentence } from '~/lib/text';
 import { FOUNDER } from '~/config/founder';
 import Testimonial from '~/components/Testimonial.astro';
-import { getEnabledTestimonials } from '~/config/testimonials';
+import { getResolvedTestimonials } from '~/lib/testimonials-display';
 
 export const prerender = true;
 
@@ -27,15 +27,11 @@ const live = states.filter((s) => s.status === 'live');
 const draft = states.filter((s) => s.status === 'draft');
 const blocked = states.filter((s) => s.status === 'blocked');
 
-// Brand-level proof: every switched-on testimonial, resolved to its state's
-// display name and limited to live states. One config drives both the state page
-// and this grid; it grows as states are added and flipped on. Empty today (all
+// Brand-level proof: every switched-on testimonial, resolved to its OWN state's
+// display name (so its badge is honest) and limited to live states. Shared with
+// each state page via getResolvedTestimonials(); capped at six. Empty today (all
 // 'off') → the whole section is gated out below, so no empty shell renders.
-const nameBySlug = new Map(states.map((s) => [s.slug, s]));
-const homeTestimonials = getEnabledTestimonials().flatMap((testimonial) => {
-  const s = nameBySlug.get(testimonial.stateSlug);
-  return s && s.status === 'live' ? [{ testimonial, stateName: s.name }] : [];
-});
+const homeTestimonials = (await getResolvedTestimonials()).slice(0, 6);
 
 const SITE_URL = 'https://millertrustguide.com';
 

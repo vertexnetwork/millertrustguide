@@ -179,6 +179,143 @@ export async function sendFeedbackEmail(opts: {
 }
 
 // ============================================================================
+// B2B — account/transactional emails (magic-link login, welcome, dunning)
+// ============================================================================
+//
+// These are account emails, not marketing, so they deliberately do NOT carry
+// the List-Unsubscribe header (unlike the nurture series). They reuse the same
+// sender identity and disclaimer.
+
+const B2B_EMAIL_FOOTER = `— Miller Trust Guide (Business)\nsupport@millertrustguide.com`;
+
+export async function sendMagicLinkEmail(opts: {
+  to: string;
+  loginUrl: string;
+  expiresAt: string;
+}) {
+  const expiresHuman = new Date(opts.expiresAt).toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  });
+  const text = `You requested access to your Miller Trust Guide facility portal.
+
+Sign in: ${opts.loginUrl}
+
+This link is single-use and expires at ${expiresHuman}. If you did not request it, you can ignore this email — no one can access your account without it.
+
+${B2B_EMAIL_FOOTER}
+
+---
+${DISCLAIMER_TEXT}
+`;
+  const html = `<!doctype html>
+<html><body style="font-family: -apple-system, Segoe UI, system-ui, sans-serif; color: #1F2937; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 24px;">
+  <h1 style="font-family: Georgia, serif; color: #0F4C4A; font-size: 20px;">Sign in to your facility portal</h1>
+  <p>You requested access to your Miller Trust Guide facility portal.</p>
+  <p style="margin: 24px 0;">
+    <a href="${opts.loginUrl}" style="background:#115E59;color:#fff;padding:12px 20px;border-radius:6px;text-decoration:none;font-weight:600;">Sign in</a>
+  </p>
+  <p style="color:#6B7280;font-size:13px;">This link is single-use and expires at ${expiresHuman}. If you did not request it, you can ignore this email.</p>
+  <p style="color:#6B7280;font-size:13px;">— Miller Trust Guide (Business), support@millertrustguide.com</p>
+  <hr style="border:none;border-top:1px solid #E5E7EB;margin:24px 0;" />
+  <p style="color:#78350F;background:#FEF3C7;padding:12px;border-radius:6px;font-size:12px;">${DISCLAIMER_TEXT}</p>
+</body></html>`;
+
+  return unwrap(
+    client().emails.send({
+      from: FROM,
+      to: opts.to,
+      replyTo: FROM_ADDRESS,
+      subject: 'Your Miller Trust Guide facility portal sign-in link',
+      text,
+      html,
+    })
+  );
+}
+
+export async function sendB2BWelcomeEmail(opts: {
+  to: string;
+  facilityName?: string;
+  loginUrl: string;
+}) {
+  const who = opts.facilityName ? ` for ${opts.facilityName}` : '';
+  const text = `Your Miller Trust Guide facility license${who} is active.
+
+Sign in any time to download and distribute your co-branded state kit(s):
+${opts.loginUrl}
+
+Your license includes: facility co-branding, ongoing updates as the state's form and income cap change, and the right to print and distribute the kit to your residents and their families.
+
+${B2B_EMAIL_FOOTER}
+
+---
+${DISCLAIMER_TEXT}
+`;
+  const html = `<!doctype html>
+<html><body style="font-family: -apple-system, Segoe UI, system-ui, sans-serif; color: #1F2937; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 24px;">
+  <h1 style="font-family: Georgia, serif; color: #0F4C4A; font-size: 20px;">Your facility license is active${who ? ` — ${opts.facilityName}` : ''}</h1>
+  <p>Thank you. Sign in any time to download and distribute your co-branded state kit(s):</p>
+  <p style="margin: 24px 0;">
+    <a href="${opts.loginUrl}" style="background:#115E59;color:#fff;padding:12px 20px;border-radius:6px;text-decoration:none;font-weight:600;">Open your portal</a>
+  </p>
+  <p>Your license includes facility co-branding, ongoing updates as the state's form and income cap change, and the right to print and distribute the kit to your residents and their families.</p>
+  <p style="color:#6B7280;font-size:13px;">— Miller Trust Guide (Business), support@millertrustguide.com</p>
+  <hr style="border:none;border-top:1px solid #E5E7EB;margin:24px 0;" />
+  <p style="color:#78350F;background:#FEF3C7;padding:12px;border-radius:6px;font-size:12px;">${DISCLAIMER_TEXT}</p>
+</body></html>`;
+
+  return unwrap(
+    client().emails.send({
+      from: FROM,
+      to: opts.to,
+      replyTo: FROM_ADDRESS,
+      subject: 'Your Miller Trust Guide facility license is active',
+      text,
+      html,
+    })
+  );
+}
+
+export async function sendDunningEmail(opts: { to: string; portalUrl: string }) {
+  const text = `We were unable to process the latest payment for your Miller Trust Guide facility license.
+
+Please update your payment method to keep your portal access and co-branded kits active:
+${opts.portalUrl}
+
+If the payment is not updated, access will end when the current billing period lapses. Reply to this email if you need help.
+
+${B2B_EMAIL_FOOTER}
+
+---
+${DISCLAIMER_TEXT}
+`;
+  const html = `<!doctype html>
+<html><body style="font-family: -apple-system, Segoe UI, system-ui, sans-serif; color: #1F2937; line-height: 1.6; max-width: 600px; margin: 0 auto; padding: 24px;">
+  <h1 style="font-family: Georgia, serif; color: #B45309; font-size: 20px;">Payment issue on your facility license</h1>
+  <p>We were unable to process the latest payment for your Miller Trust Guide facility license.</p>
+  <p style="margin: 24px 0;">
+    <a href="${opts.portalUrl}" style="background:#B45309;color:#fff;padding:12px 20px;border-radius:6px;text-decoration:none;font-weight:600;">Update payment method</a>
+  </p>
+  <p>If the payment is not updated, access will end when the current billing period lapses. Reply to this email if you need help.</p>
+  <p style="color:#6B7280;font-size:13px;">— Miller Trust Guide (Business), support@millertrustguide.com</p>
+  <hr style="border:none;border-top:1px solid #E5E7EB;margin:24px 0;" />
+  <p style="color:#78350F;background:#FEF3C7;padding:12px;border-radius:6px;font-size:12px;">${DISCLAIMER_TEXT}</p>
+</body></html>`;
+
+  return unwrap(
+    client().emails.send({
+      from: FROM,
+      to: opts.to,
+      replyTo: FROM_ADDRESS,
+      subject: 'Action needed: payment issue on your facility license',
+      text,
+      html,
+    })
+  );
+}
+
+// ============================================================================
 // Lifecycle — nurture welcome email + audience subscription
 // ============================================================================
 

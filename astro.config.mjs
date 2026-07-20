@@ -24,8 +24,12 @@ export default defineConfig({
   },
   vite: {
     ssr: {
-      // Stripe SDK and Resend are Node-only; keep them server-side.
-      external: ['stripe', 'resend', '@vercel/blob'],
+      // Stripe SDK and Resend are Node-only; keep them server-side. pdf-lib is
+      // pure JS but large and only used in the download path — keep it external
+      // and dynamically imported so it stays off the SSR bundle boundary.
+      // @upstash/redis backs the B2B minimal-KV layer (magic-link nonces,
+      // login rate-limiting, entitlement cache) — same treatment.
+      external: ['stripe', 'resend', '@vercel/blob', 'pdf-lib', '@upstash/redis'],
     },
   },
 });

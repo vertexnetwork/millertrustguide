@@ -1,0 +1,74 @@
+---
+// B2B facility portal (authenticated). src/middleware.ts guards this route and
+// sets Astro.locals.b2b; we re-guard here defensively. Lists the facility's
+// entitled state(s) with co-branded download links + billing management.
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export const prerender = false;
+
+const session = Astro.locals.b2b;
+if (!session) return Astro.redirect('/business/login');
+
+const states = await getCollection('states');
+const nameBySlug = new Map(states.map((s) => [s.slug, s.data.name] as const));
+const entitled = session.entitledStates
+  .map((slug) => ({ slug, name: nameBySlug.get(slug) ?? slug }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+const portalError = Astro.url.searchParams.get('portal') === 'error';
+
+const title = 'Your facility portal — Miller Trust Guide (Business)';
+const description = 'Download and distribute your co-branded Miller Trust setup kits.';
+---
+
+<BaseLayout title={title} description={description} noindex={true}>
+  <section class="mx-auto max-w-3xl px-6 py-12">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-widest text-primary">Facility portal</p>
+        <h1 class="mt-1 font-serif text-2xl text-primary">{session.facilityName || 'Your facility'}</h1>
+      </div>
+      <a href="/api/business/logout" class="text-sm text-gray-500 underline">Sign out</a>
+    </div>
+
+    {portalError && (
+      <p class="mt-4 rounded-md bg-amber-50 p-3 text-sm text-amber-900">
+        We couldn't open the billing portal just now. Please try again, or email support@millertrustguide.com.
+      </p>
+    )}
+
+    <h2 class="mt-8 font-serif text-lg text-primary">Your licensed kits</h2>
+    <p class="mt-1 text-sm text-gray-600">
+      Each download is co-branded to {session.facilityName || 'your facility'} and licensed for you to print and
+      distribute to your residents and their families. It always reflects the current state form and income cap.
+    </p>
+
+    {entitled.length === 0 ? (
+      <p class="mt-4 rounded-md bg-gray-50 p-4 text-sm text-gray-700">
+        We don't see an active state on your license yet. If you just subscribed, give it a moment and refresh —
+        or <a class="text-primary underline" href="/api/business/portal">check your billing</a>.
+      </p>
+    ) : (
+      <ul class="mt-4 divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white">
+        {entitled.map((s) => (
+          <li class="flex items-center justify-between p-4">
+            <span class="font-medium text-gray-900">{s.name}</span>
+            <a href={`/api/business/download?state=${s.slug}`}
+              class="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary/90">
+              Download co-branded kit
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    <div class="mt-8 rounded-lg border border-gray-200 bg-gray-50 p-4">
+      <h3 class="font-semibold text-gray-800">Billing</h3>
+      <p class="mt-1 text-sm text-gray-600">Update your card, switch between monthly and annual, or cancel.</p>
+      <a href="/api/business/portal" class="mt-3 inline-block rounded-md border border-primary px-4 py-2 text-sm font-semibold text-primary hover:bg-teal-50">
+        Manage billing
+      </a>
+    </div>
+  </section>
+</BaseLayout>

@@ -31,18 +31,42 @@ export interface DownloadTokenClaims {
   stateSlug: string;
   orderId: string;
   expiresAt: string; // ISO 8601
+  // Buyer identity, carried so /api/download can watermark the PDF with the
+  // purchaser ("Social DRM") WITHOUT a Stripe round-trip. Optional: tokens
+  // minted before this field existed (already-emailed links) simply omit it.
+  buyerEmail?: string;
+  buyerName?: string;
+}
+
+/** Buyer identity to embed for per-purchase watermarking. Both fields optional. */
+export interface DownloadTokenBuyer {
+  email?: string | null;
+  name?: string | null;
 }
 
 /**
  * Mint a signed download token for a completed purchase. Returns both the
  * token and the human-readable expiry (for the delivery email copy).
+ *
+ * `buyer` is optional; when provided, the buyer's email/name are embedded so
+ * the download endpoint can stamp them onto every page of the delivered PDF.
  */
 export function createDownloadToken(
   stateSlug: string,
-  orderId: string
+  orderId: string,
+  buyer?: DownloadTokenBuyer
 ): { token: string; expiresAt: string } {
   const expSeconds = Math.floor(Date.now() / 1000) + DOWNLOAD_LINK_TTL_SECONDS;
-  const body = { s: stateSlug, oid: orderId, exp: expSeconds };
+  const body: { s: string; oid: string; exp: number; em?: string; nm?: string } = {
+    s: stateSlug,
+    oid: orderId,
+    exp: expSeconds,
+  };
+  // Keep the payload compact — only include identity fields that are present.
+  const email = buyer?.email?.trim();
+  const name = buyer?.name?.trim();
+  if (email) body.em = email;
+  if (name) body.nm = name;
   const payloadB64 = Buffer.from(JSON.stringify(body)).toString('base64url');
   const token = `${payloadB64}.${hmac(payloadB64)}`;
   return { token, expiresAt: new Date(expSeconds * 1000).toISOString() };
@@ -66,7 +90,7 @@ export function verifyDownloadToken(token: string): DownloadTokenClaims | null {
   const b = Buffer.from(expectedSig);
   if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
 
-  let body: { s?: unknown; oid?: unknown; exp?: unknown };
+  let body: { s?: unknown; oid?: unknown; exp?: unknown; em?: unknown; nm?: unknown };
   try {
     body = JSON.parse(Buffer.from(payloadB64, 'base64url').toString('utf8'));
   } catch {
@@ -87,5 +111,7 @@ export function verifyDownloadToken(token: string): DownloadTokenClaims | null {
     stateSlug: body.s,
     orderId: body.oid,
     expiresAt: new Date(body.exp * 1000).toISOString(),
+    ...(typeof body.em === 'string' ? { buyerEmail: body.em } : {}),
+    ...(typeof body.nm === 'string' ? { buyerName: body.nm } : {}),
   };
 }

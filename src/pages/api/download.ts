@@ -11,7 +11,8 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { verifyDownloadToken } from '~/lib/download-token';
-import { getKitBlobStream } from '~/lib/blob';
+import { getKitBlobBytes } from '~/lib/blob';
+import { stampPdf } from '~/lib/watermark';
 
 export const prerender = false;
 
@@ -44,9 +45,9 @@ export const GET: APIRoute = async ({ url }) => {
     );
   }
 
-  let blob;
+  let pdfBytes: Uint8Array;
   try {
-    blob = await getKitBlobStream(entry.data.pdfBlobKey);
+    pdfBytes = await getKitBlobBytes(entry.data.pdfBlobKey);
   } catch (err) {
     console.error('[download] failed to resolve kit blob:', err);
     return errorPage(
@@ -56,9 +57,35 @@ export const GET: APIRoute = async ({ url }) => {
     );
   }
 
+  // Watermark the delivered copy with the purchaser's identity ("Social DRM").
+  // A stamping failure must NEVER block a paid download — we log it and fall
+  // back to the un-stamped bytes so the buyer always receives their kit.
+  let delivered: Uint8Array = pdfBytes;
+  try {
+    const buyer = [claims.buyerName, claims.buyerEmail]
+      .filter((v): v is string => Boolean(v && v.trim()))
+      .join(' · ');
+    delivered = await stampPdf(pdfBytes, {
+      footerLines: [
+        buyer ? `Licensed to ${buyer}` : 'Licensed copy',
+        `Order ${claims.orderId} — Licensed for personal household use, not for redistribution. © Miller Trust Guide`,
+      ],
+      diagonalText: claims.buyerEmail || claims.buyerName || undefined,
+      metadataId: claims.orderId,
+    });
+  } catch (err) {
+    console.error('[download] watermarking failed; serving un-stamped copy:', err);
+    delivered = pdfBytes;
+  }
+
   const filename = `${claims.stateSlug}-miller-trust-setup-kit.pdf`;
 
-  return new Response(blob.body, {
+  // Copy into a fresh ArrayBuffer-backed Uint8Array so the body is a
+  // well-typed BodyInit (pdf-lib/@vercel/blob hand back Uint8Array<ArrayBufferLike>).
+  const body = new Uint8Array(delivered.byteLength);
+  body.set(delivered);
+
+  return new Response(body, {
     status: 200,
     headers: {
       'content-type': 'application/pdf',

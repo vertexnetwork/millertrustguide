@@ -19,6 +19,13 @@ const stateSchema = z.object({
   price: z.number(),
   multiStateBundleEligible: z.boolean().default(true),
 
+  // B2B recurring tier — per-state RECURRING Stripe Price IDs (monthly +
+  // annual). Optional: a state without them simply isn't offered on the B2B
+  // /business pricing page yet. These drive the Price-ID → state entitlement
+  // map (see src/config/b2b.ts) and mirror the one-time stripePriceId above.
+  stripeB2BPriceMonthly: z.string().optional(),
+  stripeB2BPriceAnnual: z.string().optional(),
+
   // state-agency facts — Rule 1: officialTemplateUrl MUST point to .gov
   agencyName: z.string(),
   agencyAbbreviation: z.string(),

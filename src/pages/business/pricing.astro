@@ -1,0 +1,192 @@
+---
+// B2B sales + checkout entry. Per-state recurring license ($149/mo, annual
+// discounted) with an optional all-states bundle. Posts to
+// /api/business/create-subscription which returns a Stripe Checkout URL.
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { B2B_PRICING, B2B_BUNDLE } from '~/config/b2b';
+
+export const prerender = false;
+
+const states = await getCollection('states');
+const liveStates = states
+  .filter((s) => s.data.status === 'live')
+  .map((s) => ({
+    slug: s.slug,
+    name: s.data.name,
+    ready: Boolean(s.data.stripeB2BPriceMonthly || s.data.stripeB2BPriceAnnual),
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+const money = (n: number) =>
+  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
+
+const title = 'Facility License for Nursing Homes — Miller Trust Guide (Business)';
+const description =
+  'License the Miller Trust / Qualified Income Trust setup kit for your facility: co-branded for your residents, always current, with the right to print and distribute to families. Per-state monthly or annual.';
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="mx-auto max-w-4xl px-6 py-12">
+    <p class="text-xs font-semibold uppercase tracking-widest text-primary">For nursing &amp; assisted-living facilities</p>
+    <h1 class="mt-2 font-serif text-3xl text-primary sm:text-4xl">
+      Give every family a clear path through the income cap — under your facility's name.
+    </h1>
+    <p class="mt-4 max-w-2xl text-lg text-gray-700">
+      License your state's Miller Trust (Qualified Income Trust) setup kit for your whole facility.
+      Co-branded for your residents, kept current as the state's form and income cap change, and
+      licensed for you to print and hand to families — so admissions and business-office staff stop
+      re-explaining the same over-income problem from scratch.
+    </p>
+
+    <ul class="mt-8 grid gap-4 sm:grid-cols-2">
+      <li class="rounded-lg border border-gray-200 bg-white p-4">
+        <h3 class="font-semibold text-primary">Distribute to your families</h3>
+        <p class="mt-1 text-sm text-gray-600">Print and hand out the co-branded kit to your own residents and their families — that's the license, not a workaround.</p>
+      </li>
+      <li class="rounded-lg border border-gray-200 bg-white p-4">
+        <h3 class="font-semibold text-primary">Always current</h3>
+        <p class="mt-1 text-sm text-gray-600">Income caps update every year and state forms change. Your license always serves the latest version — no stale handouts.</p>
+      </li>
+      <li class="rounded-lg border border-gray-200 bg-white p-4">
+        <h3 class="font-semibold text-primary">Co-branded to your facility</h3>
+        <p class="mt-1 text-sm text-gray-600">Each copy carries your facility's name, so families know it came from you.</p>
+      </li>
+      <li class="rounded-lg border border-gray-200 bg-white p-4">
+        <h3 class="font-semibold text-primary">Cancel anytime</h3>
+        <p class="mt-1 text-sm text-gray-600">Manage or cancel your plan yourself from the billing portal. No contracts.</p>
+      </li>
+    </ul>
+
+    <!-- Pricing -->
+    <div class="mt-10 grid gap-6 sm:grid-cols-2">
+      <div class="rounded-xl border border-gray-200 bg-white p-6">
+        <h2 class="font-serif text-xl text-primary">Single-state facility license</h2>
+        <p class="mt-2 text-3xl font-bold text-gray-900">{money(B2B_PRICING.monthly)}<span class="text-base font-normal text-gray-500">/month</span></p>
+        <p class="text-sm text-gray-600">or {money(B2B_PRICING.annual)}/year (about 2 months free)</p>
+        <p class="mt-3 text-sm text-gray-600">Covers one state your facility is licensed in.</p>
+      </div>
+      <div class={`rounded-xl border p-6 ${B2B_BUNDLE.available ? 'border-primary/40 bg-teal-50' : 'border-gray-200 bg-white'}`}>
+        <h2 class="font-serif text-xl text-primary">All-states bundle</h2>
+        {B2B_BUNDLE.available ? (
+          <>
+            <p class="mt-2 text-3xl font-bold text-gray-900">{money(B2B_PRICING.bundleMonthly)}<span class="text-base font-normal text-gray-500">/month</span></p>
+            <p class="text-sm text-gray-600">or {money(B2B_PRICING.bundleAnnual)}/year</p>
+            <p class="mt-3 text-sm text-gray-600">For multi-state chains — every available state in one plan.</p>
+          </>
+        ) : (
+          <p class="mt-2 text-sm text-gray-600">For multi-state chains. <a class="text-primary underline" href="mailto:support@millertrustguide.com">Contact us</a> for bundle pricing.</p>
+        )}
+      </div>
+    </div>
+
+    <!-- Checkout form -->
+    <form id="b2b-form" class="mt-10 rounded-xl border border-gray-200 bg-white p-6">
+      <h2 class="font-serif text-xl text-primary">Start your facility license</h2>
+
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700" for="facilityName">Facility / organization name</label>
+        <input id="facilityName" name="facilityName" type="text" required maxlength="120"
+          placeholder="e.g. Maple Grove Skilled Nursing"
+          class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" />
+        <p class="mt-1 text-xs text-gray-500">This is printed on the co-branded kit you distribute to families.</p>
+      </div>
+
+      <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700" for="state">State</label>
+        <select id="state" name="state" required
+          class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+          {liveStates.map((s) => (
+            <option value={s.slug}>{s.name}{s.ready ? '' : ' (coming soon)'}</option>
+          ))}
+          {B2B_BUNDLE.available && <option value="bundle">All states (bundle)</option>}
+        </select>
+      </div>
+
+      <fieldset class="mt-4">
+        <legend class="text-sm font-medium text-gray-700">Billing</legend>
+        <div class="mt-2 flex gap-6">
+          <label class="flex items-center gap-2 text-sm text-gray-700">
+            <input type="radio" name="billing" value="monthly" checked /> Monthly
+          </label>
+          <label class="flex items-center gap-2 text-sm text-gray-700">
+            <input type="radio" name="billing" value="annual" /> Annual (save ~2 months)
+          </label>
+        </div>
+      </fieldset>
+
+      <label class="mt-5 flex items-start gap-2 text-sm text-gray-700">
+        <input id="consent" name="consent" type="checkbox" class="mt-1" required />
+        <span>
+          I'm authorized to license on behalf of this facility and agree to the Business License Terms:
+          the kit may be printed and distributed to this facility's own residents and their families, and
+          may not be resold, sublicensed, or redistributed outside the facility. This product is
+          informational only and is <strong>not legal advice</strong>.
+        </span>
+      </label>
+
+      <p id="b2b-error" class="mt-3 hidden text-sm text-red-600" role="alert"></p>
+
+      <button type="submit"
+        class="mt-5 w-full rounded-md bg-primary px-5 py-3 font-semibold text-white hover:bg-primary/90 disabled:opacity-60">
+        Continue to checkout
+      </button>
+      <p class="mt-2 text-center text-xs text-gray-500">Secure checkout by Stripe. Cancel anytime.</p>
+    </form>
+
+    <p class="mt-6 text-sm text-gray-600">
+      Already licensed? <a class="text-primary underline" href="/business/login">Sign in to your portal.</a>
+    </p>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('b2b-form') as HTMLFormElement | null;
+  const errorEl = document.getElementById('b2b-error');
+  function showError(msg: string) {
+    if (!errorEl) return;
+    errorEl.textContent = msg;
+    errorEl.classList.remove('hidden');
+  }
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorEl?.classList.add('hidden');
+    const btn = form.querySelector('button[type=submit]') as HTMLButtonElement;
+    const data = new FormData(form);
+    const consent = (form.querySelector('#consent') as HTMLInputElement)?.checked;
+    if (!consent) return showError('Please acknowledge the license terms to continue.');
+    const facilityName = String(data.get('facilityName') || '').trim();
+    if (!facilityName) return showError('Please enter your facility name.');
+    const stateVal = String(data.get('state') || '');
+    const billing = String(data.get('billing') || 'monthly');
+
+    btn.disabled = true;
+    const original = btn.textContent;
+    btn.textContent = 'Redirecting…';
+
+    const payload =
+      stateVal === 'bundle'
+        ? { bundle: true, billing, facilityName, consent: true, consentTimestamp: new Date().toISOString() }
+        : { stateSlug: stateVal, billing, facilityName, consent: true, consentTimestamp: new Date().toISOString() };
+
+    try {
+      const res = await fetch('/api/business/create-subscription', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.url) {
+        showError(json.error || 'Something went wrong. Please try again.');
+        btn.disabled = false;
+        btn.textContent = original;
+        return;
+      }
+      window.location.href = json.url;
+    } catch {
+      showError('Network error. Please try again.');
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+  });
+</script>

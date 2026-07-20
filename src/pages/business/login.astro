@@ -1,0 +1,87 @@
+---
+// B2B portal sign-in. Passwordless: enter email → we email a magic link.
+// Handles ?welcome=1 (just subscribed) and ?signed_out=1.
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+export const prerender = false;
+
+const params = Astro.url.searchParams;
+const justSubscribed = params.get('welcome') === '1';
+const signedOut = params.get('signed_out') === '1';
+
+const title = 'Sign in — Miller Trust Guide (Business)';
+const description = 'Sign in to your Miller Trust Guide facility portal to download and distribute your co-branded state kits.';
+---
+
+<BaseLayout title={title} description={description} noindex={true}>
+  <section class="mx-auto max-w-md px-6 py-16">
+    <p class="text-xs font-semibold uppercase tracking-widest text-primary">Facility portal</p>
+    <h1 class="mt-2 font-serif text-2xl text-primary">Sign in</h1>
+
+    {justSubscribed && (
+      <p class="mt-4 rounded-md bg-teal-50 p-3 text-sm text-teal-900">
+        Your facility license is active — thank you. Enter your email below and we'll send a sign-in link.
+      </p>
+    )}
+    {signedOut && (
+      <p class="mt-4 rounded-md bg-gray-50 p-3 text-sm text-gray-700">You've been signed out.</p>
+    )}
+
+    <p class="mt-4 text-sm text-gray-600">
+      Enter the email you used at checkout. We'll email you a secure, single-use sign-in link — no password needed.
+    </p>
+
+    <form id="login-form" class="mt-5">
+      <label class="block text-sm font-medium text-gray-700" for="email">Work email</label>
+      <input id="email" name="email" type="email" required autocomplete="email"
+        placeholder="you@yourfacility.org"
+        class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" />
+      <button type="submit"
+        class="mt-4 w-full rounded-md bg-primary px-5 py-3 font-semibold text-white hover:bg-primary/90 disabled:opacity-60">
+        Email me a sign-in link
+      </button>
+    </form>
+
+    <p id="login-msg" class="mt-4 hidden rounded-md bg-teal-50 p-3 text-sm text-teal-900" role="status"></p>
+
+    <p class="mt-8 text-sm text-gray-600">
+      Not licensed yet? <a class="text-primary underline" href="/business/pricing">See facility pricing.</a>
+    </p>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('login-form') as HTMLFormElement | null;
+  const msg = document.getElementById('login-msg');
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = form.querySelector('button[type=submit]') as HTMLButtonElement;
+    const email = String(new FormData(form).get('email') || '').trim();
+    btn.disabled = true;
+    const original = btn.textContent;
+    btn.textContent = 'Sending…';
+    try {
+      const res = await fetch('/api/business/login', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (msg) {
+        msg.textContent =
+          json.message ||
+          'If that email has an active facility license, we just sent a sign-in link. Check your inbox.';
+        msg.classList.remove('hidden');
+      }
+      form.reset();
+    } catch {
+      if (msg) {
+        msg.textContent = 'Network error. Please try again.';
+        msg.classList.remove('hidden');
+      }
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+  });
+</script>

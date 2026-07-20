@@ -45,3 +45,23 @@ export async function getKitBlobStream(pdfBlobKey: string): Promise<KitBlobStrea
     size: match.size ?? null,
   };
 }
+
+/**
+ * Resolve the kit PDF at `pdfBlobKey` and return its full bytes. Used by the
+ * download endpoint when it needs the whole file in memory (e.g. to watermark
+ * it before delivery) rather than streaming it straight through. Throws if the
+ * blob is missing or unfetchable.
+ */
+export async function getKitBlobBytes(pdfBlobKey: string): Promise<Uint8Array> {
+  const { list } = await import('@vercel/blob');
+  const { blobs } = await list({ prefix: pdfBlobKey });
+  const match = blobs.find((b) => b.pathname === pdfBlobKey);
+  if (!match) throw new Error(`Kit PDF not found at blob key: ${pdfBlobKey}`);
+
+  const res = await fetch(match.url);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch kit blob (HTTP ${res.status}) for key: ${pdfBlobKey}`);
+  }
+
+  return new Uint8Array(await res.arrayBuffer());
+}
