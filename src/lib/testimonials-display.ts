@@ -1,10 +1,10 @@
 // Shared resolver for the brand-level proof stack (home grid + every state page).
 //
 // Each switched-on testimonial is resolved to ITS OWN state's display name so its
-// "Verified <state> buyer" badge always tells the truth — a New Jersey buyer's
-// quote shown on the Texas page is labeled "Verified New Jersey buyer", never
-// "Verified Texas buyer". That honest cross-state framing is what lets one real
-// testimonial provide proof site-wide until each state earns its own (see
+// "Verified buyer of the <state> Kit" badge always tells the truth — Gary's quote
+// shown on the Texas page is labeled "Verified buyer of the New Jersey Kit", never
+// "...Texas Kit". That honest cross-state framing is what lets one real testimonial
+// provide proof site-wide until each state earns its own (see
 // src/config/testimonials.ts for the no-fabrication doctrine).
 
 import { getCollection } from 'astro:content';
