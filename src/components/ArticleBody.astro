@@ -157,6 +157,120 @@ const faq = getArticleFaq(state, topic);
   }
 
   {
+    topic === 'who-can-be-trustee' && (
+      <>
+        <p>
+          The trustee does not have to be an attorney or a professional fiduciary. Managing a Qualified Income
+          Trust is an operational job, not a legal one: open the account, move the applicant's income through it
+          each month, and pay out only what {state.agencyAbbreviation} allows — the same short list of tasks every
+          month.
+        </p>
+
+        <h2>What the trustee does each month</h2>
+        <ul>
+          <li>
+            Deposits the applicant's income — Social Security, pension, and any other named sources — into the
+            dedicated trust account.
+          </li>
+          <li>
+            Pays out only the amounts {state.agencyAbbreviation} permits: typically the applicant's personal-needs
+            allowance of <strong>${fmt(state.personalNeedsAllowance)}/month</strong>, any spousal allowance, and the
+            applicant's share of medical and care costs.
+          </li>
+          <li>
+            Keeps simple records of what went in and what came out, so the trust stays compliant and Medicaid has
+            no reason to question it.
+          </li>
+        </ul>
+
+        <h2>Name a backup trustee</h2>
+        <p>
+          Many families name a successor trustee when they set the trust up, so that if the first trustee cannot
+          continue, the trust keeps running without interruption. Either way the {state.name} setup is the same —
+          see the <a href={howToPath}>step-by-step setup</a> and <a href={bankPath}>what to say at the bank</a>.
+        </p>
+      </>
+    )
+  }
+
+  {
+    topic === 'do-you-need-an-ein' && (
+      <>
+        {state.einRequired ? (
+          <>
+            <h2>Getting the EIN — free, from the IRS</h2>
+            <p>
+              An EIN (Employer Identification Number) costs nothing. Apply directly with the IRS at{' '}
+              <a
+                href="https://www.irs.gov/businesses/small-businesses-self-employed/get-an-employer-identification-number"
+                rel="external nofollow noopener"
+              >
+                irs.gov
+              </a>{' '}
+              — the online application issues the number immediately. Never pay a third-party service to "get" an
+              EIN for you; the IRS does not charge for one.
+            </p>
+          </>
+        ) : (
+          <>
+            <h2>Why the bank may still ask for one</h2>
+            <p>
+              Even though {state.agencyAbbreviation} does not require it, branch staff often ask for an EIN out of
+              habit, because most trusts they open need a separate tax ID. If that happens, keep to how the account
+              is titled under {state.agencyAbbreviation}'s guidance, and ask for the bank's trust department if the
+              first person can't help.
+            </p>
+          </>
+        )}
+
+        <h2>Either way, the account is an ordinary bank account</h2>
+        <p>
+          Whether or not an EIN is involved, a {state.name} Miller Trust account is a plain dedicated checking
+          account titled to the trust — not a special product. What trips families up is rarely the tax ID; it is
+          the branch's unfamiliarity with the account type. Knowing the answer before you go keeps the EIN question
+          from turning into a wasted trip.
+        </p>
+
+        <div class="mt-6 rounded-lg border border-border bg-surface-elevated p-4 text-sm">
+          <p class="!mt-0">
+            The EIN question almost always surfaces at the counter. See{' '}
+            <a href={bankPath}>what to say at the bank in {state.name}</a> for the other refusals families hit, and
+            the <a href={howToPath}>full step-by-step setup</a>.
+          </p>
+        </div>
+      </>
+    )
+  }
+
+  {
+    topic === 'what-happens-to-the-money' && (
+      <>
+        <h2>Why the money doesn't just pass to the family</h2>
+        <p>
+          A Miller Trust is the mechanism that let the applicant qualify for Medicaid despite income over the{' '}
+          {state.asOf} cap of <strong>${fmt(state.incomeCap2026)}/month</strong>. In exchange, the trust is set up
+          so that whatever remains when the beneficiary dies is first used to reimburse the state for the care
+          Medicaid paid for. That is a condition of using the trust, not a penalty.
+        </p>
+
+        <h2>Why the trust is irrevocable</h2>
+        <p>
+          A Qualified Income Trust only works if it is irrevocable: the applicant cannot pull the money back out for
+          other purposes, and the trustee can only make the distributions {state.agencyAbbreviation} allows. That is
+          what lets the diverted income go uncounted for eligibility.
+        </p>
+
+        <h2>What's usually left</h2>
+        <p>
+          In practice the balance at death is often small. Most of the applicant's income flows into the trust and
+          back out again each month to pay the personal-needs allowance and the applicant's share of care — so the
+          trust is a pass-through, not a place where money piles up.
+        </p>
+      </>
+    )
+  }
+
+  {
     faq.length > 0 && (
       <section class="mt-10" aria-labelledby="article-faq-heading">
         <h2 id="article-faq-heading">Common questions</h2>

@@ -26,13 +26,25 @@ const SITE_URL = 'https://millertrustguide.com';
 // which we expose as `lastReviewed` in the Article schema.
 const ARTICLE_PUBLISHED = '2026-06-17';
 
-export type ArticleTopic = 'how-to-set-up' | 'how-long-to-set-up' | 'what-to-say-at-the-bank';
+export type ArticleTopic =
+  | 'how-to-set-up'
+  | 'how-long-to-set-up'
+  | 'what-to-say-at-the-bank'
+  | 'who-can-be-trustee'
+  | 'do-you-need-an-ein'
+  | 'what-happens-to-the-money';
 
 // Order matters: this is the order articles appear in "Related guides" lists.
+// The last three (T9) are long-tail question doorways, each backed by a single
+// already-vetted frontmatter field (trusteeGuidanceNote / einRequiredNote /
+// postDeathDistribution) so they add no new legal claim.
 export const ARTICLE_TOPICS: ArticleTopic[] = [
   'how-to-set-up',
   'how-long-to-set-up',
   'what-to-say-at-the-bank',
+  'who-can-be-trustee',
+  'do-you-need-an-ein',
+  'what-happens-to-the-money',
 ];
 
 export interface ArticleMeta {
@@ -95,6 +107,33 @@ export function getArticleMeta(state: StateData, topic: ArticleTopic): ArticleMe
         metaDescription: `${name} banks routinely refuse Miller Trust (QIT) accounts on the first try. The ${state.bankRefusalNotes.length} most common refusals and exactly what to say to each, with the ${state.agencyAbbreviation} facts behind them. Informational, not legal advice.`,
         primaryQuery: 'miller trust bank account',
       };
+    case 'who-can-be-trustee':
+      return {
+        ...base,
+        navLabel: 'Who can be trustee',
+        h1: `Who Can Be the Trustee of a Miller Trust in ${name}?`,
+        metaTitle: `Who Can Be Trustee of a ${name} Miller Trust?`,
+        metaDescription: `Who can serve as trustee of a ${name} Qualified Income Trust (Miller Trust), whether the trustee has to be a lawyer, and what the trustee does each month. Informational, not legal advice.`,
+        primaryQuery: 'who can be trustee of a miller trust',
+      };
+    case 'do-you-need-an-ein':
+      return {
+        ...base,
+        navLabel: 'Do you need an EIN',
+        h1: `Do You Need an EIN for a Miller Trust in ${name}?`,
+        metaTitle: `Do You Need an EIN for a ${name} Miller Trust?`,
+        metaDescription: `Whether a ${name} Miller Trust (Qualified Income Trust) needs its own EIN or uses the beneficiary's Social Security number — and why banks sometimes ask for one anyway. Informational, not legal advice.`,
+        primaryQuery: 'do you need an ein for a miller trust',
+      };
+    case 'what-happens-to-the-money':
+      return {
+        ...base,
+        navLabel: 'What happens to the money',
+        h1: `What Happens to a Miller Trust When the Beneficiary Dies in ${name}?`,
+        metaTitle: `${name} Miller Trust After Death: What Happens to the Money`,
+        metaDescription: `What happens to the money left in a ${name} Miller Trust (Qualified Income Trust) when the beneficiary dies, the state Medicaid payback rule, and why the trust is irrevocable. Informational, not legal advice.`,
+        primaryQuery: 'what happens to a miller trust when the person dies',
+      };
   }
 }
 
@@ -115,6 +154,12 @@ export function getArticleLede(state: StateData, topic: ArticleTopic): string {
       return `Setting up a Miller Trust in ${name} is usually a few hours of paperwork plus opening one bank account — but the deadline that controls everything is the calendar month. A ${name} Qualified Income Trust only diverts income in a month where it is signed, has a funded account, and receives enough of the applicant's income to drop countable income below the $${cap}/month cap — all within that same calendar month. ${state.agencyAbbreviation} does not back-date eligibility, so coverage begins the month funding is complete, and every month of delay is another ${pay} of private-pay care. The most common cause of delay is the bank, not the paperwork.`;
     case 'what-to-say-at-the-bank':
       return `When you open a Miller Trust account in ${name}, expect the branch to hesitate — most have never opened a Qualified Income Trust account, and many ask for an attorney or a tax ID (EIN) you do not need. You do not need a lawyer to open the account, and a ${name} QIT is set up using the beneficiary's Social Security number, not an EIN. Below are the ${state.bankRefusalNotes.length} refusals ${name} families hit most often and exactly what to say to each — every response is backed by ${state.agencyAbbreviation}'s own published guidance.`;
+    case 'who-can-be-trustee':
+      return `In ${name}, the trustee of a Miller Trust (Qualified Income Trust) is whoever manages the trust account — depositing the applicant's income each month and paying out only what ${state.agencyAbbreviation} allows. ${state.trusteeGuidanceNote} The trustee does not have to be a lawyer or a professional; for the core setup this is a role most families fill themselves. For a complex situation, consult a ${name}-licensed elder-law attorney. This guide is informational only and is not legal advice.`;
+    case 'do-you-need-an-ein':
+      return `${state.einRequiredNote} That is the rule for a ${name} Qualified Income Trust. The question comes up most often at the bank, where staff may ask for an EIN out of habit. Below is what applies in ${name} and what to do if a branch's requirement differs from what ${state.agencyAbbreviation} publishes. This guide is informational only and is not legal or tax advice; for your specific situation, consult a qualified professional.`;
+    case 'what-happens-to-the-money':
+      return `When the beneficiary of a ${name} Miller Trust dies, money left in the trust does not pass to the family like an ordinary inheritance. ${state.postDeathDistribution} Because most of the applicant's income flows through the trust each month to pay for care, the balance remaining at death is usually small. This guide is informational only and is not legal advice.`;
   }
 }
 
@@ -183,6 +228,27 @@ function getArticleFaq(state: StateData, topic: ArticleTopic): Array<{ question:
       ];
     case 'how-to-set-up':
       return [];
+    case 'who-can-be-trustee':
+      return [
+        {
+          question: `Does the trustee of a ${state.name} Miller Trust have to be a lawyer?`,
+          answer: `No. Managing a Qualified Income Trust is an administrative task — opening the dedicated account, depositing the applicant's income each month, and paying out only the amounts ${state.agencyAbbreviation} allows. ${firstSentence(state.trusteeGuidanceNote).lead} For advice on your specific situation, consult a ${state.name}-licensed elder-law attorney.`,
+        },
+      ];
+    case 'do-you-need-an-ein':
+      return [
+        {
+          question: `Do you need an EIN to open a ${state.name} Miller Trust account?`,
+          answer: state.einRequiredNote,
+        },
+      ];
+    case 'what-happens-to-the-money':
+      return [
+        {
+          question: `Who gets the money left in a ${state.name} Miller Trust after the beneficiary dies?`,
+          answer: state.postDeathDistribution,
+        },
+      ];
   }
 }
 

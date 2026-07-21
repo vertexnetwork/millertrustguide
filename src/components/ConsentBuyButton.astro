@@ -5,6 +5,8 @@
 // POSTs to /api/create-checkout with consent=true; the server validates again
 // and refuses to create a Stripe session if consent is missing.
 
+import { randomUUID } from 'node:crypto';
+
 interface Props {
   stateSlug: string;
   price: number;
@@ -13,7 +15,12 @@ interface Props {
 
 const { stateSlug, price, buttonLabel = `Get the kit — $${price}` } = Astro.props;
 
-const formId = `buy-${stateSlug}`;
+// A state page renders this twice (buy panel + repeat CTA). A stable
+// `buy-<slug>` formId made BOTH instances share element IDs, so the second
+// button's getElementById(consentId) resolved to the FIRST checkbox — the
+// bottom checkbox toggled nothing. A per-instance suffix keeps IDs unique.
+const uid = randomUUID().slice(0, 8);
+const formId = `buy-${stateSlug}-${uid}`;
 const consentId = `${formId}-consent`;
 const buttonId = `${formId}-button`;
 const errorId = `${formId}-error`;
