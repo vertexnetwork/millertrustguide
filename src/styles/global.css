@@ -22,22 +22,25 @@
 }
 
 :root {
+  /* Kept in sync with tailwind.config.mjs. The night-contrast pass darkened
+     borders, deepened the teal tint, greened the heading color, and crisped the
+     disclaimer yellow so nothing blends together on a dim / blue-light screen. */
   --color-primary: #115E59;
   --color-primary-dark: #0F4C4A;
-  --color-primary-tint: #CCFBF1;
+  --color-primary-tint: #ADEFE0;
   --color-bg: #FAFAF7;
   --color-bg-elevated: #FFFFFF;
-  --color-border: #E5E7EB;
-  --color-border-strong: #D1D5DB;
+  --color-border: #D1D5DB;
+  --color-border-strong: #9CA3AF;
   --color-text: #1F2937;
-  --color-text-heading: #0F4C4A;
+  --color-text-heading: #0A5C46;
   --color-text-muted: #6B7280;
   --color-cta: #B45309;
   --color-cta-hover: #92400E;
   --color-cta-text: #FFFFFF;
-  --color-disclaimer-bg: #FEF3C7;
+  --color-disclaimer-bg: #FFF7D6;
   --color-disclaimer-text: #78350F;
-  --color-disclaimer-border: #FCD34D;
+  --color-disclaimer-border: #E0A11E;
 }
 
 @layer base {

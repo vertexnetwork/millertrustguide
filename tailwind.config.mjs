@@ -7,19 +7,25 @@ export default {
         primary: {
           DEFAULT: '#115E59',
           dark: '#0F4C4A',
-          tint: '#CCFBF1',
+          // Deepened from #CCFBF1 so tint-filled callouts stay distinguishable
+          // from the off-white surface on dim / blue-light-filtered screens.
+          tint: '#ADEFE0',
         },
         surface: {
           DEFAULT: '#FAFAF7',
           elevated: '#FFFFFF',
         },
         border: {
-          DEFAULT: '#E5E7EB',
-          strong: '#D1D5DB',
+          // Darkened (from #E5E7EB / #D1D5DB) so box outlines survive a warm,
+          // dimmed night screen for older eyes.
+          DEFAULT: '#D1D5DB',
+          strong: '#9CA3AF',
         },
         ink: {
           DEFAULT: '#1F2937',
-          heading: '#0F4C4A',
+          // Greener + slightly lighter than #0F4C4A so headings read as "green,"
+          // not near-black, once a blue-light filter removes the blue. ~7.6:1.
+          heading: '#0A5C46',
           muted: '#6B7280',
         },
         cta: {
@@ -27,9 +33,11 @@ export default {
           hover: '#92400E',
         },
         disclaimer: {
-          bg: '#FEF3C7',
+          // Slightly cleaner fill + a crisper, more saturated border so the
+          // caution yellow reads sharp (not "dirty") under a warm night filter.
+          bg: '#FFF7D6',
           text: '#78350F',
-          border: '#FCD34D',
+          border: '#E0A11E',
         },
         success: '#047857',
         warning: '#B45309',
