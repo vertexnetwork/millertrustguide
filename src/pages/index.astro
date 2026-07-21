@@ -147,6 +147,27 @@ const jsonLd = [
           No kits are currently published. Join the free email series below to be notified when we launch.
         </p>
       ) : (
+        <>
+        {/* Fast-path for a visitor who already knows their state — a native
+            jump-menu (most accessible control for our older audience). The grid
+            below stays as the visual + no-JS fallback + SEO surface. */}
+        <div class="mt-4 rounded-lg border border-border bg-surface-elevated p-4">
+          <label for="state-jump" class="block text-sm font-medium text-ink">
+            Know your state? Jump straight to your kit.
+          </label>
+          <div class="mt-2 flex gap-2">
+            <select
+              id="state-jump"
+              class="w-full rounded-md border border-border-strong bg-surface-elevated px-3 py-2 text-base"
+            >
+              <option value="">Select your state…</option>
+              {live.map((s) => (
+                <option value={s.slug}>{s.name}</option>
+              ))}
+            </select>
+            <a id="state-jump-go" href="#states" class="btn-cta whitespace-nowrap px-4 py-2">Go &rarr;</a>
+          </div>
+        </div>
         <ul class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
           {live.map((s) => (
             <li class="rounded-lg border border-border bg-surface-elevated p-5">
@@ -182,6 +203,21 @@ const jsonLd = [
             </li>
           ))}
         </ul>
+        </>
+      )
+    }
+    {
+      live.length > 0 && (
+        <script is:inline>
+          (function () {
+            var sel = document.getElementById('state-jump');
+            var go = document.getElementById('state-jump-go');
+            if (!sel) return;
+            function nav() { if (sel.value) window.location.href = '/states/' + sel.value; }
+            sel.addEventListener('change', nav);
+            if (go) go.addEventListener('click', function (e) { e.preventDefault(); nav(); });
+          })();
+        </script>
       )
     }
   </section>

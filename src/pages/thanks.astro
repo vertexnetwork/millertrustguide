@@ -60,10 +60,40 @@ const adsPurchaseLabel = import.meta.env.PUBLIC_GOOGLE_ADS_PURCHASE_LABEL;
             us and we'll resend right away. Add <strong>support@millertrustguide.com</strong> to your contacts so the
             next emails — the bank-step reminders, the income-cap updates — don't get filtered.
           </p>
-          <p class="text-sm text-ink-muted">
-            One practical next step: open the PDF on the device you'll take to the bank. The bank-refusal script in
-            Section 5 is what you'll want at the counter.
-          </p>
+          {/* Post-purchase milestone timeline — the buyer's biggest post-checkout
+              anxiety is "now what?". Deadline-first, physical-verb steps mirror the
+              kit's own sequence so nobody feels abandoned after the download. */}
+          <div class="mx-auto mt-8 max-w-xl rounded-lg border border-border bg-surface-elevated p-6 text-left">
+            <p class="!mt-0 text-xs font-semibold uppercase tracking-wider text-primary">What happens next</p>
+            <h2 class="!mt-1 !text-xl">Your path from here</h2>
+            <ol class="mt-4 space-y-4 !pl-0">
+              <li class="flex list-none gap-3">
+                <span class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">1</span>
+                <span class="text-sm text-ink"><strong>Open the kit today.</strong> It's in your inbox — start with the table of contents so you know the order to work in.</span>
+              </li>
+              <li class="flex list-none gap-3">
+                <span class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">2</span>
+                <span class="text-sm text-ink"><strong>Sign the trust and fund it in the same calendar month.</strong> This is the deadline that sets your Medicaid start date — there is no back-dating, so the sooner both happen, the sooner coverage can begin.</span>
+              </li>
+              <li class="flex list-none gap-3">
+                <span class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">3</span>
+                <span class="text-sm text-ink"><strong>Open the trust's bank account.</strong> If the branch hesitates, use the bank-refusal script in Section 5 — the step most families get stuck on. The kit gives you the exact words and the policy citation to read at the counter.</span>
+              </li>
+              <li class="flex list-none gap-3">
+                <span class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">4</span>
+                <span class="text-sm text-ink"><strong>Redirect the income.</strong> Send each income source (Social Security, pension) into the trust account.</span>
+              </li>
+              <li class="flex list-none gap-3">
+                <span class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">5</span>
+                <span class="text-sm text-ink"><strong>File the Medicaid long-term-care application</strong>{stateName ? ` with ${stateName}'s Medicaid agency` : ''}.</span>
+              </li>
+              <li class="flex list-none gap-3">
+                <span class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">6</span>
+                <span class="text-sm text-ink"><strong>Coverage begins the month you signed and funded.</strong> Every week you start earlier is a week off the private-pay clock.</span>
+              </li>
+            </ol>
+            <p class="mt-5 !mb-0 text-sm text-ink-muted">That's the whole path. Most families move through it in about a week.</p>
+          </div>
           <p class="text-sm text-ink-muted">
             Once you've had a chance to use it, we'd value your read on the kit:{' '}
             <a href={stateSlug ? `/feedback?state=${stateSlug}` : '/feedback'}>tell us how it went</a>. A real person
