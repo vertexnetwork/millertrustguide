@@ -272,6 +272,8 @@ if (isLive) {
         The step-by-step playbook most {state.name} families need to fund a Qualified Income Trust without paying
         $1,000–$2,500 for an attorney to do what is, in practice, a few hours of paperwork and one trip to the bank.
         Built directly around the official {state.agencyAbbreviation} template. <strong>Informational only — not legal advice.</strong>
+        But it isn't guesswork: every step is drawn straight from {state.agencyAbbreviation}'s own published policy, with
+        the citation behind each claim.
       </p>
 
       {
@@ -367,6 +369,19 @@ if (isLive) {
               </li>
             </ul>
 
+            {/* T5 — own the "isn't the form free?" objection head-on, right after
+                the manifest. The honest two-number framing IS our moat. */}
+            <div class="rounded-lg border-l-4 border-primary bg-primary-tint/20 p-5">
+              <p class="!my-0 text-base">
+                <strong>"Isn't the QIT form free from {state.agencyAbbreviation}?"</strong> It is — and the kit links
+                you straight to it, at no charge. You're not paying for the form. You're paying for the part that
+                actually trips families up: the same-calendar-month funding rule, the word-for-word bank-refusal
+                script, and the {state.commonDenialReasons.length} {state.agencyAbbreviation} denial traps with the
+                policy citation behind each. The form is a couple of pages; getting it accepted is where a month of
+                coverage gets lost.
+              </p>
+            </div>
+
             <div class="rounded-lg border border-border bg-surface-elevated p-4 text-sm">
               <p class="!mt-0">
                 <strong>If your spouse is the one entering care:</strong> this kit covers the Qualified Income Trust
@@ -458,6 +473,11 @@ if (isLive) {
                     within one business day — no forms, no phone tag.
                   </p>
                 </div>
+                {/* T11 — risk reversal at the decision point: let the buyer see
+                    real pages before paying. Jumps to the PdfPreview gallery. */}
+                <p class="mt-4 text-center text-sm">
+                  <a href="#preview-heading" class="font-medium text-primary">See real sample pages from the kit &rarr;</a>
+                </p>
               </div>
             </div>
           </aside>

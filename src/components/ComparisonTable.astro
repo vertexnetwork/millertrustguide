@@ -16,6 +16,13 @@ const privatePayRange = `$${fmt(privatePayMonthlyLow)}–$${fmt(privatePayMonthl
 
 <section aria-labelledby="comparison-heading" class="my-12">
   <h2 id="comparison-heading">How this compares</h2>
+  {/* T10 — two-number honesty: name the free .gov form outright and tie it to the
+      "Free state PDF" column, so the ${price} reads as the playbook around the form. */}
+  <p class="mt-2 text-ink">
+    Yes — {stateName}'s own QIT form is free (that's the <strong>Free state PDF</strong> column below). The ${price}{' '}
+    is for everything the free PDF leaves you to work out alone: the bank step, the funding-month timing, and the
+    denial traps.
+  </p>
   <div class="overflow-x-auto">
     <table class="mt-4 w-full border-collapse text-left text-sm md:text-base">
       <thead>
