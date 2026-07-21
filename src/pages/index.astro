@@ -137,7 +137,7 @@ const jsonLd = [
     </p>
   </section>
 
-  <IncomeCapCheck />
+  <IncomeCapCheck states={live.map((s) => ({ slug: s.slug, name: s.name }))} />
 
   <section id="states" class="mx-auto max-w-3xl px-4 py-6">
     <h2>Pick your state to start</h2>

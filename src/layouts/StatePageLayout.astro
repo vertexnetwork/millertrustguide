@@ -389,7 +389,9 @@ if (isLive) {
                 kit walks you through the trust itself and Section&nbsp;9 orients you on the separate
                 resource-allowance rules that protect your home and savings — but those rules are fact-specific, and
                 for them you'll likely also want a {state.name} elder-law attorney. The kit tells you exactly what to
-                bring to that conversation.
+                bring to that meeting — the trust you've already set up, the resource questions to ask, and the
+                documents to have ready — so you're paying the attorney to answer your specific questions, not to
+                explain the basics.
               </p>
             </div>
 
@@ -545,6 +547,16 @@ if (isLive) {
           <p class="text-sm text-ink-muted">
             Each refusal has a corresponding response in the kit, with the {state.agencyAbbreviation} citation behind it.
           </p>
+          {/* T15 — one oddly-specific, credibility-signaling insider tip (the
+              "blue-ink" move), drawn straight from the kit's bank section. */}
+          <div class="not-prose rounded-md border-l-4 border-primary bg-primary-tint/20 p-4 text-sm">
+            <p class="!my-0">
+              <strong>The thing that saves a second trip:</strong> bring the printed {state.agencyAbbreviation} policy
+              page to the counter — not just the signed trust. A teller who can read the rule in black and white
+              escalates in minutes; one who only has your word for it sends you home. The kit tells you exactly which
+              page to print and hand across.
+            </p>
+          </div>
         </section>
       )
     }
@@ -695,6 +707,10 @@ if (isLive) {
             )}{' '}
             Instant download. Money-back if {state.agencyAbbreviation} rejects your QIT for any reason traceable to
             following the kit.
+          </p>
+          <p class="text-sm text-ink-muted">
+            No waiting room, no six-week retainer. Most {state.name} families have the trust signed, the account open,
+            and the first month's income redirected within a week — fast enough to catch the next eligibility month.
           </p>
           <div class="mt-6">
             <ConsentBuyButton
