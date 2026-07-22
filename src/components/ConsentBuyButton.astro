@@ -26,7 +26,7 @@ const buttonId = `${formId}-button`;
 const errorId = `${formId}-error`;
 ---
 
-<div class="rounded-lg border border-border bg-surface-elevated p-6 shadow-sm">
+<div class="rounded-lg border border-border bg-surface-elevated p-6 shadow-sm" data-consent-widget>
   <label
     for={consentId}
     class="flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-ink"
@@ -56,8 +56,6 @@ const errorId = `${formId}-error`;
     type="button"
     id={buttonId}
     data-state-slug={stateSlug}
-    data-consent-id={consentId}
-    data-error-id={errorId}
     class="btn-cta mt-5 w-full opacity-60"
     aria-disabled="true"
   >
@@ -66,6 +64,7 @@ const errorId = `${formId}-error`;
 
   <p
     id={errorId}
+    data-consent-error
     class="mt-3 hidden text-sm text-error"
     role="alert"
     aria-live="polite"
@@ -79,15 +78,16 @@ const errorId = `${formId}-error`;
 <script>
   import { trackEvent } from '~/lib/analytics-client';
 
-  // Wire every ConsentBuyButton instance on the page.
-  document.querySelectorAll<HTMLButtonElement>('[data-state-slug]').forEach((button) => {
-    const consentId = button.dataset.consentId!;
-    const errorId = button.dataset.errorId!;
+  // Each ConsentBuyButton is a self-contained widget. Scope every lookup to the
+  // widget element so the two instances on a state page (buy panel + repeat CTA)
+  // wire independently — no globally-unique IDs, no getElementById, no cross-wiring.
+  // This is robust even if a stale/mismatched cache serves old markup.
+  document.querySelectorAll<HTMLElement>('[data-consent-widget]').forEach((widget) => {
+    const button = widget.querySelector<HTMLButtonElement>('button[data-state-slug]');
+    const checkbox = widget.querySelector<HTMLInputElement>('input[type="checkbox"][name="consent"]');
+    const errorEl = widget.querySelector<HTMLElement>('[data-consent-error]');
+    if (!button || !checkbox || !errorEl) return;
     const stateSlug = button.dataset.stateSlug!;
-
-    const checkbox = document.getElementById(consentId) as HTMLInputElement | null;
-    const errorEl = document.getElementById(errorId) as HTMLParagraphElement | null;
-    if (!checkbox || !errorEl) return;
 
     let submitting = false;
 
