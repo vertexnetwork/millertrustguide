@@ -1,0 +1,22 @@
+---
+// Microsoft Clarity — session replay + heatmaps. Loaded site-wide from
+// BaseLayout <head>. The project ID is a PUBLIC client-side token (it ships in
+// the page source of every site running Clarity), so it lives here, not in a
+// secret. Defaults to the operator's project so it's live immediately; override
+// with PUBLIC_CLARITY_ID, or set that env var to an empty string to disable.
+//
+// NOTE: Clarity masks input/text content by default. If the privacy policy is
+// updated to name analytics processors, add Microsoft Clarity there.
+const clarityId = (import.meta.env.PUBLIC_CLARITY_ID ?? 'xqo6fi2i0l').trim();
+---
+{
+  clarityId && (
+    <script is:inline define:vars={{ clarityId }}>
+      (function (c, l, a, r, i, t, y) {
+        c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+        t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;
+        y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+      })(window, document, 'clarity', 'script', clarityId);
+    </script>
+  )
+}
