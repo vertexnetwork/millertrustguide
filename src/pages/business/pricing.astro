@@ -21,9 +21,9 @@ const liveStates = states
 const money = (n: number) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 
-const title = 'Facility License for Nursing Homes — Miller Trust Guide (Business)';
+const title = 'Co-Branded Miller Trust Kits for Facilities & Advisors — Miller Trust Guide';
 const description =
-  'License the Miller Trust / Qualified Income Trust setup kit for your facility: co-branded for your residents, always current, with the right to print and distribute to families. Per-state monthly or annual.';
+  "License your state's Miller Trust (Qualified Income Trust) setup kit — co-branded for your residents or clients, always current, licensed to print and distribute. For nursing homes, assisted-living, elder-law firms, care managers, and financial advisors. Per-state monthly or annual.";
 ---
 
 <BaseLayout title={title} description={description}>
@@ -134,6 +134,19 @@ const description =
       </button>
       <p class="mt-2 text-center text-xs text-gray-500">Secure checkout by Stripe. Cancel anytime.</p>
     </form>
+
+    {/* Advisor segment — the license wording differs from the facility version
+        (their clients, not residents), so route them to email rather than the
+        facility-worded self-checkout above. */}
+    <div class="mt-8 rounded-lg border border-primary/30 bg-teal-50 p-5">
+      <h2 class="!mt-0 font-serif text-lg text-primary">Not a facility? Advisors and firms, this is for you too.</h2>
+      <p class="mt-2 text-sm text-gray-700">
+        Elder-law firms, geriatric care managers, placement agencies, and financial advisors can license the same
+        co-branded kits to give their own clients. The license wording differs slightly from the facility version,
+        so email us and we'll set you up:
+        <a class="text-primary underline" href="mailto:support@millertrustguide.com?subject=Advisor%20co-branded%20license"> support@millertrustguide.com</a>.
+      </p>
+    </div>
 
     <p class="mt-6 text-sm text-gray-600">
       Already licensed? <a class="text-primary underline" href="/business/login">Sign in to your portal.</a>
