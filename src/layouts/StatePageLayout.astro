@@ -43,6 +43,12 @@ const draft = state.status === 'draft';
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 
+// Hybrid (HCB-waiver) states — e.g. Missouri — use the QIT ONLY to meet the
+// absolute income maximum of an in-home Home & Community-Based waiver, not for
+// nursing-facility Medicaid. Copy below flexes to that in-home model when true;
+// the else branch is byte-identical to what every income-cap state renders.
+const hcb = state.medicaidStructure === 'hybrid';
+
 // Founder pricing. The display is gated on the operator-maintained
 // unitsSold count; Stripe's max-redemptions coupon is the actual charge
 // enforcement (see create-checkout.ts). Keep unitsSold current so the
@@ -85,7 +91,9 @@ const proofTestimonials = isLive
 // assistants can lift it verbatim.
 const tldr = blocked
   ? `Miller Trust Guide does not currently publish a kit for ${state.name}. ${state.blockedReason ?? 'For advice on your situation, consult a licensed elder-law attorney in your state.'}`
-  : `A ${state.name} Miller Trust (Qualified Income Trust) is an irrevocable trust used to qualify a Medicaid applicant whose monthly income exceeds the ${state.name} long-term-care income cap of $${fmt(state.incomeCap2026)} per month (${state.asOf}). The trust must be drafted, signed, and funded in the same calendar month using the official ${state.agencyAbbreviation} template (${state.policyManualSection}). Medicaid eligibility begins the month the trust is funded — there is no retroactive effect, and every month of delay is another month of full private-pay nursing-home cost ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This guide is the step-by-step operational walkthrough most families need: $${displayPrice}, instant download, money-back if ${state.agencyAbbreviation} rejects the QIT for a reason traceable to following the kit.`;
+  : hcb
+    ? `A ${state.name} Qualified Income Trust (Miller Trust) is an irrevocable trust used to qualify an over-income applicant for ${state.name}'s Home and Community-Based (HCB) waiver — in-home Medicaid care for people age 63 and over. ${state.name} nursing-facility Medicaid uses a spend-down, so a QIT is not used there; it is the tool for the in-home waiver, whose income maximum is $${fmt(state.incomeCap2026)}/month (${state.asOf}). Because that limit is absolute — an over-income applicant cannot spend down to qualify — the trust is the only path: the applicant keeps income up to the maximum and moves only the excess into the trust, using the official ${state.agencyAbbreviation} form (886-4657). A third party, not the applicant, must be trustee. Eligibility begins the month the trust is funded — there is no back-dating — and every month of delay is another month of private-pay in-home or assisted-living care ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This is the step-by-step walkthrough most families need: $${displayPrice}, instant download, money-back if ${state.agencyAbbreviation} rejects the trust for a reason traceable to following the kit.`
+    : `A ${state.name} Miller Trust (Qualified Income Trust) is an irrevocable trust used to qualify a Medicaid applicant whose monthly income exceeds the ${state.name} long-term-care income cap of $${fmt(state.incomeCap2026)} per month (${state.asOf}). The trust must be drafted, signed, and funded in the same calendar month using the official ${state.agencyAbbreviation} template (${state.policyManualSection}). Medicaid eligibility begins the month the trust is funded — there is no retroactive effect, and every month of delay is another month of full private-pay nursing-home cost ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This guide is the step-by-step operational walkthrough most families need: $${displayPrice}, instant download, money-back if ${state.agencyAbbreviation} rejects the QIT for a reason traceable to following the kit.`;
 
 // Authoritative citations used in this article — feeds the Article@citation
 // JSON-LD array (2026 entity-binding signal).
@@ -122,8 +130,8 @@ const derivedFaq: Array<{ question: string; answer: string }> = [
     answer: state.trusteeGuidanceNote,
   },
   {
-    question: `When does ${state.name} Medicaid coverage begin after the Qualified Income Trust is set up?`,
-    answer: `Coverage begins the calendar month the QIT is signed, the trust account is opened, and enough of the applicant's income is deposited to bring remaining countable income below the ${state.asOf} special income limit of $${fmt(state.incomeCap2026)}/month — all in the same calendar month. There is no back-dating, so every month of delay is another month of full private-pay care ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/month in ${state.name}). Source: ${state.agencyAbbreviation} ${state.policyManualSection}.`,
+    question: `When does ${state.name} ${hcb ? 'HCB waiver' : 'Medicaid'} coverage begin after the Qualified Income Trust is set up?`,
+    answer: `Coverage begins the calendar month the QIT is signed, the trust account is opened, and enough of the applicant's income is ${hcb ? 'moved into the trust to bring remaining countable income below' : 'deposited to bring remaining countable income below'} the ${state.asOf} ${hcb ? 'HCB income maximum' : 'special income limit'} of $${fmt(state.incomeCap2026)}/month — all in the same calendar month. There is no back-dating, so every month of delay is another month of ${hcb ? 'private-pay in-home or assisted-living care' : 'full private-pay care'} ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/month in ${state.name}). Source: ${state.agencyAbbreviation} ${state.policyManualSection}.`,
   },
   {
     question: `What happens to the money in a ${state.name} Miller Trust when the beneficiary dies?`,
@@ -350,14 +358,26 @@ if (isLive) {
           <div class="prose-content">
             {/* Delay-cost anchor (DEMOGRAPHICS lever #1) */}
             <div class="rounded-lg border-l-4 border-primary bg-primary-tint/30 p-5">
-              <p class="!mt-0 text-base">
-                <strong>Why this can't wait:</strong> until the trust is set up correctly, an over-income applicant
-                can't be approved for Medicaid — so the private-pay bill keeps landing on your family, and your family
-                member's place in care can depend on it. Coverage begins the calendar month the QIT is signed{' '}
-                <em>and</em> funded — there is no back-dating — and {state.name} private-pay care runs{' '}
-                <strong>${fmt(state.privatePayMonthlyLow)}–${fmt(state.privatePayMonthlyHigh)} a month</strong>, so
-                every 30 days of delay is a five-figure check out of pocket.
-              </p>
+              {hcb ? (
+                <p class="!mt-0 text-base">
+                  <strong>Why this can't wait:</strong> until the trust is set up correctly, an over-income applicant
+                  can't be approved for the HCB in-home waiver — and because the HCB income limit is absolute, there is
+                  no spend-down fallback, so the family keeps paying privately for care. Coverage begins the calendar
+                  month the QIT is signed <em>and</em> funded — there is no back-dating — and {state.name} private-pay
+                  in-home and assisted-living care runs{' '}
+                  <strong>${fmt(state.privatePayMonthlyLow)}–${fmt(state.privatePayMonthlyHigh)} a month</strong>, so
+                  every 30 days of delay is another month out of pocket.
+                </p>
+              ) : (
+                <p class="!mt-0 text-base">
+                  <strong>Why this can't wait:</strong> until the trust is set up correctly, an over-income applicant
+                  can't be approved for Medicaid — so the private-pay bill keeps landing on your family, and your family
+                  member's place in care can depend on it. Coverage begins the calendar month the QIT is signed{' '}
+                  <em>and</em> funded — there is no back-dating — and {state.name} private-pay care runs{' '}
+                  <strong>${fmt(state.privatePayMonthlyLow)}–${fmt(state.privatePayMonthlyHigh)} a month</strong>, so
+                  every 30 days of delay is a five-figure check out of pocket.
+                </p>
+              )}
             </div>
 
             <h2>What's in the {state.name} kit</h2>
@@ -378,8 +398,8 @@ if (isLive) {
                 so you can verify before you submit — not after the denial letter arrives.
               </li>
               <li>
-                <strong>A pre-filled monthly funding worksheet</strong> using the {state.asOf} income cap of
-                ${fmt(state.incomeCap2026)} so you know exactly how much income to redirect each month.
+                <strong>A pre-filled monthly funding worksheet</strong> using the {hcb ? 'HCB income maximum' : `${state.asOf} income cap`} of
+                ${fmt(state.incomeCap2026)} so you know exactly how much {hcb ? 'of the excess to move into the trust' : 'income to redirect'} each month.
               </li>
               <li>
                 <strong>The direct link to the official {state.agencyAbbreviation} .gov template</strong> and a
@@ -421,16 +441,34 @@ if (isLive) {
               </p>
             </div>
 
-            <h2>The {state.asOf} {state.name} income cap</h2>
-            <p>
-              Setting up a Miller Trust in {state.name} starts with one number — the income cap.
-              The {state.name} {state.asOf} Medicaid long-term-care income limit is{' '}
-              <strong>${fmt(state.incomeCap2026)}/month</strong> for a single applicant. If your family member's
-              countable monthly income exceeds this limit, a properly drafted, signed, and funded QIT diverts the excess
-              and brings countable income below the cap. The applicant's Personal Needs Allowance in {state.name} is{' '}
-              <strong>${fmt(state.personalNeedsAllowance)}/month</strong>. Source:{' '}
-              <a href={state.policyManualUrl} rel="external nofollow">{state.agencyAbbreviation} {state.policyManualSection}</a>.
-            </p>
+            {hcb ? (
+              <>
+                <h2>The {state.name} HCB income maximum</h2>
+                <p>
+                  Setting up a Qualified Income Trust in {state.name} starts with one number — the HCB income
+                  maximum, the income limit for the Home and Community-Based (in-home) waiver. It is{' '}
+                  <strong>${fmt(state.incomeCap2026)}/month</strong> ({state.asOf}), and it is absolute: an
+                  over-income applicant cannot spend down to qualify, so a properly signed and funded QIT — holding
+                  only the income above the maximum — is the way to become eligible. There is no nursing-facility
+                  personal-needs allowance here; the applicant keeps their income up to the maximum in their own name,
+                  and the trust spends the excess on the applicant's own care. Source:{' '}
+                  <a href={state.policyManualUrl} rel="external nofollow">{state.agencyAbbreviation} {state.policyManualSection}</a>.
+                </p>
+              </>
+            ) : (
+              <>
+                <h2>The {state.asOf} {state.name} income cap</h2>
+                <p>
+                  Setting up a Miller Trust in {state.name} starts with one number — the income cap.
+                  The {state.name} {state.asOf} Medicaid long-term-care income limit is{' '}
+                  <strong>${fmt(state.incomeCap2026)}/month</strong> for a single applicant. If your family member's
+                  countable monthly income exceeds this limit, a properly drafted, signed, and funded QIT diverts the excess
+                  and brings countable income below the cap. The applicant's Personal Needs Allowance in {state.name} is{' '}
+                  <strong>${fmt(state.personalNeedsAllowance)}/month</strong>. Source:{' '}
+                  <a href={state.policyManualUrl} rel="external nofollow">{state.agencyAbbreviation} {state.policyManualSection}</a>.
+                </p>
+              </>
+            )}
 
             {
               articleLinks.length > 0 && (
@@ -541,6 +579,7 @@ if (isLive) {
         price={displayPrice}
         privatePayMonthlyLow={state.privatePayMonthlyLow}
         privatePayMonthlyHigh={state.privatePayMonthlyHigh}
+        hcb={hcb}
       />
     )}
 

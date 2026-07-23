@@ -10,6 +10,17 @@ const { state } = Astro.props;
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 
+/* Hybrid (HCB-waiver) states — e.g. Missouri — use the QIT ONLY to meet the
+   absolute income maximum of an in-home Home & Community-Based waiver, NOT for
+   nursing-facility Medicaid (that uses spend-down). The whole distribution model
+   differs: the participant keeps income up to the cap, deposits only the excess,
+   and the trust spends on the participant's OWN allowable medical/care costs —
+   there is no nursing-facility Personal Needs Allowance and no patient-liability
+   paid to a facility. Every `hcb` branch below renders that model; the else
+   branch is byte-identical to the income-cap/nursing-facility narrative all
+   other states ship, so their output is unchanged. */
+const hcb = state.medicaidStructure === 'hybrid';
+
 /* The kit content is structured as a single layout that renders the full
    PDF for any state by interpolating state-specific facts pulled from the
    state's frontmatter. ~95% of the prose is state-agnostic; the
@@ -116,8 +127,8 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           <dd>{state.name} ({state.abbreviation})</dd>
           <dt>State agency</dt>
           <dd>{state.agencyAbbreviation}</dd>
-          <dt>2026 income cap</dt>
-          <dd>${fmt(state.incomeCap2026)}/month (single)</dd>
+          <dt>{hcb ? 'HCB income maximum' : '2026 income cap'}</dt>
+          <dd>${fmt(state.incomeCap2026)}/month {hcb ? '(per applicant)' : '(single)'}</dd>
           <dt>Publisher</dt>
           <dd>Miller Trust Guide &middot; millertrustguide.com</dd>
         </dl>
@@ -242,11 +253,23 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         <dt><strong>Residual beneficiary</strong></dt>
         <dd>The party that receives anything left in the QIT after the applicant's death. Federal law requires the state Medicaid agency to be named as the residual beneficiary up to the total amount Medicaid paid on the applicant's behalf.</dd>
 
-        <dt><strong>Personal Needs Allowance (PNA)</strong></dt>
-        <dd>The amount of the applicant's income retained each month for personal expenses while in a nursing facility. {state.name}'s PNA is <strong>${fmt(state.personalNeedsAllowance)}/month</strong>.</dd>
+        {hcb ? (
+          <Fragment>
+            <dt><strong>Allowable distributions</strong></dt>
+            <dd>What the HCB trust may spend on — the applicant's own benefit only: non-covered medical costs, health-insurance premiums other than {state.ltcProgramAbbrev}, dental / therapy / rehabilitation and similar care, transportation to medical and care appointments, and the trust's own allowable bank and trustee fees. There is no nursing-facility Personal Needs Allowance and no patient-liability payment to a facility, because HCB care is delivered in the applicant's home. See Section 1.</dd>
 
-        <dt><strong>Income cap</strong></dt>
-        <dd>The maximum monthly income a single applicant can have and still qualify for long-term-care Medicaid in an "income-cap state." {state.name}'s 2026 cap is <strong>${fmt(state.incomeCap2026)}/month</strong> (single) and <strong>${fmt(state.incomeCapCouple2026)}/month</strong> for a couple where both spouses are applying. Computed as 300% of the CMS Federal Benefit Rate, which CMS publishes each January.</dd>
+            <dt><strong>HCB income maximum (income cap)</strong></dt>
+            <dd>The maximum monthly income an applicant can have and still qualify for {state.name}'s Home and Community-Based (HCB) waiver. {state.name}'s current maximum is <strong>${fmt(state.incomeCap2026)}/month</strong> ({state.asOf}). It is an <em>absolute</em> limit — an over-income applicant cannot spend down to qualify, which is why a Qualified Income Trust is the only path. Each spouse is tested individually; there is no higher combined couple limit.</dd>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <dt><strong>Personal Needs Allowance (PNA)</strong></dt>
+            <dd>The amount of the applicant's income retained each month for personal expenses while in a nursing facility. {state.name}'s PNA is <strong>${fmt(state.personalNeedsAllowance)}/month</strong>.</dd>
+
+            <dt><strong>Income cap</strong></dt>
+            <dd>The maximum monthly income a single applicant can have and still qualify for long-term-care Medicaid in an "income-cap state." {state.name}'s 2026 cap is <strong>${fmt(state.incomeCap2026)}/month</strong> (single) and <strong>${fmt(state.incomeCapCouple2026)}/month</strong> for a couple where both spouses are applying. Computed as 300% of the CMS Federal Benefit Rate, which CMS publishes each January.</dd>
+          </Fragment>
+        )}
 
         <dt><strong>{state.agencyAbbreviation}</strong></dt>
         <dd>{state.agencyName}. The {state.name} state agency that administers Medicaid eligibility and publishes the QIT template referenced in Section 2.</dd>
@@ -292,11 +315,24 @@ const fmt = (n: number) => n.toLocaleString('en-US');
       <p class="kit-eyebrow kit-section-title">Section 1 &middot; What a {state.name} Miller Trust does</p>
       <h1>What a {state.name} Miller Trust does, in plain English</h1>
 
-      <p>
-        A <strong>Miller Trust</strong> — formally called a <strong>Qualified Income Trust (QIT)</strong> — is an
-        irrevocable trust used in twenty-four U.S. "income-cap" states to qualify a Medicaid applicant whose monthly
-        income is above the long-term-care income threshold. {state.name} is an income-cap state.
-      </p>
+      {hcb ? (
+        <p>
+          A <strong>Miller Trust</strong> — formally called a <strong>Qualified Income Trust (QIT)</strong> — is an
+          irrevocable trust that lets a Medicaid applicant whose monthly income is above a program's limit still
+          qualify. {state.name} is a special case: its nursing-facility Medicaid uses a medically-needy spend-down
+          (no QIT), so the QIT here is used only to meet the <em>absolute</em> income maximum of the
+          {' '}<strong>Home and Community-Based (HCB) waiver</strong> — {state.name}'s in-home and community care
+          program for people age 63 and over — and the MOCDD program. Because the HCB maximum is absolute (an
+          over-income applicant cannot spend down to qualify for the waiver), the QIT is the only path to in-home HCB
+          eligibility for someone over the limit.
+        </p>
+      ) : (
+        <p>
+          A <strong>Miller Trust</strong> — formally called a <strong>Qualified Income Trust (QIT)</strong> — is an
+          irrevocable trust used in twenty-four U.S. "income-cap" states to qualify a Medicaid applicant whose monthly
+          income is above the long-term-care income threshold. {state.name} is an income-cap state.
+        </p>
+      )}
 
       <p>
         The mechanism is federal: <a href={state.federalStatuteUrl}>{state.federalStatuteCitation}</a> exempts
@@ -313,72 +349,157 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           recurring income — exceeds this number by even one dollar, Medicaid long-term-care benefits are denied
           unless the excess is diverted through a QIT.
         </li>
-        <li>
-          <strong>2026 income cap (couple, both applying):</strong> ${fmt(state.incomeCapCouple2026)}/month combined.
-        </li>
-        <li>
-          <strong>Personal Needs Allowance:</strong> ${fmt(state.personalNeedsAllowance)}/month. This is the
-          amount of the applicant's income that stays with the applicant for personal expenses while in a nursing
-          facility (toiletries, clothing, etc.). Source: {state.agencyAbbreviation} {state.policyManualSection}.
-        </li>
-        <li>
-          <strong>Effective date:</strong> The income disregard begins the first month a valid QIT is signed, the
-          QIT account is opened, and enough income is deposited to bring the remaining countable income below the
-          special income limit. If all three were true in months <em>before</em> the Medicaid application was
-          filed, {state.agencyAbbreviation} can apply the income disregard up to <strong>three months retroactive</strong> to the file
-          date — provided all other eligibility requirements were met in those months.
-        </li>
+        {hcb ? (
+          <Fragment>
+            <li>
+              <strong>Married couples:</strong> each spouse is tested individually against the HCB income maximum —
+              there is no higher combined "couple" limit. If both spouses are over the maximum and both want HCB
+              services, each needs their own Qualified Income Trust.
+            </li>
+            <li>
+              <strong>What the applicant keeps:</strong> because HCB care is delivered at home, there is no
+              nursing-facility Personal Needs Allowance. The applicant keeps their income up to the HCB maximum in
+              their own name; only the income <em>above</em> the maximum goes into the trust, and the trust spends it
+              on the applicant's own allowable medical and care costs (see below). Source: {state.agencyAbbreviation}
+              {' '}{state.policyManualSection}.
+            </li>
+            <li>
+              <strong>Effective date:</strong> the income disregard begins the first month a valid QIT is signed, the
+              trust account is opened, and enough of the over-the-maximum income is deposited to bring the applicant's
+              remaining countable income below the HCB maximum — all in the same calendar month. Coverage does not
+              back-date to before the trust is funded, so start in the month you intend eligibility to begin.
+            </li>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <li>
+              <strong>2026 income cap (couple, both applying):</strong> ${fmt(state.incomeCapCouple2026)}/month combined.
+            </li>
+            <li>
+              <strong>Personal Needs Allowance:</strong> ${fmt(state.personalNeedsAllowance)}/month. This is the
+              amount of the applicant's income that stays with the applicant for personal expenses while in a nursing
+              facility (toiletries, clothing, etc.). Source: {state.agencyAbbreviation} {state.policyManualSection}.
+            </li>
+            <li>
+              <strong>Effective date:</strong> The income disregard begins the first month a valid QIT is signed, the
+              QIT account is opened, and enough income is deposited to bring the remaining countable income below the
+              special income limit. If all three were true in months <em>before</em> the Medicaid application was
+              filed, {state.agencyAbbreviation} can apply the income disregard up to <strong>three months retroactive</strong> to the file
+              date — provided all other eligibility requirements were met in those months.
+            </li>
+          </Fragment>
+        )}
       </ul>
 
       <div class="kit-no-break">
         <h3>How the diversion works, mechanically</h3>
-        <p>
-          Each month, the trustee deposits the applicant's countable income into the QIT bank account. From the
-          QIT account, the trustee distributes:
-        </p>
-        <ol>
-          <li>The Personal Needs Allowance to the applicant (${fmt(state.personalNeedsAllowance)}/month).</li>
-          <li>Any spousal allowance to the community spouse, if applicable.</li>
-          <li>The remainder to the nursing facility as the applicant's "patient liability" or "share of cost."</li>
-        </ol>
-        <p>
-          Income that passes through the QIT this way is not counted toward the income cap. The QIT is therefore
-          an accounting and routing structure, not a savings vehicle. <strong>At the end of each month the trust
-          account balance is typically zero or near-zero.</strong>
-        </p>
+        {hcb ? (
+          <Fragment>
+            <p>
+              Each month, the applicant keeps their income up to the HCB maximum in their own name and moves only the
+              portion <em>above</em> the maximum into the QIT bank account — by direct deposit or a routine transfer
+              (the income may not be assigned to the trust as payee). From the trust account, the third-party trustee
+              spends that money only on the applicant's own allowable costs:
+            </p>
+            <ol>
+              <li>The applicant's non-covered medical and care costs — dental, therapy, rehabilitation, medically necessary items, and transportation to medical and care appointments.</li>
+              <li>Health-insurance premiums other than {state.ltcProgramAbbrev} (for example, a Medicare premium or a Medicare supplement).</li>
+              <li>The trust's own allowable costs — bank fees and a capped trustee fee.</li>
+            </ol>
+            <p>
+              Income moved through the QIT this way is not counted toward the HCB income maximum. Unlike a
+              nursing-facility trust, nothing is paid to a facility as "patient liability," and the trust may hold
+              accumulated income to spend on the applicant's care over time — so the balance is not expected to zero
+              out each month.
+            </p>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <p>
+              Each month, the trustee deposits the applicant's countable income into the QIT bank account. From the
+              QIT account, the trustee distributes:
+            </p>
+            <ol>
+              <li>The Personal Needs Allowance to the applicant (${fmt(state.personalNeedsAllowance)}/month).</li>
+              <li>Any spousal allowance to the community spouse, if applicable.</li>
+              <li>The remainder to the nursing facility as the applicant's "patient liability" or "share of cost."</li>
+            </ol>
+            <p>
+              Income that passes through the QIT this way is not counted toward the income cap. The QIT is therefore
+              an accounting and routing structure, not a savings vehicle. <strong>At the end of each month the trust
+              account balance is typically zero or near-zero.</strong>
+            </p>
+          </Fragment>
+        )}
       </div>
 
-      <div class="kit-callout kit-no-break">
-        <p style="font-weight: 600; margin-bottom: 6pt;">Worked example — where the money actually goes</p>
-        <p style="margin-bottom: 6pt;">
-          The single most common misunderstanding: families assume the whole deposit is handed to the nursing
-          facility. It is not. Say a <strong>single</strong> applicant in a nursing facility has
-          <strong>$4,000/month</strong> in gross income, all of it deposited into the QIT (figures are illustrative).
-          Each month the trustee pays out, <strong>in this order</strong>:
-        </p>
-        <ol style="margin-bottom: 6pt;">
-          <li>Personal Needs Allowance to the applicant — <strong>${fmt(state.personalNeedsAllowance)}</strong>.</li>
-          <li>The community-spouse allowance, <em>if</em> the applicant is married and a spouse remains at home (see Section&nbsp;4, worksheet line&nbsp;J).</li>
-          <li>Any allowable health-insurance premium — for example, the Medicare Part&nbsp;B premium.</li>
-          <li>Everything that remains — the <strong>patient-liability / share of cost</strong> — to the nursing facility.</li>
-        </ol>
-        <p style="margin-bottom: 0;">
-          So with a ${fmt(state.personalNeedsAllowance)} Personal Needs Allowance and no community spouse, the
-          facility would receive roughly <strong>${fmt(4000 - state.personalNeedsAllowance)}</strong> — the $4,000
-          minus the allowance and any health-insurance premium — <strong>not</strong> the full $4,000. The exact
-          amounts are set by {state.agencyAbbreviation} on your post-eligibility budget; the arithmetic here only
-          shows the order, and that the facility receives the <em>remainder</em>, never the gross deposit.
-        </p>
-      </div>
+      {hcb ? (
+        <div class="kit-callout kit-no-break">
+          <p style="font-weight: 600; margin-bottom: 6pt;">Worked example — excess-only funding</p>
+          <p style="margin-bottom: 6pt;">
+            The most common misunderstanding: families assume the whole income check goes into the trust. In an HCB
+            waiver trust it does not. Say a <strong>single</strong> applicant has <strong>$2,000/month</strong> in
+            gross income and the HCB income maximum is <strong>${fmt(state.incomeCap2026)}</strong> (figures are
+            illustrative). Each month:
+          </p>
+          <ol style="margin-bottom: 6pt;">
+            <li>The applicant keeps <strong>${fmt(state.incomeCap2026)}</strong> — income up to the HCB maximum — in their own account, to live on.</li>
+            <li>Only the excess — here <strong>${fmt(2000 - state.incomeCap2026)}</strong> — is moved into the trust, within the same month it is received.</li>
+            <li>The trustee spends that ${fmt(2000 - state.incomeCap2026)} on the applicant's own allowable medical and care costs (for example, a Medicare premium or uncovered care).</li>
+          </ol>
+          <p style="margin-bottom: 0;">
+            So the trust handles only the small over-the-maximum slice, not the whole $2,000 — and none of it is paid
+            to a facility, because HCB care is provided in the applicant's home. {state.agencyAbbreviation} confirms
+            the exact figures on the eligibility determination; the arithmetic here only shows that the trust receives
+            the <em>excess</em>, never the gross income.
+          </p>
+        </div>
+      ) : (
+        <div class="kit-callout kit-no-break">
+          <p style="font-weight: 600; margin-bottom: 6pt;">Worked example — where the money actually goes</p>
+          <p style="margin-bottom: 6pt;">
+            The single most common misunderstanding: families assume the whole deposit is handed to the nursing
+            facility. It is not. Say a <strong>single</strong> applicant in a nursing facility has
+            <strong>$4,000/month</strong> in gross income, all of it deposited into the QIT (figures are illustrative).
+            Each month the trustee pays out, <strong>in this order</strong>:
+          </p>
+          <ol style="margin-bottom: 6pt;">
+            <li>Personal Needs Allowance to the applicant — <strong>${fmt(state.personalNeedsAllowance)}</strong>.</li>
+            <li>The community-spouse allowance, <em>if</em> the applicant is married and a spouse remains at home (see Section&nbsp;4, worksheet line&nbsp;J).</li>
+            <li>Any allowable health-insurance premium — for example, the Medicare Part&nbsp;B premium.</li>
+            <li>Everything that remains — the <strong>patient-liability / share of cost</strong> — to the nursing facility.</li>
+          </ol>
+          <p style="margin-bottom: 0;">
+            So with a ${fmt(state.personalNeedsAllowance)} Personal Needs Allowance and no community spouse, the
+            facility would receive roughly <strong>${fmt(4000 - state.personalNeedsAllowance)}</strong> — the $4,000
+            minus the allowance and any health-insurance premium — <strong>not</strong> the full $4,000. The exact
+            amounts are set by {state.agencyAbbreviation} on your post-eligibility budget; the arithmetic here only
+            shows the order, and that the facility receives the <em>remainder</em>, never the gross deposit.
+          </p>
+        </div>
+      )}
 
-      <div class="kit-callout">
-        <p>
-          <strong>The QIT does not affect asset eligibility.</strong> The QIT is an <em>income</em>-management tool.
-          The asset (countable resource) limit is separate — generally $2,000 in countable assets for a single
-          applicant. If your family member has assets above the limit, you may also need to address those before
-          Medicaid will approve coverage. Asset-side planning often requires an attorney; see Section 9.
-        </p>
-      </div>
+      {hcb ? (
+        <div class="kit-callout">
+          <p>
+            <strong>The QIT does not affect asset eligibility.</strong> The QIT is an <em>income</em>-management tool.
+            The countable-resource limit is a separate test — for {state.name}'s HCB waiver it is $6,220.50 for an
+            individual applicant ($12,441.00 for a couple where both are eligible for HCB or Division of Assets),
+            per {state.agencyAbbreviation}'s Non-MAGI Eligibility table. If your family member has resources above
+            the limit, address those separately before applying; resource planning often requires an attorney
+            (see Section 9).
+          </p>
+        </div>
+      ) : (
+        <div class="kit-callout">
+          <p>
+            <strong>The QIT does not affect asset eligibility.</strong> The QIT is an <em>income</em>-management tool.
+            The asset (countable resource) limit is separate — generally $2,000 in countable assets for a single
+            applicant. If your family member has assets above the limit, you may also need to address those before
+            Medicaid will approve coverage. Asset-side planning often requires an attorney; see Section 9.
+          </p>
+        </div>
+      )}
 
       <h3>What the trust is, legally</h3>
       <p>
@@ -469,7 +590,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         <li><strong>Applicant's full legal name</strong> — exactly as it appears on the Social Security card.</li>
         <li><strong>Applicant's date of birth.</strong></li>
         <li><strong>Applicant's Social Security number.</strong></li>
-        <li><strong>Applicant's current address</strong> — the nursing facility or current residence.</li>
+        <li><strong>Applicant's current address</strong> — {hcb ? "the applicant's home, where HCB services are provided" : 'the nursing facility or current residence'}.</li>
       </ul>
 
       <h3>2. Trustee identification</h3>
@@ -496,15 +617,25 @@ const fmt = (n: number) => n.toLocaleString('en-US');
       </ul>
 
       <h3>3. Income sources to list</h3>
-      <p>
-        List <strong>every recurring income source the applicant receives that counts toward the Medicaid income
-        limit</strong>. The trust can only receive and divert income from sources named in the trust instrument.
-        Once a source is named, <strong>the entire monthly amount from that source must be deposited into the QIT
-        every month after the initial month</strong> — partial diversion of a listed source is a documented denial
-        cause (Section 7).
-      </p>
+      {hcb ? (
+        <p>
+          Add up <strong>all of the applicant's countable monthly income</strong> — Social Security, pension,
+          annuity, and any other recurring income. In {state.name} you do not name each source for whole-source
+          diversion the way some states require; instead you use the total to work out how much income sits
+          {' '}<em>above</em> the HCB income maximum. Only that excess goes into the trust each month (Section 4 walks
+          the math). The trust must hold only the applicant's own income — nothing that belongs to anyone else.
+        </p>
+      ) : (
+        <p>
+          List <strong>every recurring income source the applicant receives that counts toward the Medicaid income
+          limit</strong>. The trust can only receive and divert income from sources named in the trust instrument.
+          Once a source is named, <strong>the entire monthly amount from that source must be deposited into the QIT
+          every month after the initial month</strong> — partial diversion of a listed source is a documented denial
+          cause (Section 7).
+        </p>
+      )}
 
-      <p>Common countable income sources to list:</p>
+      <p>Common countable income sources to {hcb ? 'total up' : 'list'}:</p>
       <ul>
         <li>Social Security retirement or disability benefits</li>
         <li>Railroad Retirement Board benefits</li>
@@ -515,21 +646,34 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         <li>Any other recurring monthly payment the applicant receives that is countable for Medicaid eligibility</li>
       </ul>
 
-      <div class="kit-callout kit-callout--warning">
-        <p style="font-weight: 600; margin-bottom: 6pt;">VA aid and attendance caveat</p>
-        <p style="margin-bottom: 0;">
-          {state.agencyAbbreviation} {state.policyCitationShort} specifies that VA aid and attendance benefits, housebound
-          allowances, and reimbursements for unusual or continuing medical expenses are <strong>exempt</strong>
-          from both Medicaid eligibility and the co-payment calculation. <strong>Do not deposit these specific
-          benefits into the QIT account</strong> — depositing them makes them countable for the co-payment
-          budget. If the applicant receives a VA pension that includes these benefits, separate the aid and
-          attendance, housebound, or unusual-medical-expense portion before depositing the rest of the VA pension
-          into the QIT.
-        </p>
-      </div>
+      {hcb ? (
+        <div class="kit-callout kit-callout--warning">
+          <p style="font-weight: 600; margin-bottom: 6pt;">VA and other special benefits</p>
+          <p style="margin-bottom: 0;">
+            Some benefits — such as VA aid and attendance, housebound allowances, and reimbursements for unusual or
+            continuing medical expenses — are treated differently from ordinary income in Medicaid budgeting. Before
+            you decide how much to deposit, confirm with {state.agencyAbbreviation} which of the applicant's payments
+            actually count toward the HCB income maximum. Only countable income above the maximum needs to go into the
+            trust, so a benefit that does not count toward the maximum does not belong in the trust account.
+          </p>
+        </div>
+      ) : (
+        <div class="kit-callout kit-callout--warning">
+          <p style="font-weight: 600; margin-bottom: 6pt;">VA aid and attendance caveat</p>
+          <p style="margin-bottom: 0;">
+            {state.agencyAbbreviation} {state.policyCitationShort} specifies that VA aid and attendance benefits, housebound
+            allowances, and reimbursements for unusual or continuing medical expenses are <strong>exempt</strong>
+            from both Medicaid eligibility and the co-payment calculation. <strong>Do not deposit these specific
+            benefits into the QIT account</strong> — depositing them makes them countable for the co-payment
+            budget. If the applicant receives a VA pension that includes these benefits, separate the aid and
+            attendance, housebound, or unusual-medical-expense portion before depositing the rest of the VA pension
+            into the QIT.
+          </p>
+        </div>
+      )}
 
       <p>
-        For each countable source you list, write the source name (e.g., "Social Security Administration") and
+        For each countable source you {hcb ? 'total' : 'list'}, write the source name (e.g., "Social Security Administration") and
         the monthly amount (gross, before any deductions). Pull these numbers from the most recent benefit-award
         letter or statement for each source.
       </p>
@@ -601,79 +745,151 @@ const fmt = (n: number) => n.toLocaleString('en-US');
             <td><strong>E. Total countable monthly income</strong> (A + B + C + D)</td>
             <td class="kit-fillable">$ ______</td>
           </tr>
-          <tr>
-            <td><strong>F.</strong> {state.name} 2026 income cap (single applicant)</td>
-            <td>${fmt(state.incomeCap2026)}</td>
-          </tr>
-          <tr>
-            <td><strong>G.</strong> Amount above the cap (E − F). If negative or zero, you do not need a QIT — see "When you do <em>not</em> need a QIT" below.</td>
-            <td class="kit-fillable">$ ______</td>
-          </tr>
-          <tr>
-            <td><strong>H.</strong> Minimum amount to deposit into QIT each month (G — but most attorneys recommend depositing all of line E to simplify accounting)</td>
-            <td class="kit-fillable">$ ______</td>
-          </tr>
-          <tr>
-            <td><strong>I.</strong> Personal Needs Allowance distribution from QIT to applicant</td>
-            <td>${fmt(state.personalNeedsAllowance)}</td>
-          </tr>
-          <tr>
-            <td><strong>J.</strong> Spousal allowance distribution from QIT to community spouse (if applicable; see {state.spousalCalcRef} for the calculation)</td>
-            <td class="kit-fillable">$ ______</td>
-          </tr>
-          <tr>
-            <td><strong>K. Patient liability / share of cost</strong> distribution from QIT to nursing facility (H − I − J)</td>
-            <td class="kit-fillable">$ ______</td>
-          </tr>
+          {hcb ? (
+            <Fragment>
+              <tr>
+                <td><strong>F.</strong> {state.name} HCB income maximum (per applicant)</td>
+                <td>${fmt(state.incomeCap2026)}</td>
+              </tr>
+              <tr>
+                <td><strong>G.</strong> Amount above the maximum (E − F). If negative or zero, you do not need a QIT — see "When you do <em>not</em> need a QIT" below.</td>
+                <td class="kit-fillable">$ ______</td>
+              </tr>
+              <tr>
+                <td><strong>H.</strong> Amount to move into the trust each month — the excess over the maximum (line G). Keep the rest of your income (up to line F) in your own name.</td>
+                <td class="kit-fillable">$ ______</td>
+              </tr>
+              <tr>
+                <td><strong>I.</strong> Amount the trustee spends this month on the applicant's own allowable medical/care costs (e.g., a Medicare premium, uncovered care)</td>
+                <td class="kit-fillable">$ ______</td>
+              </tr>
+              <tr>
+                <td><strong>J.</strong> Allowable trustee/bank fees (trustee fee capped at the lesser of 3% of line H or $10)</td>
+                <td class="kit-fillable">$ ______</td>
+              </tr>
+              <tr>
+                <td><strong>K.</strong> Accumulated income carried in the trust (H − I − J), to be spent on the applicant's care over time</td>
+                <td class="kit-fillable">$ ______</td>
+              </tr>
+            </Fragment>
+          ) : (
+            <Fragment>
+              <tr>
+                <td><strong>F.</strong> {state.name} 2026 income cap (single applicant)</td>
+                <td>${fmt(state.incomeCap2026)}</td>
+              </tr>
+              <tr>
+                <td><strong>G.</strong> Amount above the cap (E − F). If negative or zero, you do not need a QIT — see "When you do <em>not</em> need a QIT" below.</td>
+                <td class="kit-fillable">$ ______</td>
+              </tr>
+              <tr>
+                <td><strong>H.</strong> Minimum amount to deposit into QIT each month (G — but most attorneys recommend depositing all of line E to simplify accounting)</td>
+                <td class="kit-fillable">$ ______</td>
+              </tr>
+              <tr>
+                <td><strong>I.</strong> Personal Needs Allowance distribution from QIT to applicant</td>
+                <td>${fmt(state.personalNeedsAllowance)}</td>
+              </tr>
+              <tr>
+                <td><strong>J.</strong> Spousal allowance distribution from QIT to community spouse (if applicable; see {state.spousalCalcRef} for the calculation)</td>
+                <td class="kit-fillable">$ ______</td>
+              </tr>
+              <tr>
+                <td><strong>K. Patient liability / share of cost</strong> distribution from QIT to nursing facility (H − I − J)</td>
+                <td class="kit-fillable">$ ______</td>
+              </tr>
+            </Fragment>
+          )}
         </tbody>
       </table>
 
       <h3>How to read the result</h3>
-      <ul>
-        <li>
-          <strong>Line H</strong> is what hits the QIT bank account each month. Direct-deposit your income sources
-          here (see Section 6 for the redirect process).
-        </li>
-        <li>
-          <strong>Line I</strong> goes back to the applicant for personal expenses. The trustee can issue this as
-          a check or a monthly transfer.
-        </li>
-        <li>
-          <strong>Line K</strong> is the check the trustee writes to the nursing facility each month for the
-          applicant's share of the cost of care. Medicaid covers the remainder.
-        </li>
-      </ul>
+      {hcb ? (
+        <ul>
+          <li>
+            <strong>Line H</strong> — the excess over the HCB maximum — is all that goes into the trust account each
+            month (see Section 6). Everything up to line F stays in the applicant's own account.
+          </li>
+          <li>
+            <strong>Line I</strong> is what the trustee pays out of the trust for the applicant's own allowable
+            medical and care costs.
+          </li>
+          <li>
+            <strong>Line K</strong> is income the trust holds and carries forward to spend on the applicant's care
+            later — there is no payment to a facility, because HCB care is provided at home.
+          </li>
+        </ul>
+      ) : (
+        <ul>
+          <li>
+            <strong>Line H</strong> is what hits the QIT bank account each month. Direct-deposit your income sources
+            here (see Section 6 for the redirect process).
+          </li>
+          <li>
+            <strong>Line I</strong> goes back to the applicant for personal expenses. The trustee can issue this as
+            a check or a monthly transfer.
+          </li>
+          <li>
+            <strong>Line K</strong> is the check the trustee writes to the nursing facility each month for the
+            applicant's share of the cost of care. Medicaid covers the remainder.
+          </li>
+        </ul>
+      )}
 
       <div class="kit-no-break">
-        <h3>Gross income — and what happens to the Medicare premium</h3>
-        <p>
-          Two questions come up here constantly, so let's answer them head-on.
-        </p>
-        <p>
-          <strong>Do I count income gross or net?</strong> Gross. Medicaid counts each source at its
-          <strong> full, before-deductions amount</strong>. Enter your Social Security on line&nbsp;A at the
-          <em>gross</em> benefit — the figure before the Medicare Part&nbsp;B premium is withheld — and every other
-          source at its gross amount too. That is why line&nbsp;A reads "gross, before Medicare premium."
-        </p>
-        <p>
-          <strong>So where does the Medicare premium go?</strong> It is <em>not</em> subtracted before you fund the
-          trust. You deposit the gross income; the health-insurance premium (Medicare Part&nbsp;B, or any other) is
-          handled <strong>later</strong>, as an allowable deduction in the monthly distribution order — it is paid
-          out of the trust <em>before</em> the patient-liability share. The federal post-eligibility rules
-          (42&nbsp;CFR&nbsp;§§&nbsp;435.725–435.726) list health-insurance premiums as a permitted deduction. In
-          practice, because Social Security often already has the Part&nbsp;B premium withheld before the check
-          arrives, your {state.agencyAbbreviation} eligibility worker reconciles the exact monthly figures when
-          they set your post-eligibility budget. Use gross figures on this worksheet; the worker confirms the final
-          numbers.
-        </p>
+        <h3>Gross income — and how the Medicare premium fits</h3>
+        {hcb ? (
+          <Fragment>
+            <p>
+              Two questions come up here constantly, so let's answer them head-on.
+            </p>
+            <p>
+              <strong>Do I count income gross or net?</strong> Gross. Compare each source at its
+              <strong> full, before-deductions amount</strong> to the HCB maximum. Enter Social Security on
+              line&nbsp;A at the <em>gross</em> benefit — the figure before the Medicare Part&nbsp;B premium is
+              withheld — so the excess on line&nbsp;G is measured against gross income, not a net figure.
+            </p>
+            <p>
+              <strong>So where does the Medicare premium fit?</strong> A health-insurance premium such as Medicare
+              Part&nbsp;B is one of the applicant's <em>allowable</em> costs the trust can pay from the excess it
+              holds — it is not a way to shrink the amount you deposit. Use gross figures to work out the excess
+              (line&nbsp;G); the trustee can then apply trust funds toward the applicant's allowable medical costs,
+              including insurance premiums. {state.agencyAbbreviation} confirms which income counts toward the HCB
+              maximum on the eligibility determination.
+            </p>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <p>
+              Two questions come up here constantly, so let's answer them head-on.
+            </p>
+            <p>
+              <strong>Do I count income gross or net?</strong> Gross. Medicaid counts each source at its
+              <strong> full, before-deductions amount</strong>. Enter your Social Security on line&nbsp;A at the
+              <em>gross</em> benefit — the figure before the Medicare Part&nbsp;B premium is withheld — and every other
+              source at its gross amount too. That is why line&nbsp;A reads "gross, before Medicare premium."
+            </p>
+            <p>
+              <strong>So where does the Medicare premium go?</strong> It is <em>not</em> subtracted before you fund the
+              trust. You deposit the gross income; the health-insurance premium (Medicare Part&nbsp;B, or any other) is
+              handled <strong>later</strong>, as an allowable deduction in the monthly distribution order — it is paid
+              out of the trust <em>before</em> the patient-liability share. The federal post-eligibility rules
+              (42&nbsp;CFR&nbsp;§§&nbsp;435.725–435.726) list health-insurance premiums as a permitted deduction. In
+              practice, because Social Security often already has the Part&nbsp;B premium withheld before the check
+              arrives, your {state.agencyAbbreviation} eligibility worker reconciles the exact monthly figures when
+              they set your post-eligibility budget. Use gross figures on this worksheet; the worker confirms the final
+              numbers.
+            </p>
+          </Fragment>
+        )}
       </div>
 
       <h3>When you do <em>not</em> need a QIT</h3>
       <p>
         If line G is zero or negative — the applicant's total income is at or below ${fmt(state.incomeCap2026)}/month
-        — the applicant is already income-eligible for {state.name} long-term-care Medicaid without a QIT. You can
+        — the applicant is already income-eligible for {hcb ? `${state.name}'s HCB waiver` : `${state.name} long-term-care Medicaid`} without a QIT. You can
         skip this kit and proceed directly to the Medicaid application. Most families who reach this kit are
-        above the cap (often only by a few hundred dollars per month from Social Security cost-of-living increases),
+        above the {hcb ? 'maximum' : 'cap'} (often only by a few hundred dollars per month from Social Security cost-of-living increases),
         but verify before you set up a trust you may not need.
       </p>
     </section>
@@ -736,22 +952,37 @@ const fmt = (n: number) => n.toLocaleString('en-US');
       </p>
 
       <div class="kit-callout">
-        <p style="font-style: italic;">
-          "I'd like to open a checking account in the name of an irrevocable trust. The trust is a Qualified
-          Income Trust authorized under {state.name} Medicaid policy ({state.policyManualSection}) and federal
-          law at {state.federalStatuteCitation}. I have the trust document signed and dated. I'd like the
-          account titled exactly as the trust is named, with the {' '}
-          {state.einRequired ? 'EIN' : "applicant's Social Security number"} on file for IRS reporting. The
-          trustee is the only authorized signer. If your bank requires a small opening deposit to open the
-          account, that's fine — {state.agencyAbbreviation} expressly allows the standard $10–$20 opening
-          deposit banks ask for. After that, only the applicant's listed income will be deposited to this
-          account."
-        </p>
+        {hcb ? (
+          <p style="font-style: italic;">
+            "I'd like to open a checking account in the name of an irrevocable trust. The trust is a Qualified
+            Income Trust authorized under {state.name} Medicaid policy ({state.policyManualSection}) and federal
+            law at {state.federalStatuteCitation}. I have the trust document signed and dated. I'd like the
+            account titled exactly as the trust is named, with the {' '}
+            {state.einRequired ? 'EIN' : "applicant's Social Security number"} on file for IRS reporting. The
+            trustee — not the applicant — is the only authorized signer. If your bank requires a small opening
+            deposit to open the account, that's fine. After that, only the portion of the applicant's income
+            above the state's income maximum will be deposited to this account."
+          </p>
+        ) : (
+          <p style="font-style: italic;">
+            "I'd like to open a checking account in the name of an irrevocable trust. The trust is a Qualified
+            Income Trust authorized under {state.name} Medicaid policy ({state.policyManualSection}) and federal
+            law at {state.federalStatuteCitation}. I have the trust document signed and dated. I'd like the
+            account titled exactly as the trust is named, with the {' '}
+            {state.einRequired ? 'EIN' : "applicant's Social Security number"} on file for IRS reporting. The
+            trustee is the only authorized signer. If your bank requires a small opening deposit to open the
+            account, that's fine — {state.agencyAbbreviation} expressly allows the standard $10–$20 opening
+            deposit banks ask for. After that, only the applicant's listed income will be deposited to this
+            account."
+          </p>
+        )}
       </div>
 
-      <p class="kit-cite">
-        Source for the opening-deposit allowance: {state.agencyAbbreviation} {state.policyCitationShort}.
-      </p>
+      {!hcb && (
+        <p class="kit-cite">
+          Source for the opening-deposit allowance: {state.agencyAbbreviation} {state.policyCitationShort}.
+        </p>
+      )}
 
       <h3>The five most common refusals — and how to respond</h3>
 
@@ -810,21 +1041,40 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           {' '}{state.federalStatuteCitation} and {state.name} state policy at {state.agencyAbbreviation}
           {' '}{state.policyManualSection}.
         </p>
-        <p style="font-style: italic;">
-          I am requesting a checking account opened in the name of the trust, with me as the sole authorized
-          signer. If your bank requires a small opening deposit to open a new account, that is acceptable —
-          {' '}{state.agencyAbbreviation} {state.policyCitationShort} expressly allows the standard $10–$20 opening deposit
-          banks require and states it is not counted as a resource or income to the beneficiary. {state.einRequired
-            ? `Because ${state.name}'s trust files its own fiduciary tax return, I have obtained a separate EIN for the trust from the IRS and have provided it with this letter.`
-            : `Per ${state.agencyAbbreviation} ${state.policyCitationShort}, the QIT account is set up using the applicant's Social Security number — no separate EIN is required.`}
-        </p>
-        <p style="font-style: italic;">
-          After the account is open, the trust will receive only the applicant's monthly Medicaid-countable
-          income and disburse the Personal Needs Allowance, any spousal allowance, and the patient-liability
-          share of care to the applicant's nursing facility, all by the last day of the month following each
-          deposit. No third parties have access to the account; the account balance returns to near zero each
-          month after distributions.
-        </p>
+        {hcb ? (
+          <Fragment>
+            <p style="font-style: italic;">
+              I am requesting a checking account opened in the name of the trust, with me — the trustee, who is not
+              the beneficiary — as the sole authorized signer. If your bank requires a small opening deposit to open
+              a new account, that is acceptable; those are the applicant's own funds. The account is generally set up
+              using the applicant's Social Security number, and the trust holds only the applicant's income.
+            </p>
+            <p style="font-style: italic;">
+              After the account is open, the trust will receive only the portion of the applicant's monthly income
+              that exceeds the state's income maximum, and I will spend it only on the applicant's own allowable
+              medical and care costs under {state.name} Medicaid rules. No third parties have access to the account,
+              and I am the only authorized signer.
+            </p>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <p style="font-style: italic;">
+              I am requesting a checking account opened in the name of the trust, with me as the sole authorized
+              signer. If your bank requires a small opening deposit to open a new account, that is acceptable —
+              {' '}{state.agencyAbbreviation} {state.policyCitationShort} expressly allows the standard $10–$20 opening deposit
+              banks require and states it is not counted as a resource or income to the beneficiary. {state.einRequired
+                ? `Because ${state.name}'s trust files its own fiduciary tax return, I have obtained a separate EIN for the trust from the IRS and have provided it with this letter.`
+                : `Per ${state.agencyAbbreviation} ${state.policyCitationShort}, the QIT account is set up using the applicant's Social Security number — no separate EIN is required.`}
+            </p>
+            <p style="font-style: italic;">
+              After the account is open, the trust will receive only the applicant's monthly Medicaid-countable
+              income and disburse the Personal Needs Allowance, any spousal allowance, and the patient-liability
+              share of care to the applicant's nursing facility, all by the last day of the month following each
+              deposit. No third parties have access to the account; the account balance returns to near zero each
+              month after distributions.
+            </p>
+          </Fragment>
+        )}
         <p style="font-style: italic;">
           The signed trust document, my photo ID, the applicant's Social Security card, and a printed copy of the
           relevant {state.agencyAbbreviation} policy section are attached. Please contact your trust department
@@ -883,22 +1133,48 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 
       <div class="kit-no-break">
         <h3>The first month — what to expect</h3>
-        <p>
-          The first month is the most error-prone because income redirects rarely process in time. Two important
-          accommodations {state.agencyAbbreviation} makes for the initial month:
-        </p>
-        <ul>
-          <li>
-            <strong>A partial deposit in the initial month is allowed.</strong> If only part of an income source
-            made it into the QIT in the first month — for example, the applicant already paid some bills before
-            the trust was established — the QIT is still valid and the entire amount of that income source is
-            disregarded from countable income for that month.
-          </li>
-          <li>
-            <strong>In every month after the initial month, the entire listed source must be deposited.</strong>
-            A partial deposit of a listed source in any non-initial month invalidates the QIT for that month.
-          </li>
-        </ul>
+        {hcb ? (
+          <Fragment>
+            <p>
+              The first month is the most error-prone because income redirects rarely process in time. What matters in
+              {' '}{state.name} is that the excess over the HCB maximum reaches the trust account in the month the
+              income is received (or within 10 days if fewer than 10 days remain), so the applicant's remaining
+              countable income is below the maximum for that month.
+            </p>
+            <ul>
+              <li>
+                <strong>Move the excess in the same month.</strong> If a redirect has not processed yet, transfer the
+                over-the-maximum amount into the trust manually from the applicant's account, in the same calendar
+                month the income is received. Do not assign the income to the trust as payee — move it by deposit or
+                transfer.
+              </li>
+              <li>
+                <strong>Keep the rest in the applicant's own name.</strong> Only the excess needs to move; income up
+                to the HCB maximum stays with the applicant. Every following month, deposit at least that month's
+                excess.
+              </li>
+            </ul>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <p>
+              The first month is the most error-prone because income redirects rarely process in time. Two important
+              accommodations {state.agencyAbbreviation} makes for the initial month:
+            </p>
+            <ul>
+              <li>
+                <strong>A partial deposit in the initial month is allowed.</strong> If only part of an income source
+                made it into the QIT in the first month — for example, the applicant already paid some bills before
+                the trust was established — the QIT is still valid and the entire amount of that income source is
+                disregarded from countable income for that month.
+              </li>
+              <li>
+                <strong>In every month after the initial month, the entire listed source must be deposited.</strong>
+                A partial deposit of a listed source in any non-initial month invalidates the QIT for that month.
+              </li>
+            </ul>
+          </Fragment>
+        )}
       </div>
       <p>
         Most families also manually transfer the first month's income into the QIT from the applicant's personal
@@ -907,42 +1183,89 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         identifies it as the QIT funding deposit for that month.
       </p>
 
-      <h3>The monthly distribution rule</h3>
-      <p>
-        <strong>Income deposited into the QIT account must be distributed by the last day of the following month.</strong>
-        If income is deposited in March, the trustee has until April 30 to make the required distributions. This is
-        the controlling deadline — not the end of the same month.
-      </p>
+      {hcb ? (
+        <Fragment>
+          <h3>The monthly funding and spending rule</h3>
+          <p>
+            <strong>The deadline that controls eligibility is the deposit, not a distribution date.</strong> Each
+            month the excess over the HCB maximum must reach the trust account in the month the income is received
+            (or within 10 days if fewer than 10 days remain). The trustee then spends the trust only on the
+            applicant's allowable medical and care costs; unlike a nursing-facility trust, {state.name} lets the
+            trust hold accumulated income to spend on the applicant's care over time, so there is no rule that the
+            account must be emptied by month-end.
+          </p>
 
-      <div class="kit-callout kit-callout--warning">
-        <p>
-          <strong>Late distribution is treated as a transfer of assets.</strong> Per {state.agencyAbbreviation},
-          if the trustee fails to distribute income deposited into the QIT account by the end of the following
-          month, the failure is considered a transfer of assets. Transfers of assets can trigger a Medicaid
-          penalty period (a period of ineligibility for benefits). Set a recurring monthly reminder to make
-          distributions on the same day each month — well before the next-month deadline.
-        </p>
-      </div>
+          <div class="kit-callout kit-callout--warning">
+            <p>
+              <strong>Keep every payment inside the allowed list.</strong> A distribution that is not for the
+              applicant's own allowable benefit can affect eligibility unless the trustee restores the funds, and
+              every deposit and payment must be captured in the trust's monthly accounting, which
+              {' '}{state.agencyAbbreviation} can request at the annual review. Just as important: if a month's excess
+              is not deposited, the applicant is over-income for that month.
+            </p>
+          </div>
+        </Fragment>
+      ) : (
+        <Fragment>
+          <h3>The monthly distribution rule</h3>
+          <p>
+            <strong>Income deposited into the QIT account must be distributed by the last day of the following month.</strong>
+            If income is deposited in March, the trustee has until April 30 to make the required distributions. This is
+            the controlling deadline — not the end of the same month.
+          </p>
+
+          <div class="kit-callout kit-callout--warning">
+            <p>
+              <strong>Late distribution is treated as a transfer of assets.</strong> Per {state.agencyAbbreviation},
+              if the trustee fails to distribute income deposited into the QIT account by the end of the following
+              month, the failure is considered a transfer of assets. Transfers of assets can trigger a Medicaid
+              penalty period (a period of ineligibility for benefits). Set a recurring monthly reminder to make
+              distributions on the same day each month — well before the next-month deadline.
+            </p>
+          </div>
+        </Fragment>
+      )}
 
       <div class="kit-no-break">
-        <h3>The monthly distribution checklist</h3>
-        <p>By the last day of the month following each deposit, the trustee should have:</p>
-        <ol>
-          <li>Confirmed the month's income deposited into the QIT account (check the bank statement).</li>
-          <li>Distributed the Personal Needs Allowance (${fmt(state.personalNeedsAllowance)}) to the applicant.</li>
-          <li>Distributed any spousal allowance (the Minimum Monthly Maintenance Needs Allowance, where applicable) to the community spouse.</li>
-          <li>Distributed any court-ordered guardianship fees, if applicable.</li>
-          <li>Distributed the cost of medical assistance (patient liability / share of cost) to the nursing facility.</li>
-          <li>Saved the bank statement and any check copies in the trustee's monthly file (see Appendix B).</li>
-        </ol>
+        <h3>The monthly checklist</h3>
+        {hcb ? (
+          <Fragment>
+            <p>Each month, the trustee should have:</p>
+            <ol>
+              <li>Moved the excess over the HCB maximum into the trust account, in the month the income was received (check the bank statement).</li>
+              <li>Confirmed the applicant kept their income up to the HCB maximum in their own account.</li>
+              <li>Spent trust funds only on the applicant's own allowable medical and care costs (and any allowable trustee or bank fee).</li>
+              <li>Recorded every deposit and payment in the trust's monthly accounting.</li>
+              <li>Saved the bank statement and any check copies in the trustee's monthly file (see Appendix B).</li>
+            </ol>
 
-        <p>
-          After required distributions, the account should return to a near-zero balance. A residual balance of
-          a few cents to a few dollars is normal and acceptable. Any residual amount left after the required
-          distributions may be applied to the cost of trust administration — but {state.agencyAbbreviation}
-          does not allow deductions for trust administration costs when computing the beneficiary's share of
-          cost.
-        </p>
+            <p>
+              Unlike a nursing-facility trust, the account is not expected to zero out each month — {state.name} lets
+              the trust hold accumulated income to spend on the applicant's care over time. Keep every payment inside
+              the allowable list, and keep the records current for {state.agencyAbbreviation}'s annual review.
+            </p>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <p>By the last day of the month following each deposit, the trustee should have:</p>
+            <ol>
+              <li>Confirmed the month's income deposited into the QIT account (check the bank statement).</li>
+              <li>Distributed the Personal Needs Allowance (${fmt(state.personalNeedsAllowance)}) to the applicant.</li>
+              <li>Distributed any spousal allowance (the Minimum Monthly Maintenance Needs Allowance, where applicable) to the community spouse.</li>
+              <li>Distributed any court-ordered guardianship fees, if applicable.</li>
+              <li>Distributed the cost of medical assistance (patient liability / share of cost) to the nursing facility.</li>
+              <li>Saved the bank statement and any check copies in the trustee's monthly file (see Appendix B).</li>
+            </ol>
+
+            <p>
+              After required distributions, the account should return to a near-zero balance. A residual balance of
+              a few cents to a few dollars is normal and acceptable. Any residual amount left after the required
+              distributions may be applied to the cost of trust administration — but {state.agencyAbbreviation}
+              does not allow deductions for trust administration costs when computing the beneficiary's share of
+              cost.
+            </p>
+          </Fragment>
+        )}
 
         <h3>What happens if a month's income is not deposited</h3>
         <p>
@@ -955,7 +1278,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 
         <p>
           Resume normal funding the following month and the applicant's eligibility resumes for that month. The
-          lost month is usually billed at private-pay rates by the nursing facility.
+          lost month is usually {hcb ? "paid out of pocket for the applicant's care" : 'billed at private-pay rates by the nursing facility'}.
         </p>
       </div>
     </section>
@@ -996,7 +1319,11 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           <li>QIT account opened in the name of the trust, using the applicant's SSN (or EIN if your state requires one).</li>
           <li>Initial-month deposit visible on the QIT bank statement — a partial first-month deposit is acceptable; no deposit at all is not.</li>
           <li>Reversion (residuary beneficiary) clause names the State of {state.name} as the residuary up to total Medicaid assistance paid (verify the {state.agencyAbbreviation} template's pre-drafted language is intact).</li>
-          <li>Every income source listed in the trust is direct-deposited to the QIT (full source amount each month after the initial month).</li>
+          {hcb ? (
+            <li>At least the excess over the HCB income maximum is moved into the trust each month, in the month it is received (income up to the maximum stays in the applicant's own name).</li>
+          ) : (
+            <li>Every income source listed in the trust is direct-deposited to the QIT (full source amount each month after the initial month).</li>
+          )}
           <li>No resources have been deposited into the QIT account (income only).</li>
           <li>VA aid &amp; attendance / housebound / unusual-medical-expense reimbursements are <em>not</em> being deposited to the QIT (see Section 3).</li>
           <li>Trustee selection is consistent with {state.agencyAbbreviation} guidance (see Section 3).</li>
@@ -1025,10 +1352,18 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           longer eligible after death. Contact each income source (SSA, pension, VA) to stop direct deposits to
           the QIT. SSA, in particular, will request return of any post-death payments.
         </li>
-        <li>
-          <strong>Distribute the Personal Needs Allowance and patient liability for the partial month of death</strong>
-          per normal procedure, prorated as the trust instrument or {state.agencyAbbreviation} guidance directs.
-        </li>
+        {hcb ? (
+          <li>
+            <strong>Complete any allowable spending for the partial month of death</strong> — the trustee may still
+            pay the applicant's own allowable medical and care costs for that month per the form and
+            {' '}{state.agencyAbbreviation} guidance — then make no further distributions until the State's claim is resolved.
+          </li>
+        ) : (
+          <li>
+            <strong>Distribute the Personal Needs Allowance and patient liability for the partial month of death</strong>
+            per normal procedure, prorated as the trust instrument or {state.agencyAbbreviation} guidance directs.
+          </li>
+        )}
         <li>
           <strong>Wait for {state.agencyAbbreviation}'s final accounting</strong> showing the total Medicaid
           benefits paid on the applicant's behalf. Do not distribute any remaining trust balance until you have
@@ -1103,8 +1438,10 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           look-back period and may trigger a transfer penalty (a period of Medicaid ineligibility).
         </li>
         <li>
-          <strong>The applicant has assets above the countable resource limit</strong> (generally $2,000 for a
-          single applicant). Asset spend-down planning is separate from the QIT and often requires legal
+          <strong>The applicant has assets above the countable resource limit</strong>{' '}
+          {hcb
+            ? '(for Missouri’s HCB waiver this is $6,220.50 for a single applicant, $12,441.00 for a couple where both are HCB-eligible)'
+            : '(generally $2,000 for a single applicant)'}. Asset spend-down planning is separate from the QIT and often requires legal
           structuring (irrevocable trusts, annuities, exempt-asset purchases) that should be done with counsel.
         </li>
         <li>
@@ -1134,13 +1471,23 @@ const fmt = (n: number) => n.toLocaleString('en-US');
       </ul>
 
       <h3>If you are the community spouse — what to know before the attorney visit</h3>
-      <p>
-        The most common married-couple situation is one spouse entering a nursing facility while the other — the
-        <strong> community spouse</strong> — stays at home. The QIT in this kit solves the institutionalized
-        spouse's <em>income</em> problem. It does not, by itself, address the separate set of federal protections
-        built for the community spouse. Those protections are real money, and the kit cannot apply them to your
-        numbers — but it can make sure you walk into an attorney consultation already understanding them.
-      </p>
+      {hcb ? (
+        <p>
+          A common married-couple situation is one spouse needing Medicaid-funded care — here, in-home HCB services —
+          while the other, the <strong>community spouse</strong>, stays at home. The QIT in this kit solves the
+          applicant spouse's <em>income</em> problem. It does not, by itself, address the separate set of federal
+          protections built for the community spouse. Those protections are real money, and the kit cannot apply them
+          to your numbers — but it can make sure you walk into an attorney consultation already understanding them.
+        </p>
+      ) : (
+        <p>
+          The most common married-couple situation is one spouse entering a nursing facility while the other — the
+          <strong> community spouse</strong> — stays at home. The QIT in this kit solves the institutionalized
+          spouse's <em>income</em> problem. It does not, by itself, address the separate set of federal protections
+          built for the community spouse. Those protections are real money, and the kit cannot apply them to your
+          numbers — but it can make sure you walk into an attorney consultation already understanding them.
+        </p>
+      )}
 
       <p>Two protections do the heavy lifting, both required by federal Medicaid law:</p>
       <ul>
@@ -1154,8 +1501,8 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         </li>
         <li>
           <strong>Minimum Monthly Maintenance Needs Allowance (MMMNA).</strong> If the community spouse's own
-          monthly income is low, a portion of the institutionalized spouse's income can be diverted to the
-          community spouse rather than paid to the nursing facility — so the at-home spouse is not left without
+          monthly income is low, a portion of the {hcb ? 'applicant' : 'institutionalized'} spouse's income can be directed to the
+          community spouse {hcb ? '' : 'rather than paid to the nursing facility '}— so the at-home spouse is not left without
           enough to live on. The MMMNA floor is also set annually by CMS and applied by the state.
         </li>
       </ul>
@@ -1170,7 +1517,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           <li>Every countable asset the couple owns, with rough current values, and whose name each is in.</li>
           <li>Each spouse's monthly income, by source (Social Security, pension, annuity, VA).</li>
           <li>Whether the home is owned, in whose name, and whether the community spouse will keep living in it.</li>
-          <li>The date the institutionalized spouse entered (or will enter) the facility — the asset assessment is tied to that date.</li>
+          <li>The date the {hcb ? 'applicant spouse began (or will begin) Medicaid-funded HCB services' : 'institutionalized spouse entered (or will enter) the facility'} — the asset assessment is tied to that date.</li>
           <li>Any asset transfers or gifts in the last five years (the look-back period applies to couples too).</li>
         </ul>
       </div>
@@ -1178,7 +1525,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
       <p>
         With that information in hand, ask the attorney three questions: <em>what is our CSRA</em>, <em>does the
         community spouse qualify for an MMMNA income diversion</em>, and <em>does the QIT in this kit still cover
-        the institutionalized spouse's income side</em> (it does — the community-spouse rules sit alongside the
+        the {hcb ? 'applicant' : 'institutionalized'} spouse's income side</em> (it does — the community-spouse rules sit alongside the
         QIT, they do not replace it). You will typically leave that consultation knowing exactly what to protect
         and exactly which parts you can still handle yourself with this kit.
       </p>
@@ -1349,16 +1696,26 @@ const fmt = (n: number) => n.toLocaleString('en-US');
           <a href={state.federalStatuteUrl}>{state.federalStatuteUrl}</a><br />
           <span class="kit-cite">Subsection (d)(4)(B): "A trust composed only of pension, Social Security, and other income to the individual..."</span>
         </li>
-        <li>
-          <strong>CMS — 2026 SSI and Spousal Impoverishment Standards</strong><br />
-          <a href="https://www.medicaid.gov/federal-policy-guidance/downloads/cib12092025.pdf">https://www.medicaid.gov/federal-policy-guidance/downloads/cib12092025.pdf</a><br />
-          <span class="kit-cite">Source for the 2026 Federal Benefit Rate ($994/month) and the 300% cap derivation ($2,982/month) used in the {state.name} income-cap figure.</span>
-        </li>
-        <li>
-          <strong>SSA — 2026 SSI Federal Payment Amounts</strong><br />
-          <a href="https://www.ssa.gov/oact/cola/SSI.html">https://www.ssa.gov/oact/cola/SSI.html</a><br />
-          <span class="kit-cite">Verification of the 2026 FBR figure CMS uses to compute the 300% Medicaid long-term-care income cap.</span>
-        </li>
+        {hcb ? (
+          <li>
+            <strong>{state.agencyAbbreviation} — HCB income maximum</strong><br />
+            <a href={state.policyManualUrl}>{state.policyManualUrl}</a><br />
+            <span class="kit-cite">Source for the ${fmt(state.incomeCap2026)}/month HCB income maximum used in this kit ({state.asOf}). This is an FPL-based figure {state.name} publishes for its Home and Community-Based waiver — not the 300%-of-SSI cap used by nursing-facility income-cap states.</span>
+          </li>
+        ) : (
+          <Fragment>
+            <li>
+              <strong>CMS — 2026 SSI and Spousal Impoverishment Standards</strong><br />
+              <a href="https://www.medicaid.gov/federal-policy-guidance/downloads/cib12092025.pdf">https://www.medicaid.gov/federal-policy-guidance/downloads/cib12092025.pdf</a><br />
+              <span class="kit-cite">Source for the 2026 Federal Benefit Rate ($994/month) and the 300% cap derivation ($2,982/month) used in the {state.name} income-cap figure.</span>
+            </li>
+            <li>
+              <strong>SSA — 2026 SSI Federal Payment Amounts</strong><br />
+              <a href="https://www.ssa.gov/oact/cola/SSI.html">https://www.ssa.gov/oact/cola/SSI.html</a><br />
+              <span class="kit-cite">Verification of the 2026 FBR figure CMS uses to compute the 300% Medicaid long-term-care income cap.</span>
+            </li>
+          </Fragment>
+        )}
       </ul>
 
       <h3>Attorney referral</h3>
@@ -1390,13 +1747,22 @@ const fmt = (n: number) => n.toLocaleString('en-US');
       </p>
 
       <h3>Monthly file (every month)</h3>
-      <ul>
-        <li>QIT bank statement showing the month's deposit and all distributions.</li>
-        <li>Copy of the check (or transfer confirmation) for the Personal Needs Allowance to the applicant.</li>
-        <li>Copy of the check (or transfer confirmation) for the spousal allowance, if applicable.</li>
-        <li>Copy of the check (or transfer confirmation) for the patient liability to the nursing facility.</li>
-        <li>Receipt or acknowledgment from the nursing facility for the patient-liability payment.</li>
-      </ul>
+      {hcb ? (
+        <ul>
+          <li>Trust bank statement showing the month's excess deposit and all payments out.</li>
+          <li>Copies of the checks or transfer confirmations for each allowable payment (the applicant's medical and care costs, insurance premiums, allowable trustee or bank fee).</li>
+          <li>Receipts or invoices supporting each allowable payment.</li>
+          <li>A running note of the trust balance, including any accumulated income carried forward.</li>
+        </ul>
+      ) : (
+        <ul>
+          <li>QIT bank statement showing the month's deposit and all distributions.</li>
+          <li>Copy of the check (or transfer confirmation) for the Personal Needs Allowance to the applicant.</li>
+          <li>Copy of the check (or transfer confirmation) for the spousal allowance, if applicable.</li>
+          <li>Copy of the check (or transfer confirmation) for the patient liability to the nursing facility.</li>
+          <li>Receipt or acknowledgment from the nursing facility for the patient-liability payment.</li>
+        </ul>
+      )}
 
       <h3>Annual file (each calendar year)</h3>
       <ul>

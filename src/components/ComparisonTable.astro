@@ -4,9 +4,12 @@ interface Props {
   price: number;
   privatePayMonthlyLow: number;
   privatePayMonthlyHigh: number;
+  // Hybrid (HCB-waiver) states buy in-home eligibility, not a nursing-home bed —
+  // so the cost anchor + cap label flex. Defaults to the income-cap/nursing model.
+  hcb?: boolean;
 }
 
-const { stateName, price, privatePayMonthlyLow, privatePayMonthlyHigh } = Astro.props;
+const { stateName, price, privatePayMonthlyLow, privatePayMonthlyHigh, hcb = false } = Astro.props;
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 // State-specific private-pay range, kept in sync with the state page + kit so
@@ -64,7 +67,7 @@ const privatePayRange = `$${fmt(privatePayMonthlyLow)}–$${fmt(privatePayMonthl
           <td class="py-3 pr-4">n/a</td>
         </tr>
         <tr>
-          <th scope="row" class="py-3 pr-4 font-medium">Updated for 2026 income cap</th>
+          <th scope="row" class="py-3 pr-4 font-medium">Updated for {hcb ? 'the current HCB income maximum' : '2026 income cap'}</th>
           <td class="py-3 pr-4">Yes</td>
           <td class="py-3 pr-4">Yes</td>
           <td class="py-3 pr-4">If {stateName} has updated PDF</td>
@@ -88,7 +91,7 @@ const privatePayRange = `$${fmt(privatePayMonthlyLow)}–$${fmt(privatePayMonthl
     </table>
   </div>
   <p class="mt-3 text-xs text-ink-muted">
-    Attorney costs reflect typical {stateName} elder-law retainers for a Miller Trust setup. Private-pay nursing-home
-    figures reflect 2026 {stateName} market averages.
+    Attorney costs reflect typical {stateName} elder-law retainers for a Miller Trust setup. Private-pay
+    {hcb ? ' in-home and assisted-living' : ' nursing-home'} figures reflect recent {stateName} market averages.
   </p>
 </section>

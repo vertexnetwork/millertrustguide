@@ -147,11 +147,18 @@ export function getArticleLede(state: StateData, topic: ArticleTopic): string {
   const name = state.name;
   const cap = fmt(state.incomeCap2026);
   const pay = `$${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}`;
+  // Hybrid (HCB-waiver) states use the QIT for an in-home waiver, not a nursing
+  // home, with excess-only funding and a required third-party trustee.
+  const hcb = state.medicaidStructure === 'hybrid';
   switch (topic) {
     case 'how-to-set-up':
-      return `To set up a Miller Trust in ${name}, you complete the official ${state.agencyAbbreviation} Qualified Income Trust template, name a trustee who is not the applicant, open a dedicated trust bank account, and deposit the applicant's income into it in the same calendar month you want coverage to begin. The trust diverts income above ${name}'s $${cap}/month long-term-care Medicaid cap (${state.asOf}) so the applicant qualifies. For the core setup this is a paperwork-and-banking task most families handle themselves; for complex estates, consult a ${name}-licensed elder-law attorney. This guide is informational only and is not legal advice — we explain how to use ${state.agencyAbbreviation}'s own published form; we do not draft it.`;
+      return hcb
+        ? `To set up a Qualified Income Trust in ${name}, you complete the official ${state.agencyAbbreviation} form (886-4657), name a third-party trustee (the applicant may not serve), open a dedicated trust bank account, and move the applicant's over-the-limit income into it in the same calendar month you want coverage to begin. ${name} uses the QIT only for its Home and Community-Based (in-home) waiver — not nursing-facility Medicaid, which uses a spend-down — and only the income above the HCB maximum ($${cap}/month, ${state.asOf}) goes into the trust; the applicant keeps the rest. For the core setup this is a paperwork-and-banking task most families handle themselves; for complex situations, consult a ${name}-licensed elder-law attorney. This guide is informational only and is not legal advice — we explain how to use ${state.agencyAbbreviation}'s own published form; we do not draft it.`
+        : `To set up a Miller Trust in ${name}, you complete the official ${state.agencyAbbreviation} Qualified Income Trust template, name a trustee who is not the applicant, open a dedicated trust bank account, and deposit the applicant's income into it in the same calendar month you want coverage to begin. The trust diverts income above ${name}'s $${cap}/month long-term-care Medicaid cap (${state.asOf}) so the applicant qualifies. For the core setup this is a paperwork-and-banking task most families handle themselves; for complex estates, consult a ${name}-licensed elder-law attorney. This guide is informational only and is not legal advice — we explain how to use ${state.agencyAbbreviation}'s own published form; we do not draft it.`;
     case 'how-long-to-set-up':
-      return `Setting up a Miller Trust in ${name} is usually a few hours of paperwork plus opening one bank account — but the deadline that controls everything is the calendar month. A ${name} Qualified Income Trust only diverts income in a month where it is signed, has a funded account, and receives enough of the applicant's income to drop countable income below the $${cap}/month cap — all within that same calendar month. ${state.agencyAbbreviation} does not back-date eligibility, so coverage begins the month funding is complete, and every month of delay is another ${pay} of private-pay care. The most common cause of delay is the bank, not the paperwork.`;
+      return hcb
+        ? `Setting up a Qualified Income Trust in ${name} is usually a few hours of paperwork plus opening one bank account — but the deadline that controls everything is the calendar month. A ${name} QIT only works in a month where it is signed, has a funded account, and receives enough of the applicant's over-the-limit income to drop remaining countable income below the HCB income maximum ($${cap}/month) — all within that same calendar month. ${state.agencyAbbreviation} does not back-date eligibility, and because the HCB limit is absolute there is no spend-down fallback, so every month of delay is another ${pay} of private-pay in-home or assisted-living care. The most common cause of delay is the bank, not the paperwork.`
+        : `Setting up a Miller Trust in ${name} is usually a few hours of paperwork plus opening one bank account — but the deadline that controls everything is the calendar month. A ${name} Qualified Income Trust only diverts income in a month where it is signed, has a funded account, and receives enough of the applicant's income to drop countable income below the $${cap}/month cap — all within that same calendar month. ${state.agencyAbbreviation} does not back-date eligibility, so coverage begins the month funding is complete, and every month of delay is another ${pay} of private-pay care. The most common cause of delay is the bank, not the paperwork.`;
     case 'what-to-say-at-the-bank':
       return `When you open a Miller Trust account in ${name}, expect the branch to hesitate — most have never opened a Qualified Income Trust account, and many ask for an attorney or a tax ID (EIN) you do not need. You do not need a lawyer to open the account, and a ${name} QIT is set up using the beneficiary's Social Security number, not an EIN. Below are the ${state.bankRefusalNotes.length} refusals ${name} families hit most often and exactly what to say to each — every response is backed by ${state.agencyAbbreviation}'s own published guidance.`;
     case 'who-can-be-trustee':
@@ -159,7 +166,9 @@ export function getArticleLede(state: StateData, topic: ArticleTopic): string {
     case 'do-you-need-an-ein':
       return `${state.einRequiredNote} That is the rule for a ${name} Qualified Income Trust. The question comes up most often at the bank, where staff may ask for an EIN out of habit. Below is what applies in ${name} and what to do if a branch's requirement differs from what ${state.agencyAbbreviation} publishes. This guide is informational only and is not legal or tax advice; for your specific situation, consult a qualified professional.`;
     case 'what-happens-to-the-money':
-      return `When the beneficiary of a ${name} Miller Trust dies, money left in the trust does not pass to the family like an ordinary inheritance. ${state.postDeathDistribution} Because most of the applicant's income flows through the trust each month to pay for care, the balance remaining at death is usually small. This guide is informational only and is not legal advice.`;
+      return hcb
+        ? `When the beneficiary of a ${name} Qualified Income Trust dies, money left in the trust does not pass to the family like an ordinary inheritance. ${state.postDeathDistribution} Because only the income above the HCB maximum flows through the trust — and the trust may hold accumulated income spent on the applicant's care over time — the balance at death varies. This guide is informational only and is not legal advice.`
+        : `When the beneficiary of a ${name} Miller Trust dies, money left in the trust does not pass to the family like an ordinary inheritance. ${state.postDeathDistribution} Because most of the applicant's income flows through the trust each month to pay for care, the balance remaining at death is usually small. This guide is informational only and is not legal advice.`;
   }
 }
 
@@ -168,6 +177,40 @@ export function getArticleLede(state: StateData, topic: ArticleTopic): string {
 export function getHowToSteps(state: StateData): Array<{ name: string; text: string }> {
   const cap = fmt(state.incomeCap2026);
   const capCouple = fmt(state.incomeCapCouple2026);
+  // Hybrid (HCB-waiver) states: in-home waiver, excess-only funding, required
+  // third-party trustee, no nursing-facility PNA / cost-share.
+  if (state.medicaidStructure === 'hybrid') {
+    return [
+      {
+        name: `Confirm the applicant's income is over the ${state.name} HCB maximum`,
+        text: `A Qualified Income Trust here helps only for ${state.name}'s Home and Community-Based (in-home) waiver, and only when monthly countable income exceeds the HCB income maximum — $${cap}/month (${state.asOf}). Each spouse is tested individually. Nursing-facility Medicaid in ${state.name} uses a spend-down instead, so a QIT is not the tool for that.`,
+      },
+      {
+        name: `Download the official ${state.agencyAbbreviation} form (886-4657)`,
+        text: `Get the fill-in Qualified Income Trust form directly from ${state.agencyName} on its .gov site. ${firstSentence(state.officialTemplateNote).lead} We never draft or host the trust text — you use the state's own published form.`,
+      },
+      {
+        name: 'Fill in the fields the form asks for',
+        text: `Complete the data fields the ${state.agencyAbbreviation} form requests — the applicant's name, date of birth, address, the trustee and successor trustee, and the signature and notary blocks (both the applicant and the trustee sign before a notary).`,
+      },
+      {
+        name: 'Name a third-party trustee (not the applicant)',
+        text: firstSentence(state.trusteeGuidanceNote).lead,
+      },
+      {
+        name: 'Open the dedicated trust bank account',
+        text: `Open a dedicated account titled to the trust, opened and managed by the trustee — not the applicant. A ${state.name} QIT is generally set up using the beneficiary's Social Security number. Branches commonly hesitate, so know what to say before you go.`,
+      },
+      {
+        name: 'Move the excess into the trust in the same calendar month',
+        text: `Move only the income above the HCB maximum into the trust — within the same month it is received (or within 10 days if fewer than 10 days remain). Keep the rest of the applicant's income in their own name. ${state.agencyAbbreviation} does not back-date, so the month you fund is the earliest month eligibility can begin.`,
+      },
+      {
+        name: 'Spend the trust on allowable costs and keep records',
+        text: `Each month the trustee spends the trust only on the applicant's own allowable medical and care costs (and any allowable fee), records every deposit and payment, and provides ${state.agencyAbbreviation} a full report at the annual review. The trust may hold accumulated income for the applicant's care.`,
+      },
+    ];
+  }
   return [
     {
       name: `Confirm the applicant's income is over the ${state.name} cap`,

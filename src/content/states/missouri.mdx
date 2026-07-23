@@ -1,0 +1,185 @@
+---
+slug: "missouri"
+name: "Missouri"
+abbreviation: "MO"
+
+status: "live"
+
+# Per-state persona/targeting modifiers — cited in docs/state-persona-modifiers-research.md
+# Missouri is the FIRST hybrid state: the QIT is used ONLY to meet the absolute
+# income maximum of the HCB (in-home) waiver + MOCDD — NOT for nursing-facility
+# Medicaid, which uses a medically-needy spend-down. The kit + page + articles
+# render an HCB-waiver narrative because medicaidStructure === 'hybrid'.
+medicaidStructure: "hybrid"
+personaLean: "balanced"
+primaryTerm: "Qualified Income Trust"
+
+stripePriceId: "price_1TwQEoBitfBHN1YubQCIfRdo"
+pdfBlobKey: "kits/missouri/v1.pdf"
+price: 129
+multiStateBundleEligible: true
+
+agencyName: "Missouri Family Support Division"
+agencyAbbreviation: "Missouri FSD"
+officialTemplateUrl: "https://dssmanuals.mo.gov/wp-content/uploads/2020/10/qit.pdf"
+officialTemplateNote: "The Missouri Family Support Division (FSD) — the office within the Department of Social Services that determines MO HealthNet eligibility — publishes an official fill-in Qualified Income Trust instrument: form 886-4657, titled 'Qualified Income Trust' (revised 2-2020; its companion completion instructions were updated 8/2025). Missouri calls it a Qualified Income Trust (QIT), also known as a Miller Trust; the federal authority is 42 U.S.C. § 1396p(d)(4)(B). Missouri is a special case among the states that use an income cap. Nursing-facility (institutional) MO HealthNet uses a medically-needy spend-down, so a QIT is NOT used to enter a nursing home. The QIT exists only to meet the income maximum of the Home and Community-Based (HCB) waiver — Missouri's Medicaid program for in-home and community care for people age 63 and over — and the MO HealthNet for Children with Developmental Disabilities (MOCDD) program. Because the HCB income standard is absolute (an over-income applicant cannot spend down to qualify for the waiver), the QIT is the only way for someone over the limit to become eligible for in-home HCB services. Two Missouri features stand out. First, funding is excess-only: the settlor deposits only the portion of gross monthly income above the HCB income maximum, within the same month it is received (or within 10 days if fewer than 10 days remain in the month), and keeps the rest of their income in their own name. Second, the applicant may not serve as trustee — a third party (a spouse, an adult child, or another person, but never the beneficiary) must hold and manage the trust account. The trust holds only the applicant's income and spends it on the applicant's own allowable medical and care costs; it names the State of Missouri (the MO HealthNet Division) as remainder beneficiary up to the total MO HealthNet paid. The kit explains how the published form works and links you to FSD's own materials; unlike New Jersey and Indiana, Missouri does not publish a separate memo to banks."
+policyManualUrl: "https://dssmanuals.mo.gov/mo-healthnet-for-the-aged-blind-and-disabled/0825-000-00/0825-030-00/0825-030-35/"
+policyManualSection: "MO HealthNet for the Aged, Blind, and Disabled (MHABD) Manual §0825.030.35 (Income and Budgeting), which states the QIT rule and the absolute HCB/MOCDD income maximum; the detailed FSD rules are in the Qualified Income Trusts section §1025.015.04.01.02; federal authority 42 U.S.C. § 1396p(d)(4)(B)"
+policyCitationShort: "MHABD Manual §0825.030.35"
+ltcProgramAbbrev: "MO HealthNet HCB waiver"
+ltcProgramName: "MO HealthNet's Home and Community-Based (HCB) waiver services for people age 63 and over — the in-home and community care program (including the Aged & Disabled Waiver) that lets a person receive Medicaid-funded care at home instead of in a nursing facility — and MO HealthNet for Children with Developmental Disabilities (MOCDD). These are the programs that apply an absolute income maximum, which a Qualified Income Trust is used to meet. Missouri nursing-facility (institutional) Medicaid instead uses a medically-needy spend-down and does not use a QIT"
+spousalCalcRef: "the Family Support Division's MO HealthNet eligibility determination. Because the QIT here establishes income eligibility for the HCB waiver — not a nursing-home patient-liability contribution — its job is to bring the applicant's own countable income below the absolute HCB income maximum; only the applicant's income is counted (MHABD Manual §0825.030.35). For a married couple, each spouse is tested individually against the HCB maximum, and any community-spouse resource protection is computed by FSD under the MHABD manual — a separate, fact-specific question a Missouri elder-law attorney should confirm"
+residuaryPaymentNote: "The 886-4657 form names the State of Missouri as remainder beneficiary: on the beneficiary's death the trust terminates and, after reasonable wind-up expenses and any taxes, the trustee pays the State an amount equal to the MO HealthNet benefits the State paid on the beneficiary's behalf. The payment is sent to the MO HealthNet Division, Attention: Cost Recovery Unit, PO Box 6500, Jefferson City, MO 65102. Only the balance remaining after the State is reimbursed passes to the persons the form's residuary section names. Missouri does not publish a separate residuary remittance form; the trustee coordinates the exact payoff with the MO HealthNet Division's Cost Recovery Unit and keeps proof of payment in the permanent trust file."
+
+supplementalOfficialDocs:
+  - label: "Form 886-4657 — Instructions for the Qualified Income Trust"
+    url: "https://dssmanuals.mo.gov/wp-content/uploads/2021/09/qit_instructions.pdf"
+    note: "FSD's field-by-field completion guide for the 886-4657 (MO 886-4657 Instructions, revised 8/2025): which name, date, address, trustee, successor trustee, residuary, and signature/notary blanks to complete. Both the grantor's and the trustee's signatures must be notarized."
+  - label: "FSD Checklist for Qualified Income \"Miller\" Trusts"
+    url: "https://mydss.mo.gov/sites/mydss/files/media/pdf/2021/04/MillerTrusts.pdf"
+    note: "The acceptance criteria FSD staff apply when they review a submitted trust: it must be irrevocable, established by the participant (or a parent, grandparent, guardian, or court), composed only of the participant's income, contain a Medicaid-payback provision with multi-state language, and be for the sole benefit of the participant (it must not, for example, allow the purchase of life insurance). This is the source for the kit's denial-avoidance list."
+  - label: "IM-4 — Home and Community Based (HCB) Services (who is eligible)"
+    url: "https://dssmanuals.mo.gov/wp-content/uploads/2020/05/home_community_based_services-im4.pdf"
+    note: "FSD's plain-language brochure explaining who qualifies for HCB in-home services (age 63 or older, a Missouri resident with a Social Security number, assessed to need the services) and what help is available — the program the QIT makes an over-income applicant eligible for."
+  - label: "MO HealthNet Eligibility for Non-MAGI Programs (Appendix K — income & resource limits)"
+    url: "https://dssmanuals.mo.gov/wp-content/uploads/2018/10/appendix_k.pdf"
+    note: "FSD's current non-MAGI eligibility table (revised July 2026), the authoritative source for both figures used in this kit: the HCB waiver's absolute income limit ($1,737/month, tested individually per applicant) and its resource limit ($6,220.50 for an individual; $12,441.00 for a couple when both are eligible for HCB or Division of Assets)."
+
+incomeCap2026: 1737
+# Missouri's HCB income maximum is individually tested — each applicant is tested
+# against the single figure and there is NO higher combined couple cap. The value
+# below is the two-applicant sum, shown only as a reference; hybrid layout copy
+# states that spouses are tested individually.
+incomeCapCouple2026: 3474
+# HCB has NO nursing-facility Personal Needs Allowance. The participant keeps
+# their income up to the HCB maximum; only the excess goes into the trust and is
+# spent on the participant's own allowable medical/care costs. Hybrid layout
+# branches do not render a PNA figure.
+personalNeedsAllowance: 0
+asOf: "effective July 2026"
+
+federalStatuteCitation: "42 U.S.C. § 1396p(d)(4)(B)"
+federalStatuteUrl: "https://www.law.cornell.edu/uscode/text/42/1396p"
+
+trusteeGuidanceNote: "Missouri requires a third-party trustee: under the 886-4657 form, the beneficiary may not serve as their own trustee — a distinct departure from states like Arkansas that allow self-trusteeship. Most families name the applicant's spouse or an adult child. The trust may be established by the individual, their spouse, parent, grandparent, guardian, conservator, or a court, and the form has you name a successor trustee in case the first cannot continue. The trustee opens and manages a single trust bank account that holds only the applicant's income, deposits the over-the-cap portion each month, spends the trust only on the applicant's allowable medical and care costs, keeps full monthly accounting records, and provides FSD a full annual report at each eligibility review (within 10 days of any request; failure to cooperate can end the case). A trustee fee is capped at the lesser of 3% of the income diverted into the trust or ten dollars per month; a spouse or a disabled child living with the beneficiary who serves as trustee may take no fee, while a genuine commercial trustee may charge a commercially reasonable fee. Unless the trustee is the beneficiary's spouse or disabled child, the Department of Social Services may require the trustee to post bond. Confirm any complex situation with a Missouri elder-law attorney."
+einRequired: false
+einRequiredNote: "Missouri's 886-4657 form and its instructions are silent on a tax ID — there is no EIN field anywhere on the form. As a trust composed only of the beneficiary's income under 42 U.S.C. § 1396p(d)(4)(B), a Missouri QIT is generally opened using the beneficiary's own Social Security number rather than a separate EIN, the way most grantor-type income trusts work. A branch may still ask for an EIN out of habit; if it does, keep the account titled in the trust's name using the beneficiary's Social Security number, and ask the branch to escalate to its trust department rather than forcing an identifier the form does not call for. Confirm the exact identifier with your bank and, if you have questions about the trust's tax treatment, a tax professional."
+stateBarLrsName: "The Missouri Bar — Find a Lawyer (MissouriLawyersHelp.org)"
+stateBarLrsUrl: "https://missourilawyershelp.org/find-a-lawyer/"
+additionalLegalAidReferrals:
+  - "Missouri Legal Services (lsmo.org) — the statewide portal that routes you to the four regional legal-aid programs (Legal Services of Eastern Missouri, Legal Services of Southern Missouri, Legal Aid of Western Missouri, and Mid-Missouri Legal Services) by county; free civil legal help for low-income Missourians, including Medicaid and long-term-care matters"
+  - "Missouri Department of Health and Senior Services — Area Agencies on Aging (health.mo.gov/seniors/aaa/): ten AAAs cover every county and provide long-term-care options counseling and benefits help; the statewide Senior Resource Line connects you to your local agency, and the Missouri Association of Area Agencies on Aging (ma4web.org) lists all ten regions"
+  - "National Academy of Elder Law Attorneys (NAELA) — Find a Lawyer directory (naela.org), including the Missouri (MONAELA) chapter, for elder-law and Medicaid-planning attorneys"
+
+privatePayMonthlyLow: 5150
+privatePayMonthlyHigh: 6292
+
+commonDenialReasons:
+  - title: "The trust is revocable, or is later altered on its own"
+    description: "A Qualified Income Trust must be irrevocable. The 886-4657 form is irrevocable on its face and may be changed only by regulation of the Missouri Secretary of State and the Department of Social Services. A revocable trust, or unauthorized edits to a trust FSD has already reviewed, fails the acceptance criteria."
+    agencyCitation: "Form 886-4657; FSD Checklist for Qualified Income \"Miller\" Trusts; §1025.015.04.01.02"
+  - title: "The trust holds something other than the participant's income"
+    description: "The trust may be composed only of the participant's pension, Social Security, and other income (plus income that accumulates in it). Placing a resource — real or personal property, or a lump sum that is not income — into the account, or depositing anyone else's income, breaks the exemption. Keep the account income-only and separate from any account used for living expenses."
+    agencyCitation: "Form 886-4657 §1.3; FSD Checklist; MHABD Manual §0825.030.35"
+  - title: "Not enough income is diverted to get below the HCB maximum"
+    description: "The trust works only if it lowers the applicant's countable income below the absolute HCB income maximum. If too little income is deposited to clear the maximum, the applicant is over-income and ineligible for the HCB waiver that month — Missouri does not allow a spend-down for HCB. Deposit at least the full portion of income above the maximum each month."
+    agencyCitation: "Form 886-4657 §1.4 / §3.1; MHABD Manual §0825.030.35"
+  - title: "The over-the-cap income is deposited late (or assigned to the trust)"
+    description: "The excess income must be moved into the trust account within the same month it is received, or within 10 days if fewer than 10 days remain in the month. Just as important, the income may not be directly assigned to the trust or trustee as payee — that assignment can itself disqualify the applicant. Move the money by direct deposit or a routine transfer into the trust account instead."
+    agencyCitation: "Form 886-4657 §1.4 / §3.1"
+  - title: "The applicant is named as trustee"
+    description: "Under Missouri's form, the beneficiary may not serve as the trustee. A trust that names the applicant as its own trustee is rejected. Name a third party — a spouse, an adult child, or another responsible person — and a successor trustee in case the first cannot continue."
+    agencyCitation: "Form 886-4657 §5.1"
+  - title: "Missing or defective Medicaid-payback provision"
+    description: "The trust must direct that, on the beneficiary's death, the State of Missouri is reimbursed for MO HealthNet paid — payable only after wind-up costs and taxes, and including multi-state language for a beneficiary who received Medicaid in more than one state. The 886-4657 form contains this provision already; do not weaken or remove it."
+    agencyCitation: "Form 886-4657 §4.1; FSD Checklist"
+  - title: "The trust is not for the sole benefit of the participant"
+    description: "The trust must be for the sole benefit of the participant. FSD flags common problems here — most often trust language that allows the purchase of life insurance (watch open-ended 'including but not limited to' insurance phrasing), or third-party travel that is not for the participant's benefit. Use the form's own language and do not add clauses that broaden who benefits."
+    agencyCitation: "FSD Checklist for Qualified Income \"Miller\" Trusts"
+  - title: "A distribution the form does not allow"
+    description: "The trustee may spend the trust only on the allowable items in the form — the participant's own medical and care costs, health-insurance premiums other than MO HealthNet, allowable trustee and bank fees, and the like. A distribution outside that list can affect eligibility unless the trustee restores the funds, and it must be documented in the trust's monthly accounting."
+    agencyCitation: "Form 886-4657 §3.2 / §3.4 / §3.5"
+
+bankRefusalNotes:
+  - refusalType: "Branch asks for a tax ID (EIN) for the trust"
+    response: "Missouri's 886-4657 form has no EIN field, and a QIT composed only of the beneficiary's income is generally opened under the beneficiary's own Social Security number. If the branch insists on an EIN out of habit, ask that the account be titled in the trust's name using the beneficiary's Social Security number, and have the branch escalate to its trust department rather than forcing an identifier the form does not call for. Confirm the trust's tax treatment with a tax professional if you have questions."
+    documentNeeded: "MO 886-4657 Qualified Income Trust + the FSD instructions"
+  - refusalType: "Branch is unsure what kind of account this is"
+    response: "It is a single, dedicated account, titled in the name of the trust, that holds only the applicant's income — kept separate from any account used for living expenses. It can be a brand-new account. Only the portion of the applicant's income above the HCB maximum needs to flow into it each month; the income can be moved in by direct deposit or a routine transfer (it may not be assigned to the trust as payee). Show the branch the FSD form and instructions."
+    documentNeeded: "MO 886-4657 Qualified Income Trust + the FSD instructions"
+  - refusalType: "Branch wants the applicant to be the account holder"
+    response: "In Missouri the applicant may not be the trustee, so the applicant is not the account signer. The trustee — a spouse, an adult child, or another third party named on the form — opens and manages the account and is the authorized signer; the applicant is the beneficiary. Bring the signed 886-4657 form, which names the trustee, when you open the account."
+    documentNeeded: "MO 886-4657 Qualified Income Trust (naming the trustee)"
+  - refusalType: "Branch has never opened an income trust account"
+    response: "It is a routine dedicated account holding only the applicant's income and spent, under Missouri's rules, on the applicant's own care and medical costs. Ask for a full-service branch or the bank's trust department; community banks and credit unions are often more flexible. Bring the 886-4657 form and the FSD instructions."
+    documentNeeded: "MO 886-4657 Qualified Income Trust + the FSD instructions"
+
+postDeathDistribution: "On the beneficiary's death the Qualified Income Trust terminates. After the trustee pays reasonable wind-up expenses and any taxes, the State of Missouri is reimbursed for the MO HealthNet benefits it paid on the beneficiary's behalf, in an amount up to that total. The payment goes to the MO HealthNet Division, Attention: Cost Recovery Unit, PO Box 6500, Jefferson City, MO 65102. Only the balance remaining after the State is reimbursed passes to the persons named in the form's residuary section. Missouri does not publish a separate residuary remittance form; the trustee coordinates the exact payoff amount with the MO HealthNet Division's Cost Recovery Unit, resolves the State's claim before distributing any balance, and keeps proof of payment in the permanent trust file."
+
+metaTitle: "Missouri Qualified Income Trust (Miller Trust) Setup Guide — $129"
+metaDescription: "Step-by-step Missouri Qualified Income Trust (Miller Trust) operational guide, built around FSD's official form 886-4657 for the HCB in-home waiver. Excess-only funding, third-party trustee, the same-month deposit rule, bank walkthrough, denial-avoidance. Informational, not legal advice."
+
+primaryKeyword: "missouri qualified income trust"
+secondaryKeywords:
+  - "missouri miller trust"
+  - "miller trust missouri"
+  - "qualified income trust missouri"
+  - "missouri qit"
+  - "form 886-4657"
+  - "missouri medicaid miller trust"
+  - "missouri hcb waiver income trust"
+  - "missouri miller trust in home care"
+  - "missouri qualified income trust template"
+
+reviewedDate: "2026-07-23"
+uplNotes: "Missouri regulates the unauthorized practice of law through the inherent authority of the Missouri Supreme Court, backed by statute — Mo. Rev. Stat. § 484.010 (which defines both the 'practice of law' and the broader 'law business,' the latter reaching the drawing of, or advising on, documents affecting secular rights for a fee) and § 484.020 (the prohibition; § 484.020.2 gives a wronged party treble the amount paid for unauthorized services, Missouri's distinctive teeth). Missouri has on-point, favorable authority: In re Thompson, 574 S.W.2d 365 (Mo. banc 1978), held that selling 'divorce kits' — printed forms plus material explaining legal procedure to the general public — is NOT the unauthorized practice of law so long as the seller gives no personal advice on legal remedies or on how to tailor a form to the individual. That is Missouri's adoption of the Dacey forms-publishing rule, and this product sits squarely inside it: it links to and explains Missouri's OWN published form (which FSD itself provides for the public to complete), reproduces no instrument text, collects no personalized intake, gives no individualized advice, and carries a prominent 'not legal advice' disclaimer with a consent gate. The danger line in Missouri is personalized document preparation or advice for a fee — Eisel v. Midwest BankCentre, 230 S.W.3d 335 (Mo. banc 2007) (a separate 'document preparation fee' is UPL), In re First Escrow, Inc., 840 S.W.2d 839 (Mo. banc 1992), and In re Mid-America Living Trust Assn., 927 S.W.2d 855 (Mo. banc 1996) (selling living-trust forms is permitted, but gathering a customer's facts and preparing a trust for that specific person crosses into UPL); the federal Janson v. LegalZoom.com, 802 F. Supp. 2d 1053 (W.D. Mo. 2011) applied Missouri law to condemn automated assembly of a completed, customized document while contrasting the permitted sale of blank forms plus generic instructions. The reporter pin cites for Eisel, First Escrow, and Mid-America were recalled from secondary sources and should be confirmed against the reporter before any are quoted in shipped content. Net: a strong, on-point footing (In re Thompson) — keep drafting, fact-gathering, individualized advice, and any 'document preparation fee' framing at exactly zero to stay clear of the Eisel line, and confirm Missouri UPL comfort before relying on this posture."
+
+socialProof:
+  unitsSold: 0
+  displayThreshold: 25
+  launchLabel: "2026"
+
+kitVersion: "v1.0"
+kitVersionDate: "2026-07-23"
+kitChangelog:
+  - version: "v1.0"
+    date: "2026-07-23"
+    changes:
+      - "Initial Missouri release. Missouri is a hybrid state: the Qualified Income Trust is used ONLY to meet the absolute income maximum of the Home and Community-Based (HCB) in-home waiver (age 63+) and the MOCDD program — NOT for nursing-facility Medicaid, which uses a medically-needy spend-down. The kit is written around the HCB in-home model, not a nursing-home patient-liability model."
+      - "Reconciled against FSD form 886-4657 'Qualified Income Trust' (rev. 2-2020; instructions rev. 8/2025), the FSD Checklist for Qualified Income \"Miller\" Trusts, MHABD Manual §0825.030.35 (Income and Budgeting) and the detailed QIT section §1025.015.04.01.02, and the IM-4 HCB brochure; federal authority 42 U.S.C. § 1396p(d)(4)(B)."
+      - "Income maximum $1,737/month, the HCB income maximum stated in FSD's Non-MAGI Eligibility table (Appendix K, revised July 2026). This is an FPL-based HCB maximum, NOT the 300%-of-SSI figure used by nursing-facility income-cap states. The HCB standard is absolute — an over-income applicant cannot spend down to qualify for the waiver. Each spouse is tested individually; there is no higher combined couple cap ($3,474 shown is only the two-applicant sum)."
+      - "Resource limit for the HCB waiver: $6,220.50 for an individual; $12,441.00 for a couple when both are eligible for HCB or Division of Assets — per the same Appendix K table."
+      - "Excess-only funding: the settlor deposits only income above the HCB maximum, within the same month (or within 10 days if fewer than 10 days remain). Income may not be assigned to the trust as payee; it is moved by direct deposit or transfer. The trust may hold accumulated income and spends it on the applicant's OWN allowable medical and care costs — there is no nursing-facility Personal Needs Allowance and no patient-liability payment to a facility."
+      - "Third-party trustee REQUIRED — the beneficiary may not serve as trustee (opposite of Arkansas). Trustee fee capped at the lesser of 3% of diverted income or $10/month; a spouse/disabled-child trustee takes no fee. Both grantor and trustee signatures are notarized."
+      - "EIN posture: the form is silent on a tax ID; a Missouri QIT is generally opened under the beneficiary's Social Security number (einRequired: false), with a hedge for banks that ask out of habit."
+      - "State-of-Missouri payback: the MO HealthNet Division is the named remainder beneficiary up to the total MO HealthNet paid, remitted to the Cost Recovery Unit, PO Box 6500, Jefferson City, MO 65102, with multi-state language; no separate residuary form."
+      - "Private-pay delay-cost anchor uses Missouri in-home / assisted-living figures (≈ $5,150 assisted living to ≈ $6,292 home health aide per month, Genworth/CareScout 2024 Missouri survey), because the QIT here buys in-home HCB eligibility rather than nursing-home eligibility."
+
+faq:
+  - question: "Is the Missouri Qualified Income Trust Kit legal advice?"
+    answer: "No. This kit is informational only and is not legal advice. We are not attorneys and we do not practice law. The kit teaches you how to use the Family Support Division's publicly published Qualified Income Trust form (886-4657). FSD publishes the form and a checklist for the public to use. For advice on your specific situation, consult a Missouri-licensed elder-law attorney."
+  - question: "Does a Missouri Miller Trust help with nursing-home Medicaid?"
+    answer: "No — and this is the most important thing to understand about Missouri. Missouri nursing-facility (institutional) Medicaid uses a medically-needy spend-down, not an income cap, so a Qualified Income Trust is not the tool for entering a nursing home there. The QIT exists only to meet the absolute income maximum of Missouri's Home and Community-Based (HCB) waiver — in-home and community care for people age 63 and over — and the MOCDD program. If your family member is seeking nursing-home coverage, this kit is not for that; talk to a Missouri elder-law attorney about spend-down."
+  - question: "What does the kit include?"
+    answer: "A step-by-step operational guide for the HCB in-home waiver: a plain-English explanation of how a Missouri Qualified Income Trust works, direct links to the official 886-4657 form and FSD's instructions and checklist, guidance on the fields you complete, a monthly funding worksheet built around the excess-only rule, the bank-account walkthrough (including that a third party must be trustee), the month-by-month funding process, and a Missouri-specific list of common denial reasons. Delivered as a single PDF."
+  - question: "Do you provide the trust form itself?"
+    answer: "No. We never author or host trust instrument text. The kit links you to FSD's 886-4657 form on Missouri's .gov site, which you download directly from the state, and explains how to complete, fund, and maintain it."
+  - question: "Who needs a Qualified Income Trust in Missouri?"
+    answer: "A person applying for Missouri's Home and Community-Based (HCB) in-home waiver (age 63 or older) — or the MOCDD program — whose gross monthly income is above the HCB income maximum ($1,737/month, per FSD's Non-MAGI Eligibility table). Because the HCB income standard is absolute, an over-income applicant cannot spend down to qualify; the QIT is the only path. Nursing-facility applicants do not use a QIT in Missouri."
+  - question: "How much of my income goes into the trust?"
+    answer: "Only the portion above the HCB income maximum. If your gross monthly income is $2,000 and the maximum is $1,737, you deposit at least the $263 excess into the trust each month — within the same month you receive it (or within 10 days if fewer than 10 days remain) — and keep the rest of your income in your own name. The trust then spends that money on your own allowable medical and care costs. There is no nursing-facility personal-needs allowance and no payment to a facility, because HCB care is provided in your home."
+  - question: "Can I be my own trustee?"
+    answer: "No. Missouri's 886-4657 form does not allow the beneficiary to serve as trustee — a third party must hold and manage the trust account. Most families name the applicant's spouse or an adult child, and the form has you name a successor trustee as a backup. A trustee fee is capped at the lesser of 3% of the income diverted or $10 per month, and a spouse or disabled child who serves takes no fee."
+  - question: "Does a Missouri Qualified Income Trust need an EIN?"
+    answer: "Generally no. Missouri's form is silent on a tax ID and has no EIN field; a QIT composed only of the beneficiary's income is usually opened under the beneficiary's own Social Security number. A bank may still ask for an EIN out of habit — if so, keep the account titled in the trust's name using the beneficiary's Social Security number and ask the branch to escalate to its trust department. Confirm the trust's tax treatment with a tax professional if you have questions."
+  - question: "What if my bank refuses to open the trust account?"
+    answer: "Bank refusal is common on a first attempt. Although Missouri does not publish a separate bank memo, the 886-4657 form and FSD's instructions are your documentation: it is a single, dedicated account titled to the trust that holds only the applicant's income, opened and managed by the third-party trustee (not the applicant). The kit walks you through handing the branch those documents, the EIN question, who signs, and escalating to the bank's trust department if needed."
+  - question: "Do you offer a refund?"
+    answer: "Yes — money back if the Missouri Family Support Division rejects the Qualified Income Trust for any reason traceable to following the kit. Email support@millertrustguide.com with the agency's stated denial reason and we issue a full refund within one business day."
+  - question: "Will you talk to me on the phone about my situation?"
+    answer: "No. We do not offer phone support and we do not advise on individual situations. For advice on your specific situation, consult a Missouri-licensed elder-law attorney — you can find one through The Missouri Bar's Find a Lawyer service (MissouriLawyersHelp.org) or Missouri Legal Services."
+---
+
+import StatePageLayout from '~/layouts/StatePageLayout.astro';
+
+This file's frontmatter is the canonical Missouri data source. The body is intentionally minimal — all conversion-surface rendering happens in `StatePageLayout.astro`, which reads from frontmatter. This keeps states homogeneous and prevents drift between states.

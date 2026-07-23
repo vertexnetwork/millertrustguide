@@ -276,6 +276,18 @@ const ASSETS = [
     }),
     width: 1200,
   },
+
+  // OG per-state — Missouri (hybrid: HCB in-home waiver, not nursing-facility;
+  // the cap is the FPL-based HCB income maximum, not the 300%-FBR figure)
+  {
+    path: 'og/states/missouri.png',
+    svg: ogSvg({
+      headlineLines: ['Missouri Qualified', 'Income Trust Guide'],
+      dataLine: '$129  ·  HCB waiver income max: $1,737/mo  ·  Money-back if Missouri FSD rejects',
+      footerLine: 'MISSOURI FSD  ·  FORM 886-4657 · HCB WAIVER  ·  LAST REVIEWED 2026-07-23',
+    }),
+    width: 1200,
+  },
 ];
 
 async function renderOne({ path, svg, width }) {
