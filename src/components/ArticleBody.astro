@@ -6,6 +6,9 @@
 // from BaseLayout, so Rule 4 is satisfied without anything here.
 import type { StateData } from '~/content/config';
 import { getHowToSteps, getArticleFaq, articlePath, type ArticleTopic } from '~/lib/articles';
+import { firstSentence } from '~/lib/text';
+import { FOUNDER } from '~/config/founder';
+import InlineLeadCapture from '~/components/InlineLeadCapture.astro';
 
 interface Props {
   state: StateData;
@@ -14,6 +17,9 @@ interface Props {
 
 const { state, topic } = Astro.props;
 const fmt = (n: number) => n.toLocaleString('en-US');
+// Hybrid (HCB-waiver) states: in-home waiver, excess-only funding, no
+// nursing-facility PNA / patient-liability. Flexes the copy below.
+const hcb = state.medicaidStructure === 'hybrid';
 
 const statePath = `/states/${state.slug}`;
 const bankPath = articlePath(state.slug, 'what-to-say-at-the-bank');
@@ -22,6 +28,12 @@ const howToPath = articlePath(state.slug, 'how-to-set-up');
 
 const steps = topic === 'how-to-set-up' ? getHowToSteps(state) : [];
 const faq = getArticleFaq(state, topic);
+
+// Articles render only for live states (see getStaticPaths in the page
+// route), so the founder offer is always potentially active here. Mirrors
+// the same read of FOUNDER that StatePageLayout uses, for price parity.
+const founderActive = FOUNDER.unitsSold < FOUNDER.unitLimit;
+const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold : 0;
 ---
 
 <div class="prose-content">
@@ -106,12 +118,22 @@ const faq = getArticleFaq(state, topic);
         </ul>
 
         <div class="mt-6 rounded-lg border-l-4 border-primary bg-primary-tint/30 p-5">
-          <p class="!mt-0">
-            <strong>Why the delay is expensive:</strong> {state.name} private-pay nursing care runs{' '}
-            <strong>${fmt(state.privatePayMonthlyLow)}–${fmt(state.privatePayMonthlyHigh)} a month.</strong> Because
-            eligibility cannot be back-dated, every calendar month you miss is a five-figure check your family pays out of
-            pocket. The next step is the <a href={howToPath}>step-by-step setup</a>.
-          </p>
+          {hcb ? (
+            <p class="!mt-0">
+              <strong>Why the delay is expensive:</strong> {state.name} private-pay in-home and assisted-living care
+              runs <strong>${fmt(state.privatePayMonthlyLow)}–${fmt(state.privatePayMonthlyHigh)} a month.</strong>{' '}
+              Because the HCB income limit is absolute — no spend-down fallback — and eligibility cannot be back-dated,
+              every calendar month you miss is another month your family pays out of pocket. The next step is the{' '}
+              <a href={howToPath}>step-by-step setup</a>.
+            </p>
+          ) : (
+            <p class="!mt-0">
+              <strong>Why the delay is expensive:</strong> {state.name} private-pay nursing care runs{' '}
+              <strong>${fmt(state.privatePayMonthlyLow)}–${fmt(state.privatePayMonthlyHigh)} a month.</strong> Because
+              eligibility cannot be back-dated, every calendar month you miss is a five-figure check your family pays out of
+              pocket. The next step is the <a href={howToPath}>step-by-step setup</a>.
+            </p>
+          )}
         </div>
       </>
     )
@@ -125,7 +147,8 @@ const faq = getArticleFaq(state, topic);
           Opening a {state.name} Miller Trust account is not legally complicated, but it is unfamiliar to most branch
           staff — they rarely see a Qualified Income Trust, so the default reaction is caution. The fix is almost never
           arguing; it is handing the branch the right {state.agencyAbbreviation} document and asking for the right account
-          type. Below are the {state.bankRefusalNotes.length} refusals families hit most often in {state.name}.
+          type. Below are the {state.bankRefusalNotes.length} refusals families hit most often in {state.name} and the
+          {state.agencyAbbreviation} rule that resolves each one.
         </p>
 
         <div class="not-prose mt-6 space-y-4">
@@ -133,14 +156,10 @@ const faq = getArticleFaq(state, topic);
             <div class="rounded-lg border border-border bg-surface-elevated p-4">
               <p class="text-sm font-semibold uppercase tracking-wide text-primary">Refusal {i + 1}</p>
               <p class="mt-1 font-semibold text-ink-heading">{b.refusalType}</p>
-              <p class="mt-2 text-ink">
-                <strong>What to say:</strong> {b.response}
+              <p class="mt-2 text-ink">{firstSentence(b.response).lead}</p>
+              <p class="mt-2 text-sm text-ink-muted">
+                The kit's bank section has the exact wording to say at the counter{b.documentNeeded ? ' and which document to bring' : ''}.
               </p>
-              {b.documentNeeded && (
-                <p class="mt-2 text-sm text-ink-muted">
-                  <strong>Bring:</strong> {b.documentNeeded}
-                </p>
-              )}
             </div>
           ))}
         </div>
@@ -168,15 +187,31 @@ const faq = getArticleFaq(state, topic);
 
         <h2>What the trustee does each month</h2>
         <ul>
-          <li>
-            Deposits the applicant's income — Social Security, pension, and any other named sources — into the
-            dedicated trust account.
-          </li>
-          <li>
-            Pays out only the amounts {state.agencyAbbreviation} permits: typically the applicant's personal-needs
-            allowance of <strong>${fmt(state.personalNeedsAllowance)}/month</strong>, any spousal allowance, and the
-            applicant's share of medical and care costs.
-          </li>
+          {hcb ? (
+            <>
+              <li>
+                Moves only the applicant's over-the-limit income — the amount above the HCB maximum — into the
+                dedicated trust account each month, keeping the rest in the applicant's own name.
+              </li>
+              <li>
+                Spends the trust only on the applicant's own allowable medical and care costs (and any allowable
+                fee). There is no nursing-facility personal-needs allowance and no payment to a facility, because HCB
+                care is provided at home.
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                Deposits the applicant's income — Social Security, pension, and any other named sources — into the
+                dedicated trust account.
+              </li>
+              <li>
+                Pays out only the amounts {state.agencyAbbreviation} permits: typically the applicant's personal-needs
+                allowance of <strong>${fmt(state.personalNeedsAllowance)}/month</strong>, any spousal allowance, and the
+                applicant's share of medical and care costs.
+              </li>
+            </>
+          )}
           <li>
             Keeps simple records of what went in and what came out, so the trust stays compliant and Medicaid has
             no reason to question it.
@@ -248,7 +283,7 @@ const faq = getArticleFaq(state, topic);
         <h2>Why the money doesn't just pass to the family</h2>
         <p>
           A Miller Trust is the mechanism that let the applicant qualify for Medicaid despite income over the{' '}
-          {state.asOf} cap of <strong>${fmt(state.incomeCap2026)}/month</strong>. In exchange, the trust is set up
+          {hcb ? 'HCB income maximum' : `${state.asOf} cap`} of <strong>${fmt(state.incomeCap2026)}/month</strong>. In exchange, the trust is set up
           so that whatever remains when the beneficiary dies is first used to reimburse the state for the care
           Medicaid paid for. That is a condition of using the trust, not a penalty.
         </p>
@@ -261,14 +296,30 @@ const faq = getArticleFaq(state, topic);
         </p>
 
         <h2>What's usually left</h2>
-        <p>
-          In practice the balance at death is often small. Most of the applicant's income flows into the trust and
-          back out again each month to pay the personal-needs allowance and the applicant's share of care — so the
-          trust is a pass-through, not a place where money piles up.
-        </p>
+        {hcb ? (
+          <p>
+            In an HCB waiver trust, only the income above the HCB maximum flows through the trust, and {state.name}
+            {' '}lets the trust hold accumulated income to spend on the applicant's care over time — so the balance at
+            death varies rather than always sitting near zero. Whatever remains is applied first to the State's
+            Medicaid payback.
+          </p>
+        ) : (
+          <p>
+            In practice the balance at death is often small. Most of the applicant's income flows into the trust and
+            back out again each month to pay the personal-needs allowance and the applicant's share of care — so the
+            trust is a pass-through, not a place where money piles up.
+          </p>
+        )}
       </>
     )
   }
+
+  {/* Passive email capture — the "not ready to buy" bridge. Every spoke gets
+      this now (previously only the main state page did), so a reader who
+      finishes the operational content but isn't ready to purchase this
+      session still gets captured into the nurture sequence instead of
+      leaving with nothing. Same component/wiring as the state page. */}
+  <InlineLeadCapture stateSlug={state.slug} stateName={state.name} agencyAbbreviation={state.agencyAbbreviation} />
 
   {
     faq.length > 0 && (
@@ -286,14 +337,39 @@ const faq = getArticleFaq(state, topic);
     )
   }
 
-  {/* CTA back to the purchasable state kit (the buy flow lives there, not here). */}
+  {/* CTA back to the purchasable state kit (the buy flow lives there, not
+      here). Value-stacked: price anchor against attorney cost, founder
+      scarcity (kept live by FounderLive via the data-founder-spots hooks,
+      same mechanism the state page uses), and a one-line echo of the
+      author's story already told in full on the state page — no new claims. */}
   <aside class="mt-10 rounded-lg border border-primary/30 bg-primary-tint/20 p-6">
-    <h2 class="!mt-0 !text-xl">The {state.name} kit does this for you</h2>
-    <p class="mt-2">
-      The {state.name} Miller Trust Kit packages all of this — the verbatim bank script and resolution letter, the
-      monthly funding worksheet, the {state.commonDenialReasons.length} {state.agencyAbbreviation} denial traps with
-      citations, and the direct link to the official template — in one instant download.{' '}
-      <strong>Informational only — not legal advice.</strong>
+    <p class="!mt-0 text-xs font-semibold uppercase tracking-wider text-primary">The {state.name} kit does this for you</p>
+    <h2 class="!mt-1 !text-xl">Everything above, plus the parts that actually trip families up</h2>
+    <ul class="mt-3 space-y-1.5 text-sm text-ink">
+      <li>The verbatim bank-refusal script and a printable resolution letter for the branch manager</li>
+      <li>A pre-filled monthly funding worksheet using {state.name}'s {state.asOf} income {hcb ? 'maximum' : 'cap'}</li>
+      <li>All {state.commonDenialReasons.length} {state.agencyAbbreviation} denial traps, each with the policy citation</li>
+      <li>The direct link to the official {state.agencyAbbreviation} template, already built in</li>
+    </ul>
+    <p class="mt-3 text-ink">
+      An elder-law attorney typically charges $1,000&ndash;$2,500 for this.{' '}
+      {founderActive ? (
+        <>
+          The kit is <strong>${FOUNDER.price}</strong> at the founding price &mdash; only{' '}
+          <span data-founder-spots>{founderSpotsLeft}</span>{' '}
+          <span data-founder-spot-word>{founderSpotsLeft === 1 ? 'spot' : 'spots'}</span> left at this rate, then $
+          {state.price}.
+        </>
+      ) : (
+        <>
+          The kit is <strong>${state.price}</strong>.
+        </>
+      )}{' '}
+      Instant download. <strong>Informational only — not legal advice.</strong>
+    </p>
+    <p class="mt-3 text-sm text-ink-muted">
+      &mdash; James Whitfield, who built this kit after two attorneys quoted $1,500 and $2,200, and his own bank
+      refused the account twice.
     </p>
     <p class="mt-4">
       <a
