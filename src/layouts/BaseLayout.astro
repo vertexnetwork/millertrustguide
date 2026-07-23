@@ -156,5 +156,12 @@ const ldBlocks = [organizationSchema(), websiteSchema(), personSchema(), ...json
       <slot />
     </main>
     <Footer />
+    {/* Facility-referral capture — persists ?ref=<facility> from co-branded
+        /for/<facility> links so a purchase minutes or days later is attributed
+        to the facility that drove it (read at checkout → Stripe metadata). */}
+    <script>
+      import { captureRef } from '~/lib/referral';
+      captureRef();
+    </script>
   </body>
 </html>

@@ -6,6 +6,7 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { getStripe } from '~/lib/stripe';
+import { sanitizeRef } from '~/lib/referral';
 
 export const prerender = false;
 
@@ -13,6 +14,7 @@ interface CheckoutRequest {
   stateSlug?: string;
   consent?: unknown;
   consentTimestamp?: string;
+  ref?: unknown;
 }
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
@@ -88,6 +90,10 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
   const consentIp = clientAddress || request.headers.get('x-forwarded-for') || 'unknown';
 
+  // Facility-referral attribution (the B2B distribution wedge). '' when absent or
+  // malformed; only written to Stripe when present. Never PII — it's a facility slug.
+  const referralFacility = sanitizeRef(body.ref);
+
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
@@ -100,6 +106,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       payment_intent_data: {
         statement_descriptor_suffix: state.abbreviation,
         description: `${state.name} Miller Trust Kit (informational guide)`,
+        ...(referralFacility ? { metadata: { referral_facility: referralFacility } } : {}),
       },
       metadata: {
         state_slug: state.slug,
@@ -109,6 +116,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         consent_timestamp: consentTimestamp,
         consent_ip: consentIp,
         product_kind: 'informational_guide',
+        ...(referralFacility ? { referral_facility: referralFacility } : {}),
       },
       // Customer reference holds the same consent fields for redundancy.
       consent_collection: {

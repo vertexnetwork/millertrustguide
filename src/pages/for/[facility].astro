@@ -1,0 +1,315 @@
+---
+/* Co-branded free checklist — the B2B DISTRIBUTION WEDGE.
+   /for/<facility> renders the same denial-trap checklist as /checklist/<slug>,
+   but co-branded for a facility/advisor to hand to the families it serves, and
+   with a TRACKED CTA (?ref=<facility>) so any resulting kit sale is attributed
+   back to that facility (Stripe metadata referral_facility). Free checklist =
+   bait + distribution + the gauge that tells us who to pitch the $149/mo license.
+
+   Design contract (inherited from /checklist/[slug]):
+   - Content is built ENTIRELY from existing state frontmatter (commonDenialReasons
+     + citations, income cap, private-pay range, official source URLs). It adds NO
+     new legal claim — zero extra UPL/accuracy surface. This is a co-branded
+     repackaging, not new content.
+   - Self-contained doc (own <head> + inline CSS): no site nav/footer/analytics
+     chrome, so the same HTML prints clean to PDF (facility's "Save as PDF").
+   - noindex: a distribution artifact, not an SEO surface (that lives on /states).
+   - SSR (prerender=false): scales to the full ~4,000-facility directory with no
+     build cost. Unknown facility or non-live state -> redirect home.
+
+   NOTE: the CSS below is intentionally a copy of /checklist/[slug].astro's (both
+   are self-contained print docs). Mirror visual changes across both. */
+
+import { getCollection } from 'astro:content';
+import type { StateData } from '~/content/config';
+import { getFacility } from '~/data/facilities';
+
+export const prerender = false;
+
+const facility = getFacility(Astro.params.facility ?? '');
+if (!facility) return Astro.redirect('/');
+
+const entry = (await getCollection('states')).find((s) => s.slug === facility.state);
+// The facility must point at a LIVE state, or the co-branded page has no kit to
+// sell — send the visitor to the homepage rather than render a dead end.
+if (!entry || entry.data.status !== 'live') return Astro.redirect('/');
+
+const state = { ...entry.data, slug: entry.slug } as StateData;
+const fmt = (n: number) => n.toLocaleString('en-US');
+const denialCount = state.commonDenialReasons.length;
+
+// Tracked CTA — carries the facility ref into the kit page; referral.ts persists
+// it and create-checkout writes it to Stripe metadata (referral_facility).
+const kitHref = `/states/${state.slug}?ref=${facility.slug}#primary-buy-panel`;
+const isAdvisor = facility.kind === 'advisor';
+const audienceWord = isAdvisor ? 'clients' : 'families';
+
+const title = `The ${denialCount} most common reasons ${state.name} Medicaid denies a Miller Trust`;
+---
+
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} — provided by {facility.name}</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="generator" content="Miller Trust Guide" />
+    <link rel="preconnect" href="https://rsms.me" crossorigin />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <style is:inline>
+      :root {
+        --teal: #0f4c4a;
+        --teal-tint: #ecf5f4;
+        --amber: #b45309;
+        --ink: #1f2937;
+        --muted: #6b7280;
+        --line: #e5e7eb;
+        --line-strong: #d1d5db;
+      }
+      * { box-sizing: border-box; }
+      html { font-family: 'Inter', -apple-system, 'Segoe UI', system-ui, sans-serif; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        line-height: 1.6;
+        background: #f3f4f6;
+        -webkit-font-smoothing: antialiased;
+      }
+      .sheet {
+        max-width: 740px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 40px 44px 48px;
+      }
+      @media (min-width: 640px) {
+        body { padding: 24px 0 64px; }
+        .sheet { border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+      }
+      /* Co-brand lockup: facility name leads, Miller Trust Guide follows. */
+      .cobrand {
+        display: flex; align-items: center; flex-wrap: wrap; gap: 12px 14px;
+        padding-bottom: 18px; margin-bottom: 22px;
+        border-bottom: 1px solid var(--line);
+      }
+      .cobrand-name { margin: 0; font-weight: 700; font-size: 18px; color: #111827; }
+      .cobrand-loc { margin: 2px 0 0; font-size: 12.5px; color: var(--muted); }
+      .cobrand-x { color: var(--line-strong); font-size: 18px; font-weight: 400; }
+      .wordmark {
+        display: flex; align-items: center; gap: 8px;
+        font-weight: 700; color: var(--teal); font-size: 14px;
+      }
+      .wordmark .sq {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 24px; height: 24px; border-radius: 5px;
+        background: var(--teal); color: #fff; font-size: 10px; letter-spacing: 0.02em;
+      }
+      .cobrand-tag { margin: -8px 0 24px; font-size: 13px; color: var(--muted); }
+      .eyebrow {
+        font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+        text-transform: uppercase; color: var(--teal); margin: 0;
+      }
+      h1 {
+        font-family: Georgia, 'Times New Roman', serif;
+        color: var(--teal); font-size: 27px; line-height: 1.22;
+        margin: 6px 0 12px;
+      }
+      .lede { font-size: 15.5px; color: #374151; margin: 0 0 26px; }
+      .callout {
+        border-left: 4px solid var(--teal);
+        background: var(--teal-tint);
+        padding: 16px 18px; border-radius: 0 8px 8px 0; margin: 0 0 30px;
+      }
+      .callout p { margin: 0; font-size: 14.5px; }
+      .callout .k { font-weight: 700; color: var(--teal); }
+      h2 {
+        font-family: Georgia, serif; color: var(--teal);
+        font-size: 18px; margin: 34px 0 4px;
+      }
+      .section-note { font-size: 13.5px; color: var(--muted); margin: 0 0 14px; }
+      ol.traps { margin: 0; padding: 0; list-style: none; counter-reset: trap; }
+      ol.traps > li {
+        counter-increment: trap;
+        position: relative;
+        padding: 14px 0 14px 44px;
+        border-top: 1px solid var(--line);
+      }
+      ol.traps > li:last-child { border-bottom: 1px solid var(--line); }
+      ol.traps > li::before {
+        content: counter(trap);
+        position: absolute; left: 0; top: 14px;
+        width: 28px; height: 28px; border-radius: 999px;
+        background: var(--teal); color: #fff;
+        font-size: 13px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .trap-title { font-weight: 700; color: #111827; font-size: 15px; }
+      .trap-desc { font-size: 14px; margin: 4px 0 0; color: #374151; }
+      .trap-cite { font-size: 12.5px; color: var(--muted); margin: 6px 0 0; }
+      .cta {
+        margin: 34px 0 0; padding: 20px 22px;
+        border: 1px solid var(--line); border-radius: 10px; background: #fafafa;
+      }
+      .cta h2 { margin-top: 0; }
+      .cta p { font-size: 14px; margin: 6px 0 0; }
+      .btn {
+        display: inline-block; margin-top: 14px;
+        background: var(--amber); color: #fff; text-decoration: none;
+        font-weight: 600; font-size: 14.5px;
+        padding: 11px 20px; border-radius: 7px;
+      }
+      .sources { font-size: 13px; margin: 12px 0 0; padding-left: 18px; }
+      .sources li { margin: 6px 0; }
+      .sources a { color: var(--amber); }
+      .signoff { font-size: 13px; color: var(--muted); margin-top: 32px; }
+      .disclaimer {
+        margin-top: 18px; font-size: 11.5px; line-height: 1.5;
+        color: #78350f; background: #fef3c7;
+        padding: 12px 14px; border-radius: 7px;
+      }
+      /* Screen-only action bar (never printed). */
+      .actions {
+        position: sticky; top: 0; z-index: 5;
+        display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+        padding: 12px; background: rgba(243,244,246,0.9); backdrop-filter: blur(4px);
+        border-bottom: 1px solid var(--line);
+      }
+      .actions button {
+        font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer;
+        border: 1px solid var(--line-strong); background: #fff; color: var(--ink);
+        padding: 8px 16px; border-radius: 7px;
+        display: inline-flex; align-items: center; gap: 7px;
+      }
+      .actions button.primary { background: var(--teal); color: #fff; border-color: var(--teal); }
+      .actions svg { width: 15px; height: 15px; }
+
+      @media print {
+        @page { size: Letter; margin: 0.5in 0.7in; }
+        body { background: #fff; padding: 0; }
+        .actions { display: none !important; }
+        .sheet { max-width: none; margin: 0; padding: 0; border: 0; box-shadow: none; border-radius: 0; }
+        a { color: inherit; text-decoration: none; }
+
+        .cobrand { margin-bottom: 14px; padding-bottom: 12px; }
+        .cobrand-tag { margin: -4px 0 16px; font-size: 12px; }
+        h1 { font-size: 21px; margin: 4px 0 8px; }
+        .lede { font-size: 13px; margin-bottom: 16px; }
+        .callout { padding: 12px 14px; margin-bottom: 18px; }
+        .callout p { font-size: 12.5px; }
+        h2 { font-size: 16px; margin: 18px 0 4px; }
+        .cta h2 { margin-top: 0; }
+        .section-note { font-size: 12px; margin-bottom: 8px; }
+        ol.traps > li { padding: 8px 0 8px 38px; }
+        ol.traps > li::before { top: 8px; width: 24px; height: 24px; font-size: 12px; }
+        .trap-title { font-size: 13px; }
+        .trap-desc { font-size: 12px; margin-top: 3px; }
+        .trap-cite { font-size: 11px; margin-top: 4px; }
+        .cta { margin-top: 20px; padding: 16px 18px; }
+        .cta p { font-size: 12.5px; }
+        .btn { margin-top: 10px; padding: 9px 16px; font-size: 13px; }
+        .sources { font-size: 11.5px; }
+        .signoff { margin-top: 18px; font-size: 11.5px; }
+        .disclaimer { margin-top: 14px; font-size: 10.5px; padding: 10px 12px; }
+
+        .callout { break-inside: avoid; }
+        ol.traps > li { break-inside: avoid; }
+        .closing { break-inside: avoid; }
+        h2 { break-after: avoid; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="actions">
+      <button type="button" class="primary" onclick="window.print()" aria-label="Print or save this checklist as PDF">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9V2h12v7" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="9" width="16" height="9" rx="1"/><path d="M6 18v4h12v-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Print / Save as PDF
+      </button>
+    </div>
+
+    <main class="sheet">
+      <div class="cobrand">
+        <div>
+          <p class="cobrand-name">{facility.name}</p>
+          {facility.city && <p class="cobrand-loc">{facility.city}, {state.abbreviation}</p>}
+        </div>
+        <span class="cobrand-x" aria-hidden="true">+</span>
+        <div class="wordmark"><span class="sq">MT</span> Miller Trust Guide</div>
+      </div>
+      <p class="cobrand-tag">
+        A free resource for {audienceWord} facing {state.name}'s Medicaid income limit — shared by {facility.name},
+        prepared with Miller Trust Guide.
+      </p>
+
+      <p class="eyebrow">{state.abbreviation} · Free checklist</p>
+      <h1>{title}</h1>
+      <p class="lede">
+        A plain-English checklist of the paperwork errors that cost {state.name} families a month of
+        benefits — each with the {state.agencyAbbreviation} citation behind it, so you can verify before you
+        file, not after the denial letter arrives.
+      </p>
+
+      <div class="callout">
+        <p>
+          <span class="k">Read this first — the funding-month rule.</span> A Miller Trust (Qualified Income
+          Trust) only works for a given month if it is <strong>both signed and funded in that same calendar
+          month</strong>. {state.agencyAbbreviation} does not back-date eligibility. Sign on the 28th but fund
+          on the 2nd of the next month, and the first month is billed at the {state.name} private-pay rate —
+          roughly <strong>${fmt(state.privatePayMonthlyLow)}–${fmt(state.privatePayMonthlyHigh)}</strong>.
+          Most families lose a month to this timing gap, not to ineligibility.
+        </p>
+      </div>
+
+      <h2>The {denialCount} denial traps to check before you file</h2>
+      <p class="section-note">
+        Every trap below is drawn from {state.agencyAbbreviation} policy. Verify each against the citation
+        shown before you submit the Medicaid application.
+      </p>
+      <ol class="traps">
+        {state.commonDenialReasons.map((r) => (
+          <li>
+            <p class="trap-title">{r.title}</p>
+            <p class="trap-desc">{r.description}</p>
+            <p class="trap-cite">Source: {r.agencyCitation}</p>
+          </li>
+        ))}
+      </ol>
+
+      <div class="closing">
+        <div class="cta">
+          <h2>How families get every step right the first time</h2>
+          <p>
+            This checklist tells you <em>what</em> can go wrong. The full {state.name} Miller Trust Setup Kit
+            walks through avoiding each one in order — the word-for-word bank script for when the branch refuses
+            to open the account, the pre-filled funding worksheet using the {state.asOf} income cap of
+            ${fmt(state.incomeCap2026)}, and the day-before-you-file checklist. It's backed by a money-back
+            guarantee: if {state.agencyAbbreviation} rejects the trust for a reason traceable to following the
+            kit, you get a full refund.
+          </p>
+          <a class="btn" href={kitHref}>See the {state.name} kit →</a>
+        </div>
+
+        <h2>Verify the sources yourself</h2>
+        <ul class="sources">
+          <li>
+            Official {state.agencyAbbreviation} template —
+            <a href={state.officialTemplateUrl} rel="external nofollow noopener">{state.policyManualSection}</a>
+          </li>
+          <li>
+            {state.agencyAbbreviation} policy manual —
+            <a href={state.policyManualUrl} rel="external nofollow noopener">{state.agencyName}</a>
+          </li>
+        </ul>
+
+        <p class="signoff">
+          Shared by {facility.name} · prepared with Miller Trust Guide · millertrustguide.com
+        </p>
+        <p class="disclaimer">
+          Informational only. This checklist is not legal advice and is not a substitute for consultation with a
+          licensed attorney. Neither {facility.name} nor Miller Trust Guide is a law firm, and neither drafts
+          legal documents or advises on individual situations. State Medicaid rules vary and change; verify all
+          information with {state.agencyAbbreviation} and an attorney licensed in {state.name} before acting.
+        </p>
+      </div>
+    </main>
+  </body>
+</html>

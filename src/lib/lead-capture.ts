@@ -15,6 +15,7 @@
 // browsers must degrade to "prompt shows normally", never throw.
 
 import { trackEvent } from '~/lib/analytics-client';
+import { getRef } from '~/lib/referral';
 
 const SUBSCRIBED_KEY = 'mtg_lead_subscribed';
 const PROMPT_SHOWN_KEY = 'mtg_lead_prompt_shown';
@@ -136,9 +137,13 @@ export function wireLeadForm(form: HTMLFormElement, opts: WireOpts): void {
 
       form.reset();
       markSubscribed();
+      // Facility-referral attribution: a lead driven by a co-branded /for/<facility>
+      // checklist is credited to that facility, in parity with purchase attribution.
+      const ref = getRef();
       trackEvent('lead_submit', {
         source: opts.source,
         ...(stateSlug ? { state: stateSlug } : {}),
+        ...(ref ? { ref } : {}),
       });
 
       // Instant gratification: when we know the state, link straight to the

@@ -59,6 +59,13 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
 // charge is server-side (create-checkout: Stripe price + the shared founder coupon).
 const displayPrice = founderActive ? FOUNDER.price : state.price;
 
+// Hero term = the state's OWN name for the instrument (primaryTerm), so the H1
+// matches local agency verbiage and the searches that follow it. Persona noun
+// flexes for spouse-lean states so the H1 never says "Parent" directly above a
+// spouse-addressed callout.
+const heroTerm = state.primaryTerm ?? 'Miller Trust';
+const heroNoun = state.personaLean === 'community-spouse' ? 'a Spouse' : 'a Parent';
+
 // Operational long-tail articles for this state (live states only). Linked from
 // the body so the deeper queries cluster under the state hub and pass relevance
 // back with descriptive, head-term-bearing anchor text.
@@ -78,7 +85,7 @@ const proofTestimonials = isLive
 // assistants can lift it verbatim.
 const tldr = blocked
   ? `Miller Trust Guide does not currently publish a kit for ${state.name}. ${state.blockedReason ?? 'For advice on your situation, consult a licensed elder-law attorney in your state.'}`
-  : `A ${state.name} Miller Trust (Qualified Income Trust) is an irrevocable trust used to qualify a Medicaid applicant whose monthly income exceeds the ${state.name} long-term-care income cap of $${fmt(state.incomeCap2026)} per month (${state.asOf}). The trust must be drafted, signed, and funded in the same calendar month using the official ${state.agencyAbbreviation} template (${state.policyManualSection}). Medicaid eligibility begins the month the trust is funded — there is no retroactive effect, and every month of delay is another month of full private-pay nursing-home cost ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This guide is the step-by-step operational walkthrough most families need: $${state.price}, instant download, money-back if ${state.agencyAbbreviation} rejects the QIT for a reason traceable to following the kit.`;
+  : `A ${state.name} Miller Trust (Qualified Income Trust) is an irrevocable trust used to qualify a Medicaid applicant whose monthly income exceeds the ${state.name} long-term-care income cap of $${fmt(state.incomeCap2026)} per month (${state.asOf}). The trust must be drafted, signed, and funded in the same calendar month using the official ${state.agencyAbbreviation} template (${state.policyManualSection}). Medicaid eligibility begins the month the trust is funded — there is no retroactive effect, and every month of delay is another month of full private-pay nursing-home cost ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This guide is the step-by-step operational walkthrough most families need: $${displayPrice}, instant download, money-back if ${state.agencyAbbreviation} rejects the QIT for a reason traceable to following the kit.`;
 
 // Authoritative citations used in this article — feeds the Article@citation
 // JSON-LD array (2026 entity-binding signal).
@@ -95,7 +102,7 @@ const personaLede =
   state.personaLean === 'community-spouse'
     ? `Is it your husband or wife entering care? This kit handles the income side — the ${state.primaryTerm ?? 'Qualified Income Trust'} — and points you to the separate spousal rules that protect the home and savings you keep as the spouse staying home.`
     : state.personaLean === 'daughter'
-      ? `Doing this for a parent? It's the step-by-step way to qualify them before the next facility bill — without paying $1,000–$2,500 for what is, in practice, mostly paperwork.`
+      ? `Doing this for a parent? It's the step-by-step way to work toward qualifying them before the next facility bill — without paying $1,000–$2,500 for what is, in practice, mostly paperwork.`
       : null;
 
 // ── Long-tail FAQ expansion (ADDITIVE — does not change head-term targeting) ──
@@ -256,7 +263,7 @@ if (isLive) {
         </span>
       </div>
       <h1 class="mt-3 !text-3xl md:!text-5xl" itemprop="name">
-        {state.name} Miller Trust Setup Guide — Qualify a Parent for Medicaid Before the Next Billing Cycle
+        {state.name} {heroTerm} Setup Guide — Qualify {heroNoun} for Medicaid Before the Next Billing Cycle
       </h1>
 
       {/* Answer-first lede. Speakable. AI engines: extract this. */}
@@ -275,6 +282,23 @@ if (isLive) {
         But it isn't guesswork: every step is drawn straight from {state.agencyAbbreviation}'s own published policy, with
         the citation behind each claim.
       </p>
+
+      {/* Epiphany-bridge hook (Reluctant Hero) — surfaced in the hero where it
+          does conversion work, instead of only at page-bottom. Brand-level and
+          state-agnostic: it makes no per-state legal claim, so it stays true on
+          every state page. The fuller origin story remains in "Why I wrote
+          this" further down; this is the short hook that opens the loop. */}
+      <div class="mt-4 rounded-md border-l-4 border-primary bg-primary-tint/20 p-4">
+        <p class="!mt-0 text-xs font-semibold uppercase tracking-wider text-primary">From the author</p>
+        <p class="!mb-0 mt-1 text-base leading-relaxed text-ink">
+          I'm <a href="/authors/james-whitfield" rel="author" class="font-medium text-primary">James Whitfield</a>. I
+          built this after spending weeks helping a family member set up a Miller Trust. The free state PDF told us
+          which fields to fill and stopped there; two attorneys quoted $1,500 and $2,200 with a six-week wait; and the
+          bank refused to open the account twice. The gap between a downloaded form and a funded account that actually
+          starts Medicaid coverage is where families lose a month they can't get back — and closing that gap is the
+          whole reason this kit exists.
+        </p>
+      </div>
 
       {
         personaLede && (
@@ -327,10 +351,12 @@ if (isLive) {
             {/* Delay-cost anchor (DEMOGRAPHICS lever #1) */}
             <div class="rounded-lg border-l-4 border-primary bg-primary-tint/30 p-5">
               <p class="!mt-0 text-base">
-                <strong>Why this can't wait:</strong> {state.name} private-pay nursing care runs
-                <strong> ${fmt(state.privatePayMonthlyLow)}–${fmt(state.privatePayMonthlyHigh)} a month.</strong>{' '}
-                Medicaid coverage begins the calendar month the QIT is signed <em>and</em> funded — there is no
-                back-dating. A 30-day delay is a five-figure check your family writes out of pocket.
+                <strong>Why this can't wait:</strong> until the trust is set up correctly, an over-income applicant
+                can't be approved for Medicaid — so the private-pay bill keeps landing on your family, and your family
+                member's place in care can depend on it. Coverage begins the calendar month the QIT is signed{' '}
+                <em>and</em> funded — there is no back-dating — and {state.name} private-pay care runs{' '}
+                <strong>${fmt(state.privatePayMonthlyLow)}–${fmt(state.privatePayMonthlyHigh)} a month</strong>, so
+                every 30 days of delay is a five-figure check out of pocket.
               </p>
             </div>
 
@@ -470,7 +496,7 @@ if (isLive) {
                     <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" />
                     <circle cx="12" cy="12" r="10" />
                   </svg>
-                  <p class="!my-0 text-xs leading-relaxed text-ink">
+                  <p class="!my-0 text-sm leading-relaxed text-ink">
                     <strong>If {state.agencyAbbreviation} rejects the trust, you pay nothing.</strong> Full refund
                     within one business day — no forms, no phone tag.
                   </p>
@@ -605,18 +631,13 @@ if (isLive) {
     {/* About the kit author */}
     <section class="prose-content my-12" aria-labelledby="author-heading">
       <p class="text-xs font-semibold uppercase tracking-wider text-primary">The author</p>
-      <h2 id="author-heading" class="!mt-1">Why I wrote this</h2>
+      <h2 id="author-heading" class="!mt-1">Who's behind this</h2>
       <p>
-        I'm <a href="/authors/james-whitfield" rel="author">James Whitfield</a>. I built this site after spending weeks
-        helping a family member through a Miller Trust setup. The free state PDF told us what fields to fill in and
-        stopped there. The first attorney we called quoted $2,200. The second wanted $1,500 and a six-week wait.
-        The bank refused to open the account twice. Between the policy manual, the bank counter, and the Medicaid
-        application window, there was a real gap — and that gap is what this kit fills.
-      </p>
-      <p>
+        I'm <a href="/authors/james-whitfield" rel="author">James Whitfield</a> — the person who hit the gap between
+        the free state PDF and a funded Medicaid trust (the short version is up top) and built this kit to close it.
         I'm not an attorney. I'm a researcher who has now read every {state.agencyAbbreviation} policy section that
-        covers Qualified Income Trusts. I publish what I learned, with citations on every claim. I won't advise you
-        on your specific situation; for that, you need a {state.name}-licensed attorney.
+        covers Qualified Income Trusts, and I publish what I learned with a citation on every claim. I won't advise
+        you on your specific situation; for that, you need a {state.name}-licensed attorney.
       </p>
     </section>
 
@@ -626,17 +647,24 @@ if (isLive) {
         <section class="prose-content my-12" aria-labelledby="faq-heading">
           <p class="text-xs font-semibold uppercase tracking-wider text-primary">Questions</p>
           <h2 id="faq-heading" class="!mt-1">Frequently asked questions</h2>
-          <dl>
-            {allFaq.map((f) => {
+          {/* Accordion, default-closed except the first — same pattern as the
+              homepage. Keeps the long per-state FAQ from becoming a wall of text
+              on a phone; answers stay in the DOM (crawlable + speakable) even
+              when a question is collapsed. */}
+          <dl class="divide-y divide-border">
+            {allFaq.map((f, i) => {
               const { lead, rest } = firstSentence(f.answer);
               return (
-                <div class="mt-6">
-                  <dt class="faq-question font-semibold text-ink-heading">{f.question}</dt>
-                  <dd class="faq-answer mt-1">
+                <details class="group py-4" open={i === 0}>
+                  <summary class="faq-question cursor-pointer list-none font-semibold text-ink-heading marker:hidden">
+                    <span class="inline-block transition-transform group-open:rotate-90" aria-hidden="true">▸</span>{' '}
+                    {f.question}
+                  </summary>
+                  <div class="faq-answer mt-2 pl-5 leading-relaxed text-ink">
                     <span class="faq-answer__lead">{lead}</span>
                     {rest && <> {rest}</>}
-                  </dd>
-                </div>
+                  </div>
+                </details>
               );
             })}
           </dl>
@@ -710,7 +738,8 @@ if (isLive) {
           </p>
           <p class="text-sm text-ink-muted">
             No waiting room, no six-week retainer. Most {state.name} families have the trust signed, the account open,
-            and the first month's income redirected within a week — fast enough to catch the next eligibility month.
+            and the first month's income redirected within a week — often in time to be positioned for the next
+            eligibility month.
           </p>
           <div class="mt-6">
             <ConsentBuyButton

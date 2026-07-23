@@ -113,6 +113,21 @@
     background-color: var(--color-cta-hover);
   }
 
+  /* Consent-gated buy button: clearly muted until the box is checked, then
+     full-color with a warm glow so checking the box visibly lights it up. Plain
+     CSS (not JS-toggled Tailwind utilities) so it can never be lost to JIT
+     purging or a stale JS bundle — the look is in the stylesheet, not the script. */
+  .btn-consent-gate {
+    opacity: 0.45;
+    filter: saturate(0.75);
+    transition: opacity 150ms ease, box-shadow 150ms ease, filter 150ms ease, background-color 120ms ease;
+  }
+  .btn-consent-gate.is-ready {
+    opacity: 1;
+    filter: none;
+    box-shadow: 0 6px 22px -6px rgba(180, 83, 9, 0.65);
+  }
+
   .prose-content {
     max-width: 72ch;
   }

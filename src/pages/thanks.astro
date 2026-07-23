@@ -13,6 +13,9 @@ let stateName: string | null = null;
 let stateSlug: string | null = null;
 let paymentConfirmed = false;
 let lookupError = false;
+// Facility that drove this sale (from the co-branded /for/<facility> wedge),
+// mirrored into the purchase analytics event as the per-facility conversion signal.
+let referralFacility: string | null = null;
 // Actual charged amount for the Google Ads conversion value — reads from Stripe
 // so it's always correct ($99 founder / $129 full / any tax), never hard-coded.
 let amountTotal: number | null = null;
@@ -29,6 +32,7 @@ if (sessionId) {
         ? String(session.metadata.state_slug).charAt(0).toUpperCase() + String(session.metadata.state_slug).slice(1)
         : null);
     stateSlug = (session.metadata?.state_slug as string | undefined) ?? null;
+    referralFacility = (session.metadata?.referral_facility as string | undefined) ?? null;
     if (typeof session.amount_total === 'number') amountTotal = session.amount_total / 100;
     if (session.currency) currency = session.currency.toUpperCase();
   } catch {
@@ -40,6 +44,15 @@ if (sessionId) {
 // when both are set (see docs/ad-campaign-playbook.md §0.5 + GoogleAdsTag.astro).
 const adsId = import.meta.env.PUBLIC_GOOGLE_ADS_ID;
 const adsPurchaseLabel = import.meta.env.PUBLIC_GOOGLE_ADS_PURCHASE_LABEL;
+
+// Referral share — the highest-leverage use of the warm post-purchase moment for
+// a one-time product: turn a grateful buyer into free top-of-funnel. Points at the
+// homepage (income-cap check + state picker) so a friend in ANY state lands well.
+const shareUrl = 'https://millertrustguide.com/?src=referral';
+const shareSubject = 'A free checklist that helped us with the Medicaid income limit';
+const shareBody = `This helped me set up a Miller Trust to qualify a family member for Medicaid long-term care — here's the free income check and denial-trap checklist that got us started: ${shareUrl}`;
+const smsShareHref = `sms:?&body=${encodeURIComponent(shareBody)}`;
+const mailtoShareHref = `mailto:?subject=${encodeURIComponent(shareSubject)}&body=${encodeURIComponent(shareBody)}`;
 ---
 
 <BaseLayout
@@ -99,6 +112,52 @@ const adsPurchaseLabel = import.meta.env.PUBLIC_GOOGLE_ADS_PURCHASE_LABEL;
             <a href={stateSlug ? `/feedback?state=${stateSlug}` : '/feedback'}>tell us how it went</a>. A real person
             reads every note, and it shapes the next version.
           </p>
+
+          {/* Referral share — turn a grateful buyer into free top-of-funnel. The
+              single highest-leverage use of the post-purchase moment for a
+              one-time product (there is no natural B2C repeat to upsell). */}
+          <div class="mx-auto mt-10 max-w-xl rounded-lg border border-primary/20 bg-primary-tint/30 p-6 text-left">
+            <p class="!mt-0 text-xs font-semibold uppercase tracking-wider text-primary">Pass it on</p>
+            <h2 class="!mt-1 !text-xl">Know someone else going through this?</h2>
+            <p class="mt-2 text-ink">
+              Most families facing this know another one — a sibling, a friend, someone from a support group.
+              Send them the free income-cap check and denial-trap checklist. No cost and no pressure — just the
+              same plain-English starting point you had.
+            </p>
+            <div class="mt-4 flex flex-wrap gap-3">
+              <button
+                type="button"
+                data-share-copy
+                class="inline-flex items-center gap-2 rounded-md border border-primary/40 bg-surface-elevated px-4 py-2 text-sm font-medium text-primary hover:bg-primary-tint/40"
+              >
+                Copy link
+              </button>
+              <a
+                href={smsShareHref}
+                class="inline-flex items-center gap-2 rounded-md border border-primary/40 bg-surface-elevated px-4 py-2 text-sm font-medium text-primary hover:bg-primary-tint/40 sm:hidden"
+              >
+                Text it
+              </a>
+              <a
+                href={mailtoShareHref}
+                class="inline-flex items-center gap-2 rounded-md border border-primary/40 bg-surface-elevated px-4 py-2 text-sm font-medium text-primary hover:bg-primary-tint/40"
+              >
+                Email it
+              </a>
+            </div>
+            <p data-share-feedback hidden class="mt-3 text-sm font-medium text-primary">Link copied — thank you.</p>
+          </div>
+
+          {/* Professional self-ID → B2B bridge. Quiet, secondary. The first real
+              buyer was a retired attorney/CPA helping a friend — exactly this reader. */}
+          <div class="mx-auto mt-6 max-w-xl rounded-lg border border-border bg-surface-elevated p-5 text-left">
+            <p class="!my-0 text-sm text-ink">
+              <strong>Did you set this up for a client or a resident?</strong> Care managers, social workers,
+              elder-law firms, and facilities can license co-branded kits to hand to everyone they help — always
+              current, licensed to print and distribute, one flat monthly rate.{' '}
+              <a href="/business/pricing" class="font-medium text-primary underline">See license options &rarr;</a>
+            </p>
+          </div>
         </>
       ) : lookupError || !sessionId ? (
         <>
@@ -138,12 +197,14 @@ const adsPurchaseLabel = import.meta.env.PUBLIC_GOOGLE_ADS_PURCHASE_LABEL;
   */}
   {
     paymentConfirmed && sessionId && (
-      <script is:inline define:vars={{ sessionId, stateName }}>
+      <script is:inline define:vars={{ sessionId, stateName, referralFacility }}>
         try {
           const key = 'mtg_purchase_tracked:' + sessionId;
           if (!sessionStorage.getItem(key)) {
-            window.va &&
-              window.va('event', { name: 'purchase', data: stateName ? { state: stateName } : {} });
+            const data = {};
+            if (stateName) data.state = stateName;
+            if (referralFacility) data.ref = referralFacility;
+            window.va && window.va('event', { name: 'purchase', data });
             sessionStorage.setItem(key, '1');
           }
         } catch (e) {
@@ -176,6 +237,35 @@ const adsPurchaseLabel = import.meta.env.PUBLIC_GOOGLE_ADS_PURCHASE_LABEL;
         } catch (e) {
           /* analytics must never break the page */
         }
+      </script>
+    )
+  }
+
+  {/* Copy-link handler for the referral-share block (paid sessions only). */}
+  {
+    paymentConfirmed && (
+      <script is:inline define:vars={{ shareUrl }}>
+        (function () {
+          var btn = document.querySelector('[data-share-copy]');
+          var msg = document.querySelector('[data-share-feedback]');
+          if (!btn) return;
+          function done() {
+            if (msg) msg.hidden = false;
+            btn.textContent = 'Link copied ✓';
+          }
+          btn.addEventListener('click', function () {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(shareUrl).then(done, function () {});
+            } else {
+              var t = document.createElement('textarea');
+              t.value = shareUrl;
+              document.body.appendChild(t);
+              t.select();
+              try { document.execCommand('copy'); done(); } catch (e) {}
+              document.body.removeChild(t);
+            }
+          });
+        })();
       </script>
     )
   }

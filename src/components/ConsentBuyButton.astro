@@ -56,7 +56,7 @@ const errorId = `${formId}-error`;
     type="button"
     id={buttonId}
     data-state-slug={stateSlug}
-    class="btn-cta mt-5 w-full opacity-60"
+    class="btn-cta btn-consent-gate mt-5 w-full"
     aria-disabled="true"
   >
     {buttonLabel}
@@ -70,13 +70,14 @@ const errorId = `${formId}-error`;
     aria-live="polite"
   ></p>
 
-  <p class="mt-3 text-center text-xs text-ink-muted">
+  <p class="mt-3 text-center text-sm text-ink-muted">
     Secure checkout by Stripe &middot; Instant download &middot; Money-back guarantee
   </p>
 </div>
 
 <script>
   import { trackEvent } from '~/lib/analytics-client';
+  import { getRef } from '~/lib/referral';
 
   // Each ConsentBuyButton is a self-contained widget. Scope every lookup to the
   // widget element so the two instances on a state page (buy panel + repeat CTA)
@@ -96,7 +97,7 @@ const errorId = `${formId}-error`;
     const sync = () => {
       const checked = checkbox.checked;
       button.setAttribute('aria-disabled', String(!checked));
-      button.classList.toggle('opacity-60', !checked);
+      button.classList.toggle('is-ready', checked); // .btn-consent-gate.is-ready lights it up
       if (checked) errorEl.classList.add('hidden');
     };
     checkbox.addEventListener('change', sync);
@@ -121,9 +122,10 @@ const errorId = `${formId}-error`;
       }
 
       submitting = true;
-      trackEvent('buy_click', { state: stateSlug });
+      const ref = getRef();
+      trackEvent('buy_click', ref ? { state: stateSlug, ref } : { state: stateSlug });
       button.setAttribute('aria-disabled', 'true');
-      button.classList.add('opacity-60');
+      button.classList.remove('is-ready');
       button.textContent = 'Redirecting to secure checkout…';
       try {
         const res = await fetch('/api/create-checkout', {
@@ -133,6 +135,7 @@ const errorId = `${formId}-error`;
             stateSlug,
             consent: true,
             consentTimestamp: new Date().toISOString(),
+            ...(ref ? { ref } : {}),
           }),
         });
         if (!res.ok) {
@@ -149,7 +152,7 @@ const errorId = `${formId}-error`;
         errorEl.textContent = message;
         errorEl.classList.remove('hidden');
         submitting = false;
-        button.classList.remove('opacity-60');
+        button.classList.add('is-ready');
         button.setAttribute('aria-disabled', 'false');
         button.textContent = 'Try again';
       }
