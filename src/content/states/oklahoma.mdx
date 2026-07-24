@@ -1,0 +1,206 @@
+---
+slug: "oklahoma"
+name: "Oklahoma"
+abbreviation: "OK"
+
+status: "live"
+
+# Oklahoma is the FIRST 'requirements-brief' state: OHCA publishes no fill-in
+# Medicaid Income Pension Trust (MIPT) instrument. The regulation itself cites
+# form 08MA011E as "an example trust" -- verified 2026-07-23 to actually be
+# "Assessments of Assets," an unrelated community-spouse resource worksheet.
+# The kit + page + articles render the requirements-checklist narrative
+# because productModel === 'requirements-brief'.
+medicaidStructure: "income-cap"
+productModel: "requirements-brief"
+personaLean: "balanced"
+primaryTerm: "Medicaid Income Pension Trust"
+
+stripePriceId: "price_1TwmEkBitfBHN1YuR4DV9rpC"
+pdfBlobKey: "kits/oklahoma/v1.pdf"
+price: 129
+multiStateBundleEligible: true
+
+agencyName: "Oklahoma Health Care Authority"
+agencyAbbreviation: "OHCA"
+policyManualUrl: "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-assistance-for-adults-and-children-eligibility/eligibility-and-countable-income/countable-income-and-resources/trust-accounts.html"
+policyManualSection: "OAC 317:35-5-41.6(6)(B) (\"Trust accounts\" -- the Medicaid Income Pension Trust paragraph); cross-referenced by OAC 317:35-19-19 for nursing-facility financial eligibility; federal authority 42 U.S.C. § 1396p(d)(4)(B)"
+policyCitationShort: "OAC 317:35-5-41.6(6)(B)"
+ltcProgramAbbrev: "SoonerCare LTC"
+ltcProgramName: "SoonerCare (Oklahoma Medicaid) long-term-care coverage -- nursing facility (NF) vendor care, the ADvantage Waiver (aging/physical-disability home and community-based services), and the DDS waivers (developmental-disability home and community-based services). All three routes test income against the same OAC 317:35-5-41.6 standard and may use a Medicaid Income Pension Trust to cure excess income"
+spousalCalcRef: "OHCA's Community Spouse Resource Allowance / Division of Assets determination under OAC 317:35 (Appendix C-1). The MIPT itself is an individual-income mechanism -- confirm current CSRA/MMMNA figures and any spousal diversion with OHCA or an attorney, since this kit does not compute them"
+residuaryPaymentNote: "OAC 317:35-5-41.6(6)(B)(vii) requires the trust to pay the State of Oklahoma, on termination, an amount equal to the total SoonerCare benefits paid on the beneficiary's behalf since the trust was established. To terminate or dissolve a Medicaid Income Pension Trust, subsection (xi) directs that a memorandum and a copy of the trust be sent to OKDHS Family Support Services Division, Attention: HR&MS, stating the reason and effective date for termination, along with the trustee's name and address and the financial institution's name, address, account number, and current balance. HR&MS then notifies OHCA's Third Party Liability unit to initiate recovery. Oklahoma does not publish a separate residuary remittance form."
+
+supplementalOfficialDocs:
+  - label: "OAC 317:35-19-19 -- General financial eligibility for NF and skilled nursing care"
+    url: "https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-assistance-for-adults-and-children-eligibility/nursing-facility-services/general-financial-eligibility-requirements-for-nf-and-skilled-nursing-care.html"
+    note: "Confirms that nursing-facility applicants whose gross income exceeds the categorically needy standard (Appendix C-1, Schedule VIII.B.1.) are referred to OAC 317:35-5-41.6(6)(B) to establish a Medicaid Income Pension Trust -- the primary-source confirmation that the MIPT applies to institutional care, not only home and community-based waivers."
+  - label: "OKDHS Appendix C-1 -- Maximum Income, Resource, and Payment Standards"
+    url: "https://oklahoma.gov/content/dam/ok/en/okdhs/documents/searchcenter/okdhsformresults/c-1.pdf"
+    note: "The current (7/1/2026) table of every dollar figure used in this kit: the $2,982 categorically needy standard, the $7,637 MIPT income ceiling, the $75/month nursing-facility maintenance standard (Schedule VIII.B), and the $2,000/$3,000 resource limits (Schedule VIII.D). Schedule VIII.B explicitly extends the same standard to ADvantage Waiver and other Home and Community-Based Waiver participants, not just nursing-facility residents."
+
+requiredTrustProvisions:
+  - title: "Composed only of income -- no resources"
+    description: "The trust may hold only the beneficiary's pension, Social Security, or other income, plus income that accumulates in the trust. It must not accept resources -- real or personal property, bank savings, or any other asset that isn't income."
+    agencyCitation: "OAC 317:35-5-41.6(6)(B)(ii)"
+  - title: "All income paid into the trust, every month"
+    description: "The beneficiary's income must be paid into the trust in full -- this is a whole-source rule, not an excess-only rule. The beneficiary is not eligible until the trust is established and that month's income has actually been paid in."
+    agencyCitation: "OAC 317:35-5-41.6(6)(B)(iii)"
+  - title: "The trust retains the gross-income-minus-standard formula"
+    description: "The trust must retain an amount equal to the beneficiary's gross monthly income minus the current categorically needy standard published in OKDHS Appendix C-1; the trustee distributes the remainder under OHCA's rules."
+    agencyCitation: "OAC 317:35-5-41.6(6)(B)(iv)"
+  - title: "Distributed income counts toward the cost-of-care and spousal computations"
+    description: "Income the trust disburses is treated as the beneficiary's monthly income for determining the cost of their care, and can be used in spousal-diversion computations. The trust does not shelter this income from that budgeting step."
+    agencyCitation: "OAC 317:35-5-41.6(6)(B)(v)"
+  - title: "Irrevocable, and amendable only with OHCA's written agreement"
+    description: "The trust must be irrevocable and cannot be amended or dissolved without OHCA's written agreement. Trust records must also be open at all reasonable times to inspection by an authorized representative of OHCA or OKDHS."
+    agencyCitation: "OAC 317:35-5-41.6(6)(B)(vi)"
+  - title: "Names the State of Oklahoma as remainder beneficiary"
+    description: "On termination, the trust must pay the State an amount equal to the total SoonerCare benefits paid on the beneficiary's behalf since the trust was established, before anything else is distributed."
+    agencyCitation: "OAC 317:35-5-41.6(6)(B)(vii)"
+  - title: "Accumulated funds restricted to specific allowable uses"
+    description: "Money that builds up in the trust may be spent only on medically necessary items not covered by SoonerCare or other health coverage, plus reasonable trust administration costs -- never to reimburse items the nursing facility itself would furnish. Any other use is treated as a transfer of assets, which can trigger a penalty period."
+    agencyCitation: "OAC 317:35-5-41.6(6)(B)(viii)"
+  - title: "Trustee fee capped at 3% of monthly additions"
+    description: "If the trust authorizes a trustee fee, it cannot exceed 3% of the funds added to the trust in that month."
+    agencyCitation: "OAC 317:35-5-41.6(6)(B)(ix)"
+
+incomeCap2026: 2982
+incomeCapCouple2026: 5964
+# Oklahoma's income ceiling: an UPPER bound above which even a Medicaid Income
+# Pension Trust cannot restore eligibility -- confirmed verbatim from Appendix
+# C-1 (7/1/2026): "Maximum monthly countable income for a Medicaid Income
+# Pensions Trust cannot exceed $7,637."
+incomeCeiling2026: 7637
+personalNeedsAllowance: 75
+asOf: "effective July 2026"
+
+federalStatuteCitation: "42 U.S.C. § 1396p(d)(4)(B)"
+federalStatuteUrl: "https://www.law.cornell.edu/uscode/text/42/1396p"
+
+trusteeGuidanceNote: "Oklahoma's own regulation (OAC 317:35-5-41.6(6)(B)) does not itself name who may or may not serve as trustee -- it defines 'trustee' generically as 'an individual, individuals, a corporation, court, bank or combination thereof with responsibility for carrying out the terms of the trust.' In practice, most families and attorneys name a third party (an adult child with Power of Attorney, or a spouse) rather than the applicant, both because general trust law disfavors a sole beneficiary also serving as sole trustee (the 'merger' doctrine) and because Oklahoma banking-industry guidance describes MIPTs as administered by someone other than the beneficiary. Confirm the trustee question directly with the drafting attorney -- this kit does not treat self-trusteeship as confirmed either permitted or barred by the state's own rule text."
+einRequired: false
+einRequiredNote: "Oklahoma's regulation is silent on tax-ID treatment -- it does not mention an EIN anywhere in OAC 317:35-5-41.6. As a trust composed only of the beneficiary's own income under 42 U.S.C. § 1396p(d)(4)(B), a Medicaid Income Pension Trust is generally opened using the beneficiary's Social Security number rather than a separate EIN, consistent with how most (d)(4)(B) grantor trusts are banked nationally. If a branch asks for an EIN out of habit, confirm with your attorney and the bank how the account should be titled; this is ultimately a bank and tax question, not something OHCA's rule dictates either way."
+stateBarLrsName: "Oklahoma Bar Association -- Find A Lawyer"
+stateBarLrsUrl: "https://www.okbar.org/findalawyer/"
+additionalLegalAidReferrals:
+  - "Legal Aid Services of Oklahoma (legalaidok.org) -- free civil legal aid for eligible Oklahomans, including Medicaid and long-term-care matters"
+  - "Oklahoma Law for People (oklaw.org) -- Legal Aid Services of Oklahoma's self-help legal information portal"
+  - "Oklahoma Human Services -- Community Living, Aging and Protective Services (oklahoma.gov/okdhs/services/cap.html) -- the state's Area Agency on Aging network and long-term-care options counseling"
+  - "National Academy of Elder Law Attorneys (NAELA) -- Find a Lawyer directory (naela.org), including the Oklahoma chapter"
+
+privatePayMonthlyLow: 6448
+privatePayMonthlyHigh: 7604
+
+requirementsIntroNote: "Oklahoma does not publish a fill-in Medicaid Income Pension Trust form. OHCA's own regulation, OAC 317:35-5-41.6(6)(B), cites 'OKDHS Form 08MA011E' as an example trust -- but that form is actually titled 'Assessments of Assets,' a community-spouse resource-assessment worksheet with no relationship to a trust instrument. There is no current, correctly-cited public example to point you to. Instead, the checklist below is drawn directly from the regulation's own required elements -- verbatim, clause by clause -- so you (or your attorney) can draft or verify a trust that actually satisfies what OHCA requires, rather than relying on a citation that leads nowhere."
+
+attorneyRequiredNote: "Oklahoma's regulation does not state whether a Medicaid Income Pension Trust must be attorney-drafted, and case law here (see the UPL notes) permits laypeople to complete forms and instruments prescribed by an official authority without that being the practice of law. But because Oklahoma publishes no fill-in instrument for you to complete, drafting an original trust instrument from the requirements below is, in practice, a task most families have an attorney do -- self-drafting an original legal instrument (as opposed to filling in an existing one) carries materially more risk of missing a required clause. Budget for an attorney; this kit is what keeps that engagement efficient."
+
+commonDenialReasons:
+  - title: "Trust holds resources, not only income"
+    description: "The trust may be composed only of the beneficiary's pension, Social Security, or other income, plus income that accumulates in the trust. Placing a resource -- real or personal property, a lump sum that is not income -- into the trust breaks the exemption entirely."
+    agencyCitation: "OAC 317:35-5-41.6(6)(B)(ii)"
+  - title: "Not all income is paid into the trust"
+    description: "All of the beneficiary's income must be paid into the trust -- the beneficiary is not eligible until the trust is established and the monthly income has actually been paid in. This is a whole-source rule, not an excess-only rule: naming a source but leaving part of it out defeats the trust."
+    agencyCitation: "OAC 317:35-5-41.6(6)(B)(iii)"
+  - title: "Trust is revocable, or amended without OHCA's written agreement"
+    description: "The trust must be irrevocable and cannot be amended or dissolved without OHCA's written agreement. A revocable trust, or unauthorized changes to a trust OHCA has already reviewed, fails outright."
+    agencyCitation: "OAC 317:35-5-41.6(6)(B)(vi)"
+  - title: "Records not open to OHCA/OKDHS inspection"
+    description: "Trust records must be open at all reasonable times to inspection by an authorized representative of OHCA or OKDHS. A trust drafted to restrict this access does not qualify."
+    agencyCitation: "OAC 317:35-5-41.6(6)(B)(vi)"
+  - title: "Missing or defective State-of-Oklahoma payback clause"
+    description: "The trust must direct that, on termination, the State receives all amounts remaining up to the total SoonerCare benefits paid on the beneficiary's behalf since the trust was established. A missing or weakened payback clause is a documented failure point."
+    agencyCitation: "OAC 317:35-5-41.6(6)(B)(vii)"
+  - title: "Accumulated funds spent on something the rule doesn't allow"
+    description: "Money that accumulates in the trust may be used only for medically necessary items not covered by SoonerCare or other health coverage, plus reasonable trust administration costs -- and never to reimburse items the nursing facility itself would furnish. Any other use is treated as a transfer of assets and can trigger a penalty period."
+    agencyCitation: "OAC 317:35-5-41.6(6)(B)(viii)"
+  - title: "Trustee fee exceeds the cap"
+    description: "A trustee may claim a fee of up to 3% of the funds added to the trust in a given month -- no more. A trust that authorizes a larger fee, or an uncapped fee, is out of compliance."
+    agencyCitation: "OAC 317:35-5-41.6(6)(B)(ix)"
+  - title: "Income is above the trust's own ceiling"
+    description: "The trust only helps if gross monthly income is below Oklahoma's Medicaid Income Pension Trust ceiling ($7,637/month, per Appendix C-1). Above that figure, a trust cannot restore eligibility at all -- this is a categorical cutoff, not a drafting problem, and no trust language can fix it."
+    agencyCitation: "OKDHS Appendix C-1, Schedule VIII.B"
+
+bankRefusalNotes:
+  - refusalType: "Branch asks for a tax ID (EIN) for the trust"
+    response: "Oklahoma's regulation doesn't address tax-ID treatment at all. A trust composed only of the beneficiary's income is generally opened under the beneficiary's own Social Security number. If the branch insists on an EIN out of habit, confirm the account titling with your attorney and ask the branch to escalate to its trust department rather than forcing an identifier the rule doesn't call for."
+    documentNeeded: "The signed Medicaid Income Pension Trust instrument"
+  - refusalType: "Branch is unsure what kind of account this is"
+    response: "It is a single, dedicated account, titled in the name of the trust, that holds only the beneficiary's income -- kept separate from any account used for living expenses. All of the beneficiary's income is deposited into it going forward, not just the amount above a cap. Show the branch the signed trust and, if needed, the OAC 317:35-5-41.6 citation."
+    documentNeeded: "The signed Medicaid Income Pension Trust instrument"
+  - refusalType: "Branch has never opened a Medicaid trust account"
+    response: "It is a routine dedicated account holding the beneficiary's income and paid out under OHCA's rules. Ask for a full-service branch or the bank's trust department; community banks and credit unions are often more flexible than large retail branches."
+    documentNeeded: "The signed Medicaid Income Pension Trust instrument"
+  - refusalType: "Branch wants to know who is authorized to sign"
+    response: "The trustee named in the trust instrument is the authorized signer -- not the beneficiary. Bring the signed trust, which names the trustee (and any successor trustee), when you open the account."
+    documentNeeded: "The signed Medicaid Income Pension Trust instrument (naming the trustee)"
+
+postDeathDistribution: "On the beneficiary's death, the Medicaid Income Pension Trust terminates. The trustee must pay the State of Oklahoma an amount equal to the total SoonerCare benefits paid on the beneficiary's behalf since the trust was established, before any remaining balance passes to anyone else. To close out the trust, a memorandum and a copy of the trust go to OKDHS Family Support Services Division, Attention: HR&MS, along with the trustee's name and address and the financial institution's name, address, account number, and current balance; HR&MS then notifies OHCA's Third Party Liability unit to initiate recovery. Oklahoma does not publish a separate residuary remittance form -- the trustee should resolve the State's claim before distributing any balance and keep proof of payment in the trust file."
+
+metaTitle: "Oklahoma Medicaid Income Pension Trust (Miller Trust) Requirements Guide — $129"
+metaDescription: "Oklahoma Medicaid Income Pension Trust (MIPT / Miller Trust / QIT) requirements guide. Oklahoma publishes no fill-in form — this kit gives the exact OHCA-cited checklist your attorney's draft must satisfy, plus funding, banking, and denial-avoidance. Informational, not legal advice."
+
+primaryKeyword: "oklahoma medicaid income pension trust"
+secondaryKeywords:
+  - "oklahoma miller trust"
+  - "miller trust oklahoma"
+  - "oklahoma qualified income trust"
+  - "oklahoma mipt"
+  - "medicaid income pension trust oklahoma"
+  - "oklahoma qit"
+  - "oklahoma medicaid trust requirements"
+  - "sooners care income trust"
+  - "oklahoma nursing home income trust"
+
+reviewedDate: "2026-07-23"
+uplNotes: "Oklahoma regulates the unauthorized practice of law through the Oklahoma Supreme Court's inherent, exclusive jurisdiction (Rules Creating and Controlling the Oklahoma Bar Association, 5 O.S. Ch. 1, App. 1, Art. II), not primarily through a standalone criminal UPL statute. The controlling authority is R.J. Edwards, Inc. v. Hert, 1972 OK 151, 504 P.2d 407 (Okla. 1972) -- read in full (not merely a secondary paraphrase): municipal bond marketers who filled in bond-issuance forms prescribed by the Oklahoma Attorney General (statutorily the bond-issuers' own counsel, as ex officio Bond Commissioner under 62 O.S. §§ 11, 13) were held NOT to be practicing law, because they 'merely reproduced forms prepared by the Attorney General... and filled them out according to the directions,' acting 'as an amanuensis, secretary, or clerk for that attorney' rather than exercising a lawyer's professional judgment. This is a narrower holding than a clean Dacey-style 'forms-publishing to the general public' precedent -- it turns on an identified attorney (the AG) directing the process, with the defendant doing clerical work under that attorney's directions, not on the general public completing officially-prescribed forms with no attorney in the chain at all. The court's own governing test (adopted from ABA Model Code EC 3-5): practice of law turns on whether a service 'call[s] for the professional judgment of a lawyer' applied to another's specific facts -- and Oklahoma authorities (e.g. OBA Ethics Opinion No. 319) treat 'selecting and filling out' a legal form for a specific person as crossing that line. Net read: Oklahoma has no on-point precedent squarely blessing or condemning a generic, no-individualized-advice form/requirements-explainer sold to the public -- which is the same 'no adverse holding' posture most of our other states sit in, not a unique advantage. The product stays defensible by holding the same four hard rules with extra discipline given there is no state-published instrument as a backstop: we explain what OHCA's policy requires, we never draft or provide sample/model trust language (generic or otherwise), we never select or tailor language to an individual's facts, and we never review a customer's own drafted trust. Confirm Oklahoma UPL comfort before go-live; no Oklahoma-specific 'trust mill' or senior-solicitation statute was found in this pass, but that search was not exhaustive."
+
+socialProof:
+  unitsSold: 0
+  displayThreshold: 25
+  launchLabel: "2026"
+
+kitVersion: "v1.0"
+kitVersionDate: "2026-07-23"
+kitChangelog:
+  - version: "v1.0"
+    date: "2026-07-23"
+    changes:
+      - "Initial Oklahoma release -- the first 'requirements-brief' product: Oklahoma publishes no fill-in Medicaid Income Pension Trust (MIPT) form. OHCA's own regulation cites form 08MA011E as an example trust, but that form is actually 'Assessments of Assets,' an unrelated community-spouse resource worksheet -- there is no current public instrument to link to. The kit instead gives the exact required-provisions checklist drawn from OAC 317:35-5-41.6(6)(B), for you to bring to an attorney or verify a draft against."
+      - "Program scope confirmed broad: the MIPT applies to nursing-facility (vendor) care, the ADvantage Waiver, and DDS waivers alike -- all tested against the same OAC 317:35-5-41.6 / Appendix C-1 Schedule VIII.B standard. Not a narrow HCBS-only mechanism."
+      - "Income cap $2,982/month (300% of the 2026 SSI Federal Benefit Rate), per Appendix C-1 (effective July 2026). Distinctive Oklahoma feature: an UPPER income ceiling of $7,637/month above which even a Medicaid Income Pension Trust cannot restore eligibility -- a hard categorical cutoff, not a drafting problem."
+      - "Whole-income-source funding: all of the beneficiary's income is paid into the trust (not excess-only); the trust retains gross income minus the categorically needy standard and distributes the remainder. Nursing-facility maintenance standard $75/month (an additional $90 applies for veterans with a reduced pension in a facility, per Appendix C-1)."
+      - "Trustee fee capped at 3% of funds added to the trust that month. State-of-Oklahoma payback: trust termination is processed by OKDHS Family Support Services Division (Attn: HR&MS), which notifies OHCA Third Party Liability to initiate recovery; no separate residuary remittance form."
+      - "EIN posture: OHCA's rule is silent on tax ID; generally opened under the beneficiary's Social Security number (einRequired: false)."
+      - "UPL footing: R.J. Edwards, Inc. v. Hert, 1972 OK 151 (Okla. 1972) -- read in full, it's a narrower holding than a clean forms-publishing precedent (it turns on the Attorney General directing the process as the bond-issuers' own counsel). No on-point adverse holding either, which is the ordinary posture for this business. Extra discipline held given there is no state-published instrument backstop: no drafted or sample trust language, ever."
+      - "Private-pay nursing-home range from the Genworth/CareScout 2024 Cost of Care Survey (≈$6,448 semi-private / ≈$7,604 private per month, Oklahoma statewide)."
+
+faq:
+  - question: "Is the Oklahoma Medicaid Income Pension Trust Kit legal advice?"
+    answer: "No. This kit is informational only and is not legal advice. We are not attorneys and we do not practice law. Oklahoma does not publish a fill-in trust form, so the kit teaches you exactly what OHCA's own regulation requires a compliant trust to contain, so you can brief an attorney efficiently and verify what they draft. For advice on your specific situation, consult an Oklahoma-licensed elder-law attorney."
+  - question: "Does Oklahoma provide an official Medicaid Income Pension Trust form?"
+    answer: "No -- and this is the most important thing to understand about Oklahoma. OHCA's own regulation (OAC 317:35-5-41.6) cites 'OKDHS Form 08MA011E' as an example trust, but that form turns out to actually be 'Assessments of Assets,' a community-spouse resource-assessment worksheet with no relationship to a trust document. There is no current public fill-in instrument. The trust must be drafted -- by an attorney, or by you where Oklahoma law permits -- to meet the requirements this kit lays out."
+  - question: "What does the kit include?"
+    answer: "A requirements-and-operations guide: the required-provisions checklist derived from OHCA's own regulation with a citation for each item, guidance on gathering the information an attorney needs before your first meeting, the monthly funding worksheet, the bank-account walkthrough, the month-by-month funding process, and Oklahoma-specific denial-avoidance guidance. Delivered as a single PDF."
+  - question: "Do you provide the trust document itself?"
+    answer: "No. We never draft or provide sample or model trust language, generic or otherwise -- that would cross from explaining the law into practicing it. The kit tells you exactly what OHCA requires the finished trust to contain; drafting it is your attorney's work (or, where permitted, your own)."
+  - question: "Who needs a Medicaid Income Pension Trust in Oklahoma?"
+    answer: "A person applying for SoonerCare long-term-care coverage -- nursing facility (vendor) care, the ADvantage Waiver, or a DDS waiver -- whose gross monthly income is above $2,982/month (2026) but below the trust's own ceiling of $7,637/month. Above that ceiling, a trust cannot restore eligibility at all."
+  - question: "How much of my income goes into the trust?"
+    answer: "All of it. Oklahoma is a whole-income-source state: every dollar of the beneficiary's countable income is paid into the trust every month, not just the amount above the cap. The trust then retains an amount equal to gross income minus the categorically needy standard ($2,982/month) and the trustee distributes the rest under OHCA's rules."
+  - question: "Can I be my own trustee in Oklahoma?"
+    answer: "Oklahoma's regulation doesn't explicitly say. In practice, most families and attorneys use a third-party trustee — an adult child or spouse — rather than the applicant, both because general trust law disfavors a sole beneficiary also serving as sole trustee and because banking practice expects a separate trustee. Confirm this directly with your drafting attorney."
+  - question: "Does an Oklahoma Medicaid Income Pension Trust need an EIN?"
+    answer: "Generally no. OHCA's regulation doesn't address tax-ID treatment at all. A trust composed only of the beneficiary's income is usually opened under the beneficiary's own Social Security number. If a bank asks for an EIN out of habit, confirm the titling with your attorney and the bank."
+  - question: "What if my bank refuses to open the trust account?"
+    answer: "Bank refusal is common on a first attempt. The signed trust instrument is your documentation: it is a single, dedicated account titled to the trust, holding only the beneficiary's income, with the trustee (not the beneficiary) as the authorized signer. The kit walks you through handling first-attempt refusals and escalating to the bank's trust department if needed."
+  - question: "Do you offer a refund?"
+    answer: "Yes -- money back if OHCA rejects the Medicaid Income Pension Trust for any reason traceable to following the kit. Email support@millertrustguide.com with the agency's stated denial reason and we issue a full refund within one business day."
+  - question: "Will you talk to me on the phone about my situation?"
+    answer: "No. We do not offer phone support and we do not advise on individual situations. For advice on your specific situation, consult an Oklahoma-licensed elder-law attorney -- you can find one through the Oklahoma Bar Association's Find A Lawyer service or Legal Aid Services of Oklahoma."
+---
+
+import StatePageLayout from '~/layouts/StatePageLayout.astro';
+
+This file's frontmatter is the canonical Oklahoma data source. The body is intentionally minimal — all conversion-surface rendering happens in `StatePageLayout.astro`, which reads from frontmatter. This keeps states homogeneous and prevents drift between states.

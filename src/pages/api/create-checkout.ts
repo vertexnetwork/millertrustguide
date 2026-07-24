@@ -105,7 +105,15 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       billing_address_collection: 'auto',
       payment_intent_data: {
         statement_descriptor_suffix: state.abbreviation,
-        description: `${state.name} Miller Trust Kit (informational guide)`,
+        // Uses each state's own term (South Carolina: "Income Trust", Oklahoma:
+        // "Medicaid Income Pension Trust", etc.) rather than assuming "Miller
+        // Trust" everywhere — several states' own terminology differs.
+        // 'requirements-brief' states (no official form) get "Guide" instead
+        // of "Kit" since there's no fill-in instrument to speak of.
+        description:
+          state.productModel === 'requirements-brief'
+            ? `${state.name} ${state.primaryTerm ?? 'Miller Trust'} Requirements Guide (informational guide)`
+            : `${state.name} ${state.primaryTerm ?? 'Miller Trust'} Kit (informational guide)`,
         ...(referralFacility ? { metadata: { referral_facility: referralFacility } } : {}),
       },
       metadata: {

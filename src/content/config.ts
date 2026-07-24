@@ -29,14 +29,59 @@ const stateSchema = z.object({
   // state-agency facts — Rule 1: officialTemplateUrl MUST point to .gov
   agencyName: z.string(),
   agencyAbbreviation: z.string(),
-  officialTemplateUrl: z.string().url(),
-  officialTemplateNote: z.string(),
+  // Required when productModel is 'template' (the default) — enforced below by
+  // .refine(), not by Zod's own required-ness, since 'requirements-brief' states
+  // (no official fill-in instrument exists) legitimately omit both.
+  officialTemplateUrl: z.string().url().optional(),
+  officialTemplateNote: z.string().optional(),
   policyManualUrl: z.string().url(),
   policyManualSection: z.string(),
   // Short citation phrase used INLINE throughout the kit body (e.g. TX
   // "Appendix XXXVI"; NJ "QIT FAQ and model instrument"). Keeps per-state
   // citations accurate without leaking another state's section names.
   policyCitationShort: z.string(),
+
+  // ── Product model fork (added 2026-07, Oklahoma pilot) ──────────────────
+  // 'template' (default): the state publishes an official fill-in QIT/Miller
+  //   Trust instrument — the original, only product model through 12 states.
+  //   officialTemplateUrl/Note are required (enforced below).
+  // 'requirements-brief': NO state-published fill-in instrument exists (or the
+  //   one referenced by the state's own regulation turns out to be wrong/dead —
+  //   see Oklahoma). We NEVER draft or provide model/sample trust language
+  //   ourselves in this mode — that would cross from "explain the law" into
+  //   "draft the instrument," the one line this whole business refuses to
+  //   cross. Instead the product is a requirements checklist (derived from the
+  //   state's own published policy, cited clause-by-clause) plus the same
+  //   operational content every state ships (funding, banking, denial-avoidance,
+  //   post-death) — positioned as what to bring to an attorney, and what to
+  //   check the drafted trust against afterward. requiredTrustProvisions
+  //   replaces officialTemplateUrl/Note as the Section-2 content source.
+  productModel: z.enum(['template', 'requirements-brief']).default('template'),
+  // The state's own published list of what a compliant trust must contain,
+  // each entry cited to the actual regulation/policy clause — read the primary
+  // source yourself before authoring this; do not trust a secondary summary,
+  // since this array IS the product in 'requirements-brief' mode.
+  requiredTrustProvisions: z
+    .array(
+      z.object({
+        title: z.string(),
+        description: z.string(),
+        agencyCitation: z.string(),
+      })
+    )
+    .default([]),
+  // Lead-in paragraph for Section 2 in 'requirements-brief' mode: why no
+  // official form exists (or why the one the regulation cites turned out to be
+  // wrong), and where the checklist below actually comes from.
+  requirementsIntroNote: z.string().optional(),
+  // Whether state law/practice requires a licensed attorney to draft the trust,
+  // or self-drafting is viable — state this honestly per state; do not assume.
+  attorneyRequiredNote: z.string().optional(),
+  // Some states (so far only Oklahoma) impose an UPPER income ceiling above
+  // which even a QIT/MIPT cannot restore eligibility — distinct from
+  // incomeCap2026 (the floor above which one is needed at all). Omit unless a
+  // state's own policy states one.
+  incomeCeiling2026: z.number().optional(),
   // The state's LTC-Medicaid program label, used in the glossary (TX: MEPD /
   // "Medicaid for the Elderly and People with Disabilities"; NJ: MLTSS /
   // "Managed Long Term Services and Supports").
@@ -187,7 +232,16 @@ const stateSchema = z.object({
     founderPrice: z.number().optional(),
     founderUnitLimit: z.number().optional(),
   }),
-});
+}).refine(
+  (data) =>
+    data.productModel !== 'template' ||
+    (!!data.officialTemplateUrl && !!data.officialTemplateNote),
+  {
+    message:
+      "officialTemplateUrl and officialTemplateNote are required when productModel is 'template' (the default) — omit both only for productModel: 'requirements-brief'.",
+    path: ['officialTemplateUrl'],
+  }
+);
 
 export const collections = {
   states: defineCollection({ type: 'content', schema: stateSchema }),

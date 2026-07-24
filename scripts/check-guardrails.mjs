@@ -77,9 +77,16 @@ for (const file of walk(CONTENT, ['.mdx', '.md'])) {
   checkLines(file, FORBIDDEN_CONTENT_PHRASES, 'Rule 1 — forbidden trust-instrument prose');
 }
 
-// 2. Every state file's officialTemplateUrl must be on a .gov / .us domain
+// 2. Every state file's officialTemplateUrl must be on a .gov / .us domain.
+// 'requirements-brief' states (productModel) have no official fill-in
+// instrument by design — no state publishes one — so they legitimately omit
+// officialTemplateUrl entirely; skip the requirement for those only.
 for (const file of walk(join(CONTENT, 'states'), ['.mdx', '.md'])) {
   const text = readFileSync(file, 'utf8');
+  const productModelMatch = text.match(/productModel:\s*["']?([a-z-]+)["']?/);
+  const productModel = productModelMatch ? productModelMatch[1] : 'template';
+  if (productModel === 'requirements-brief') continue;
+
   const match = text.match(/officialTemplateUrl:\s*["']?([^"'\n\r]+)["']?/);
   if (!match) {
     fail(file, 'Rule 1 — missing officialTemplateUrl', 0, '');
@@ -103,9 +110,15 @@ for (const file of walk(SRC, ['.astro', '.tsx', '.ts', '.jsx', '.js'])) {
 for (const file of walk(SRC, ['.astro', '.tsx', '.ts', '.mdx', '.md', '.jsx', '.js'])) {
   const lines = readFileSync(file, 'utf8').split(/\r?\n/);
   lines.forEach((line, i) => {
-    if (PHONE_RE.test(line)) {
+    const match = PHONE_RE.exec(line);
+    PHONE_RE.lastIndex = 0; // stateless re-use (no /g flag, but be defensive)
+    if (match) {
       // Allowlist: lines that explicitly describe state-agency contact references.
       if (/agency contact|state bar|agency reference/i.test(line)) return;
+      // Allowlist: a digit run immediately preceded by a URL path separator
+      // (e.g. .../lnx/0501120203) is a URL path segment, not a phone number —
+      // a real phone number is never written as a bare "/XXXXXXXXXX" path.
+      if (line[match.index - 1] === '/') return;
       fail(file, 'Rule 3 — phone number in shipped code/content', i + 1, line.trim().slice(0, 120));
     }
   });

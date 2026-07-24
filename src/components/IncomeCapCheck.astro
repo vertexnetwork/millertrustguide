@@ -8,18 +8,35 @@
 //     and it captures the top-of-funnel cohort the single buy-path drops.
 //   - income above the cap    -> "a Miller Trust is the standard fix" and nudge
 //     to the state guides.
+//   - above the state's own income CEILING (Oklahoma so far) -> a trust can't
+//     help at all; this is a hard categorical cutoff, not a drafting problem.
 //   - not sure / no JS        -> the form degrades to a labeled control set and
 //     a link to the explainer; nothing is gated behind script.
 //
-// 2026 figures (annual update with the rest of the site each January — 300% of
-// the Federal Benefit Rate).
+// State selection drives the actual figures used. Most states share the
+// 300%-FBR $2,982/$5,964 standard, but this is NOT universal: Missouri's real
+// trigger is its own HCB income maximum (much lower), and Oklahoma adds an
+// upper ceiling above which even a trust can't restore eligibility. Defaulting
+// to the $2,982 "general estimate" for an unselected state and silently
+// applying it to every state was a real accuracy bug (fixed 2026-07-24) — a
+// Missouri visitor at $2,200/month was told they were under the cap when they
+// were actually over Missouri's real $1,737 HCB maximum.
 interface Props {
-  // Live states, so an over-cap visitor can route straight into their guide
-  // from the result (T2). Empty → the result falls back to the /states link.
-  states?: { slug: string; name: string }[];
+  // Live states with their own actual figures, so the check is accurate
+  // per-state rather than assuming the national 300%-FBR figure everywhere.
+  states?: {
+    slug: string;
+    name: string;
+    incomeCap2026: number;
+    incomeCapCouple2026: number;
+    incomeCeiling2026?: number;
+  }[];
 }
 const { states = [] } = Astro.props;
 
+// General-estimate fallback for visitors who haven't picked a state yet —
+// accurate for most (not all) states. Selecting a specific state below
+// overrides this with that state's real figures.
 const CAP_SINGLE_2026 = 2982;
 const CAP_COUPLE_2026 = 5964;
 const fmt = (n: number) => n.toLocaleString('en-US');
@@ -35,49 +52,63 @@ const fmt = (n: number) => n.toLocaleString('en-US');
       Do you even need a Miller Trust?
     </h2>
     <p class="mt-2 text-sm text-ink-muted">
-      A Qualified Income Trust only matters if the applicant's monthly income is over the 2026
-      long-term-care Medicaid cap (<strong>${fmt(CAP_SINGLE_2026)}</strong> single,
-      <strong>${fmt(CAP_COUPLE_2026)}</strong> couple). Check before you buy anything.
+      Most states use the same 2026 long-term-care Medicaid income cap
+      (<strong>${fmt(CAP_SINGLE_2026)}</strong> single, <strong>${fmt(CAP_COUPLE_2026)}</strong> couple) —
+      but a couple of states differ. Pick your state below for the exact figure, or check the general estimate.
     </p>
 
-    <form id="capcheck-form" class="mt-4 grid gap-4 sm:grid-cols-[auto,1fr,auto] sm:items-end" novalidate>
-      <fieldset class="min-w-0">
-        <legend class="text-sm font-medium text-ink">Who is applying?</legend>
-        <div class="mt-1 flex gap-3 text-sm">
-          <label class="inline-flex items-center gap-1.5">
-            <input type="radio" name="who" value="single" checked /> One person
-          </label>
-          <label class="inline-flex items-center gap-1.5">
-            <input type="radio" name="who" value="couple" /> A couple
-          </label>
-        </div>
-      </fieldset>
-
+    <form id="capcheck-form" class="mt-4 grid gap-4" novalidate>
       <div class="min-w-0">
-        <label for="capcheck-amount" class="text-sm font-medium text-ink">
-          Gross monthly income (Social Security + pension + everything)
-        </label>
-        <div class="mt-1 flex items-center gap-2">
-          <span aria-hidden="true" class="text-ink-muted">$</span>
-          <input
-            id="capcheck-amount"
-            name="amount"
-            type="number"
-            inputmode="numeric"
-            min="0"
-            step="1"
-            placeholder="3,200"
-            class="w-full rounded-md border border-border-strong px-3 py-2"
-          />
-        </div>
+        <label for="capcheck-state" class="text-sm font-medium text-ink">Which state? (optional, but more accurate)</label>
+        <select
+          id="capcheck-state"
+          name="state"
+          class="mt-1 w-full rounded-md border border-border-strong bg-surface-elevated px-3 py-2 text-sm"
+        >
+          <option value="">General estimate (most states)</option>
+          {states.map((s) => <option value={s.slug}>{s.name}</option>)}
+        </select>
       </div>
 
-      <button
-        type="submit"
-        class="rounded-md bg-primary px-4 py-2 font-semibold text-white hover:bg-primary-dark"
-      >
-        Check
-      </button>
+      <div class="grid gap-4 sm:grid-cols-[auto,1fr,auto] sm:items-end">
+        <fieldset class="min-w-0">
+          <legend class="text-sm font-medium text-ink">Who is applying?</legend>
+          <div class="mt-1 flex gap-3 text-sm">
+            <label class="inline-flex items-center gap-1.5">
+              <input type="radio" name="who" value="single" checked /> One person
+            </label>
+            <label class="inline-flex items-center gap-1.5">
+              <input type="radio" name="who" value="couple" /> A couple
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="min-w-0">
+          <label for="capcheck-amount" class="text-sm font-medium text-ink">
+            Gross monthly income (Social Security + pension + everything)
+          </label>
+          <div class="mt-1 flex items-center gap-2">
+            <span aria-hidden="true" class="text-ink-muted">$</span>
+            <input
+              id="capcheck-amount"
+              name="amount"
+              type="number"
+              inputmode="numeric"
+              min="0"
+              step="1"
+              placeholder="3,200"
+              class="w-full rounded-md border border-border-strong px-3 py-2"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="rounded-md bg-primary px-4 py-2 font-semibold text-white hover:bg-primary-dark"
+        >
+          Check
+        </button>
+      </div>
     </form>
 
     <div
@@ -101,62 +132,104 @@ const fmt = (n: number) => n.toLocaleString('en-US');
     (function () {
       var form = document.getElementById('capcheck-form');
       var out = document.getElementById('capcheck-result');
+      var stateSelect = document.getElementById('capcheck-state');
       if (!form || !out) return;
       var fmt = function (n) { return n.toLocaleString('en-US'); };
-      // Options for the in-result state jump (T2): route an over-cap visitor
-      // straight into their guide instead of a generic "find your state" link.
+
+      // Per-slug lookup of each state's actual figures, built from the states
+      // prop — NOT a single hardcoded national constant applied everywhere.
+      var bySlug = {};
+      (states || []).forEach(function (s) {
+        bySlug[s.slug] = s;
+      });
+
+      // Options for the in-result state jump (T2), shown only when the
+      // visitor checked the general estimate (no state pre-selected) and came
+      // back over-cap — route them to pick a state and see the exact figure.
       var stateOptions = (states || []).map(function (s) {
         return '<option value="' + s.slug + '">' + s.name + '</option>';
       }).join('');
 
-      function classify(income, cap) {
-        var over = income - cap;
+      function classify(income, ctx) {
+        var cap = ctx.who === 'couple' ? ctx.capCouple : ctx.capSingle;
+        var stateLabel = ctx.stateName ? ' in ' + ctx.stateName : '';
+        var capLabel = ctx.stateName ? ctx.stateName + "'s" : 'the 2026';
+
         if (income <= 0 || isNaN(income)) {
           return {
             tone: 'border-border bg-bg-elevated text-ink',
-            html: 'Enter a gross monthly income above to see whether a Miller Trust applies.',
+            html: 'Enter a gross monthly income above to see whether a Miller Trust applies' + stateLabel + '.',
           };
         }
+
+        // Oklahoma-style upper ceiling: above this, no trust can restore
+        // eligibility at all — a categorical cutoff, not a drafting problem.
+        if (ctx.ceiling && income > ctx.ceiling) {
+          return {
+            tone: 'border-cta/40 bg-amber-50 text-ink',
+            html:
+              '<strong>A trust can\'t help here.</strong> At $' + fmt(income) + '/month you are above ' +
+              capLabel + ' own income ceiling of $' + fmt(ctx.ceiling) + ' — above that figure, a Miller Trust ' +
+              'cannot restore eligibility at all. This is a hard cutoff, not a drafting problem. Talk to' +
+              stateLabel + ' elder-law attorney about spend-down or other options.' +
+              (ctx.slug
+                ? ' <a class="underline" href="/states/' + ctx.slug + '">See the ' + ctx.stateName + ' guide →</a>'
+                : ''),
+          };
+        }
+
         if (income <= cap) {
           var margin = cap - income;
           return {
             tone: 'border-emerald-300 bg-emerald-50 text-ink',
             html:
-              '<strong>You probably do NOT need a Miller Trust yet.</strong> At $' + fmt(income) +
-              '/month you are $' + fmt(margin) + ' under the 2026 cap of $' + fmt(cap) +
+              '<strong>You probably do NOT need a Miller Trust yet' + stateLabel + '.</strong> At $' + fmt(income) +
+              '/month you are $' + fmt(margin) + ' under ' + capLabel + ' cap of $' + fmt(cap) +
               '. Most applicants under the cap qualify without a Qualified Income Trust — don’t buy a kit you don’t need. ' +
               'If income may rise (a pension start, a COLA), re-check then. ' +
               '<a class="underline" href="/about">Learn what we do and don’t help with →</a>',
           };
         }
+
         return {
           tone: 'border-cta/40 bg-amber-50 text-ink',
           html:
-            '<strong>A Miller Trust is the standard fix.</strong> At $' + fmt(income) +
-            '/month you are $' + fmt(over) + ' over the 2026 cap of $' + fmt(cap) +
+            '<strong>A Miller Trust is the standard fix' + stateLabel + '.</strong> At $' + fmt(income) +
+            '/month you are $' + fmt(income - cap) + ' over ' + capLabel + ' cap of $' + fmt(cap) +
             '. A Qualified Income Trust diverts the excess so the applicant qualifies. ' +
             'The sooner it is set up, the sooner coverage can begin.' +
-            (stateOptions
-              ? '<span class="mt-3 flex flex-wrap items-end gap-2">' +
-                  '<label class="w-full text-sm font-medium" for="capcheck-state-jump">Go straight to your state guide:</label>' +
-                  '<select id="capcheck-state-jump" class="min-w-0 flex-1 rounded-md border border-border-strong bg-surface-elevated px-3 py-2 text-sm">' +
-                  '<option value="">Select your state…</option>' + stateOptions +
-                  '</select>' +
-                '</span>'
-              : ' <a class="underline" href="/states">Find your state guide →</a>'),
+            (ctx.slug
+              ? ' <a class="underline" href="/states/' + ctx.slug + '">See the ' + ctx.stateName + ' guide →</a>'
+              : (stateOptions
+                  ? '<span class="mt-3 flex flex-wrap items-end gap-2">' +
+                      '<label class="w-full text-sm font-medium" for="capcheck-state-jump">Go straight to your state guide:</label>' +
+                      '<select id="capcheck-state-jump" class="min-w-0 flex-1 rounded-md border border-border-strong bg-surface-elevated px-3 py-2 text-sm">' +
+                      '<option value="">Select your state…</option>' + stateOptions +
+                      '</select>' +
+                    '</span>'
+                  : ' <a class="underline" href="/states">Find your state guide →</a>')),
         };
       }
 
       form.addEventListener('submit', function (e) {
         e.preventDefault();
-        // Read by the inputs' name attributes ("who" / "amount"). Field names
-        // are deliberately generic + non-PII (Rule 2 guardrail): this is a
-        // local, ephemeral calculator — nothing here is submitted or stored.
+        // Read by the inputs' name attributes ("who" / "amount" / "state").
+        // Field names are deliberately generic + non-PII (Rule 2 guardrail):
+        // this is a local, ephemeral calculator — nothing here is submitted
+        // or stored.
         var data = new FormData(form);
         var who = data.get('who') === 'couple' ? 'couple' : 'single';
-        var cap = who === 'couple' ? CAP_COUPLE_2026 : CAP_SINGLE_2026;
+        var slug = String(data.get('state') || '');
+        var picked = slug ? bySlug[slug] : null;
         var amount = parseInt(String(data.get('amount') || '').replace(/[^0-9]/g, ''), 10);
-        var r = classify(amount, cap);
+        var r = classify(amount, {
+          who: who,
+          capSingle: picked ? picked.incomeCap2026 : CAP_SINGLE_2026,
+          capCouple: picked ? picked.incomeCapCouple2026 : CAP_COUPLE_2026,
+          ceiling: picked ? picked.incomeCeiling2026 : undefined,
+          stateName: picked ? picked.name : '',
+          slug: picked ? picked.slug : '',
+        });
         out.className = 'mt-4 rounded-lg border p-4 text-sm leading-relaxed ' + r.tone;
         out.innerHTML = r.html;
         // Re-bind the in-result state jump each render (innerHTML replaced it).

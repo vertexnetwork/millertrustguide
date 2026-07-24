@@ -49,6 +49,12 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 // the else branch is byte-identical to what every income-cap state renders.
 const hcb = state.medicaidStructure === 'hybrid';
 
+// 'requirements-brief' states (e.g. Oklahoma) publish no fill-in QIT
+// instrument — see KitPdfLayout for the full explanation. The page-level
+// copy flexes the same way: no "download the template" framing, no
+// officialTemplateUrl references.
+const reqBrief = state.productModel === 'requirements-brief';
+
 // Founder pricing. The display is gated on the operator-maintained
 // unitsSold count; Stripe's max-redemptions coupon is the actual charge
 // enforcement (see create-checkout.ts). Keep unitsSold current so the
@@ -91,13 +97,18 @@ const proofTestimonials = isLive
 // assistants can lift it verbatim.
 const tldr = blocked
   ? `Miller Trust Guide does not currently publish a kit for ${state.name}. ${state.blockedReason ?? 'For advice on your situation, consult a licensed elder-law attorney in your state.'}`
-  : hcb
-    ? `A ${state.name} Qualified Income Trust (Miller Trust) is an irrevocable trust used to qualify an over-income applicant for ${state.name}'s Home and Community-Based (HCB) waiver — in-home Medicaid care for people age 63 and over. ${state.name} nursing-facility Medicaid uses a spend-down, so a QIT is not used there; it is the tool for the in-home waiver, whose income maximum is $${fmt(state.incomeCap2026)}/month (${state.asOf}). Because that limit is absolute — an over-income applicant cannot spend down to qualify — the trust is the only path: the applicant keeps income up to the maximum and moves only the excess into the trust, using the official ${state.agencyAbbreviation} form (886-4657). A third party, not the applicant, must be trustee. Eligibility begins the month the trust is funded — there is no back-dating — and every month of delay is another month of private-pay in-home or assisted-living care ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This is the step-by-step walkthrough most families need: $${displayPrice}, instant download, money-back if ${state.agencyAbbreviation} rejects the trust for a reason traceable to following the kit.`
-    : `A ${state.name} Miller Trust (Qualified Income Trust) is an irrevocable trust used to qualify a Medicaid applicant whose monthly income exceeds the ${state.name} long-term-care income cap of $${fmt(state.incomeCap2026)} per month (${state.asOf}). The trust must be drafted, signed, and funded in the same calendar month using the official ${state.agencyAbbreviation} template (${state.policyManualSection}). Medicaid eligibility begins the month the trust is funded — there is no retroactive effect, and every month of delay is another month of full private-pay nursing-home cost ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This guide is the step-by-step operational walkthrough most families need: $${displayPrice}, instant download, money-back if ${state.agencyAbbreviation} rejects the QIT for a reason traceable to following the kit.`;
+  : reqBrief
+    ? `A ${state.name} Qualified Income Trust (Miller Trust) is an irrevocable trust used to qualify a Medicaid applicant whose monthly income exceeds the ${state.name} long-term-care income cap of $${fmt(state.incomeCap2026)} per month (${state.asOf}). ${state.name} does not publish a fill-in QIT form — the trust must be drafted (by an attorney, or by you where permitted) to meet ${state.agencyAbbreviation}'s published requirements (${state.policyManualSection}). Medicaid eligibility begins the month the trust is signed and funded — there is no retroactive effect, and every month of delay is another month of full private-pay care ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This guide is the requirements checklist and operational walkthrough most families need: $${displayPrice}, instant download, money-back if ${state.agencyAbbreviation} rejects the trust for a reason traceable to following the kit.`
+    : hcb
+      ? `A ${state.name} Qualified Income Trust (Miller Trust) is an irrevocable trust used to qualify an over-income applicant for ${state.name}'s Home and Community-Based (HCB) waiver — in-home Medicaid care for people age 63 and over. ${state.name} nursing-facility Medicaid uses a spend-down, so a QIT is not used there; it is the tool for the in-home waiver, whose income maximum is $${fmt(state.incomeCap2026)}/month (${state.asOf}). Because that limit is absolute — an over-income applicant cannot spend down to qualify — the trust is the only path: the applicant keeps income up to the maximum and moves only the excess into the trust, using the official ${state.agencyAbbreviation} form (886-4657). A third party, not the applicant, must be trustee. Eligibility begins the month the trust is funded — there is no back-dating — and every month of delay is another month of private-pay in-home or assisted-living care ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This is the step-by-step walkthrough most families need: $${displayPrice}, instant download, money-back if ${state.agencyAbbreviation} rejects the trust for a reason traceable to following the kit.`
+      : `A ${state.name} Miller Trust (Qualified Income Trust) is an irrevocable trust used to qualify a Medicaid applicant whose monthly income exceeds the ${state.name} long-term-care income cap of $${fmt(state.incomeCap2026)} per month (${state.asOf}). The trust must be drafted, signed, and funded in the same calendar month using the official ${state.agencyAbbreviation} template (${state.policyManualSection}). Medicaid eligibility begins the month the trust is funded — there is no retroactive effect, and every month of delay is another month of full private-pay nursing-home cost ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This guide is the step-by-step operational walkthrough most families need: $${displayPrice}, instant download, money-back if ${state.agencyAbbreviation} rejects the QIT for a reason traceable to following the kit.`;
 
 // Authoritative citations used in this article — feeds the Article@citation
-// JSON-LD array (2026 entity-binding signal).
-const citationUrls = [state.officialTemplateUrl, state.policyManualUrl];
+// JSON-LD array (2026 entity-binding signal). requirements-brief states have
+// no officialTemplateUrl by design.
+const citationUrls = [state.officialTemplateUrl, state.policyManualUrl].filter(
+  (url): url is string => !!url
+);
 
 // Persona-tuned emphasis line (research-backed personaLean; see
 // docs/state-persona-modifiers-research.md). Flexes WHICH fear the page leads
@@ -110,7 +121,9 @@ const personaLede =
   state.personaLean === 'community-spouse'
     ? `Is it your husband or wife entering care? This kit handles the income side — the ${state.primaryTerm ?? 'Qualified Income Trust'} — and points you to the separate spousal rules that protect the home and savings you keep as the spouse staying home.`
     : state.personaLean === 'daughter'
-      ? `Doing this for a parent? It's the step-by-step way to work toward qualifying them before the next facility bill — without paying $1,000–$2,500 for what is, in practice, mostly paperwork.`
+      ? reqBrief
+        ? `Doing this for a parent? This is the way to walk into an attorney's office already knowing exactly what ${state.name} requires — before the next facility bill, and without paying for research you can do yourself.`
+        : `Doing this for a parent? It's the step-by-step way to work toward qualifying them before the next facility bill — without paying $1,000–$2,500 for what is, in practice, mostly paperwork.`
       : null;
 
 // ── Long-tail FAQ expansion (ADDITIVE — does not change head-term targeting) ──
@@ -137,10 +150,17 @@ const derivedFaq: Array<{ question: string; answer: string }> = [
     question: `What happens to the money in a ${state.name} Miller Trust when the beneficiary dies?`,
     answer: state.postDeathDistribution,
   },
-  {
-    question: `Can you set up a ${state.name} Miller Trust without a lawyer?`,
-    answer: `For the core Qualified Income Trust setup, the task is following ${state.agencyAbbreviation}'s publicly-published template and opening a specific kind of bank account — work many families do themselves. Attorneys typically charge $1,000–$2,500 for it. For complex situations (significant assets, prior gifting, second marriages, multi-state property), consult a ${state.name}-licensed elder-law attorney. Miller Trust Guide is informational only and is not legal advice; we do not draft the trust or advise on individual situations.`,
-  },
+  reqBrief
+    ? {
+        question: `Can you set up a ${state.name} Miller Trust without a lawyer?`,
+        answer:
+          state.attorneyRequiredNote ??
+          `${state.name} does not publish a fill-in Qualified Income Trust form, so the trust itself is typically drafted by a licensed attorney. This kit prepares you to brief that attorney efficiently and verify what they draft; it does not draft the trust or advise on individual situations. Miller Trust Guide is informational only and is not legal advice.`,
+      }
+    : {
+        question: `Can you set up a ${state.name} Miller Trust without a lawyer?`,
+        answer: `For the core Qualified Income Trust setup, the task is following ${state.agencyAbbreviation}'s publicly-published template and opening a specific kind of bank account — work many families do themselves. Attorneys typically charge $1,000–$2,500 for it. For complex situations (significant assets, prior gifting, second marriages, multi-state property), consult a ${state.name}-licensed elder-law attorney. Miller Trust Guide is informational only and is not legal advice; we do not draft the trust or advise on individual situations.`,
+      },
 ];
 const allFaq = [...state.faq, ...derivedFaq];
 
@@ -200,36 +220,65 @@ if (isLive) {
     howToSchema({
       url: canonical,
       name: `How to set up a ${state.name} Miller Trust (Qualified Income Trust)`,
-      description: `Step-by-step procedure for setting up a ${state.name} Medicaid Qualified Income Trust using the official ${state.agencyAbbreviation} template.`,
+      description: reqBrief
+        ? `Step-by-step procedure for meeting ${state.name}'s Medicaid Qualified Income Trust requirements — ${state.name} does not publish a fill-in template, so the trust is drafted to satisfy the state's own published policy.`
+        : `Step-by-step procedure for setting up a ${state.name} Medicaid Qualified Income Trust using the official ${state.agencyAbbreviation} template.`,
       totalTime: 'PT3H',
       estimatedCost: { value: state.price, currency: 'USD' },
-      steps: [
-        {
-          name: `Download the official ${state.agencyAbbreviation} QIT template`,
-          text: `Visit ${state.agencyAbbreviation}'s published template page and download the most current version.`,
-          url: state.officialTemplateUrl,
-        },
-        {
-          name: 'Fill in the obvious data fields',
-          text: 'Enter the applicant name, trustee name, and listed income sources per the state-published instructions.',
-        },
-        {
-          name: 'Sign the trust',
-          text: 'Execute the signed trust in the same calendar month you intend to fund it.',
-        },
-        {
-          name: 'Open a bank account in the name of the trust',
-          text: `Open the account using the applicant's Social Security number${state.einRequired ? ' or the trust EIN where required' : ''}. ${state.agencyAbbreviation} allows the small opening deposit banks typically require to open a new account. Use the kit's bank-refusal script and printed ${state.agencyAbbreviation} policy section to handle first-attempt refusals.`,
-        },
-        {
-          name: 'Redirect income sources to the trust account',
-          text: 'Submit direct-deposit redirect requests for each listed income source.',
-        },
-        {
-          name: 'Submit the Medicaid application',
-          text: 'File the LTC Medicaid application; coverage begins the month the QIT is funded.',
-        },
-      ],
+      steps: reqBrief
+        ? [
+            {
+              name: `Confirm the requirements against ${state.agencyAbbreviation} policy`,
+              text: `Review the required-provisions checklist derived from ${state.policyManualSection}.`,
+            },
+            {
+              name: 'Have the trust drafted',
+              text: `An attorney (or, where ${state.name} permits it, you) drafts the trust to satisfy every required provision.`,
+            },
+            {
+              name: 'Sign the trust',
+              text: 'Execute the signed trust in the same calendar month you intend to fund it.',
+            },
+            {
+              name: 'Open a bank account in the name of the trust',
+              text: `Open the account using the applicant's Social Security number${state.einRequired ? ' or the trust EIN where required' : ''}. Use the kit's bank-refusal script to handle first-attempt refusals.`,
+            },
+            {
+              name: 'Redirect income sources to the trust account',
+              text: 'Submit direct-deposit redirect requests for each listed income source.',
+            },
+            {
+              name: 'Submit the Medicaid application',
+              text: 'File the LTC Medicaid application; coverage begins the month the trust is funded.',
+            },
+          ]
+        : [
+            {
+              name: `Download the official ${state.agencyAbbreviation} QIT template`,
+              text: `Visit ${state.agencyAbbreviation}'s published template page and download the most current version.`,
+              url: state.officialTemplateUrl,
+            },
+            {
+              name: 'Fill in the obvious data fields',
+              text: 'Enter the applicant name, trustee name, and listed income sources per the state-published instructions.',
+            },
+            {
+              name: 'Sign the trust',
+              text: 'Execute the signed trust in the same calendar month you intend to fund it.',
+            },
+            {
+              name: 'Open a bank account in the name of the trust',
+              text: `Open the account using the applicant's Social Security number${state.einRequired ? ' or the trust EIN where required' : ''}. ${state.agencyAbbreviation} allows the small opening deposit banks typically require to open a new account. Use the kit's bank-refusal script and printed ${state.agencyAbbreviation} policy section to handle first-attempt refusals.`,
+            },
+            {
+              name: 'Redirect income sources to the trust account',
+              text: 'Submit direct-deposit redirect requests for each listed income source.',
+            },
+            {
+              name: 'Submit the Medicaid application',
+              text: 'File the LTC Medicaid application; coverage begins the month the QIT is funded.',
+            },
+          ],
     })
   );
 }
@@ -284,11 +333,24 @@ if (isLive) {
       </p>
 
       <p class="mt-4 text-base text-ink">
-        The step-by-step playbook most {state.name} families need to fund a Qualified Income Trust without paying
-        $1,000–$2,500 for an attorney to do what is, in practice, a few hours of paperwork and one trip to the bank.
-        Built directly around the official {state.agencyAbbreviation} template. <strong>Informational only — not legal advice.</strong>
-        But it isn't guesswork: every step is drawn straight from {state.agencyAbbreviation}'s own published policy, with
-        the citation behind each claim.
+        {reqBrief ? (
+          <Fragment>
+            {state.name} doesn't publish a fill-in Qualified Income Trust form, so an attorney drafts it — this is
+            the playbook that keeps that engagement to drafting alone instead of research-plus-drafting: the exact
+            requirements checklist, cited to {state.agencyAbbreviation}'s own published policy, plus the funding
+            and bank-account mechanics once the trust is signed. <strong>Informational only — not legal advice.</strong>{' '}
+            Every requirement is drawn straight from {state.agencyAbbreviation}'s own published policy, with the
+            citation behind each claim.
+          </Fragment>
+        ) : (
+          <Fragment>
+            The step-by-step playbook most {state.name} families need to fund a Qualified Income Trust without paying
+            $1,000–$2,500 for an attorney to do what is, in practice, a few hours of paperwork and one trip to the bank.
+            Built directly around the official {state.agencyAbbreviation} template. <strong>Informational only — not legal advice.</strong>
+            But it isn't guesswork: every step is drawn straight from {state.agencyAbbreviation}'s own published policy, with
+            the citation behind each claim.
+          </Fragment>
+        )}
       </p>
 
       {/* Epiphany-bridge hook (Reluctant Hero) — surfaced in the hero where it
@@ -300,11 +362,23 @@ if (isLive) {
         <p class="!mt-0 text-xs font-semibold uppercase tracking-wider text-primary">From the author</p>
         <p class="!mb-0 mt-1 text-base leading-relaxed text-ink">
           I'm <a href="/authors/james-whitfield" rel="author" class="font-medium text-primary">James Whitfield</a>. I
-          built this after spending weeks helping a family member set up a Miller Trust. The free state PDF told us
-          which fields to fill and stopped there; two attorneys quoted $1,500 and $2,200 with a six-week wait; and the
-          bank refused to open the account twice. The gap between a downloaded form and a funded account that actually
-          starts Medicaid coverage is where families lose a month they can't get back — and closing that gap is the
-          whole reason this kit exists.
+          built this after spending weeks helping a family member set up a Miller Trust.
+          {reqBrief ? (
+            <Fragment>
+              {' '}Two attorneys quoted $1,500 and $2,200 with a six-week wait — most of that billed for research we
+              could have handed them ourselves; and the bank refused to open the account twice after the trust was
+              signed. The gap between "an attorney drafted something" and a funded account that actually starts
+              Medicaid coverage is where families lose a month they can't get back — and closing that gap is the
+              whole reason this kit exists.
+            </Fragment>
+          ) : (
+            <Fragment>
+              {' '}The free state PDF told us which fields to fill and stopped there; two attorneys quoted $1,500 and
+              $2,200 with a six-week wait; and the bank refused to open the account twice. The gap between a downloaded
+              form and a funded account that actually starts Medicaid coverage is where families lose a month they
+              can't get back — and closing that gap is the whole reason this kit exists.
+            </Fragment>
+          )}
         </p>
       </div>
 
@@ -401,10 +475,18 @@ if (isLive) {
                 <strong>A pre-filled monthly funding worksheet</strong> using the {hcb ? 'HCB income maximum' : `${state.asOf} income cap`} of
                 ${fmt(state.incomeCap2026)} so you know exactly how much {hcb ? 'of the excess to move into the trust' : 'income to redirect'} each month.
               </li>
-              <li>
-                <strong>The direct link to the official {state.agencyAbbreviation} .gov template</strong> and a
-                plain-English walkthrough of every field you fill in yourself.
-              </li>
+              {reqBrief ? (
+                <li>
+                  <strong>The {state.requiredTrustProvisions.length}-item required-provisions checklist</strong>,
+                  cited to {state.agencyAbbreviation}'s own published policy — {state.name} doesn't publish a
+                  fill-in form, so this is what your attorney's draft must satisfy.
+                </li>
+              ) : (
+                <li>
+                  <strong>The direct link to the official {state.agencyAbbreviation} .gov template</strong> and a
+                  plain-English walkthrough of every field you fill in yourself.
+                </li>
+              )}
               <li>
                 <strong>The "what to say to family" page</strong> — short script for when a sibling asks why you didn't
                 just hire an attorney. Pre-empts the family-conflict fight before it starts.
@@ -415,18 +497,34 @@ if (isLive) {
               </li>
             </ul>
 
-            {/* T5 — own the "isn't the form free?" objection head-on, right after
-                the manifest. The honest two-number framing IS our moat. */}
-            <div class="rounded-lg border-l-4 border-primary bg-primary-tint/20 p-5">
-              <p class="!my-0 text-base">
-                <strong>"Isn't the QIT form free from {state.agencyAbbreviation}?"</strong> It is — and the kit links
-                you straight to it, at no charge. You're not paying for the form. You're paying for the part that
-                actually trips families up: the same-calendar-month funding rule, the word-for-word bank-refusal
-                script, and the {state.commonDenialReasons.length} {state.agencyAbbreviation} denial traps with the
-                policy citation behind each. The form is a couple of pages; getting it accepted is where a month of
-                coverage gets lost.
-              </p>
-            </div>
+            {/* T5 — own the up-front objection head-on, right after the manifest.
+                The honest framing IS our moat; it just flips for reqBrief since
+                there's no free form to point to — the objection becomes "why not
+                just hire the lawyer and skip this?" */}
+            {reqBrief ? (
+              <div class="rounded-lg border-l-4 border-primary bg-primary-tint/20 p-5">
+                <p class="!my-0 text-base">
+                  <strong>"If I'm hiring a lawyer anyway, why do I need this?"</strong> Because {state.name} doesn't
+                  publish a fill-in form, the attorney has to draft the trust either way — the question is whether
+                  they research {state.agencyAbbreviation}'s requirements on your bill, or you hand them the
+                  requirements up front. This kit is the research: the {state.requiredTrustProvisions.length}-item
+                  checklist, the funding rule, the bank-refusal script, and the {state.commonDenialReasons.length}
+                  {' '}{state.agencyAbbreviation} denial traps with the citation behind each — everything that turns
+                  a research-and-draft engagement into drafting alone.
+                </p>
+              </div>
+            ) : (
+              <div class="rounded-lg border-l-4 border-primary bg-primary-tint/20 p-5">
+                <p class="!my-0 text-base">
+                  <strong>"Isn't the QIT form free from {state.agencyAbbreviation}?"</strong> It is — and the kit links
+                  you straight to it, at no charge. You're not paying for the form. You're paying for the part that
+                  actually trips families up: the same-calendar-month funding rule, the word-for-word bank-refusal
+                  script, and the {state.commonDenialReasons.length} {state.agencyAbbreviation} denial traps with the
+                  policy citation behind each. The form is a couple of pages; getting it accepted is where a month of
+                  coverage gets lost.
+                </p>
+              </div>
+            )}
 
             <div class="rounded-lg border border-border bg-surface-elevated p-4 text-sm">
               <p class="!mt-0">
@@ -580,6 +678,7 @@ if (isLive) {
         privatePayMonthlyLow={state.privatePayMonthlyLow}
         privatePayMonthlyHigh={state.privatePayMonthlyHigh}
         hcb={hcb}
+        reqBrief={reqBrief}
       />
     )}
 
@@ -673,7 +772,7 @@ if (isLive) {
       <h2 id="author-heading" class="!mt-1">Who's behind this</h2>
       <p>
         I'm <a href="/authors/james-whitfield" rel="author">James Whitfield</a> — the person who hit the gap between
-        the free state PDF and a funded Medicaid trust (the short version is up top) and built this kit to close it.
+        {' '}{reqBrief ? "an attorney-drafted document and a funded Medicaid trust" : "the free state PDF and a funded Medicaid trust"} (the short version is up top) and built this kit to close it.
         I'm not an attorney. I'm a researcher who has now read every {state.agencyAbbreviation} policy section that
         covers Qualified Income Trusts, and I publish what I learned with a citation on every claim. I won't advise
         you on your specific situation; for that, you need a {state.name}-licensed attorney.
@@ -719,19 +818,22 @@ if (isLive) {
         Every operational claim in this kit cites a primary {state.agencyAbbreviation} document. Verify directly:
       </p>
       <ul>
-        <li>
-          <strong>Official template:</strong>{' '}
-          <a href={state.officialTemplateUrl} rel="external nofollow noopener">
-            {state.agencyAbbreviation} — {state.policyManualSection}
-          </a>
-          . {state.officialTemplateNote}
-        </li>
+        {!reqBrief && (
+          <li>
+            <strong>Official template:</strong>{' '}
+            <a href={state.officialTemplateUrl} rel="external nofollow noopener">
+              {state.agencyAbbreviation} — {state.policyManualSection}
+            </a>
+            . {state.officialTemplateNote}
+          </li>
+        )}
         <li>
           <strong>Policy manual:</strong>{' '}
           <a href={state.policyManualUrl} rel="external nofollow noopener">
             {state.agencyAbbreviation} policy manual
           </a>{' '}
           (section {state.policyManualSection}).
+          {reqBrief && ` This is the source for the required-provisions checklist — ${state.name} publishes no separate fill-in template.`}
         </li>
         {state.supplementalOfficialDocs.map((doc) => (
           <li>
@@ -776,9 +878,19 @@ if (isLive) {
             following the kit.
           </p>
           <p class="text-sm text-ink-muted">
-            No waiting room, no six-week retainer. Most {state.name} families have the trust signed, the account open,
-            and the first month's income redirected within a week — often in time to be positioned for the next
-            eligibility month.
+            {reqBrief ? (
+              <Fragment>
+                The kit itself is instant — the requirements checklist and everything around it, ready before your
+                first call. Most {state.name} families move from that first attorney call to a funded trust
+                account faster than they expected, because the research and fact-gathering are already done.
+              </Fragment>
+            ) : (
+              <Fragment>
+                No waiting room, no six-week retainer. Most {state.name} families have the trust signed, the account open,
+                and the first month's income redirected within a week — often in time to be positioned for the next
+                eligibility month.
+              </Fragment>
+            )}
           </p>
           <div class="mt-6">
             <ConsentBuyButton

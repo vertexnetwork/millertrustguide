@@ -20,6 +20,9 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 // Hybrid (HCB-waiver) states: in-home waiver, excess-only funding, no
 // nursing-facility PNA / patient-liability. Flexes the copy below.
 const hcb = state.medicaidStructure === 'hybrid';
+// 'requirements-brief' states (e.g. Oklahoma) publish no fill-in QIT
+// instrument — see KitPdfLayout for the full explanation.
+const reqBrief = state.productModel === 'requirements-brief';
 
 const statePath = `/states/${state.slug}`;
 const bankPath = articlePath(state.slug, 'what-to-say-at-the-bank');
@@ -41,9 +44,19 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
     topic === 'how-to-set-up' && (
       <>
         <p>
-          Setting up a Miller Trust in {state.name} is an operational task, not a legal one, as long as you use{' '}
-          {state.agencyName}'s own published template and do not deviate from it. Here is the full sequence, with the{' '}
-          {state.agencyAbbreviation} fact behind each step.
+          {reqBrief ? (
+            <Fragment>
+              {state.name} does not publish a fill-in Miller Trust form, so the trust is drafted — by an attorney,
+              or by you where permitted — to meet {state.agencyName}'s own published requirements. Here is the full
+              sequence, with the {state.agencyAbbreviation} fact behind each step.
+            </Fragment>
+          ) : (
+            <Fragment>
+              Setting up a Miller Trust in {state.name} is an operational task, not a legal one, as long as you use{' '}
+              {state.agencyName}'s own published template and do not deviate from it. Here is the full sequence, with the{' '}
+              {state.agencyAbbreviation} fact behind each step.
+            </Fragment>
+          )}
         </p>
 
         <ol class="not-prose mt-6 space-y-5">
@@ -71,14 +84,26 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
           </p>
         </div>
 
-        <h2>Get the official {state.agencyAbbreviation} template</h2>
-        <p>
-          Download the model Qualified Income Trust instrument directly from {state.agencyName}:{' '}
-          <a href={state.officialTemplateUrl} rel="external nofollow">
-            {state.agencyAbbreviation} Qualified Income Trust template
-          </a>
-          . {state.officialTemplateNote}
-        </p>
+        {reqBrief ? (
+          <Fragment>
+            <h2>What your {state.name} trust must contain</h2>
+            <p>
+              {state.name} does not publish a fill-in Qualified Income Trust form.
+              {' '}{state.requirementsIntroNote}
+            </p>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <h2>Get the official {state.agencyAbbreviation} template</h2>
+            <p>
+              Download the model Qualified Income Trust instrument directly from {state.agencyName}:{' '}
+              <a href={state.officialTemplateUrl} rel="external nofollow">
+                {state.agencyAbbreviation} Qualified Income Trust template
+              </a>
+              . {state.officialTemplateNote}
+            </p>
+          </Fragment>
+        )}
       </>
     )
   }
@@ -87,13 +112,24 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
     topic === 'how-long-to-set-up' && (
       <>
         <h2>The short answer</h2>
-        <p>
-          The paperwork is fast — completing {state.agencyName}'s template is usually under an hour, and signing it takes
-          minutes. What stretches the timeline is two things: <strong>opening the bank account</strong> and{' '}
-          <strong>the calendar-month deadline</strong>. When both go smoothly, families complete a {state.name} Miller
-          Trust in a few days. When the bank balks, it can take a week or more — which is why knowing{' '}
-          <a href={bankPath}>what to say at the bank</a> up front matters.
-        </p>
+        {reqBrief ? (
+          <p>
+            {state.name} does not publish a fill-in form, so most of the timeline is attorney scheduling and
+            drafting, not paperwork — walking in with the requirements checklist already compiled (rather than
+            having the attorney research it) is what keeps that part short. What stretches the timeline after that
+            is <strong>opening the bank account</strong> and <strong>the calendar-month deadline</strong>. When the
+            bank balks, it can take a week or more — which is why knowing{' '}
+            <a href={bankPath}>what to say at the bank</a> up front matters.
+          </p>
+        ) : (
+          <p>
+            The paperwork is fast — completing {state.agencyName}'s template is usually under an hour, and signing it takes
+            minutes. What stretches the timeline is two things: <strong>opening the bank account</strong> and{' '}
+            <strong>the calendar-month deadline</strong>. When both go smoothly, families complete a {state.name} Miller
+            Trust in a few days. When the bank balks, it can take a week or more — which is why knowing{' '}
+            <a href={bankPath}>what to say at the bank</a> up front matters.
+          </p>
+        )}
 
         <h2>The one deadline that actually controls eligibility</h2>
         <p>
@@ -349,10 +385,22 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
       <li>The verbatim bank-refusal script and a printable resolution letter for the branch manager</li>
       <li>A pre-filled monthly funding worksheet using {state.name}'s {state.asOf} income {hcb ? 'maximum' : 'cap'}</li>
       <li>All {state.commonDenialReasons.length} {state.agencyAbbreviation} denial traps, each with the policy citation</li>
-      <li>The direct link to the official {state.agencyAbbreviation} template, already built in</li>
+      {reqBrief ? (
+        <li>The {state.requiredTrustProvisions.length}-item required-provisions checklist, cited to {state.agencyAbbreviation}'s own policy</li>
+      ) : (
+        <li>The direct link to the official {state.agencyAbbreviation} template, already built in</li>
+      )}
     </ul>
     <p class="mt-3 text-ink">
-      An elder-law attorney typically charges $1,000&ndash;$2,500 for this.{' '}
+      {reqBrief ? (
+        <Fragment>
+          An elder-law attorney typically charges $1,000&ndash;$2,500 to research {state.name}'s requirements
+          {' '}<em>and</em> draft the trust; this kit does the research part, so the attorney's fee should reflect
+          drafting alone.{' '}
+        </Fragment>
+      ) : (
+        <Fragment>An elder-law attorney typically charges $1,000&ndash;$2,500 for this.{' '}</Fragment>
+      )}
       {founderActive ? (
         <>
           The kit is <strong>${FOUNDER.price}</strong> at the founding price &mdash; only{' '}

@@ -86,7 +86,10 @@ export function getArticleMeta(state: StateData, topic: ArticleTopic): ArticleMe
         navLabel: 'How to set one up, step by step',
         h1: `How to Set Up a Miller Trust in ${name}: Step by Step`,
         metaTitle: `How to Set Up a Miller Trust in ${name} (Step by Step)`,
-        metaDescription: `A plain-English, step-by-step walkthrough of setting up a Qualified Income Trust (Miller Trust) in ${name} using the official ${state.agencyAbbreviation} template. Informational, not legal advice.`,
+        metaDescription:
+          state.productModel === 'requirements-brief'
+            ? `A plain-English walkthrough of ${name}'s Qualified Income Trust (Miller Trust) requirements, cited to ${state.agencyAbbreviation}'s own published policy — ${name} publishes no fill-in form, so this is what a compliant trust must contain. Informational, not legal advice.`
+            : `A plain-English, step-by-step walkthrough of setting up a Qualified Income Trust (Miller Trust) in ${name} using the official ${state.agencyAbbreviation} template. Informational, not legal advice.`,
         primaryQuery: 'how to set up a miller trust',
       };
     case 'how-long-to-set-up':
@@ -150,12 +153,19 @@ export function getArticleLede(state: StateData, topic: ArticleTopic): string {
   // Hybrid (HCB-waiver) states use the QIT for an in-home waiver, not a nursing
   // home, with excess-only funding and a required third-party trustee.
   const hcb = state.medicaidStructure === 'hybrid';
+  const reqBrief = state.productModel === 'requirements-brief';
   switch (topic) {
     case 'how-to-set-up':
+      if (reqBrief) {
+        return `${name} does not publish a fill-in Qualified Income Trust form. To meet its requirements, an attorney (or, where permitted, you) drafts the trust to satisfy ${state.agencyAbbreviation}'s own published policy, names a trustee, opens a dedicated trust bank account, and funds it with the applicant's income in the same calendar month you want coverage to begin. The trust diverts income above ${name}'s $${cap}/month long-term-care Medicaid cap (${state.asOf}) so the applicant qualifies. For complex estates, consult a ${name}-licensed elder-law attorney. This guide is informational only and is not legal advice — we explain what ${state.agencyAbbreviation}'s policy requires; we do not draft the trust or provide sample trust language.`;
+      }
       return hcb
         ? `To set up a Qualified Income Trust in ${name}, you complete the official ${state.agencyAbbreviation} form (886-4657), name a third-party trustee (the applicant may not serve), open a dedicated trust bank account, and move the applicant's over-the-limit income into it in the same calendar month you want coverage to begin. ${name} uses the QIT only for its Home and Community-Based (in-home) waiver — not nursing-facility Medicaid, which uses a spend-down — and only the income above the HCB maximum ($${cap}/month, ${state.asOf}) goes into the trust; the applicant keeps the rest. For the core setup this is a paperwork-and-banking task most families handle themselves; for complex situations, consult a ${name}-licensed elder-law attorney. This guide is informational only and is not legal advice — we explain how to use ${state.agencyAbbreviation}'s own published form; we do not draft it.`
         : `To set up a Miller Trust in ${name}, you complete the official ${state.agencyAbbreviation} Qualified Income Trust template, name a trustee who is not the applicant, open a dedicated trust bank account, and deposit the applicant's income into it in the same calendar month you want coverage to begin. The trust diverts income above ${name}'s $${cap}/month long-term-care Medicaid cap (${state.asOf}) so the applicant qualifies. For the core setup this is a paperwork-and-banking task most families handle themselves; for complex estates, consult a ${name}-licensed elder-law attorney. This guide is informational only and is not legal advice — we explain how to use ${state.agencyAbbreviation}'s own published form; we do not draft it.`;
     case 'how-long-to-set-up':
+      if (reqBrief) {
+        return `${name} does not publish a fill-in Qualified Income Trust form, so most of the timeline is attorney drafting and scheduling rather than paperwork — bringing the requirements already compiled (instead of having the attorney research them) is what keeps that part short. The deadline that controls eligibility either way is the calendar month: a ${name} Qualified Income Trust only diverts income in a month where it is signed, has a funded account, and receives enough of the applicant's income to drop countable income below the $${cap}/month cap. ${state.agencyAbbreviation} does not back-date eligibility, so coverage begins the month funding is complete, and every month of delay is another ${pay} of private-pay care. The bank is the most common source of delay after that.`;
+      }
       return hcb
         ? `Setting up a Qualified Income Trust in ${name} is usually a few hours of paperwork plus opening one bank account — but the deadline that controls everything is the calendar month. A ${name} QIT only works in a month where it is signed, has a funded account, and receives enough of the applicant's over-the-limit income to drop remaining countable income below the HCB income maximum ($${cap}/month) — all within that same calendar month. ${state.agencyAbbreviation} does not back-date eligibility, and because the HCB limit is absolute there is no spend-down fallback, so every month of delay is another ${pay} of private-pay in-home or assisted-living care. The most common cause of delay is the bank, not the paperwork.`
         : `Setting up a Miller Trust in ${name} is usually a few hours of paperwork plus opening one bank account — but the deadline that controls everything is the calendar month. A ${name} Qualified Income Trust only diverts income in a month where it is signed, has a funded account, and receives enough of the applicant's income to drop countable income below the $${cap}/month cap — all within that same calendar month. ${state.agencyAbbreviation} does not back-date eligibility, so coverage begins the month funding is complete, and every month of delay is another ${pay} of private-pay care. The most common cause of delay is the bank, not the paperwork.`;
@@ -187,7 +197,7 @@ export function getHowToSteps(state: StateData): Array<{ name: string; text: str
       },
       {
         name: `Download the official ${state.agencyAbbreviation} form (886-4657)`,
-        text: `Get the fill-in Qualified Income Trust form directly from ${state.agencyName} on its .gov site. ${firstSentence(state.officialTemplateNote).lead} We never draft or host the trust text — you use the state's own published form.`,
+        text: `Get the fill-in Qualified Income Trust form directly from ${state.agencyName} on its .gov site. ${firstSentence(state.officialTemplateNote!).lead} We never draft or host the trust text — you use the state's own published form.`,
       },
       {
         name: 'Fill in the fields the form asks for',
@@ -211,6 +221,40 @@ export function getHowToSteps(state: StateData): Array<{ name: string; text: str
       },
     ];
   }
+  // 'requirements-brief' states publish no fill-in instrument — the trust is
+  // drafted (by an attorney, or by you where permitted), not downloaded.
+  if (state.productModel === 'requirements-brief') {
+    return [
+      {
+        name: `Confirm the applicant's income is over the ${state.name} cap`,
+        text: `A Qualified Income Trust only helps when monthly countable income exceeds ${state.name}'s long-term-care Medicaid limit — $${cap}/month single (${state.asOf}). If income is under the cap, a trust usually is not needed.`,
+      },
+      {
+        name: `Get the required-provisions checklist`,
+        text: `${state.name} does not publish a fill-in QIT form. ${state.agencyAbbreviation}'s own published policy (${state.policyManualSection}) instead lists exactly what a compliant trust must contain — the checklist tells you what to bring to an attorney or verify in a draft.`,
+      },
+      {
+        name: 'Have the trust drafted',
+        text: state.attorneyRequiredNote ?? `An attorney (or, where ${state.name} permits it, you) drafts the trust to satisfy every item on the checklist. We never draft or provide sample trust language ourselves.`,
+      },
+      {
+        name: 'Name a trustee',
+        text: firstSentence(state.trusteeGuidanceNote).lead,
+      },
+      {
+        name: 'Open the dedicated trust bank account',
+        text: `Open a dedicated bank account titled to the trust once it is signed. Branches commonly hesitate to open this account type, so know what to say before you go.`,
+      },
+      {
+        name: 'Fund the trust in the same calendar month',
+        text: `Deposit enough of the applicant's income into the trust account to bring remaining countable income below $${cap} — in the same calendar month you want coverage to start. ${state.agencyAbbreviation} does not back-date, so the month you fund is the earliest month eligibility can begin.`,
+      },
+      {
+        name: 'Distribute monthly and keep records',
+        text: `Each month the trustee pays out only the allowed items and keeps records. Staying inside ${state.agencyAbbreviation}'s rules each month is what keeps benefits from being pulled.`,
+      },
+    ];
+  }
   return [
     {
       name: `Confirm the applicant's income is over the ${state.name} cap`,
@@ -218,7 +262,7 @@ export function getHowToSteps(state: StateData): Array<{ name: string; text: str
     },
     {
       name: `Download the official ${state.agencyAbbreviation} QIT template`,
-      text: `Get the model Qualified Income Trust instrument directly from ${state.agencyName} on its .gov site. ${firstSentence(state.officialTemplateNote).lead} We never draft or host the trust text — you use the state's own published form.`,
+      text: `Get the model Qualified Income Trust instrument directly from ${state.agencyName} on its .gov site. ${firstSentence(state.officialTemplateNote!).lead} We never draft or host the trust text — you use the state's own published form.`,
     },
     {
       name: 'Fill in the fields the template asks for',
@@ -314,7 +358,9 @@ export function getArticleJsonLd(state: StateData, topic: ArticleTopic): object[
       lastReviewed: state.reviewedDate,
       reviewedBy: REVIEWER,
       speakableCssSelectors: ['#tldr'],
-      citations: [state.officialTemplateUrl, state.policyManualUrl],
+      citations: [state.officialTemplateUrl, state.policyManualUrl].filter(
+        (url): url is string => !!url
+      ),
     }),
   ];
 

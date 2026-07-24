@@ -21,6 +21,18 @@ const fmt = (n: number) => n.toLocaleString('en-US');
    other states ship, so their output is unchanged. */
 const hcb = state.medicaidStructure === 'hybrid';
 
+/* 'requirements-brief' states (e.g. Oklahoma) publish no fill-in QIT/Miller
+   Trust instrument at all — either none exists, or the one the state's own
+   regulation cites turns out to be the wrong document. We NEVER draft or
+   provide model/sample trust language ourselves — that would cross the one
+   line this business refuses to cross. Instead Section 2 becomes the state's
+   own required-provisions checklist (requiredTrustProvisions, cited clause by
+   clause) and Section 3/9 are reframed around briefing and vetting an
+   attorney rather than filling in a form. Every `reqBrief` branch below
+   renders that model; the else branch is byte-identical to the
+   template-linking narrative all 'template'-model states ship. */
+const reqBrief = state.productModel === 'requirements-brief';
+
 /* The kit content is structured as a single layout that renders the full
    PDF for any state by interpolating state-specific facts pulled from the
    state's frontmatter. ~95% of the prose is state-agnostic; the
@@ -113,8 +125,19 @@ const hcb = state.medicaidStructure === 'hybrid';
             {state.name} Miller Trust Setup Kit
           </h1>
           <p class="kit-cover-subtitle">
-            A step-by-step operational guide to qualifying a family member for {state.name} Medicaid long-term care
-            using the official {state.agencyAbbreviation} Qualified Income Trust template.
+            {reqBrief ? (
+              <Fragment>
+                A step-by-step guide to qualifying a family member for {state.name} Medicaid long-term care with a
+                Qualified Income Trust — the exact legal requirements your trust must meet, cited to
+                {' '}{state.agencyAbbreviation}'s own published policy, so you can brief an attorney efficiently and
+                verify what they draft.
+              </Fragment>
+            ) : (
+              <Fragment>
+                A step-by-step operational guide to qualifying a family member for {state.name} Medicaid long-term care
+                using the official {state.agencyAbbreviation} Qualified Income Trust template.
+              </Fragment>
+            )}
           </p>
         </div>
 
@@ -153,12 +176,22 @@ const hcb = state.medicaidStructure === 'hybrid';
         We do not draft legal documents. We do not host trust instrument text.
       </p>
 
-      <p>
-        The kit teaches you how to use {state.name}'s publicly-published Qualified Income Trust template — published
-        by {state.agencyName} on its official .gov website — to qualify a family member for long-term-care Medicaid.
-        We explain how to use the template, how to fund the trust, how to open the bank account, and how to avoid
-        common denial reasons. <strong>We never apply legal judgment to your family's specific situation.</strong>
-      </p>
+      {reqBrief ? (
+        <p>
+          {state.name} does not publish a fill-in Qualified Income Trust form. The kit teaches you exactly what
+          {' '}{state.agencyName}'s own published policy requires a compliant trust to contain, how to brief an
+          attorney efficiently, how to fund the trust once it exists, how to open the bank account, and how to avoid
+          common denial reasons. <strong>We do not draft trust language, and we never apply legal judgment to your
+          family's specific situation.</strong>
+        </p>
+      ) : (
+        <p>
+          The kit teaches you how to use {state.name}'s publicly-published Qualified Income Trust template — published
+          by {state.agencyName} on its official .gov website — to qualify a family member for long-term-care Medicaid.
+          We explain how to use the template, how to fund the trust, how to open the bank account, and how to avoid
+          common denial reasons. <strong>We never apply legal judgment to your family's specific situation.</strong>
+        </p>
+      )}
 
       <p>
         State Medicaid rules vary and change. The figures, policy sections, and procedures cited in this kit reflect
@@ -172,7 +205,11 @@ const hcb = state.medicaidStructure === 'hybrid';
         <ul style="margin-bottom: 0;">
           <li>This is an informational guide, not legal advice.</li>
           <li>You will consult a licensed attorney in {state.name} for advice on your specific situation.</li>
-          <li>You are using a guide that explains how to use {state.agencyAbbreviation}'s public Medicaid forms.</li>
+          <li>
+            {reqBrief
+              ? `You are using a guide that explains ${state.agencyAbbreviation}'s published trust requirements — ${state.name} does not publish a fill-in form, so your trust will be drafted by an attorney (or by you, where permitted) to meet them.`
+              : `You are using a guide that explains how to use ${state.agencyAbbreviation}'s public Medicaid forms.`}
+          </li>
           <li>Miller Trust Guide cannot and does not represent you in any matter.</li>
         </ul>
       </div>
@@ -199,19 +236,38 @@ const hcb = state.medicaidStructure === 'hybrid';
       <p class="kit-eyebrow">Orientation</p>
       <h1>How to use this kit</h1>
 
-      <p>
-        This kit is designed to be read in order the first time, then used as a reference throughout the setup
-        process. Most {state.name} families complete the full process in seven to ten days from the day they
-        download the kit to the day Medicaid coverage begins.
-      </p>
+      {reqBrief ? (
+        <p>
+          This kit is designed to be read in order the first time, then used as a reference throughout the process.
+          Because {state.name} requires the trust itself to be drafted (Section 9 covers whether self-drafting is an
+          option here) rather than filled in from a state form, the calendar timeline depends on how quickly you can
+          engage an attorney — most of what determines your timeline is scheduling, not paperwork.
+        </p>
+      ) : (
+        <p>
+          This kit is designed to be read in order the first time, then used as a reference throughout the setup
+          process. Most {state.name} families complete the full process in seven to ten days from the day they
+          download the kit to the day Medicaid coverage begins.
+        </p>
+      )}
 
       <h3>Recommended sequence</h3>
-      <ol>
-        <li><strong>Read Sections 1 and 2 first.</strong> They establish what a Miller Trust is and where the official {state.agencyAbbreviation} template lives.</li>
-        <li><strong>Complete the worksheet in Section 4</strong> before you fill in the template. The worksheet tells you exactly how much income to redirect each month.</li>
-        <li><strong>Print Section 5</strong> (the bank-account walkthrough) and bring it with you to the bank. Bring the resolution letter at the end of Section 5 with you in case the branch refuses.</li>
-        <li><strong>Use Section 7</strong> as your pre-submission checklist before you file the Medicaid application.</li>
-      </ol>
+      {reqBrief ? (
+        <ol>
+          <li><strong>Read Sections 1 and 2 first.</strong> They establish what a Qualified Income Trust is and exactly what {state.name} requires yours to contain.</li>
+          <li><strong>Gather the information in Section 3</strong> before you contact an attorney — walking in with this ready cuts billable research time.</li>
+          <li><strong>Complete the worksheet in Section 4</strong> so you and your attorney both know exactly how much income the trust needs to handle each month.</li>
+          <li><strong>Print Section 5</strong> (the bank-account walkthrough) and bring it with you to the bank once the trust is signed. Bring the resolution letter at the end of Section 5 in case the branch refuses.</li>
+          <li><strong>Use Section 7</strong> as your pre-submission checklist before you file the Medicaid application, and Section 2's checklist to verify the drafted trust your attorney gives you.</li>
+        </ol>
+      ) : (
+        <ol>
+          <li><strong>Read Sections 1 and 2 first.</strong> They establish what a Miller Trust is and where the official {state.agencyAbbreviation} template lives.</li>
+          <li><strong>Complete the worksheet in Section 4</strong> before you fill in the template. The worksheet tells you exactly how much income to redirect each month.</li>
+          <li><strong>Print Section 5</strong> (the bank-account walkthrough) and bring it with you to the bank. Bring the resolution letter at the end of Section 5 with you in case the branch refuses.</li>
+          <li><strong>Use Section 7</strong> as your pre-submission checklist before you file the Medicaid application.</li>
+        </ol>
+      )}
 
       <h3>What you'll need before you start</h3>
       <ul>
@@ -219,7 +275,11 @@ const hcb = state.medicaidStructure === 'hybrid';
         <li>Documentation of every income source the applicant receives (most recent Social Security award letter, pension statement, annuity statement, etc.).</li>
         <li>The trustee's photo ID. The trustee is the person who will manage the trust account — see Section 3 for who can serve.</li>
         <li>Power of attorney documentation if the trustee is acting under POA.</li>
-        <li>A working email address you check daily — {state.agencyAbbreviation} and your bank will communicate by phone and mail, but the {state.agencyAbbreviation} portal sends notices by email.</li>
+        {reqBrief ? (
+          <li>A working email address you check daily — {state.agencyAbbreviation} and your bank will communicate by phone and mail, and your attorney's office will typically use email for drafts and scheduling.</li>
+        ) : (
+          <li>A working email address you check daily — {state.agencyAbbreviation} and your bank will communicate by phone and mail, but the {state.agencyAbbreviation} portal sends notices by email.</li>
+        )}
       </ul>
 
       <div class="kit-callout">
@@ -268,6 +328,13 @@ const hcb = state.medicaidStructure === 'hybrid';
 
             <dt><strong>Income cap</strong></dt>
             <dd>The maximum monthly income a single applicant can have and still qualify for long-term-care Medicaid in an "income-cap state." {state.name}'s 2026 cap is <strong>${fmt(state.incomeCap2026)}/month</strong> (single) and <strong>${fmt(state.incomeCapCouple2026)}/month</strong> for a couple where both spouses are applying. Computed as 300% of the CMS Federal Benefit Rate, which CMS publishes each January.</dd>
+
+            {state.incomeCeiling2026 && (
+              <Fragment>
+                <dt><strong>Income ceiling</strong></dt>
+                <dd>An <em>upper</em> limit above the income cap: {state.name} caps how much a QIT can shelter. If the applicant's gross monthly income exceeds <strong>${fmt(state.incomeCeiling2026)}/month</strong>, a QIT cannot make them eligible at all — this is a hard categorical cutoff, not a drafting problem. See Section 1.</dd>
+              </Fragment>
+            )}
           </Fragment>
         )}
 
@@ -295,8 +362,17 @@ const hcb = state.medicaidStructure === 'hybrid';
 
       <ul class="kit-toc-list">
         <li><a href="#section-1"><span class="toc-title">Section 1 &middot; What a {state.name} Miller Trust does</span></a></li>
-        <li><a href="#section-2"><span class="toc-title">Section 2 &middot; Where to download the official {state.agencyAbbreviation} template</span></a></li>
-        <li><a href="#section-3"><span class="toc-title">Section 3 &middot; Filling in the obvious fields</span></a></li>
+        {reqBrief ? (
+          <Fragment>
+            <li><a href="#section-2"><span class="toc-title">Section 2 &middot; What your {state.name} trust must legally contain</span></a></li>
+            <li><a href="#section-3"><span class="toc-title">Section 3 &middot; What to gather before you meet your attorney</span></a></li>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <li><a href="#section-2"><span class="toc-title">Section 2 &middot; Where to download the official {state.agencyAbbreviation} template</span></a></li>
+            <li><a href="#section-3"><span class="toc-title">Section 3 &middot; Filling in the obvious fields</span></a></li>
+          </Fragment>
+        )}
         <li><a href="#section-4"><span class="toc-title">Section 4 &middot; The monthly funding worksheet</span></a></li>
         <li><a href="#section-5"><span class="toc-title">Section 5 &middot; The bank-account walkthrough</span></a></li>
         <li><a href="#section-6"><span class="toc-title">Section 6 &middot; Funding the trust month by month</span></a></li>
@@ -349,6 +425,14 @@ const hcb = state.medicaidStructure === 'hybrid';
           recurring income — exceeds this number by even one dollar, Medicaid long-term-care benefits are denied
           unless the excess is diverted through a QIT.
         </li>
+        {state.incomeCeiling2026 && (
+          <li>
+            <strong>Income ceiling — the QIT's own limit:</strong> ${fmt(state.incomeCeiling2026)}/month. This is
+            an <em>upper</em> bound, not the cap above. If gross monthly income exceeds this ceiling, a QIT cannot
+            restore eligibility at all — {state.agencyAbbreviation} treats this as a hard categorical cutoff.
+            Confirm the applicant is between the cap and the ceiling before proceeding.
+          </li>
+        )}
         {hcb ? (
           <Fragment>
             <li>
@@ -517,62 +601,192 @@ const hcb = state.medicaidStructure === 'hybrid';
 
     {/* ============================ SECTION 2 ============================ */}
     <section id="section-2" class="kit-page-break">
-      <p class="kit-eyebrow kit-section-title">Section 2 &middot; Where to download the official {state.agencyAbbreviation} template</p>
-      <h1>Where to download the official {state.agencyAbbreviation} template</h1>
+      {reqBrief ? (
+        <Fragment>
+          <p class="kit-eyebrow kit-section-title">Section 2 &middot; What your {state.name} trust must legally contain</p>
+          <h1>What your {state.name} trust must legally contain</h1>
 
-      <p>
-        {state.agencyName} publishes the {state.name} Qualified Income Trust template and the policy instructions
-        for using it on its official .gov website. <strong>This is the only template you should use.</strong>
-        {state.agencyAbbreviation} accepts QITs drafted on its own published template; QITs drafted on alternate
-        templates can be — and often are — rejected on technical grounds even when the substance is identical.
-      </p>
+          <p>{state.requirementsIntroNote}</p>
 
-      <h3>The download links</h3>
-      <ul>
-        <li>
-          <strong>Official template page:</strong>{' '}
-          <a href={state.officialTemplateUrl}>{state.officialTemplateUrl}</a>
-          <br />
-          <span class="kit-cite">{state.officialTemplateNote}</span>
-        </li>
-        <li>
-          <strong>Policy manual section:</strong>{' '}
-          <a href={state.policyManualUrl}>{state.policyManualUrl}</a>
-          <br />
-          <span class="kit-cite">Refer to {state.policyManualSection} for the operational rules and the
-          {' '}requirements your trust must satisfy.</span>
-        </li>
-        {state.supplementalOfficialDocs.map((doc) => (
-          <li>
-            <strong>{doc.label}:</strong>{' '}
-            <a href={doc.url}>{doc.url}</a>
-            <br />
-            <span class="kit-cite">{doc.note}</span>
-          </li>
-        ))}
-      </ul>
+          <h3>The required-provisions checklist</h3>
+          <p>
+            Every item below is a documented {state.agencyAbbreviation} requirement, cited to the actual policy
+            clause. Bring this list to your attorney, or use it to verify a draft you already have — a trust
+            missing any of these is a denial risk (see Section 7).
+          </p>
+          <ol>
+            {state.requiredTrustProvisions.map((p) => (
+              <li class="kit-no-break" style="margin-bottom: 14pt;">
+                <p style="font-weight: 600; margin-bottom: 4pt;">{p.title}</p>
+                <p style="margin-bottom: 2pt;">{p.description}</p>
+                <p class="kit-cite">Citation: {p.agencyCitation}</p>
+              </li>
+            ))}
+          </ol>
 
-      <div class="kit-callout kit-callout--warning">
-        <p>
-          <strong>If {state.agencyAbbreviation} has updated the template since {state.kitVersionDate}, use the
-          updated version.</strong> Always download fresh from the link above on the day you sign the trust. Do not
-          rely on a printed copy or a saved PDF. Template revisions sometimes change required clauses; using an
-          outdated version is a documented denial cause (see Section 7).
-        </p>
-      </div>
+          <h3>Policy source</h3>
+          <ul>
+            <li>
+              <strong>Governing policy:</strong>{' '}
+              <a href={state.policyManualUrl}>{state.policyManualUrl}</a>
+              <br />
+              <span class="kit-cite">{state.policyManualSection}. The checklist above is drawn directly from this section.</span>
+            </li>
+            {state.supplementalOfficialDocs.map((doc) => (
+              <li>
+                <strong>{doc.label}:</strong>{' '}
+                <a href={doc.url}>{doc.url}</a>
+                <br />
+                <span class="kit-cite">{doc.note}</span>
+              </li>
+            ))}
+          </ul>
 
-      <h3>Why we don't host the template ourselves</h3>
-      <p>
-        Two reasons. First, drafting a trust instrument for another person is the practice of law in every state;
-        publishing the state's own template would not change that analysis cleanly, so we link rather than host.
-        Second, {state.agencyAbbreviation} occasionally revises its template, and a mirror on our site would go
-        stale. Linking to the source guarantees you always get the current version {state.agencyAbbreviation}
-        actually accepts.
-      </p>
+          {state.attorneyRequiredNote && (
+            <div class="kit-callout kit-callout--warning">
+              <p style="font-weight: 600; margin-bottom: 6pt;">Who can draft this trust</p>
+              <p style="margin-bottom: 0;">{state.attorneyRequiredNote}</p>
+            </div>
+          )}
+
+          <h3>Why we don't draft it for you</h3>
+          <p>
+            Drafting a trust instrument for another specific person is the practice of law. Explaining what the law
+            requires — generically, to the public, citing the state's own published policy — is not; that line is
+            the whole reason this kit can exist without a licensed attorney's involvement in writing it.
+            <strong> We never provide sample or model trust language, generic or otherwise, and we never review a
+            document you or your attorney have drafted.</strong> The checklist above tells you what must be true of
+            the finished trust; getting there is either your attorney's work or, where {state.name} permits it,
+            your own — see "Who can draft this trust" above.
+          </p>
+        </Fragment>
+      ) : (
+        <Fragment>
+          <p class="kit-eyebrow kit-section-title">Section 2 &middot; Where to download the official {state.agencyAbbreviation} template</p>
+          <h1>Where to download the official {state.agencyAbbreviation} template</h1>
+
+          <p>
+            {state.agencyName} publishes the {state.name} Qualified Income Trust template and the policy instructions
+            for using it on its official .gov website. <strong>This is the only template you should use.</strong>
+            {state.agencyAbbreviation} accepts QITs drafted on its own published template; QITs drafted on alternate
+            templates can be — and often are — rejected on technical grounds even when the substance is identical.
+          </p>
+
+          <h3>The download links</h3>
+          <ul>
+            <li>
+              <strong>Official template page:</strong>{' '}
+              <a href={state.officialTemplateUrl}>{state.officialTemplateUrl}</a>
+              <br />
+              <span class="kit-cite">{state.officialTemplateNote}</span>
+            </li>
+            <li>
+              <strong>Policy manual section:</strong>{' '}
+              <a href={state.policyManualUrl}>{state.policyManualUrl}</a>
+              <br />
+              <span class="kit-cite">Refer to {state.policyManualSection} for the operational rules and the
+              {' '}requirements your trust must satisfy.</span>
+            </li>
+            {state.supplementalOfficialDocs.map((doc) => (
+              <li>
+                <strong>{doc.label}:</strong>{' '}
+                <a href={doc.url}>{doc.url}</a>
+                <br />
+                <span class="kit-cite">{doc.note}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div class="kit-callout kit-callout--warning">
+            <p>
+              <strong>If {state.agencyAbbreviation} has updated the template since {state.kitVersionDate}, use the
+              updated version.</strong> Always download fresh from the link above on the day you sign the trust. Do not
+              rely on a printed copy or a saved PDF. Template revisions sometimes change required clauses; using an
+              outdated version is a documented denial cause (see Section 7).
+            </p>
+          </div>
+
+          <h3>Why we don't host the template ourselves</h3>
+          <p>
+            Two reasons. First, drafting a trust instrument for another person is the practice of law in every state;
+            publishing the state's own template would not change that analysis cleanly, so we link rather than host.
+            Second, {state.agencyAbbreviation} occasionally revises its template, and a mirror on our site would go
+            stale. Linking to the source guarantees you always get the current version {state.agencyAbbreviation}
+            actually accepts.
+          </p>
+        </Fragment>
+      )}
     </section>
 
     {/* ============================ SECTION 3 ============================ */}
     <section id="section-3" class="kit-page-break">
+      {reqBrief ? (
+        <Fragment>
+          <p class="kit-eyebrow kit-section-title">Section 3 &middot; What to gather before you meet your attorney</p>
+          <h1>What to gather before you meet your attorney</h1>
+
+          <p>
+            None of this requires legal judgment — it's the same paperwork any intake process needs. Gathering it
+            yourself, before the first call, is the single biggest lever you have on the bill: attorneys typically
+            charge for the time spent collecting facts, not just for drafting.
+          </p>
+
+          <h3>1. Applicant identification</h3>
+          <ul>
+            <li><strong>Applicant's full legal name</strong> — exactly as it appears on the Social Security card.</li>
+            <li><strong>Applicant's date of birth.</strong></li>
+            <li><strong>Applicant's Social Security number.</strong></li>
+            <li><strong>Applicant's current address</strong> — the nursing facility, care setting, or current residence.</li>
+          </ul>
+
+          <h3>2. Trustee identification</h3>
+          <p>
+            The trustee is the person who will manage the trust's bank account each month. Most families name an
+            adult child of the applicant who has Power of Attorney for the applicant's finances, or the applicant's
+            spouse.
+          </p>
+
+          <div class="kit-callout">
+            <p style="font-weight: 600; margin-bottom: 6pt;">{state.agencyAbbreviation} guidance on trustee selection</p>
+            <p style="margin-bottom: 0;">{state.trusteeGuidanceNote}</p>
+            <p style="margin-top: 6pt; font-size: 9pt; color: #6B7280;">
+              Source: {state.agencyAbbreviation} {state.policyManualSection}.
+            </p>
+          </div>
+
+          <ul class="kit-no-break">
+            <li><strong>Trustee's full legal name.</strong></li>
+            <li><strong>Trustee's date of birth.</strong></li>
+            <li><strong>Trustee's address and phone number.</strong></li>
+            <li><strong>Trustee's relationship to applicant</strong> (e.g., "adult son," "spouse").</li>
+          </ul>
+
+          <h3>3. Income sources</h3>
+          <p>
+            List <strong>every recurring income source the applicant receives</strong> — the trust must be funded
+            with all of it (Section 4 works out the exact monthly math). Pull the monthly gross amount for each from
+            the most recent benefit-award letter or statement.
+          </p>
+          <ul>
+            <li>Social Security retirement or disability benefits</li>
+            <li>Railroad Retirement Board benefits</li>
+            <li>Pension (private employer or government)</li>
+            <li>VA pension and compensation</li>
+            <li>Annuity payments</li>
+            <li>Required Minimum Distributions (RMDs) from retirement accounts</li>
+            <li>Any other recurring monthly payment the applicant receives that is countable for Medicaid eligibility</li>
+          </ul>
+
+          <h3>4. Bring the checklist from Section 2</h3>
+          <p>
+            Print the required-provisions checklist and bring it to the first meeting. Ask the attorney directly
+            whether their standard trust language already covers every item — a firm that regularly handles
+            {' '}{state.name} Medicaid trusts should answer immediately, without having to research it. Hesitation
+            here is a useful signal.
+          </p>
+        </Fragment>
+      ) : (
+        <Fragment>
       <p class="kit-eyebrow kit-section-title">Section 3 &middot; Filling in the obvious fields</p>
       <h1>Filling in the obvious fields</h1>
 
@@ -704,6 +918,8 @@ const hcb = state.medicaidStructure === 'hybrid';
         {' '}{state.agencyAbbreviation} templates require either a notary or two witnesses. <strong>Sign and date
         in the same calendar month you intend to fund the trust.</strong>
       </p>
+        </Fragment>
+      )}
     </section>
 
     {/* ============================ SECTION 4 ============================ */}
@@ -1318,7 +1534,10 @@ const hcb = state.medicaidStructure === 'hybrid';
           <li>Trust is irrevocable on its face — and the irrevocability is not contingent on court action.</li>
           <li>QIT account opened in the name of the trust, using the applicant's SSN (or EIN if your state requires one).</li>
           <li>Initial-month deposit visible on the QIT bank statement — a partial first-month deposit is acceptable; no deposit at all is not.</li>
-          <li>Reversion (residuary beneficiary) clause names the State of {state.name} as the residuary up to total Medicaid assistance paid (verify the {state.agencyAbbreviation} template's pre-drafted language is intact).</li>
+          <li>
+            Reversion (residuary beneficiary) clause names the State of {state.name} as the residuary up to total Medicaid assistance paid{' '}
+            {reqBrief ? '(verify against item on the Section 2 checklist)' : `(verify the ${state.agencyAbbreviation} template's pre-drafted language is intact)`}.
+          </li>
           {hcb ? (
             <li>At least the excess over the HCB income maximum is moved into the trust each month, in the month it is received (income up to the maximum stays in the applicant's own name).</li>
           ) : (
@@ -1327,7 +1546,11 @@ const hcb = state.medicaidStructure === 'hybrid';
           <li>No resources have been deposited into the QIT account (income only).</li>
           <li>VA aid &amp; attendance / housebound / unusual-medical-expense reimbursements are <em>not</em> being deposited to the QIT (see Section 3).</li>
           <li>Trustee selection is consistent with {state.agencyAbbreviation} guidance (see Section 3).</li>
-          <li>Trust uses the current {state.agencyAbbreviation} template, downloaded fresh on the day of signing.</li>
+          {reqBrief ? (
+            <li>Drafted trust checked against every item on the Section 2 required-provisions checklist.</li>
+          ) : (
+            <li>Trust uses the current {state.agencyAbbreviation} template, downloaded fresh on the day of signing.</li>
+          )}
           <li>Trustee has a monthly distribution reminder set to ensure deposits are distributed by the last day of the following month.</li>
         </ul>
       </div>
@@ -1415,17 +1638,28 @@ const hcb = state.medicaidStructure === 'hybrid';
 
     {/* ============================ SECTION 9 ============================ */}
     <section id="section-9" class="kit-page-break">
-      <p class="kit-eyebrow kit-section-title">Section 9 &middot; When to call an attorney</p>
-      <h1>When to call an attorney — and how to find one</h1>
+      <p class="kit-eyebrow kit-section-title">Section 9 &middot; {reqBrief ? 'Working with your attorney' : 'When to call an attorney'}</p>
+      <h1>{reqBrief ? 'Working with your attorney — and how to find one' : 'When to call an attorney — and how to find one'}</h1>
 
-      <p>
-        This kit handles the operational mechanics of setting up a {state.name} Qualified Income Trust. It does
-        not handle situations that require legal judgment applied to specific facts. The list below is not
-        exhaustive, but it covers the situations we see most often where a {state.name}-licensed elder-law
-        attorney is the right call.
-      </p>
+      {reqBrief ? (
+        <p>
+          {state.name} does not publish a fill-in QIT form, so an attorney (or, where permitted, you) drafts the
+          trust itself — this isn't an optional escalation path, it's how the trust gets made here. This kit
+          handles everything around that: knowing exactly what the trust must contain (Section 2), what to gather
+          before the meeting (Section 3), funding and banking once it's signed, and denial-avoidance. The list
+          below covers situations that typically mean <em>more</em> than the baseline drafting engagement — where
+          the conversation needs to go beyond the required-provisions checklist.
+        </p>
+      ) : (
+        <p>
+          This kit handles the operational mechanics of setting up a {state.name} Qualified Income Trust. It does
+          not handle situations that require legal judgment applied to specific facts. The list below is not
+          exhaustive, but it covers the situations we see most often where a {state.name}-licensed elder-law
+          attorney is the right call.
+        </p>
+      )}
 
-      <h3>Call an attorney if any of these apply</h3>
+      <h3>{reqBrief ? 'Flag these to your attorney if any apply' : 'Call an attorney if any of these apply'}</h3>
       <ul>
         <li>
           <strong>The applicant has trusts other than the QIT</strong> — revocable living trusts, special needs
@@ -1530,6 +1764,26 @@ const hcb = state.medicaidStructure === 'hybrid';
         and exactly which parts you can still handle yourself with this kit.
       </p>
 
+      {reqBrief && (
+        <Fragment>
+          <h3>Making the engagement efficient</h3>
+          <p>
+            Attorneys typically bill by the hour for exactly the two things this kit hands you for free: researching
+            what {state.name} requires, and collecting your family's facts. Walking in with the Section 2 checklist
+            and the Section 3 information already gathered turns a research-and-drafting engagement into drafting
+            alone — ask directly what a flat fee for that narrower scope would be.
+          </p>
+          <div class="kit-callout">
+            <p style="font-weight: 600; margin-bottom: 6pt;">Questions worth asking before you hire</p>
+            <ul style="margin-bottom: 0;">
+              <li>"Does your standard Qualified Income Trust language already satisfy every item on this checklist?" (a firm that regularly does this work answers immediately)</li>
+              <li>"Can you quote a flat fee for drafting, given I've already gathered the information in Section 3?"</li>
+              <li>"Will the trust name {state.name} as the remainder beneficiary and include the required payback language by default?"</li>
+            </ul>
+          </div>
+        </Fragment>
+      )}
+
       <h3>How to find a {state.name} elder-law attorney</h3>
       <p>
         The most reliable starting point is the
@@ -1568,9 +1822,20 @@ const hcb = state.medicaidStructure === 'hybrid';
       )}
 
       <p>
-        For initial consultations, bring this kit, the worksheet in Section 4 filled in with the applicant's
-        actual numbers, and a list of the applicant's assets. The attorney can scan the QIT side in five minutes
-        and focus the consultation on whatever is actually complex about your situation.
+        {reqBrief ? (
+          <Fragment>
+            For the first meeting, bring this kit — specifically the Section 2 checklist and the information you
+            gathered in Section 3 — along with the worksheet in Section 4 filled in with the applicant's actual
+            numbers. The attorney can confirm scope in minutes and focus the meeting on drafting, or on whatever is
+            actually complex about your situation.
+          </Fragment>
+        ) : (
+          <Fragment>
+            For initial consultations, bring this kit, the worksheet in Section 4 filled in with the applicant's
+            actual numbers, and a list of the applicant's assets. The attorney can scan the QIT side in five minutes
+            and focus the consultation on whatever is actually complex about your situation.
+          </Fragment>
+        )}
       </p>
     </section>
 
@@ -1579,70 +1844,124 @@ const hcb = state.medicaidStructure === 'hybrid';
       <p class="kit-eyebrow kit-section-title">Section 10 &middot; What to say to family members</p>
       <h1>What to say to family members</h1>
 
-      <p>
-        Setting up a Miller Trust yourself is a sound, legal choice for a straightforward situation — but it is
-        also a choice other family members may question. The most common version: a sibling, often one who lives
-        farther away and is less involved in the day-to-day caregiving, asks some form of <em>"shouldn't we just
-        hire a lawyer for this?"</em> That question is usually not really about the trust. It is about wanting
-        reassurance that the family member in care is protected and that nothing is being done carelessly.
-      </p>
+      {reqBrief ? (
+        <Fragment>
+          <p>
+            Hiring an attorney to draft a {state.name} Qualified Income Trust is the expected path, not a corner
+            cut — so the family friction here usually runs the other way: a sibling who thinks you're overpaying,
+            or wants to know why a guide is needed at all if a lawyer is being hired anyway. Both are fair
+            questions, and this section gives you calm, honest language for either one.
+          </p>
 
-      <p>
-        This section gives you language to answer it calmly. None of this is legal advice — it is simply a way to
-        explain a decision you have already thought through. Use what fits; ignore what doesn't.
-      </p>
+          <h3>The short answer</h3>
+          <div class="kit-callout">
+            <p style="font-style: italic; margin-bottom: 0;">
+              "{state.name} doesn't publish a fill-in form for this — the trust has to be drafted, so we're hiring
+              an attorney either way. What the guide does is make sure we're not paying for research and
+              hand-holding we can do ourselves: it lays out exactly what {state.agencyAbbreviation} requires, cited
+              to their own policy, so the attorney can quote a flat fee for drafting instead of billing us to
+              figure out the rules first. And once we have the draft back, we can check it against the same
+              checklist ourselves."
+            </p>
+          </div>
 
-      <h3>The short answer</h3>
-      <div class="kit-callout">
-        <p style="font-style: italic; margin-bottom: 0;">
-          "I looked into it carefully. A Miller Trust for a straightforward income situation is mostly paperwork
-          and one specific kind of bank account — it is built on {state.name}'s own official template, the one
-          the state publishes and accepts. I used a step-by-step guide that walks through exactly that, and it is
-          cited to {state.agencyAbbreviation} policy throughout. If anything about our situation turns out to be
-          complicated — and I know what those red flags are — I will bring in an attorney for that specific part.
-          For the trust itself, this is the same work an attorney would do, and I have it covered."
-        </p>
-      </div>
+          <h3>If they push — three honest points</h3>
+          <ol>
+            <li>
+              <strong>The guide doesn't replace the attorney — it makes the attorney cheaper and faster.</strong>
+              {' '}{state.name} requires the trust be drafted; nothing in this kit changes that. What it removes is
+              the billable time attorneys spend explaining the basics and gathering facts before they draft anything.
+            </li>
+            <li>
+              <strong>The cost difference is real and it is the family's money.</strong> An attorney typically
+              quotes $1,000–$2,500 for a trust like this — often more when they have to research the state's
+              requirements from scratch. Walking in with the requirements already compiled is a responsible use of
+              the family's resources, not a shortcut.
+            </li>
+            <li>
+              <strong>There is a safety net.</strong> The guide was bought with a money-back guarantee tied to the
+              one outcome that matters: if {state.agencyAbbreviation} rejects the trust for a reason traceable to
+              following the kit, the purchase is refunded. The downside is bounded.
+            </li>
+          </ol>
 
-      <h3>If they push — three honest points</h3>
-      <ol>
-        <li>
-          <strong>This is not the same as "skipping the lawyer."</strong> An elder-law attorney is the right call
-          for asset planning, transfers in the last five years, complicated estates, or a married-couple
-          resource-allowance question. The Miller Trust itself — diverting income through the state's own
-          template so the applicant qualifies — is a defined, repeatable process. Section 9 of this kit lists
-          exactly when an attorney <em>is</em> needed, and that list has been checked against our situation.
-        </li>
-        <li>
-          <strong>The cost difference is real and it is the family's money.</strong> An attorney typically
-          charges $1,000–$2,500 to set up a Miller Trust. That money either stays available for the applicant's
-          care or it doesn't. Choosing to do the defined paperwork ourselves, carefully, is a responsible use of
-          the family's resources — not a corner cut.
-        </li>
-        <li>
-          <strong>There is a safety net.</strong> The guide was bought with a money-back guarantee tied to the
-          one outcome that matters: if {state.agencyAbbreviation} rejects the trust for a reason traceable to
-          following the kit, the purchase is refunded. The downside is bounded.
-        </li>
-      </ol>
+          <h3>Keep the focus where it belongs</h3>
+          <p>
+            Family disagreements about money during a health crisis are rarely about the dollars. If the conversation
+            gets heated, it is usually fear talking. The most useful thing you can say is often the simplest:
+            <em> "We are all trying to do right by [name]. Here is what I've done, here is why, and here is where
+            an attorney is handling the rest. Look it over with me."</em> Handing a skeptical relative this kit to
+            read is frequently more persuasive than any argument — it lets them see the work for themselves.
+          </p>
+        </Fragment>
+      ) : (
+        <Fragment>
+          <p>
+            Setting up a Miller Trust yourself is a sound, legal choice for a straightforward situation — but it is
+            also a choice other family members may question. The most common version: a sibling, often one who lives
+            farther away and is less involved in the day-to-day caregiving, asks some form of <em>"shouldn't we just
+            hire a lawyer for this?"</em> That question is usually not really about the trust. It is about wanting
+            reassurance that the family member in care is protected and that nothing is being done carelessly.
+          </p>
 
-      <h3>When you should agree with the skeptical sibling</h3>
-      <p>
-        If a family member raises one of the genuine red flags from Section 9 — a recent gift or property
-        transfer, assets well above the limit, a second trust, a contested estate — they are right, and the
-        answer is not to defend the DIY approach. It is to say: <em>"That is exactly the kind of thing I'd take
-        to an attorney, and I will."</em> Using this kit for the trust and an attorney for the genuinely complex
-        parts is not a contradiction. It is the plan.
-      </p>
+          <p>
+            This section gives you language to answer it calmly. None of this is legal advice — it is simply a way to
+            explain a decision you have already thought through. Use what fits; ignore what doesn't.
+          </p>
 
-      <h3>Keep the focus where it belongs</h3>
-      <p>
-        Family disagreements about money during a health crisis are rarely about the dollars. If the conversation
-        gets heated, it is usually fear talking. The most useful thing you can say is often the simplest:
-        <em> "We are all trying to do right by [name]. Here is what I've done, here is why, and here is where I'll
-        get help. Look it over with me."</em> Handing a skeptical relative this kit to read is frequently more
-        persuasive than any argument — it lets them see the work for themselves.
-      </p>
+          <h3>The short answer</h3>
+          <div class="kit-callout">
+            <p style="font-style: italic; margin-bottom: 0;">
+              "I looked into it carefully. A Miller Trust for a straightforward income situation is mostly paperwork
+              and one specific kind of bank account — it is built on {state.name}'s own official template, the one
+              the state publishes and accepts. I used a step-by-step guide that walks through exactly that, and it is
+              cited to {state.agencyAbbreviation} policy throughout. If anything about our situation turns out to be
+              complicated — and I know what those red flags are — I will bring in an attorney for that specific part.
+              For the trust itself, this is the same work an attorney would do, and I have it covered."
+            </p>
+          </div>
+
+          <h3>If they push — three honest points</h3>
+          <ol>
+            <li>
+              <strong>This is not the same as "skipping the lawyer."</strong> An elder-law attorney is the right call
+              for asset planning, transfers in the last five years, complicated estates, or a married-couple
+              resource-allowance question. The Miller Trust itself — diverting income through the state's own
+              template so the applicant qualifies — is a defined, repeatable process. Section 9 of this kit lists
+              exactly when an attorney <em>is</em> needed, and that list has been checked against our situation.
+            </li>
+            <li>
+              <strong>The cost difference is real and it is the family's money.</strong> An attorney typically
+              charges $1,000–$2,500 to set up a Miller Trust. That money either stays available for the applicant's
+              care or it doesn't. Choosing to do the defined paperwork ourselves, carefully, is a responsible use of
+              the family's resources — not a corner cut.
+            </li>
+            <li>
+              <strong>There is a safety net.</strong> The guide was bought with a money-back guarantee tied to the
+              one outcome that matters: if {state.agencyAbbreviation} rejects the trust for a reason traceable to
+              following the kit, the purchase is refunded. The downside is bounded.
+            </li>
+          </ol>
+
+          <h3>When you should agree with the skeptical sibling</h3>
+          <p>
+            If a family member raises one of the genuine red flags from Section 9 — a recent gift or property
+            transfer, assets well above the limit, a second trust, a contested estate — they are right, and the
+            answer is not to defend the DIY approach. It is to say: <em>"That is exactly the kind of thing I'd take
+            to an attorney, and I will."</em> Using this kit for the trust and an attorney for the genuinely complex
+            parts is not a contradiction. It is the plan.
+          </p>
+
+          <h3>Keep the focus where it belongs</h3>
+          <p>
+            Family disagreements about money during a health crisis are rarely about the dollars. If the conversation
+            gets heated, it is usually fear talking. The most useful thing you can say is often the simplest:
+            <em> "We are all trying to do right by [name]. Here is what I've done, here is why, and here is where I'll
+            get help. Look it over with me."</em> Handing a skeptical relative this kit to read is frequently more
+            persuasive than any argument — it lets them see the work for themselves.
+          </p>
+        </Fragment>
+      )}
     </section>
 
     {/* =========================== APPENDIX A ============================ */}
@@ -1660,11 +1979,13 @@ const hcb = state.medicaidStructure === 'hybrid';
 
       <h3>Primary state agency sources</h3>
       <ul>
-        <li>
-          <strong>{state.agencyAbbreviation} — Sample QIT (PDF)</strong><br />
-          <a href={state.officialTemplateUrl}>{state.officialTemplateUrl}</a><br />
-          <span class="kit-cite">{state.officialTemplateNote}</span>
-        </li>
+        {!reqBrief && (
+          <li>
+            <strong>{state.agencyAbbreviation} — Sample QIT (PDF)</strong><br />
+            <a href={state.officialTemplateUrl}>{state.officialTemplateUrl}</a><br />
+            <span class="kit-cite">{state.officialTemplateNote}</span>
+          </li>
+        )}
         <li>
           <strong>{state.agencyAbbreviation} — {state.policyManualSection}</strong><br />
           <a href={state.policyManualUrl}>{state.policyManualUrl}</a><br />
@@ -1715,6 +2036,13 @@ const hcb = state.medicaidStructure === 'hybrid';
               <span class="kit-cite">Verification of the 2026 FBR figure CMS uses to compute the 300% Medicaid long-term-care income cap.</span>
             </li>
           </Fragment>
+        )}
+        {reqBrief && (
+          <li>
+            <strong>SSA POMS SI 01120.203</strong> — federal guidance on what a (d)(4)(B) income trust must contain<br />
+            <a href="https://secure.ssa.gov/poms.nsf/lnx/0501120203">https://secure.ssa.gov/poms.nsf/lnx/0501120203</a><br />
+            <span class="kit-cite">The Social Security Administration's own published operating guidance on Miller Trusts / QITs, uniform across every state. A useful independent check alongside {state.name}'s own policy — not a substitute for it.</span>
+          </li>
         )}
       </ul>
 

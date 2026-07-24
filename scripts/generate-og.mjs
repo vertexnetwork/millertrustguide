@@ -288,6 +288,18 @@ const ASSETS = [
     }),
     width: 1200,
   },
+
+  // OG per-state — Oklahoma (requirements-brief: OHCA publishes no fill-in
+  // instrument, so this is a requirements checklist, not a template-linking kit)
+  {
+    path: 'og/states/oklahoma.png',
+    svg: ogSvg({
+      headlineLines: ['Oklahoma Medicaid', 'Income Pension Trust'],
+      dataLine: '$129  ·  Requirements checklist — no official OHCA form  ·  Money-back if OHCA rejects',
+      footerLine: 'OKLAHOMA OHCA  ·  OAC 317:35-5-41.6  ·  LAST REVIEWED 2026-07-23',
+    }),
+    width: 1200,
+  },
 ];
 
 async function renderOne({ path, svg, width }) {

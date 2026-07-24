@@ -42,7 +42,9 @@ const denialCount = state.commonDenialReasons.length;
 const pdfHref = `/checklist/${state.slug}.pdf`;
 const kitHref = `/states/${state.slug}#primary-buy-panel`;
 
-const title = `The ${denialCount} most common reasons ${state.name} Medicaid denies a Miller Trust`;
+const trustTerm = state.primaryTerm ?? 'Miller Trust';
+const kitNoun = state.productModel === 'requirements-brief' ? 'Requirements Guide' : 'Setup Kit';
+const title = `The ${denialCount} most common reasons ${state.name} Medicaid denies a ${trustTerm}`;
 ---
 
 <!doctype html>
@@ -240,8 +242,8 @@ const title = `The ${denialCount} most common reasons ${state.name} Medicaid den
 
       <div class="callout">
         <p>
-          <span class="k">Read this first — the funding-month rule.</span> A Miller Trust (Qualified Income
-          Trust) only works for a given month if it is <strong>both signed and funded in that same calendar
+          <span class="k">Read this first — the funding-month rule.</span> A {trustTerm} (Miller Trust) only
+          works for a given month if it is <strong>both signed and funded in that same calendar
           month</strong>. {state.agencyAbbreviation} does not back-date eligibility. Sign on the 28th but fund
           on the 2nd of the next month, and the first month is billed at the {state.name} private-pay rate —
           roughly <strong>${fmt(state.privatePayMonthlyLow)}–${fmt(state.privatePayMonthlyHigh)}</strong>.
@@ -271,7 +273,7 @@ const title = `The ${denialCount} most common reasons ${state.name} Medicaid den
         <div class="cta">
           <h2>How families get every step right the first time</h2>
           <p>
-            This checklist tells you <em>what</em> can go wrong. The full {state.name} Miller Trust Setup Kit
+            This checklist tells you <em>what</em> can go wrong. The full {state.name} {trustTerm} {kitNoun}
             walks through avoiding each one in order — the word-for-word bank script for when the branch refuses
             to open the account, the pre-filled funding worksheet using the {state.asOf} income cap of
             ${fmt(state.incomeCap2026)}, and the day-before-you-file checklist. It's backed by a money-back
@@ -283,10 +285,12 @@ const title = `The ${denialCount} most common reasons ${state.name} Medicaid den
 
         <h2>Verify the sources yourself</h2>
         <ul class="sources">
-          <li>
-            Official {state.agencyAbbreviation} template —
-            <a href={state.officialTemplateUrl} rel="external nofollow noopener">{state.policyManualSection}</a>
-          </li>
+          {state.officialTemplateUrl && (
+            <li>
+              Official {state.agencyAbbreviation} template —
+              <a href={state.officialTemplateUrl} rel="external nofollow noopener">{state.policyManualSection}</a>
+            </li>
+          )}
           <li>
             {state.agencyAbbreviation} policy manual —
             <a href={state.policyManualUrl} rel="external nofollow noopener">{state.agencyName}</a>
