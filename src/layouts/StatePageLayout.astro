@@ -649,7 +649,7 @@ if (isLive) {
       )
     }
 
-    {!blocked && <PdfPreview stateSlug={state.slug} />}
+    {!blocked && <PdfPreview stateSlug={state.slug} stateName={state.name} primaryTerm={state.primaryTerm} />}
 
     {/* Brand-level proof stack — real, permissioned buyers, THIS state's own
         first, each labeled with its TRUE state badge (Gary's quote shown here

@@ -35,7 +35,11 @@ export const GET: APIRoute = async () => {
     incomeCapAsOf: s.asOf,
     ltcProgram: { abbreviation: s.ltcProgramAbbrev, name: s.ltcProgramName },
     agency: { name: s.agencyName, abbreviation: s.agencyAbbreviation },
-    officialTemplateUrl: s.officialTemplateUrl,
+    primaryTerm: s.primaryTerm ?? 'Miller Trust',
+    productModel: s.productModel, // 'template' (official fill-in form exists) | 'requirements-brief' (no state form; requirements checklist instead)
+    // null for 'requirements-brief' states — no state publishes a fill-in
+    // instrument for them (that's the whole reason for the product-model fork).
+    officialTemplateUrl: s.officialTemplateUrl ?? null,
     policyManualUrl: s.policyManualUrl,
     policyManualSection: s.policyManualSection,
     reviewedDate: s.reviewedDate,
@@ -46,7 +50,7 @@ export const GET: APIRoute = async () => {
     '@context': 'https://millertrustguide.com/.well-known/openapi.json',
     publisher: 'Miller Trust Guide',
     description:
-      'Machine-readable index of state-specific Qualified Income Trust (Miller Trust) operational guides. Informational only — not legal advice. The state agency template is the authoritative form.',
+      'Machine-readable index of state-specific Qualified Income Trust (Miller Trust) guides. Informational only — not legal advice. Most states publish an official fill-in template (officialTemplateUrl); a small number publish no template at all (productModel: "requirements-brief"), in which case the guide is a required-provisions checklist instead — see policyManualUrl for the governing source either way.',
     disclaimer:
       'Miller Trust Guide is a researcher-run informational publisher, not a law firm. Facts are sourced from each state Medicaid agency policy manual. For situation-specific advice, consult a licensed elder-law attorney in the applicable state.',
     federalIncomeCapBasis: '300% of the 2026 Federal Benefit Rate (effective 2026-01-01)',

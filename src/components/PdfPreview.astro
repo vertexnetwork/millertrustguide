@@ -8,9 +8,16 @@
 
 interface Props {
   stateSlug?: string;
+  // Proper display name and terminology — deriving a display name from the
+  // slug (e.g. via naive capitalization) breaks on hyphenated slugs like
+  // "new-jersey" -> "New-jersey" or "south-carolina" -> "South-carolina".
+  stateName?: string;
+  primaryTerm?: string;
 }
 
-const { stateSlug = 'texas' } = Astro.props;
+const { stateSlug = 'texas', stateName, primaryTerm } = Astro.props;
+const displayName = stateName ?? stateSlug.charAt(0).toUpperCase() + stateSlug.slice(1);
+const trustTerm = primaryTerm ?? 'Miller Trust';
 
 // Per-state preview manifest. Captions are conversion copy — they tell the
 // buyer what the page is *for*, not just what page it is.
@@ -38,7 +45,7 @@ const previews = [
   {
     file: '06-appendix-a.png',
     title: 'Citations index',
-    caption: 'Every operational claim sourced to a primary HHSC, CMS, SSA, or federal-statute citation.',
+    caption: 'Every operational claim sourced to a primary state-agency, CMS, SSA, or federal-statute citation.',
   },
 ];
 
@@ -56,7 +63,7 @@ const previewsWithUrl = previews.map((p) => ({
   <p class="text-xs font-semibold uppercase tracking-wider text-primary">What it actually looks like</p>
   <h2 id="preview-heading" class="!mt-1">Sample pages from the kit</h2>
   <p class="mt-2 text-ink-muted">
-    Real pages from the {stateSlug.charAt(0).toUpperCase() + stateSlug.slice(1)} kit PDF. Click any page to enlarge.
+    Real pages from the {displayName} kit PDF. Click any page to enlarge.
   </p>
 
   <ul class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
@@ -74,7 +81,7 @@ const previewsWithUrl = previews.map((p) => ({
             >
               <img
                 src={p.url}
-                alt={`${p.title} — sample page from the Miller Trust Setup Kit`}
+                alt={`${p.title} — sample page from the ${displayName} ${trustTerm} kit`}
                 class="absolute left-0 top-0 max-w-none"
                 style="width: 130%;"
                 loading="lazy"

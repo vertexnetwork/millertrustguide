@@ -7,6 +7,7 @@ import BaseLayout from '~/layouts/BaseLayout.astro';
 export const prerender = false;
 
 import { getStripe } from '~/lib/stripe';
+import { getCollection } from 'astro:content';
 
 const sessionId = Astro.url.searchParams.get('session_id');
 let stateName: string | null = null;
@@ -26,12 +27,16 @@ if (sessionId) {
     const stripe = getStripe();
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     paymentConfirmed = session.payment_status === 'paid';
-    stateName =
-      (session.metadata?.state_name as string | undefined) ??
-      (session.metadata?.state_slug
-        ? String(session.metadata.state_slug).charAt(0).toUpperCase() + String(session.metadata.state_slug).slice(1)
-        : null);
     stateSlug = (session.metadata?.state_slug as string | undefined) ?? null;
+    // Prefer the metadata name (set correctly by create-checkout.ts for every
+    // current purchase). Fall back to a real content-collection lookup by
+    // slug — not naive slug capitalization, which mangles hyphenated slugs
+    // ("new-jersey" -> "New-jersey" instead of "New Jersey").
+    stateName = (session.metadata?.state_name as string | undefined) ?? null;
+    if (!stateName && stateSlug) {
+      const entry = (await getCollection('states')).find((s) => s.slug === stateSlug);
+      stateName = entry?.data.name ?? null;
+    }
     referralFacility = (session.metadata?.referral_facility as string | undefined) ?? null;
     if (typeof session.amount_total === 'number') amountTotal = session.amount_total / 100;
     if (session.currency) currency = session.currency.toUpperCase();
