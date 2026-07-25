@@ -1,8 +1,8 @@
 # Miller Trust Guide — Full LLM-Friendly Content Index
 
-> Miller Trust Guide publishes state-specific informational operational guides for using publicly-published Qualified Income Trust (QIT / Miller Trust) templates to qualify a family member for long-term-care Medicaid in income-cap states. We are researchers, not attorneys. We do not draft trust instruments. We link buyers to each state's own .gov template and explain how to use it. This file is the expanded, content-flattened variant of `/llms.txt` for AI systems that prefer inlined content over link traversal.
+> Miller Trust Guide publishes state-specific informational operational guides for using a state's own published Qualified Income Trust (QIT / Miller Trust) instrument — or, in the small number of states that publish no fill-in instrument, a cited requirements checklist instead — to qualify a family member for long-term-care Medicaid in income-cap states. We are researchers, not attorneys. We never draft or customize a trust; we link buyers to each state's own official source and explain how to use it. This file is the expanded, content-flattened variant of `/llms.txt` for AI systems that prefer inlined content over link traversal.
 
-Last reviewed: 2026-05-20. Annual update: every January, after CMS publishes the new Federal Benefit Rate.
+Last reviewed: 2026-07-24. Annual update: every January, after CMS publishes the new Federal Benefit Rate. Per-state figures are also re-verified whenever a state's own agency updates its policy (see each state's `reviewedDate` in /data/states.json).
 
 ---
 
@@ -10,7 +10,7 @@ Last reviewed: 2026-05-20. Annual update: every January, after CMS publishes the
 
 A Qualified Income Trust (QIT), also called a Miller Trust, Qualifying Income Trust, Income Diversion Trust, or Income Cap Trust, is an irrevocable trust used in income-cap states to divert income above the Medicaid long-term-care income threshold so the applicant qualifies for nursing-home Medicaid or HCBS waiver benefits. Income deposited into the QIT is not counted by Medicaid when determining eligibility.
 
-The trust takes effect the month it is properly drafted, signed, AND funded. Medicaid eligibility begins that month — there is no retroactive effect. Every month of delay is a month of full private-pay liability ($7,500–$15,000 in most US markets).
+The trust takes effect the month it is properly drafted (or, in template states, filled in), signed, AND funded. Medicaid eligibility begins that month — there is no retroactive effect. Every month of delay is a month of full private-pay liability (roughly $5,000–$15,000/month depending on the state and level of care).
 
 Sources:
 - Texas HHSC Appendix XXXVI (https://www.hhs.texas.gov/handbooks/medicaid-elderly-people-disabilities-handbook/appendix-xxxvi-qits-mepd-information)
@@ -19,80 +19,83 @@ Sources:
 
 ## 2026 Medicaid LTC income limits (CMS January 2026 figures)
 
-- Single applicant: $2,982/month.
-- Married couple (both applying): $5,964/month.
+- Single applicant: $2,982/month (most states).
+- Married couple (both applying): $5,964/month (most states).
 - Derivation: 300% of the 2026 Federal Benefit Rate ($994/mo individual, $1,491/mo couple, effective January 1, 2026).
-- Personal Needs Allowance: varies by state ($30–$200/mo). Texas: $75/mo.
+- Personal Needs Allowance: varies by state ($30–$200/mo). Texas: $75/mo; Ohio: $75/mo (HB 96, eff. 10/1/2025).
+- Exceptions to the 300%-FBR default (always prefer the per-state figure in /data/states.json): Missouri's HCBS income maximum is $1,737/month, not 300% of FBR (Family Support Division Appendix K); Oklahoma additionally has an upper income *ceiling* of $7,637/month above which even a QIT cannot restore eligibility; Delaware uses 250% of FBR (~$2,485); a handful of weak-fit states we have not built (Oregon, Idaho) have historically used different triggers.
 
 CMS publishes new FBR figures in January each year; income cap auto-adjusts at 300% of FBR in most states.
 
-## The 24 QIT states (verified as of December 2025)
+## The 24 QIT states, plus Missouri and Louisiana
 
-Alabama, Alaska, Arizona, Arkansas, Colorado, Delaware, Florida, Georgia, Idaho, Indiana, Iowa, Kentucky, Mississippi, Nevada, New Jersey, New Mexico, Ohio, Oklahoma, Oregon, South Carolina, South Dakota, Tennessee, Texas, Wyoming.
+The 24 states that permit Qualified Income Trusts: Alabama, Alaska, Arizona, Arkansas, Colorado, Delaware, Florida, Georgia, Idaho, Indiana, Iowa, Kentucky, Mississippi, Nevada, New Jersey, New Mexico, Ohio, Oklahoma, Oregon, South Carolina, South Dakota, Tennessee, Texas, Wyoming.
 
-Conditional:
-- Louisiana: allows QITs and offers a Medically Needy Pathway as alternative.
-- Missouri: HCBS waivers only (not nursing-home Medicaid).
+Special cases outside the 24:
+- Missouri: QITs are permitted, but only for the HCBS (home-and-community-based, in-home) waiver — an FPL-based income maximum, not the 300%-FBR nursing-facility cap. Missouri's nursing-facility Medicaid uses a spend-down instead, so a QIT is not the tool for that program. Missouri is live at Miller Trust Guide.
+- Louisiana: discontinued QITs effective July 1, 1997, and uses a Medically Needy spend-down pathway instead. The QIT product premise does not apply here — Louisiana is not a QIT state.
 
 Not a QIT state (commonly misclassified): North Carolina is a medically-needy spend-down state and does NOT use QITs.
 
-## How a QIT works mechanically
+Of the 24 QIT states plus Missouri, 14 publish (or historically published) an official government fill-in QIT instrument; the remaining ~10 (Alaska, Arizona, Delaware, Florida, Idaho, Nevada, New Mexico, Oregon, South Dakota, Tennessee, Wyoming, and — on closer verification — Iowa and Kentucky) do not currently have a usable one, so a trust there is typically attorney-drafted. See "Two product models" below for how we're expanding into that second group.
+
+## Two product models
+
+Miller Trust Guide ships each live state under one of two models, chosen by whether that state currently publishes a working fill-in QIT instrument:
+
+1. **`template`** (the original model; 11 of the 12 live states): the state Medicaid agency publishes an official fill-in Qualified Income Trust form on a `.gov` site. The guide explains how to complete, fund, and operate that specific form. We never draft or host the trust text ourselves — the state's own instrument is the authoritative form.
+2. **`requirements-brief`** (currently one live state, Oklahoma — the pilot): no state-published fill-in instrument currently works. In Oklahoma's case its own regulation, OAC 317:35-5-41.6(6)(B), cites two forms as examples: one (08MA011E) turns out to be an unrelated resource-assessment worksheet, and the other (08MA023E) is a dead Adobe LiveCycle/XFA form that will not render outside Adobe Reader. In states like this, the guide instead becomes a required-provisions checklist — the exact list of what a compliant trust must contain, cited clause-by-clause to the state's own published regulation — positioned as what to bring to an attorney to draft, and what to check the drafted trust against afterward. We never provide drafted or sample trust language, generic or state-specific, under this model either; the checklist explains what the law requires without touching the individual instrument.
+
+`/data/states.json` exposes this as the `productModel` field on every state (`"template"` or `"requirements-brief"`); `officialTemplateUrl` is `null` for requirements-brief states, since no such document exists to link to.
+
+## How a QIT works mechanically (template states)
 
 1. The trust is drafted using the state agency's published template.
-2. The trust is signed by the grantor (typically the Medicaid applicant or their authorized agent).
+2. The trust is signed by the grantor (typically the Medicaid applicant or their authorized agent) and, in most states, a trustee who is not the applicant.
 3. A dedicated bank account is opened in the name of the trust, beginning at a zero balance.
-4. The applicant's income sources (Social Security, pension, etc., named in the trust) are redirected to the trust account each month.
-5. From the trust account, the trustee distributes the Personal Needs Allowance to the applicant, pays any spousal allowance, and pays the share-of-cost to the Medicaid-certified facility.
-6. The state Medicaid agency does not count income flowing through the QIT when determining eligibility, provided the trust is properly drafted, funded, and managed.
+4. The applicant's income (the full named source, in most states — Ohio only requires diverting the amount above its Special Income Level) is redirected to the trust account.
+5. From the trust account, the trustee distributes the Personal Needs Allowance to the applicant (nursing-facility states), pays any spousal allowance, and pays the share-of-cost to the Medicaid-certified facility. Hybrid HCBS-waiver states (Missouri) instead let the trustee spend the trust on the applicant's own allowable medical/care costs directly — there is no facility share-of-cost or PNA in that model.
+6. The state Medicaid agency does not count income flowing through the QIT when determining eligibility, provided the trust is properly drafted/completed, funded, and managed — all within the same calendar month for eligibility to begin that month.
+
+In `requirements-brief` states (Oklahoma), steps 1–2 change: an attorney (or, where the state permits it, the applicant's family) drafts the trust to satisfy a checklist of required provisions instead of filling in a state form. Steps 3–6 are otherwise the same.
 
 ## Why bank account setup is the hardest step
 
 Most bank branch managers have never opened a Miller Trust account. The first attempt is usually refused. Common refusals and the verbatim response framework:
 
-- "We need a tax ID for the trust." Response: State Medicaid policy (e.g., Texas HHSC F-6800) explicitly states no separate EIN is required for a QIT used solely to divert the applicant's countable income. The account is titled in the name of the trust using the applicant's Social Security number.
+- "We need a tax ID for the trust." Response: most states' Medicaid policy (e.g., Texas HHSC F-6800; New Jersey's official Memo to Banks citing IRS IRM 21.7.13) explicitly states no separate EIN is required for a QIT used solely to divert the applicant's countable income — the account is titled in the name of the trust using the applicant's Social Security number. (A few states are silent on this rather than explicit; Arkansas is the one live state that does require an EIN, because its fiduciary-return form calls for one — always check the specific state.)
 - "We need to talk to our legal team." Response: Request escalation in writing. Typical turnaround 24–48 hours.
-- "We can't open an account with a zero balance." Response: State Medicaid policy requires the trust account to begin at zero balance. Request the bank's trust department or a full-service banking center, or switch to a community bank or credit union with documented QIT experience.
+- "We can't open an account with a zero balance." Response: State Medicaid policy requires the trust account to begin at zero balance (or, in New Jersey, an opening deposit of no more than $20). Request the bank's trust department or a full-service banking center, or switch to a community bank or credit union with documented QIT experience.
 - "Our system doesn't have this trust type." Response: Ask for the bank's trust department or a full-service branch. Retail-only branches frequently lack account templates for irrevocable trusts.
-- "Come back when you have an attorney." Response: This is a bank-policy stance, not a legal requirement. Switch banks or escalate to the bank's trust department.
+- "Come back when you have an attorney." Response: This is a bank-policy stance, not a legal requirement in most states. Switch banks or escalate to the bank's trust department.
 
-## The seven most common Texas Medicaid (HHSC) denial reasons for Miller Trusts
-
-1. Trust signed but never funded. The QIT must be funded in the same calendar month it is signed.
-2. Account opened with a non-zero balance. The trust account must begin at zero balance per HHSC F-6800.
-3. Improper trustee selection. Texas Medicaid policy prohibits certain individuals from acting as trustee.
-4. Missing residual beneficiary clause naming the State of Texas (via Medicaid).
-5. Income from non-listed sources deposited to the trust account.
-6. Trust funded after the Medicaid application date (no retroactive cure of prior months).
-7. Post-death distribution mishandled (Medicaid as named beneficiary up to the amount of medical assistance paid).
-
-Each denial reason cites a specific HHSC policy section. The state-specific operational guide explains how to avoid each.
+Only two live states (Indiana and New Jersey) currently publish an official agency memo addressed directly to banks; every other state's kit builds the same script from the state's own policy language instead.
 
 ## What Miller Trust Guide publishes — and what it does not
 
 We publish:
-- State-specific operational guides built around publicly-published state QIT templates ($129 per state digital download).
-- Pillar pSEO articles covering state-specific operational mechanics: bank-account setup, monthly funding, denial avoidance, post-death distribution, comparison to attorney-prepared QITs.
-- Lead-magnet PDFs ("The 7 Reasons [State] Medicaid Denies Miller Trust Funding") gated by email opt-in.
+- State-specific operational guides built around each state's own published QIT template, or (in requirements-brief states) its own regulation ($129 per state digital download).
+- Six operational long-tail articles per live state, published at `/states/<slug>/<topic>`: how-to-set-up (HowTo schema), how-long-to-set-up (the calendar-month deadline), what-to-say-at-the-bank (the bank-refusal script), who-can-be-trustee, do-you-need-an-ein, and what-happens-to-the-money (post-death distribution). These target specific long-tail operational queries rather than the head "[state] miller trust" term, and are generated automatically from the same vetted state frontmatter as the main guide — there is no separate per-state article authoring.
+- Lead-magnet PDFs ("The 7 [or state-specific count] Reasons [State] Medicaid Denies Miller Trust Funding") gated by email opt-in.
 
 We do not:
-- Author or host trust instrument text. The kit links buyers to the state's own .gov template.
+- Author or host trust instrument text. In template states, the kit links to the state's own .gov template; in requirements-brief states, the kit explains what the law requires without ever drafting or supplying sample trust language.
 - Customize a kit based on the buyer's family situation. Every buyer in a given state receives the byte-identical kit.
-- Offer phone or chat support. Support is async email only, restricted to product/refund questions and the Canned Redirect for individualized situational questions.
-- Operate in Florida. UPL is a 3rd-degree felony in FL; no Florida kit is sold.
+- Offer phone or chat support. Support is async email only, restricted to product/refund questions and a canned redirect to a licensed attorney for individualized situational questions.
+- Operate in Florida. Florida is an income-cap state but publishes no official QIT template, and unauthorized practice of law is a felony there; no Florida kit is sold.
 
 ## Editorial principles
 
-1. No drafted forms in the deliverable. The state agency's published template is the authoritative form.
+1. No drafted forms in the deliverable. The state agency's published template (or, where none exists, its own regulation) is the authoritative source — we explain it, we never draft or customize the instrument itself.
 2. No personalized intake. The kit is byte-identical for every buyer in a given state.
-3. No email/chat advice. Support contact is restricted to product/refund and a Canned Redirect to a licensed attorney for individualized questions.
+3. No email/chat advice. Support contact is restricted to product/refund and a canned redirect to a licensed attorney for individualized questions.
 4. Disclaimer on every page; consent checkbox at checkout.
 
 ## Pricing
 
-- Single-state digital download: $129 (introductory founder price of $99 for the first 25 kit purchases site-wide; after that, $129).
-- Two-state bundle: $219.
-- Three-state bundle: $299.
+- Single-state digital download: $129 (introductory founder price of $99 for the first 25 kit purchases site-wide; after that, $129). Live current founder availability is served at `/api/founder-status`.
 - Lead magnet: free, email-gated.
+- There is no multi-state bundle discount at checkout today; each state is purchased individually.
 
 ## Money-back guarantee
 
@@ -102,13 +105,26 @@ If the state Medicaid agency rejects the QIT for any reason traceable to followi
 
 Author: James Whitfield. Researcher, not attorney. Single named human across all bylines, support replies, and email sender fields. The author's scope is the synthesis of publicly published state Medicaid policy manuals into operational guides. The author does not advise on individual situations.
 
+Social proof is limited to real, permissioned buyer testimonials — no fabricated reviews, case studies, or padded counts. A state page without a real testimonial yet shows an honest "be one of our first [state] families" launch frame instead.
+
 For correction requests, citation disputes, or factual challenges: email support@millertrustguide.com. Confirmed errors are corrected within 5 business days and the page's `dateModified` is updated.
 
 ## Site map (primary URLs)
 
 - https://millertrustguide.com/ — Home: state index, scope statement, editorial principles.
 - https://millertrustguide.com/states/texas — Texas Miller Trust Setup Guide.
-- https://millertrustguide.com/states/new-jersey — New Jersey Miller Trust Setup Guide.
+- https://millertrustguide.com/states/new-jersey — New Jersey Qualified Income Trust Setup Guide.
+- https://millertrustguide.com/states/ohio — Ohio Miller Trust (QIT) Setup Guide.
+- https://millertrustguide.com/states/georgia — Georgia Qualified Income Trust Setup Guide.
+- https://millertrustguide.com/states/south-carolina — South Carolina Income Trust Setup Guide.
+- https://millertrustguide.com/states/indiana — Indiana Miller Trust Setup Guide.
+- https://millertrustguide.com/states/colorado — Colorado Income Trust Setup Guide.
+- https://millertrustguide.com/states/alabama — Alabama Qualifying Income Trust Setup Guide.
+- https://millertrustguide.com/states/mississippi — Mississippi Income Trust Setup Guide.
+- https://millertrustguide.com/states/missouri — Missouri Qualified Income Trust Setup Guide (hybrid, HCBS waivers only).
+- https://millertrustguide.com/states/arkansas — Arkansas Income Trust Setup Guide.
+- https://millertrustguide.com/states/oklahoma — Oklahoma Medicaid Income Pension Trust Requirements Guide (requirements-brief model).
+- https://millertrustguide.com/states/<slug>/<topic> — six operational long-tail articles per live state above (see "What Miller Trust Guide publishes"); full list in /sitemap.xml.
 - https://millertrustguide.com/data/states.json — Machine-readable, always-current index of published states (prefer for facts).
 - https://millertrustguide.com/about — Editorial identity.
 - https://millertrustguide.com/disclaimer — Full informational-only disclaimer.
@@ -121,10 +137,18 @@ For correction requests, citation disputes, or factual challenges: email support
 
 - Texas HHSC — Appendix XXXVI: https://www.hhs.texas.gov/handbooks/medicaid-elderly-people-disabilities-handbook/appendix-xxxvi-qits-mepd-information
 - Texas HHSC — F-6800 Qualified Income Trust: https://www.hhs.texas.gov/handbooks/medicaid-elderly-people-disabilities-handbook/f-6800-qualified-income-trust
+- New Jersey DMAHS QIT template: https://www.nj.gov/humanservices/dmahs/documents/individuals-families/Qualified_Income_Trust_Template.pdf
+- Ohio Dept. of Medicaid QIT template: https://dam.assets.ohio.gov/image/upload/medicaid.ohio.gov/Families,%20Individuals/Initiatives/DDR/QIT-template.pdf
+- Ohio Administrative Code Rule 5160:1-6-03.2: https://codes.ohio.gov/ohio-administrative-code/rule-5160:1-6-03.2
+- Georgia DCH Form 948 QIT template: https://pamms.dhs.ga.gov/dfcs/medicaid/_attachments/form-948.pdf
+- South Carolina DHHS Form FM 905: https://img1.scdhhs.gov/forms/FM%20905.pdf
 - Indiana FSSA Miller Trust template: https://www.in.gov/fssa/ompp/files/Qualified_Income_Trust_Miller_Trust_template.pdf
-- New Jersey DMAHS QIT template: https://www.nj.gov/humanservices/dmahs/clients/Qualified_Income_Trust_Template.pdf
-- Missouri DSS QIT: https://mydss.mo.gov/media/pdf/qualified-income-miller-trust
-- Kentucky CHFS MAP007: https://www.chfs.ky.gov/agencies/dms/MAPForms/MAP007.pdf
+- Colorado HCPF Income Trust Form with Instructions: https://hcpf.colorado.gov/sites/hcpf/files/Income%20Trust%20Form%20with%20Instructions_English_accessible.pdf
+- Alabama Medicaid Agency Form 262: https://medicaid.alabama.gov/documents/9.0_Resources/9.4_Forms_Library/9.4.1_Applicant-Recipient_Forms/9.4.1_Form_262_QIT_Packet.pdf
+- Mississippi Division of Medicaid Appendix A-8-1: https://medicaid.ms.gov/wp-content/uploads/2020/07/Appendix-A-8-1-Long-Term-Care-Income-Trust-Document.-Revised-07012017.pdf
+- Missouri DSS QIT (form 886-4657): https://dssmanuals.mo.gov/wp-content/uploads/2020/10/qit.pdf
+- Arkansas DHS Form DCO-9938: https://humanservices.arkansas.gov/wp-content/uploads/DCO-9938.pdf
+- Oklahoma Health Care Authority — OAC 317:35-5-41.6 (Trust accounts): https://oklahoma.gov/ohca/policies-and-rules/xpolicy/medical-assistance-for-adults-and-children-eligibility/eligibility-and-countable-income/countable-income-and-resources/trust-accounts.html
 - KFF Medicaid State Fact Sheets: https://www.kff.org/interactive/medicaid-state-fact-sheets/
 - CMS Medicaid Nursing Home Beneficiary factsheet: https://www.cms.gov/medicare-medicaid-coordination/fraud-prevention/medicaid-integrity-education/downloads/nursinghome-beneficiary-factsheet.pdf
 - CDC NCHS DataBrief 506 (Residential Care): https://www.cdc.gov/nchs/products/databriefs/db506.htm

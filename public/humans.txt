@@ -7,9 +7,9 @@ Location: United States
 /* SITE */
 Site name: Miller Trust Guide
 Brand: Miller Trust Guide
-Last updated: 2026-05-20
+Last updated: 2026-07-24
 Standards: HTML5, ES2022, WCAG 2.2 AA
-Tools: Astro, Tailwind CSS, Vercel, Stripe, Postmark, Vercel Blob, Buttondown
+Tools: Astro, Tailwind CSS, Vercel, Stripe, Resend, Vercel Blob
 Editorial review cadence: Annual at CMS Federal Benefit Rate publication (January).
 
 /* ANONYMITY NOTE */
