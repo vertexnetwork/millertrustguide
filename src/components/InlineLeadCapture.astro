@@ -36,11 +36,13 @@ const formId = `lead-inline-${Math.random().toString(36).slice(2, 8)}`;
     </svg>
     <div class="min-w-0">
       <h2 id={`${formId}-heading`} class="!mt-0 !mb-1 !text-xl">
-        Not ready to buy? Get the {stateName} denial-trap checklist first.
+        The {stateName} denial traps that cost families a month of coverage
       </h2>
       <p class="!mt-0 text-sm text-ink">
         Most denials are paperwork, not eligibility. This free one-pager lists every {agencyAbbreviation}
-        denial trap with the citation behind it — so you can verify before you file. Emailed now, no pressure.
+        denial trap with the citation behind it — emailed now. We'll also send 4 short follow-ups over the
+        next 3 weeks (the bank step, the trustee role, when to call an attorney) — then we stop. No ongoing
+        newsletter.
       </p>
 
       <form id={formId} class="mt-4" data-capture="inline" data-state-slug={stateSlug} novalidate>
