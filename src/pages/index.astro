@@ -238,10 +238,17 @@ const jsonLd = [
     homeTestimonials.length > 0 && (
       <section class="mx-auto max-w-3xl px-4 py-8" aria-labelledby="proof-heading">
         <h2 id="proof-heading">What early buyers say</h2>
-        <p class="mt-2 text-sm text-ink-muted">
-          Real buyers, in their own words. We only publish verified customers who gave permission — no invented
-          reviews, no stock quotes.
-        </p>
+        {homeTestimonials.length === 1 ? (
+          <p class="mt-2 text-sm text-ink-muted">
+            We're new enough that this is our only review so far — real, verified, and shown here because it's
+            what we have, not because it's flattering. We'll add more as buyers reply.
+          </p>
+        ) : (
+          <p class="mt-2 text-sm text-ink-muted">
+            Real buyers, in their own words. We only publish verified customers who gave permission — no invented
+            reviews, no stock quotes.
+          </p>
+        )}
         <div class:list={['mt-5 grid gap-6', homeTestimonials.length > 1 && 'md:grid-cols-2']}>
           {homeTestimonials.map(({ testimonial, stateName }) => (
             <Testimonial testimonial={testimonial} stateName={stateName} compact />
@@ -285,8 +292,8 @@ const jsonLd = [
 
   <section class="mx-auto max-w-3xl px-4">
     <LeadMagnetForm
-      heading="Not ready to buy? Start with the free email series."
-      blurb="A handful of short, plain-English emails on how Miller Trusts actually work — the funding-month rule, the bank step, the denial traps. No sales pressure. Unsubscribe anytime."
+      heading="The mistakes that cost families a month of Medicaid coverage"
+      blurb="5 short, plain-English emails over 3 weeks — the funding-month rule, what really happens at the bank, why most denials are paperwork not eligibility, the trustee's actual monthly workload, and the one honest sign it's time to call an attorney instead. Then we stop. No ongoing newsletter, no sales list."
     />
   </section>
 

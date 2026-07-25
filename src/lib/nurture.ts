@@ -87,6 +87,11 @@ interface Email1Ctx {
 
 function email1(stateName: string, ctx: Email1Ctx = {}): EmailContent {
   const url = stateUrl(ctx.slug);
+  // Homepage signups have no state yet (stateName falls back to the literal
+  // 'your state') — several sentences below read fine with a real state name
+  // interpolated but grammatically break with that fallback string, so they
+  // branch on hasState instead of blindly interpolating it everywhere.
+  const hasState = Boolean(ctx.slug);
   // State-specific private-pay range when we have it, so the figure here can
   // never contradict the state page or the kit. Falls back to a safe generic.
   const payPhrase =
@@ -112,12 +117,30 @@ ${ctaButton(checklistUrl, `Open your ${stateName} checklist`)}`
 
   const subject = checklistUrl
     ? `Your ${stateName} Miller Trust checklist is inside`
-    : `The 30-day window most ${stateName} families miss`;
+    : `The 30-day Medicaid funding window most families miss`;
+  const seriesIntroText = hasState
+    ? `Over the next three weeks you'll get four more short, plain-English emails about how ${stateName} Miller Trusts actually work — no sales pressure, unsubscribe anytime.`
+    : `Over the next three weeks you'll get four more short, plain-English emails on how a Miller Trust actually works — the bank step, the paperwork traps, the trustee role — no sales pressure, unsubscribe anytime.`;
+  const seriesIntroHtml = hasState
+    ? `<p>Over the next three weeks you'll get four more short, plain-English emails about how ${stateName} Miller Trusts actually work — no sales pressure, unsubscribe anytime.</p>`
+    : `<p>Over the next three weeks you'll get four more short, plain-English emails on how a Miller Trust actually works — the bank step, the paperwork traps, the trustee role — no sales pressure, unsubscribe anytime.</p>`;
+  const kitPlugText = hasState
+    ? `If you'd rather not wait, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}
+
+See the ${stateName} kit: ${url}`
+    : `If you'd rather not wait, every state's kit walks through the full operational step — the bank script, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}
+
+Find your state's kit: ${url}`;
+  const kitPlugHtml = hasState
+    ? `<p>If you'd rather not wait, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}</p>
+${ctaButton(url, `See the ${stateName} kit`)}`
+    : `<p>If you'd rather not wait, every state's kit walks through the full operational step — the bank script, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}</p>
+${ctaButton(url, `Find your state's kit`)}`;
   const text = `Hi,
 
 Thanks for joining the Miller Trust Guide email series.${checklistText}
 
-Over the next three weeks you'll get four more short, plain-English emails about how ${stateName} Miller Trusts actually work — no sales pressure, unsubscribe anytime.
+${seriesIntroText}
 
 Here's the single most useful thing to know first.
 
@@ -134,19 +157,17 @@ WHAT'S COMING IN THIS SERIES
 - Who can serve as trustee, and what they do each month
 - When the situation calls for an attorney instead
 
-If you'd rather not wait, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}
-
-See the ${stateName} kit: ${url}
+${kitPlugText}
 
 No pressure either way. The emails are genuinely useful on their own.
 
 ${SIGNOFF_TEXT}`;
 
   const html = htmlShell(
-    `The 30-day window most ${stateName} families miss`,
+    subject,
     `  <p>Thanks for joining the Miller Trust Guide email series.</p>
 ${checklistHtml}
-  <p>Over the next three weeks you'll get four more short, plain-English emails about how ${stateName} Miller Trusts actually work — no sales pressure, unsubscribe anytime.</p>
+  ${seriesIntroHtml}
   <p>Here's the single most useful thing to know first.</p>
   <h2 style="font-family: Georgia, serif; color: #0F4C4A; font-size: 17px;">The funding-month rule</h2>
   <p>A Miller Trust (Qualified Income Trust) only does its job for a given month if it is <strong>both signed and funded within that same calendar month</strong>. Medicaid does not back-date eligibility to before the trust was working. So if a family signs the trust on the 28th and the bank account isn't funded until the 2nd of the next month, the first month does not qualify — and that month is billed at the private-pay nursing-home rate, ${payPhrase} a month.</p>
@@ -158,8 +179,7 @@ ${checklistHtml}
     <li>Who can serve as trustee, and what they do each month</li>
     <li>When the situation calls for an attorney instead</li>
   </ul>
-  <p>If you'd rather not wait, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}</p>
-${ctaButton(url, `See the ${stateName} kit`)}
+  ${kitPlugHtml}
   <p style="color:#6B7280;font-size:13px;">No pressure either way — the emails are genuinely useful on their own.</p>`
   );
 
