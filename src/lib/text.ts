@@ -1,3 +1,11 @@
+// Indefinite article ("a"/"an") for a US state name. State names are plain
+// proper nouns with no silent-letter exceptions, so a first-letter vowel
+// check is correct (unlike English generally — no "an hour"/"a European").
+export function article(name: string, capitalize = false): string {
+  const a = /^[aeiou]/i.test(name) ? 'an' : 'a';
+  return capitalize ? a[0].toUpperCase() + a.slice(1) : a;
+}
+
 // Split a paragraph into its first sentence (the "lead") and the remainder.
 //
 // Used to mark a short (typically ≤30-word) speakable lead on FAQ answers so

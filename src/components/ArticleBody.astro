@@ -6,7 +6,7 @@
 // from BaseLayout, so Rule 4 is satisfied without anything here.
 import type { StateData } from '~/content/config';
 import { getHowToSteps, getArticleFaq, articlePath, type ArticleTopic } from '~/lib/articles';
-import { firstSentence } from '~/lib/text';
+import { article } from '~/lib/text';
 import { FOUNDER } from '~/config/founder';
 import InlineLeadCapture from '~/components/InlineLeadCapture.astro';
 
@@ -80,7 +80,7 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
           <p class="!mt-0">
             The two steps families get stuck on are <a href={bankPath}>opening the bank account in {state.name}</a> and
             funding the trust before the calendar month closes — see{' '}
-            <a href={howLongPath}>how long setting up a {state.name} Miller Trust takes</a> for the timing rules.
+            <a href={howLongPath}>how long setting up {article(state.name)} {state.name} Miller Trust takes</a> for the timing rules.
           </p>
         </div>
 
@@ -125,7 +125,7 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
           <p>
             The paperwork is fast — completing {state.agencyName}'s template is usually under an hour, and signing it takes
             minutes. What stretches the timeline is two things: <strong>opening the bank account</strong> and{' '}
-            <strong>the calendar-month deadline</strong>. When both go smoothly, families complete a {state.name} Miller
+            <strong>the calendar-month deadline</strong>. When both go smoothly, families complete {article(state.name)} {state.name} Miller
             Trust in a few days. When the bank balks, it can take a week or more — which is why knowing{' '}
             <a href={bankPath}>what to say at the bank</a> up front matters.
           </p>
@@ -133,7 +133,7 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
 
         <h2>The one deadline that actually controls eligibility</h2>
         <p>
-          A {state.name} Qualified Income Trust only diverts income in a calendar month where it is <em>signed</em>, has a{' '}
+          {article(state.name, true)} {state.name} Qualified Income Trust only diverts income in a calendar month where it is <em>signed</em>, has a{' '}
           <em>funded</em> bank account, and receives enough of the applicant's income to bring remaining countable income
           below the {state.asOf} cap of <strong>${fmt(state.incomeCap2026)}/month</strong> — all within that same month.
           Per {state.agencyAbbreviation} {state.policyManualSection}, there is no back-dating: coverage begins the month
@@ -180,22 +180,48 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
       <>
         <h2>Why the bank says no</h2>
         <p>
-          Opening a {state.name} Miller Trust account is not legally complicated, but it is unfamiliar to most branch
+          Opening {article(state.name)} {state.name} Miller Trust account is not legally complicated, but it is unfamiliar to most branch
           staff — they rarely see a Qualified Income Trust, so the default reaction is caution. The fix is almost never
-          arguing; it is handing the branch the right {state.agencyAbbreviation} document and asking for the right account
-          type. Below are the {state.bankRefusalNotes.length} refusals families hit most often in {state.name} and the
-          {state.agencyAbbreviation} rule that resolves each one.
+          arguing; it is opening with the right language and handing over the right {state.agencyAbbreviation} document.
         </p>
+
+        <h3>What to say when you sit down</h3>
+        <p>Use this to open the conversation — it establishes that the trust is authorized and that you know what you're asking for.</p>
+
+        <div class="mt-6 rounded-lg border-l-4 border-primary bg-primary-tint/30 p-5">
+          {hcb ? (
+            <p class="!mt-0 italic text-ink">
+              "I'd like to open a checking account in the name of an irrevocable trust. The trust is a Qualified
+              Income Trust authorized under {state.name} Medicaid policy ({state.policyManualSection}) and federal
+              law at {state.federalStatuteCitation}. I have the trust document signed and dated. I'd like the
+              account titled exactly as the trust is named, with the {state.einRequired ? 'EIN' : "applicant's Social Security number"}{' '}
+              on file for IRS reporting. The trustee — not the applicant — is the only authorized signer."
+            </p>
+          ) : (
+            <p class="!mt-0 italic text-ink">
+              "I'd like to open a checking account in the name of an irrevocable trust. The trust is a Qualified
+              Income Trust authorized under {state.name} Medicaid policy ({state.policyManualSection}) and federal
+              law at {state.federalStatuteCitation}. I have the trust document signed and dated. I'd like the
+              account titled exactly as the trust is named, with the {state.einRequired ? 'EIN' : "applicant's Social Security number"}{' '}
+              on file for IRS reporting. The trustee is the only authorized signer."
+            </p>
+          )}
+        </div>
+
+        <h3>If that doesn't work: the {state.bankRefusalNotes.length} refusals families hit most</h3>
+        <p>Below is exactly what's going on and how to respond, each backed by {state.agencyAbbreviation}'s own published guidance.</p>
 
         <div class="not-prose mt-6 space-y-4">
           {state.bankRefusalNotes.map((b, i) => (
             <div class="rounded-lg border border-border bg-surface-elevated p-4">
               <p class="text-sm font-semibold uppercase tracking-wide text-primary">Refusal {i + 1}</p>
               <p class="mt-1 font-semibold text-ink-heading">{b.refusalType}</p>
-              <p class="mt-2 text-ink">{firstSentence(b.response).lead}</p>
-              <p class="mt-2 text-sm text-ink-muted">
-                The kit's bank section has the exact wording to say at the counter{b.documentNeeded ? ' and which document to bring' : ''}.
-              </p>
+              <p class="mt-2 text-ink">{b.response}</p>
+              {b.documentNeeded && (
+                <p class="mt-2 text-sm text-ink-muted">
+                  <strong>Document to bring:</strong> {b.documentNeeded}
+                </p>
+              )}
             </div>
           ))}
         </div>
@@ -206,6 +232,12 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
           tends to involve a human review rather than a screen-driven template, so they accommodate unusual account types
           more readily. The account itself is ordinary: a dedicated checking account titled to the trust, opened with the
           beneficiary's Social Security number.
+        </p>
+
+        <p class="mt-4 text-sm text-ink-muted">
+          Still stuck after that? The kit includes a pre-written resolution letter addressed to the branch manager —
+          citing {state.policyManualSection} and {state.federalStatuteCitation} in a form their compliance team can verify
+          independently — plus the full pre-visit document checklist, ready to print and hand across the counter.
         </p>
       </>
     )
@@ -296,7 +328,7 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
 
         <h2>Either way, the account is an ordinary bank account</h2>
         <p>
-          Whether or not an EIN is involved, a {state.name} Miller Trust account is a plain dedicated checking
+          Whether or not an EIN is involved, {article(state.name)} {state.name} Miller Trust account is a plain dedicated checking
           account titled to the trust — not a special product. What trips families up is rarely the tax ID; it is
           the branch's unfamiliarity with the account type. Knowing the answer before you go keeps the EIN question
           from turning into a wasted trip.
@@ -346,6 +378,22 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
             trust is a pass-through, not a place where money piles up.
           </p>
         )}
+
+        <h2>What about the house?</h2>
+        <p>
+          The trust payback above is a separate legal channel from Medicaid's broader estate-recovery program, which
+          is what could otherwise reach the applicant's home. Federal law (42&nbsp;U.S.C.&nbsp;§&nbsp;1396p(b)(2))
+          bars a state from pursuing that broader estate recovery — against the home or anything else in the estate
+          — for as long as the applicant has a surviving spouse. That protection is automatic; the surviving spouse
+          does not have to apply for it, and it applies the same way in every state. It also applies while the
+          applicant has a surviving child who is under 21, or blind or disabled at any age.
+        </p>
+        <p>
+          This is a deferral, not a permanent exemption: once the surviving spouse (and any protected child) has
+          also died, the state may then pursue recovery from what remains of the estate, which can include the home.
+          Couples who want to plan specifically for the home beyond that point should raise it with an elder-law
+          attorney — that's a separate question from the Miller Trust this kit covers.
+        </p>
       </>
     )
   }
@@ -405,8 +453,8 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
         <>
           The kit is <strong>${FOUNDER.price}</strong> at the founding price &mdash; only{' '}
           <span data-founder-spots>{founderSpotsLeft}</span>{' '}
-          <span data-founder-spot-word>{founderSpotsLeft === 1 ? 'spot' : 'spots'}</span> left at this rate, then $
-          {state.price}.
+          <span data-founder-spot-word>{founderSpotsLeft === 1 ? 'spot' : 'spots'}</span> left at this rate, then{' '}
+          ${state.price}.
         </>
       ) : (
         <>

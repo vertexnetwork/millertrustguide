@@ -1,6 +1,7 @@
 ---
 import '~/styles/kit-print.css';
 import type { StateData } from '~/content/config';
+import { article } from '~/lib/text';
 
 interface Props {
   state: StateData;
@@ -361,7 +362,7 @@ const reqBrief = state.productModel === 'requirements-brief';
       <h1>Table of contents</h1>
 
       <ul class="kit-toc-list">
-        <li><a href="#section-1"><span class="toc-title">Section 1 &middot; What a {state.name} Miller Trust does</span></a></li>
+        <li><a href="#section-1"><span class="toc-title">Section 1 &middot; What {article(state.name)} {state.name} Miller Trust does</span></a></li>
         {reqBrief ? (
           <Fragment>
             <li><a href="#section-2"><span class="toc-title">Section 2 &middot; What your {state.name} trust must legally contain</span></a></li>
@@ -388,8 +389,8 @@ const reqBrief = state.productModel === 'requirements-brief';
 
     {/* ============================ SECTION 1 ============================ */}
     <section id="section-1" class="kit-page-break">
-      <p class="kit-eyebrow kit-section-title">Section 1 &middot; What a {state.name} Miller Trust does</p>
-      <h1>What a {state.name} Miller Trust does, in plain English</h1>
+      <p class="kit-eyebrow kit-section-title">Section 1 &middot; What {article(state.name)} {state.name} Miller Trust does</p>
+      <h1>What {article(state.name)} {state.name} Miller Trust does, in plain English</h1>
 
       {hcb ? (
         <p>
@@ -795,7 +796,7 @@ const reqBrief = state.productModel === 'requirements-brief';
         that are objectively true about your family — names, dates, income sources. This section walks through
         those obvious fields. <strong>Where the template asks you to make a substantive legal choice (residual
         beneficiary designations beyond Medicaid, complex trustee structures, anything the template's own
-        instructions don't explain in plain English), stop and consult a {state.name} attorney</strong> — see
+        instructions don't explain in plain English), stop and consult {article(state.name)} {state.name} attorney</strong> — see
         Section 9.
       </p>
 
@@ -1629,7 +1630,7 @@ const reqBrief = state.productModel === 'requirements-brief';
           <p>
             <strong>This kit does not address estate recovery beyond the QIT's own distribution clause.</strong>
             If the applicant owns a home, has assets outside the QIT, or has a surviving spouse with potential
-            estate interests, consult a {state.name}-licensed elder-law attorney for the estate-recovery
+            estate interests, consult {article(state.name)} {state.name}-licensed elder-law attorney for the estate-recovery
             analysis. The State Bar of {state.name} referral service is below.
           </p>
         </div>
@@ -1652,9 +1653,9 @@ const reqBrief = state.productModel === 'requirements-brief';
         </p>
       ) : (
         <p>
-          This kit handles the operational mechanics of setting up a {state.name} Qualified Income Trust. It does
+          This kit handles the operational mechanics of setting up {article(state.name)} {state.name} Qualified Income Trust. It does
           not handle situations that require legal judgment applied to specific facts. The list below is not
-          exhaustive, but it covers the situations we see most often where a {state.name}-licensed elder-law
+          exhaustive, but it covers the situations we see most often where {article(state.name)} {state.name}-licensed elder-law
           attorney is the right call.
         </p>
       )}
@@ -1784,7 +1785,7 @@ const reqBrief = state.productModel === 'requirements-brief';
         </Fragment>
       )}
 
-      <h3>How to find a {state.name} elder-law attorney</h3>
+      <h3>How to find {article(state.name)} {state.name} elder-law attorney</h3>
       <p>
         The most reliable starting point is the
         {' '}<a href={state.stateBarLrsUrl}>{state.stateBarLrsName}</a>. The referral service matches you with a
@@ -1847,7 +1848,7 @@ const reqBrief = state.productModel === 'requirements-brief';
       {reqBrief ? (
         <Fragment>
           <p>
-            Hiring an attorney to draft a {state.name} Qualified Income Trust is the expected path, not a corner
+            Hiring an attorney to draft {article(state.name)} {state.name} Qualified Income Trust is the expected path, not a corner
             cut — so the family friction here usually runs the other way: a sibling who thinks you're overpaying,
             or wants to know why a guide is needed at all if a lawyer is being hired anyway. Both are fair
             questions, and this section gives you calm, honest language for either one.

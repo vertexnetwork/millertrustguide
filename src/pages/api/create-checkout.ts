@@ -7,6 +7,7 @@ import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { getStripe } from '~/lib/stripe';
 import { sanitizeRef } from '~/lib/referral';
+import { article } from '~/lib/text';
 
 export const prerender = false;
 
@@ -50,7 +51,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return jsonError(
       403,
       state.status === 'blocked'
-        ? `We do not currently sell a ${state.name} kit.`
+        ? `We do not currently sell ${article(state.name)} ${state.name} kit.`
         : `The ${state.name} kit is not yet available for purchase.`
     );
   }
