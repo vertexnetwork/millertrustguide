@@ -93,7 +93,7 @@ We do not:
 
 ## Pricing
 
-- Single-state digital download: $129 (introductory founder price of $99 for the first 25 kit purchases site-wide; after that, $129). Live current founder availability is served at `/api/founder-status`.
+- Single-state digital download: $129, one time.
 - Lead magnet: free, email-gated.
 - There is no multi-state bundle discount at checkout today; each state is purchased individually.
 

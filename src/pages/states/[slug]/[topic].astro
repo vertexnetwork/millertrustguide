@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import ArticleBody from '~/components/ArticleBody.astro';
-import FounderLive from '~/components/FounderLive.astro';
 import {
   ARTICLE_TOPICS,
   getArticleMeta,
@@ -117,5 +116,4 @@ const siblings = getAllArticleMeta(state).filter((a) => a.topic !== topic);
       </ul>
     </nav>
   </article>
-  <FounderLive />
 </BaseLayout>

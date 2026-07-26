@@ -4,7 +4,6 @@ interface ImportMetaEnv {
   // Stripe
   readonly STRIPE_SECRET_KEY: string;
   readonly STRIPE_WEBHOOK_SECRET: string;
-  readonly STRIPE_FOUNDER_COUPON_ID?: string;
 
   // Resend — transactional + nurture audience
   readonly RESEND_API_KEY: string;

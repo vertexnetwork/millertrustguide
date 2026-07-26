@@ -7,7 +7,6 @@
 import type { StateData } from '~/content/config';
 import { getHowToSteps, getArticleFaq, articlePath, type ArticleTopic } from '~/lib/articles';
 import { article } from '~/lib/text';
-import { FOUNDER } from '~/config/founder';
 import InlineLeadCapture from '~/components/InlineLeadCapture.astro';
 
 interface Props {
@@ -31,12 +30,6 @@ const howToPath = articlePath(state.slug, 'how-to-set-up');
 
 const steps = topic === 'how-to-set-up' ? getHowToSteps(state) : [];
 const faq = getArticleFaq(state, topic);
-
-// Articles render only for live states (see getStaticPaths in the page
-// route), so the founder offer is always potentially active here. Mirrors
-// the same read of FOUNDER that StatePageLayout uses, for price parity.
-const founderActive = FOUNDER.unitsSold < FOUNDER.unitLimit;
-const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold : 0;
 ---
 
 <div class="prose-content">
@@ -422,10 +415,9 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
   }
 
   {/* CTA back to the purchasable state kit (the buy flow lives there, not
-      here). Value-stacked: price anchor against attorney cost, founder
-      scarcity (kept live by FounderLive via the data-founder-spots hooks,
-      same mechanism the state page uses), and a one-line echo of the
-      author's story already told in full on the state page — no new claims. */}
+      here). Value-stacked: price anchor against attorney cost, and a one-line
+      echo of the author's story already told in full on the state page — no
+      new claims. */}
   <aside class="mt-10 rounded-lg border border-primary/30 bg-primary-tint/20 p-6">
     <p class="!mt-0 text-xs font-semibold uppercase tracking-wider text-primary">The {state.name} kit does this for you</p>
     <h2 class="!mt-1 !text-xl">Everything above, plus the parts that actually trip families up</h2>
@@ -449,18 +441,7 @@ const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold :
       ) : (
         <Fragment>An elder-law attorney typically charges $1,000&ndash;$2,500 for this.{' '}</Fragment>
       )}
-      {founderActive ? (
-        <>
-          The kit is <strong>${FOUNDER.price}</strong> at the founding price &mdash; only{' '}
-          <span data-founder-spots>{founderSpotsLeft}</span>{' '}
-          <span data-founder-spot-word>{founderSpotsLeft === 1 ? 'spot' : 'spots'}</span> left at this rate, then{' '}
-          ${state.price}.
-        </>
-      ) : (
-        <>
-          The kit is <strong>${state.price}</strong>.
-        </>
-      )}{' '}
+      The kit is <strong>${state.price}</strong>, one time.{' '}
       Instant download. <strong>Informational only — not legal advice.</strong>
     </p>
     <p class="mt-3 text-sm text-ink-muted">

@@ -1,5 +1,4 @@
-// B2B recurring-license tier config. Pure constants + env reads (mirrors the
-// founder.ts convention). The Price-ID → state map that needs the content
+// B2B recurring-license tier config. Pure constants + env reads. The Price-ID → state map that needs the content
 // collection lives in src/lib/stripe-b2b.ts, not here, so this stays importable
 // anywhere without pulling in astro:content.
 //

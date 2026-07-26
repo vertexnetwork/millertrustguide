@@ -23,8 +23,6 @@ import {
   howToSchema,
 } from '~/lib/schema';
 import type { StateData } from '~/content/config';
-import { FOUNDER } from '~/config/founder';
-import FounderLive from '~/components/FounderLive.astro';
 import { article, firstSentence } from '~/lib/text';
 import { REVIEWER } from '~/config/identity';
 import { getResolvedTestimonials, orderForState } from '~/lib/testimonials-display';
@@ -54,22 +52,6 @@ const hcb = state.medicaidStructure === 'hybrid';
 // copy flexes the same way: no "download the template" framing, no
 // officialTemplateUrl references.
 const reqBrief = state.productModel === 'requirements-brief';
-
-// Founder pricing. The display is gated on the operator-maintained
-// unitsSold count; Stripe's max-redemptions coupon is the actual charge
-// enforcement (see create-checkout.ts). Keep unitsSold current so the
-// displayed offer never outlives the coupon.
-const sp = state.socialProof;
-// GLOBAL founder offer (shared across ALL states) — see src/config/founder.ts.
-// founderActive / spotsLeft / displayPrice all read the global counter, so the
-// first 25 buyers across the whole site get $99, then every state flips to full
-// price together. The shared Stripe coupon enforces the actual charge.
-const founderActive = isLive && FOUNDER.unitsSold < FOUNDER.unitLimit;
-const founderSpotsLeft = founderActive ? FOUNDER.unitLimit - FOUNDER.unitsSold : 0;
-// Founder-aware price for ALL visible price displays (top panel, bottom CTA,
-// sticky bar, comparison table) so they stay congruent. Display only; the actual
-// charge is server-side (create-checkout: Stripe price + the shared founder coupon).
-const displayPrice = founderActive ? FOUNDER.price : state.price;
 
 // Hero term = the state's OWN name for the instrument (primaryTerm), so the H1
 // matches local agency verbiage and the searches that follow it. Persona noun
@@ -104,10 +86,10 @@ const proofAllCrossState =
 const tldr = blocked
   ? `Miller Trust Guide does not currently publish a kit for ${state.name}. ${state.blockedReason ?? 'For advice on your situation, consult a licensed elder-law attorney in your state.'}`
   : reqBrief
-    ? `${article(state.name, true)} ${state.name} Qualified Income Trust (Miller Trust) is an irrevocable trust used to qualify a Medicaid applicant whose monthly income exceeds the ${state.name} long-term-care income cap of $${fmt(state.incomeCap2026)} per month (${state.asOf}). ${state.name} does not publish a fill-in QIT form — the trust must be drafted (by an attorney, or by you where permitted) to meet ${state.agencyAbbreviation}'s published requirements (${state.policyManualSection}). Medicaid eligibility begins the month the trust is signed and funded — there is no retroactive effect, and every month of delay is another month of full private-pay care ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This guide is the requirements checklist and operational walkthrough most families need: $${displayPrice}, instant download, money-back if ${state.agencyAbbreviation} rejects the trust for a reason traceable to following the kit.`
+    ? `${article(state.name, true)} ${state.name} Qualified Income Trust (Miller Trust) is an irrevocable trust used to qualify a Medicaid applicant whose monthly income exceeds the ${state.name} long-term-care income cap of $${fmt(state.incomeCap2026)} per month (${state.asOf}). ${state.name} does not publish a fill-in QIT form — the trust must be drafted (by an attorney, or by you where permitted) to meet ${state.agencyAbbreviation}'s published requirements (${state.policyManualSection}). Medicaid eligibility begins the month the trust is signed and funded — there is no retroactive effect, and every month of delay is another month of full private-pay care ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This guide is the requirements checklist and operational walkthrough most families need: $${state.price}, instant download, money-back if ${state.agencyAbbreviation} rejects the trust for a reason traceable to following the kit.`
     : hcb
-      ? `${article(state.name, true)} ${state.name} Qualified Income Trust (Miller Trust) is an irrevocable trust used to qualify an over-income applicant for ${state.name}'s Home and Community-Based (HCB) waiver — in-home Medicaid care for people age 63 and over. ${state.name} nursing-facility Medicaid uses a spend-down, so a QIT is not used there; it is the tool for the in-home waiver, whose income maximum is $${fmt(state.incomeCap2026)}/month (${state.asOf}). Because that limit is absolute — an over-income applicant cannot spend down to qualify — the trust is the only path: the applicant keeps income up to the maximum and moves only the excess into the trust, using the official ${state.agencyAbbreviation} form (886-4657). A third party, not the applicant, must be trustee. Eligibility begins the month the trust is funded — there is no back-dating — and every month of delay is another month of private-pay in-home or assisted-living care ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This is the step-by-step walkthrough most families need: $${displayPrice}, instant download, money-back if ${state.agencyAbbreviation} rejects the trust for a reason traceable to following the kit.`
-      : `${article(state.name, true)} ${state.name} Miller Trust (Qualified Income Trust) is an irrevocable trust used to qualify a Medicaid applicant whose monthly income exceeds the ${state.name} long-term-care income cap of $${fmt(state.incomeCap2026)} per month (${state.asOf}). The trust must be drafted, signed, and funded in the same calendar month using the official ${state.agencyAbbreviation} template (${state.policyManualSection}). Medicaid eligibility begins the month the trust is funded — there is no retroactive effect, and every month of delay is another month of full private-pay nursing-home cost ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This guide is the step-by-step operational walkthrough most families need: $${displayPrice}, instant download, money-back if ${state.agencyAbbreviation} rejects the QIT for a reason traceable to following the kit.`;
+      ? `${article(state.name, true)} ${state.name} Qualified Income Trust (Miller Trust) is an irrevocable trust used to qualify an over-income applicant for ${state.name}'s Home and Community-Based (HCB) waiver — in-home Medicaid care for people age 63 and over. ${state.name} nursing-facility Medicaid uses a spend-down, so a QIT is not used there; it is the tool for the in-home waiver, whose income maximum is $${fmt(state.incomeCap2026)}/month (${state.asOf}). Because that limit is absolute — an over-income applicant cannot spend down to qualify — the trust is the only path: the applicant keeps income up to the maximum and moves only the excess into the trust, using the official ${state.agencyAbbreviation} form (886-4657). A third party, not the applicant, must be trustee. Eligibility begins the month the trust is funded — there is no back-dating — and every month of delay is another month of private-pay in-home or assisted-living care ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This is the step-by-step walkthrough most families need: $${state.price}, instant download, money-back if ${state.agencyAbbreviation} rejects the trust for a reason traceable to following the kit.`
+      : `${article(state.name, true)} ${state.name} Miller Trust (Qualified Income Trust) is an irrevocable trust used to qualify a Medicaid applicant whose monthly income exceeds the ${state.name} long-term-care income cap of $${fmt(state.incomeCap2026)} per month (${state.asOf}). The trust must be drafted, signed, and funded in the same calendar month using the official ${state.agencyAbbreviation} template (${state.policyManualSection}). Medicaid eligibility begins the month the trust is funded — there is no retroactive effect, and every month of delay is another month of full private-pay nursing-home cost ($${fmt(state.privatePayMonthlyLow)}–$${fmt(state.privatePayMonthlyHigh)}/mo in ${state.name}). This guide is the step-by-step operational walkthrough most families need: $${state.price}, instant download, money-back if ${state.agencyAbbreviation} rejects the QIT for a reason traceable to following the kit.`;
 
 // Authoritative citations used in this article — feeds the Article@citation
 // JSON-LD array (2026 entity-binding signal). requirements-brief states have
@@ -599,27 +581,10 @@ if (isLive) {
               <div class="h-1 bg-primary" aria-hidden="true"></div>
               <div class="p-6">
                 <p class="text-xs font-semibold uppercase tracking-wider text-primary">{state.name} Kit</p>
-                {
-                  founderActive ? (
-                    <>
-                      <p class="mt-2 flex items-baseline gap-2">
-                        <span class="text-4xl font-bold text-ink-heading" aria-label={`${FOUNDER.price} dollars founder price`}>
-                          ${FOUNDER.price}
-                        </span>
-                        <span class="text-lg text-ink-muted line-through" aria-label={`regular price ${state.price} dollars`}>
-                          ${state.price}
-                        </span>
-                      </p>
-                      <p class="mt-1 text-sm font-medium text-primary">
-                        Founding price — only <span data-founder-spots>{founderSpotsLeft}</span> <span data-founder-spot-word>{founderSpotsLeft === 1 ? 'spot' : 'spots'}</span> left at this rate.
-                      </p>
-                    </>
-                  ) : (
-                    <p class="mt-2 text-4xl font-bold text-ink-heading">
-                      <span aria-label={`${state.price} dollars`}>${state.price}</span>
-                    </p>
-                  )
-                }
+                <p class="mt-2 text-4xl font-bold text-ink-heading">
+                  <span aria-label={`${state.price} dollars`}>${state.price}</span>
+                </p>
+                <p class="mt-1 text-sm font-medium text-ink-muted">One-time. No subscription, no upsell.</p>
                 <p class="mt-2 text-sm text-ink">
                   Less than one hour of an elder-law attorney's time — and it covers the whole Qualified
                   Income Trust setup.
@@ -628,7 +593,7 @@ if (isLive) {
                   Instant download &middot; Money-back if {state.agencyAbbreviation} rejects
                 </p>
                 <div class="mt-5">
-                  <ConsentBuyButton stateSlug={state.slug} price={displayPrice} />
+                  <ConsentBuyButton stateSlug={state.slug} price={state.price} />
                 </div>
                 {/* Guarantee at the decision point — the #1 de-risker for a
                     $-purchase from a new publisher, surfaced next to the button
@@ -689,7 +654,7 @@ if (isLive) {
     {!blocked && (
       <ComparisonTable
         stateName={state.name}
-        price={displayPrice}
+        price={state.price}
         privatePayMonthlyLow={state.privatePayMonthlyLow}
         privatePayMonthlyHigh={state.privatePayMonthlyHigh}
         hcb={hcb}
@@ -882,15 +847,8 @@ if (isLive) {
         >
           <h2 id="cta-heading" class="!mt-0">Ready to start?</h2>
           <p>
-            {founderActive ? (
-              <>
-                <strong>${FOUNDER.price} founding price</strong> (<span data-founder-spots>{founderSpotsLeft}</span> <span data-founder-spot-word>{founderSpotsLeft === 1 ? 'spot' : 'spots'}</span> left at this rate), then ${state.price}.
-              </>
-            ) : (
-              <>${state.price}.</>
-            )}{' '}
-            Instant download. Money-back if {state.agencyAbbreviation} rejects your QIT for any reason traceable to
-            following the kit.
+            <strong>${state.price}</strong>, one time. Instant download. Money-back if {state.agencyAbbreviation} rejects
+            your QIT for any reason traceable to following the kit.
           </p>
           <p class="text-sm text-ink-muted">
             {reqBrief ? (
@@ -910,8 +868,8 @@ if (isLive) {
           <div class="mt-6">
             <ConsentBuyButton
               stateSlug={state.slug}
-              price={displayPrice}
-              buttonLabel={`Get the ${state.name} kit — $${displayPrice}`}
+              price={state.price}
+              buttonLabel={`Get the ${state.name} kit — $${state.price}`}
             />
           </div>
         </section>
@@ -922,7 +880,7 @@ if (isLive) {
     isLive && (
       <StickyBuyBar
         stateName={state.name}
-        price={displayPrice}
+        price={state.price}
         agencyAbbreviation={state.agencyAbbreviation}
       />
     )
@@ -947,5 +905,4 @@ if (isLive) {
       </>
     )
   }
-  <FounderLive />
 </BaseLayout>

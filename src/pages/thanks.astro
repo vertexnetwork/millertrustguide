@@ -18,7 +18,7 @@ let lookupError = false;
 // mirrored into the purchase analytics event as the per-facility conversion signal.
 let referralFacility: string | null = null;
 // Actual charged amount for the Google Ads conversion value — reads from Stripe
-// so it's always correct ($99 founder / $129 full / any tax), never hard-coded.
+// so it's always correct (incl. tax), never hard-coded.
 let amountTotal: number | null = null;
 let currency = 'USD';
 

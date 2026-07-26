@@ -9,15 +9,10 @@ import {
   breadcrumbSchema,
 } from '~/lib/schema';
 import { firstSentence } from '~/lib/text';
-import { FOUNDER } from '~/config/founder';
 import Testimonial from '~/components/Testimonial.astro';
 import { getResolvedTestimonials } from '~/lib/testimonials-display';
 
 export const prerender = true;
-
-// GLOBAL founder offer (shared across all states) — see src/config/founder.ts.
-// Display-only; Stripe's coupon is the hard enforcement of the discounted charge.
-const founderActive = FOUNDER.unitsSold < FOUNDER.unitLimit;
 
 const states = (await getCollection('states'))
   .map((s) => ({ ...s.data, slug: s.slug }))
@@ -48,7 +43,7 @@ const homeFaq = [
   {
     question: 'What does the kit cost and what\'s the guarantee?',
     answer:
-      'A single-state digital download is $129 — $99 for founding customers while early spots last. If your state Medicaid agency rejects the Qualified Income Trust for any reason traceable to following the kit, we refund the full purchase price within one business day. No phone tag, no forms.',
+      'A single-state digital download is $129, one time. If your state Medicaid agency rejects the Qualified Income Trust for any reason traceable to following the kit, we refund the full purchase price within one business day. No phone tag, no forms.',
   },
   {
     question: 'When does Medicaid coverage actually begin?',
@@ -183,22 +178,12 @@ const jsonLd = [
                 <a
                   href={`/states/${s.slug}`}
                   class="text-lg font-semibold no-underline hover:underline"
-                  aria-label={`${s.name} Miller Trust Setup Guide — $${founderActive ? FOUNDER.price : s.price}`}
+                  aria-label={`${s.name} Miller Trust Setup Guide — $${s.price}`}
                 >
                   {s.name} Miller Trust Kit
                 </a>
-                {founderActive ? (
-                  <span class="flex items-baseline gap-1.5 whitespace-nowrap">
-                    <span class="text-lg font-bold text-ink-heading">${FOUNDER.price}</span>
-                    <span class="text-sm text-ink-muted line-through">${s.price}</span>
-                  </span>
-                ) : (
-                  <span class="text-lg font-bold text-ink-heading">${s.price}</span>
-                )}
+                <span class="text-lg font-bold text-ink-heading">${s.price}</span>
               </div>
-              {founderActive && (
-                <p class="mt-1 text-xs font-medium text-primary">Founding price — limited early-customer offer.</p>
-              )}
               <p class="mt-2 text-sm text-ink">
                 Built around the official {s.agencyAbbreviation} template. Bank-refusal script, monthly funding
                 worksheet, denial-avoidance checklist. Instant download, money-back if {s.agencyAbbreviation} rejects.
