@@ -6,7 +6,6 @@ import ReassuranceBlock from '~/components/ReassuranceBlock.astro';
 import MoneyBackGuarantee from '~/components/MoneyBackGuarantee.astro';
 import PdfPreview from '~/components/PdfPreview.astro';
 import StickyBuyBar from '~/components/StickyBuyBar.astro';
-import SocialProof from '~/components/SocialProof.astro';
 import Testimonial from '~/components/Testimonial.astro';
 import TrustStrip from '~/components/TrustStrip.astro';
 import LeadMagnetForm from '~/components/LeadMagnetForm.astro';
@@ -378,19 +377,6 @@ if (isLive) {
         )
       }
 
-      {
-        isLive && (
-          <div class="mt-5">
-            <SocialProof
-              stateName={state.name}
-              unitsSold={state.socialProof.unitsSold}
-              displayThreshold={state.socialProof.displayThreshold}
-              launchLabel={state.socialProof.launchLabel}
-            />
-          </div>
-        )
-      }
-
       {isLive && <TrustStrip agencyAbbreviation={state.agencyAbbreviation} />}
     </header>
 
@@ -629,7 +615,7 @@ if (isLive) {
         default). Sits right after the product preview: strongest spot for a voice. */}
     {proofTestimonials.length > 0 && (
       <section class="mx-auto max-w-3xl px-4 py-8" aria-labelledby="proof-heading">
-        <h2 id="proof-heading">What early buyers say</h2>
+        <h2 id="proof-heading">What buyers say</h2>
         {proofAllCrossState ? (
           <p class="mt-2 text-sm text-ink-muted">
             We're new enough that {state.name} doesn't have its own reviews yet — so here's our first, from another

@@ -1,5 +1,5 @@
 // Real, permissioned customer testimonials — one honest quote per state, OFF by
-// default. Same no-fabrication doctrine as SocialProof.astro and identity.ts: we
+// default. Same no-fabrication doctrine as identity.ts: we
 // only ever ship words a real buyer actually wrote, lightly trimmed for length —
 // never paraphrased into something they didn't say, never edited to turn a caveat
 // into a guarantee. Nothing renders until the operator flips `status` off 'off'.
