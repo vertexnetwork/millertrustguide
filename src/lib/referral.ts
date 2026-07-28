@@ -40,6 +40,23 @@ export function captureRef(): void {
   }
 }
 
+/**
+ * Persist a ref explicitly, without reading it from the URL first. Used by
+ * surfaces that ARE the referral source but don't carry ?ref= in their own
+ * address — e.g. a /book/<touchpoint> landing page reached via a QR code
+ * printed in the book. Same validation and last-touch semantics as captureRef().
+ */
+export function setRef(ref: string): void {
+  try {
+    const clean = ref.toLowerCase().trim();
+    if (!clean || clean.length > 64 || !SLUG_RE.test(clean)) return;
+    const rec: StoredRef = { ref: clean, t: Date.now() };
+    window.localStorage.setItem(KEY, JSON.stringify(rec));
+  } catch {
+    /* storage blocked / private mode — attribution is best-effort, never fatal */
+  }
+}
+
 /** The current stored facility ref, or '' if none / expired / invalid. */
 export function getRef(): string {
   try {

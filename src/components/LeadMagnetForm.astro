@@ -16,6 +16,11 @@ interface Props {
   heading?: string;
   blurb?: string;
   buttonLabel?: string;
+  /** Analytics/attribution source label. Defaults to 'main' (the original
+   *  bottom-of-page surface). Pages that embed this form as a different
+   *  surface (e.g. a /book/<touchpoint> landing page) pass their own label
+   *  so lead_submit events attribute correctly instead of collapsing into 'main'. */
+  source?: string;
 }
 
 const {
@@ -23,6 +28,7 @@ const {
   heading = 'Get the free denial-trap checklist.',
   blurb = 'One page now: the most common reasons Medicaid denies a Miller Trust, each with the state-agency citation behind it. Then 4 more short emails over 3 weeks — and then we stop. No ongoing newsletter, no sales list. Unsubscribe anytime.',
   buttonLabel = 'Email me the checklist',
+  source = 'main',
 } = Astro.props;
 
 const formId = `lead-main-${Math.random().toString(36).slice(2, 8)}`;
@@ -35,7 +41,7 @@ const formId = `lead-main-${Math.random().toString(36).slice(2, 8)}`;
   <h2 id={`${formId}-heading`} class="!mt-0 !text-2xl">{heading}</h2>
   <p class="mt-2 text-ink">{blurb}</p>
 
-  <form id={formId} class="mt-5" data-capture="main" data-state-slug={stateSlug} novalidate>
+  <form id={formId} class="mt-5" data-lmf data-capture={source} data-state-slug={stateSlug} novalidate>
     <div class="flex flex-col gap-3 sm:flex-row">
       <label class="sr-only" for={`${formId}-email`}>Email address</label>
       <input
@@ -66,6 +72,6 @@ const formId = `lead-main-${Math.random().toString(36).slice(2, 8)}`;
   import { wireLeadForm } from '~/lib/lead-capture';
 
   document
-    .querySelectorAll<HTMLFormElement>('form[data-capture="main"]')
-    .forEach((form) => wireLeadForm(form, { source: 'main' }));
+    .querySelectorAll<HTMLFormElement>('form[data-lmf]')
+    .forEach((form) => wireLeadForm(form, { source: form.dataset.capture || 'main' }));
 </script>

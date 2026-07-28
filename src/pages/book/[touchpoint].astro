@@ -1,0 +1,314 @@
+---
+/* Tracked landing surface for every CTA printed in the "Miller Trust Basics"
+   ebook/paperback (ebook/manuscript.md). One dynamic route, many touchpoints —
+   each chapter-end callout, the state list, the decision-checklist close, the
+   Chapter 10 close, the back-matter kit/help/notify sections, and the print
+   back cover QR code all link here with a DISTINCT slug (?/book/close,
+   /book/states, /book/verify-3, ...). That slug IS the attribution key:
+
+     landing  -> book_landing analytics event (this page, on load)
+     buy      -> setRef('book-<slug>') on load + ?ref=book-<slug> on every
+                 outbound /states/<slug> link -> captured by the existing
+                 facility-referral pipeline (src/lib/referral.ts) -> written to
+                 Stripe metadata (referral_facility) by create-checkout.ts ->
+                 read back on the thanks page into the `purchase` event
+     email    -> LeadMagnetForm source='book-<slug>' -> lead_submit event
+
+   So every one of the ~18 touchpoints in the book is independently visible in
+   Vercel Web Analytics end to end (landed -> converted -> purchased) with zero
+   new backend code — this page is the only new surface; everything downstream
+   (checkout, consent gate, Stripe, nurture email) is the existing pipeline.
+
+   Never renders a price. The state grid below links to /states/<slug>, which
+   is the one place price is allowed to live (read live from each state's
+   frontmatter) — so this page (and the book that links to it) never goes
+   stale when a price changes.
+
+   noindex: an attribution surface, not an SEO surface — the canonical content
+   for a state already lives at /states/<slug>. */
+
+import { getCollection } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import LeadMagnetForm from '~/components/LeadMagnetForm.astro';
+import IncomeCapCheck from '~/components/IncomeCapCheck.astro';
+
+export const prerender = false;
+
+// The 24 income-cap states named in the book's Chapter 3, plus Missouri
+// (HCBS-waiver-only — noted separately there too). Kept as a local constant
+// deliberately: this is reader-facing scope (which states a Miller Trust even
+// applies in), not the operator's live-catalog roadmap, so it does not belong
+// in content frontmatter and should not silently shrink/grow with it.
+interface StateRow {
+  name: string;
+  slug: string;
+  note: string | null;
+}
+
+const INCOME_CAP_STATES: StateRow[] = [
+  { name: 'Alabama', slug: 'alabama', note: null },
+  { name: 'Alaska', slug: 'alaska', note: null },
+  { name: 'Arizona', slug: 'arizona', note: null },
+  { name: 'Arkansas', slug: 'arkansas', note: null },
+  { name: 'Colorado', slug: 'colorado', note: null },
+  { name: 'Delaware', slug: 'delaware', note: null },
+  { name: 'Florida', slug: 'florida', note: null },
+  { name: 'Georgia', slug: 'georgia', note: null },
+  { name: 'Idaho', slug: 'idaho', note: null },
+  { name: 'Indiana', slug: 'indiana', note: null },
+  { name: 'Iowa', slug: 'iowa', note: null },
+  { name: 'Kentucky', slug: 'kentucky', note: null },
+  { name: 'Mississippi', slug: 'mississippi', note: null },
+  { name: 'Nevada', slug: 'nevada', note: null },
+  { name: 'New Jersey', slug: 'new-jersey', note: null },
+  { name: 'New Mexico', slug: 'new-mexico', note: null },
+  { name: 'Ohio', slug: 'ohio', note: null },
+  { name: 'Oklahoma', slug: 'oklahoma', note: null },
+  { name: 'Oregon', slug: 'oregon', note: null },
+  { name: 'South Carolina', slug: 'south-carolina', note: null },
+  { name: 'South Dakota', slug: 'south-dakota', note: null },
+  { name: 'Tennessee', slug: 'tennessee', note: null },
+  { name: 'Texas', slug: 'texas', note: null },
+  { name: 'Wyoming', slug: 'wyoming', note: null },
+];
+const MISSOURI: StateRow = { name: 'Missouri', slug: 'missouri', note: 'HCBS waivers only' };
+
+const CHAPTER_TITLES: Record<string, string> = {
+  '1': 'The Medicaid income gap',
+  '2': 'What a Miller Trust does',
+  '3': 'The twenty-four income-cap states',
+  '4': 'Do you need one? A decision walkthrough',
+  '5': 'Who can serve as trustee',
+  '6': 'The basic mechanics',
+  '7': 'Three things that commonly go wrong',
+  '8': 'What happens when the applicant dies',
+  '9': 'When to call an attorney',
+  '10': "What this book doesn't cover",
+};
+
+type Variant = 'grid' | 'checklist' | 'close' | 'plain';
+
+interface TouchpointConfig {
+  kicker: string;
+  headline: string;
+  blurb: string;
+  variant: Variant;
+  leadHeading?: string;
+  leadBlurb?: string;
+  leadButton?: string;
+}
+
+const rawSlug = (Astro.params.touchpoint ?? '').toLowerCase().trim();
+const touchpoint = /^[a-z0-9-]{1,40}$/.test(rawSlug) ? rawSlug : 'close';
+
+const verifyMatch = touchpoint.match(/^verify-(\d{1,2})$/);
+
+const TOUCHPOINTS: Record<string, TouchpointConfig> = {
+  start: {
+    kicker: 'From the front of Miller Trust Basics',
+    headline: 'You just started the book. Here is where it leads.',
+    blurb:
+      "This book explains what a Miller Trust is and how it works everywhere. It doesn't walk through your state's exact procedure — the bank script, the state's own denial list, the funding worksheet. That part is state-specific, so it lives here instead.",
+    variant: 'grid',
+  },
+  states: {
+    kicker: 'From Chapter 3 — The twenty-four income-cap states',
+    headline: "Is your state's kit ready?",
+    blurb:
+      'Twelve states are live so far. If yours is one of them, the state guide has the official template, the bank-refusal script, and the denial-avoidance checklist. If it is not live yet, join the list below and we will let you know the moment it changes.',
+    variant: 'grid',
+  },
+  checklist: {
+    kicker: 'From Chapter 4 — Do you need one?',
+    headline: 'Run the same check with your exact state.',
+    blurb:
+      "The book walked through the general version of this checklist. Pick your state below and this uses that state's real income cap instead of the national estimate — a couple of states differ from the standard figure.",
+    variant: 'checklist',
+  },
+  close: {
+    kicker: 'From Chapter 10 — Where to go from here',
+    headline: "If you're ready, this is the next step.",
+    blurb:
+      "If you read this book and your situation matches the 'standard' case in Chapter 4 — over the cap by a routine amount, ordinary income sources, assets under the resource limit, no complications — the state-specific kit is the direct next step. It covers what this book deliberately left out: the exact template, the verbatim bank script, your state's specific denial list with citations, and the monthly checklist.",
+    variant: 'close',
+  },
+  kit: {
+    kicker: 'From the back matter — About the Miller Trust Setup Kit',
+    headline: "What's inside the state-specific kit.",
+    blurb:
+      'The bank-account walkthrough with the verbatim opening script and the five most common refusals. The complete state-specific denial-avoidance checklist, each item cited to the actual policy section. The monthly funding worksheet. A direct link to your state agency\'s official QIT template. Backed by a money-back guarantee: if your state agency rejects the trust for a reason traceable to following the kit, you get a full refund.',
+    variant: 'grid',
+  },
+  help: {
+    kicker: 'From the back matter — Where to get help',
+    headline: 'Every resource from the book, in one place.',
+    blurb:
+      "Your state Medicaid agency, a lawyer referral service, NAELA, NELF, legal aid, your area agency on aging — all cited by name in the back of the book. If what you actually need is your state's operational kit, start with the state list below.",
+    variant: 'grid',
+  },
+  notify: {
+    kicker: 'From the back matter — About this edition',
+    headline: 'Stay current as the figures update.',
+    blurb:
+      'CMS republishes the Federal Benefit Rate every January, which moves every income-cap state\'s threshold. Join the list and we will let you know when a new edition ships, when your state\'s kit goes live, or when anything in the book materially changes — a handful of short emails, never a running newsletter.',
+    variant: 'plain',
+    leadHeading: 'Get notified',
+    leadBlurb:
+      'Email only. A few short messages tied to real updates — a new edition, your state going live, a material change to the rules. Then we stop. Unsubscribe anytime.',
+    leadButton: 'Notify me',
+  },
+  cover: {
+    kicker: 'Miller Trust Basics — the paperback',
+    headline: "If you're ready, this is the next step.",
+    blurb:
+      "If your situation matches the 'standard' case from Chapter 4 — over the cap by a routine amount, ordinary income sources, assets under the resource limit, no complications — the state-specific kit is the direct next step. It covers what the book deliberately left out: the exact template, the verbatim bank script, your state's specific denial list with citations, and the monthly checklist.",
+    variant: 'close',
+  },
+};
+
+const FALLBACK: TouchpointConfig = {
+  kicker: 'From Miller Trust Basics',
+  headline: 'Pick up where the book left off.',
+  blurb:
+    'This link came from a specific page in Miller Trust Basics. Here is the full state list and a way to stay updated either way.',
+  variant: 'grid',
+};
+
+let config: TouchpointConfig;
+if (TOUCHPOINTS[touchpoint]) {
+  config = TOUCHPOINTS[touchpoint];
+} else if (verifyMatch) {
+  const chNum = verifyMatch[1];
+  const chTitle = CHAPTER_TITLES[chNum];
+  config = {
+    kicker: chTitle ? `From Chapter ${chNum} — ${chTitle}` : `From Miller Trust Basics, Chapter ${chNum}`,
+    headline: "Verify this against your state, or keep going.",
+    blurb:
+      'Every "verify and consult" note in this book points here. Check where your state stands, or get on the list and we will tell you when your state kit is ready.',
+    variant: 'grid',
+  };
+} else {
+  config = FALLBACK;
+}
+
+const liveEntries = (await getCollection('states')).filter((s) => s.data.status === 'live');
+const liveSlugs = new Set(liveEntries.map((s) => s.slug));
+const refTag = `book-${touchpoint}`;
+
+// Interpolated (never hardcoded) so this line can never go stale as more
+// state kits ship — this page is SSR'd fresh on every request.
+if (touchpoint === 'states') {
+  config = {
+    ...config,
+    blurb: `${liveEntries.length} state${liveEntries.length === 1 ? ' is' : 's are'} live so far. If yours is one of them, the state guide has the official template, the bank-refusal script, and the denial-avoidance checklist. If it is not live yet, join the list below and we will let you know the moment it changes.`,
+  };
+}
+
+const stateRows = [...INCOME_CAP_STATES, MISSOURI].map((s) => ({
+  ...s,
+  live: liveSlugs.has(s.slug),
+}));
+
+const incomeCheckStates = liveEntries
+  .map((s) => ({
+    slug: s.slug,
+    name: s.data.name,
+    incomeCap2026: s.data.incomeCap2026,
+    incomeCapCouple2026: s.data.incomeCapCouple2026,
+    incomeCeiling2026: s.data.incomeCeiling2026,
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+const SITE_URL = 'https://millertrustguide.com';
+const canonical = `${SITE_URL}/book/${touchpoint}`;
+const pageTitle = `${config.headline} — Miller Trust Guide`;
+---
+
+<BaseLayout title={pageTitle} description={config.blurb} canonical={canonical} noindex={true}>
+  <div data-book-touchpoint={refTag} class="hidden" aria-hidden="true"></div>
+
+  <section class="mx-auto max-w-3xl px-4 pt-8 pb-4 md:pt-12">
+    <p class="text-sm font-medium uppercase tracking-wide text-ink-muted">{config.kicker}</p>
+    <h1 class="mt-2 !text-3xl md:!text-4xl">{config.headline}</h1>
+    <p class="mt-4 text-base leading-relaxed text-ink">{config.blurb}</p>
+  </section>
+
+  {
+    config.variant === 'checklist' && (
+      <IncomeCapCheck states={incomeCheckStates} refTag={refTag} />
+    )
+  }
+
+  {
+    (config.variant === 'grid' || config.variant === 'close') && (
+      <section class="mx-auto max-w-3xl px-4 py-6">
+        <h2>Your state</h2>
+        <ul class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
+          {stateRows.map((s) => (
+            <li>
+              {s.live ? (
+                <a
+                  href={`/states/${s.slug}?ref=${refTag}#primary-buy-panel`}
+                  class="flex items-center justify-between rounded-md border border-border bg-surface-elevated px-3 py-2 text-sm font-medium text-ink no-underline hover:border-primary hover:text-primary"
+                >
+                  <span>{s.name}</span>
+                  <span aria-hidden="true">&rarr;</span>
+                </a>
+              ) : (
+                <span class="flex items-center justify-between rounded-md border border-dashed border-border px-3 py-2 text-sm text-ink-muted">
+                  <span>{s.name}{s.note ? ` (${s.note})` : ''}</span>
+                  <span class="text-xs">not live yet</span>
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+        <p class="mt-3 text-xs text-ink-muted">
+          Not on the list at all? That means your state doesn't use the income-cap framework this book covers —
+          see Chapter 3, or <a class="underline" href="/about">read what we do and don't help with</a>.
+        </p>
+      </section>
+    )
+  }
+
+  {
+    config.variant === 'close' && (
+      <section class="mx-auto max-w-3xl px-4">
+        <div class="rounded-lg border border-primary/20 bg-primary-tint/20 p-5">
+          <p class="font-semibold text-ink-heading">If your state agency rejects the trust, you pay nothing.</p>
+          <p class="mt-1 text-sm text-ink leading-relaxed">
+            Every state kit carries the same money-back guarantee described in the book: if the agency rejects the
+            Qualified Income Trust for a reason traceable to following the kit, email the stated denial reason to{' '}
+            <a class="underline" href="mailto:support@millertrustguide.com">support@millertrustguide.com</a> and we
+            refund the full purchase price within one business day.
+          </p>
+        </div>
+      </section>
+    )
+  }
+
+  <LeadMagnetForm
+    source={refTag}
+    heading={config.leadHeading ?? "State not live yet, or not ready to buy?"}
+    blurb={
+      config.leadBlurb ??
+      "Get the free denial-trap checklist for your state if it's live, or join the list to hear the moment it ships. A few short emails, then we stop. Unsubscribe anytime."
+    }
+    buttonLabel={config.leadButton ?? 'Email me'}
+  />
+
+  <script>
+    import { trackEvent } from '~/lib/analytics-client';
+    import { setRef } from '~/lib/referral';
+
+    const marker = document.querySelector<HTMLElement>('[data-book-touchpoint]');
+    const touchpointRef = marker?.dataset.bookTouchpoint || '';
+    if (touchpointRef) {
+      trackEvent('book_landing', { touchpoint: touchpointRef });
+      // Landing here IS the referral event (a QR/link printed in the book),
+      // so attribute immediately rather than waiting for an outbound click —
+      // catches a purchase that happens after the reader browses elsewhere first.
+      setRef(touchpointRef);
+    }
+  </script>
+</BaseLayout>

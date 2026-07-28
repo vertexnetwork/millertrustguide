@@ -31,8 +31,13 @@ interface Props {
     incomeCapCouple2026: number;
     incomeCeiling2026?: number;
   }[];
+  // Optional referral slug appended to every outgoing /states/<slug> link as
+  // ?ref=<refTag> — set by pages that ARE a referral source (e.g. a
+  // /book/<touchpoint> landing page) so a purchase minutes/days later still
+  // attributes back correctly. Empty by default (current homepage behavior).
+  refTag?: string;
 }
-const { states = [] } = Astro.props;
+const { states = [], refTag = '' } = Astro.props;
 
 // General-estimate fallback for visitors who haven't picked a state yet —
 // accurate for most (not all) states. Selecting a specific state below
@@ -121,20 +126,23 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 
     <p class="mt-3 text-xs text-ink-muted">
       Not sure how to total income, or have an unusual situation?
-      <a class="underline" href="/states">See the state guides</a> or read
+      <a class="underline" href="/#states">See the state guides</a> or read
       <a class="underline" href="/about">what we do and don't help with</a>.
       This check runs entirely in your browser — nothing you type is sent or
       saved. Informational, not legal advice.
     </p>
   </div>
 
-  <script is:inline define:vars={{ CAP_SINGLE_2026, CAP_COUPLE_2026, states }}>
+  <script is:inline define:vars={{ CAP_SINGLE_2026, CAP_COUPLE_2026, states, refTag }}>
     (function () {
       var form = document.getElementById('capcheck-form');
       var out = document.getElementById('capcheck-result');
       var stateSelect = document.getElementById('capcheck-state');
       if (!form || !out) return;
       var fmt = function (n) { return n.toLocaleString('en-US'); };
+      var stateHref = function (slug) {
+        return '/states/' + slug + (refTag ? '?ref=' + encodeURIComponent(refTag) : '');
+      };
 
       // Per-slug lookup of each state's actual figures, built from the states
       // prop — NOT a single hardcoded national constant applied everywhere.
@@ -173,7 +181,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
               'cannot restore eligibility at all. This is a hard cutoff, not a drafting problem. Talk to' +
               stateLabel + ' elder-law attorney about spend-down or other options.' +
               (ctx.slug
-                ? ' <a class="underline" href="/states/' + ctx.slug + '">See the ' + ctx.stateName + ' guide →</a>'
+                ? ' <a class="underline" href="' + stateHref(ctx.slug) + '">See the ' + ctx.stateName + ' guide →</a>'
                 : ''),
           };
         }
@@ -199,7 +207,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
             '. A Qualified Income Trust diverts the excess so the applicant qualifies. ' +
             'The sooner it is set up, the sooner coverage can begin.' +
             (ctx.slug
-              ? ' <a class="underline" href="/states/' + ctx.slug + '">See the ' + ctx.stateName + ' guide →</a>'
+              ? ' <a class="underline" href="' + stateHref(ctx.slug) + '">See the ' + ctx.stateName + ' guide →</a>'
               : (stateOptions
                   ? '<span class="mt-3 flex flex-wrap items-end gap-2">' +
                       '<label class="w-full text-sm font-medium" for="capcheck-state-jump">Go straight to your state guide:</label>' +
@@ -207,7 +215,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
                       '<option value="">Select your state…</option>' + stateOptions +
                       '</select>' +
                     '</span>'
-                  : ' <a class="underline" href="/states">Find your state guide →</a>')),
+                  : ' <a class="underline" href="/#states">Find your state guide →</a>')),
         };
       }
 
@@ -236,7 +244,7 @@ const fmt = (n: number) => n.toLocaleString('en-US');
         var jump = out.querySelector('#capcheck-state-jump');
         if (jump) {
           jump.addEventListener('change', function () {
-            if (jump.value) window.location.href = '/states/' + jump.value;
+            if (jump.value) window.location.href = stateHref(jump.value);
           });
         }
       });
