@@ -24,11 +24,13 @@
 :root {
   /* Kept in sync with tailwind.config.mjs. The night-contrast pass darkened
      borders, deepened the teal tint, greened the heading color, and crisped the
-     disclaimer yellow so nothing blends together on a dim / blue-light screen. */
+     disclaimer yellow so nothing blends together on a dim / blue-light screen.
+     --color-bg warmed from #FAFAF7 toward the "calm/trust" competitive camp
+     (FreeWill, Trust & Will) — see docs/swipe-brand/BRANDING-SUMMARY.md. */
   --color-primary: #115E59;
   --color-primary-dark: #0F4C4A;
   --color-primary-tint: #ADEFE0;
-  --color-bg: #FAFAF7;
+  --color-bg: #FAF7F0;
   --color-bg-elevated: #FFFFFF;
   --color-border: #D1D5DB;
   --color-border-strong: #9CA3AF;
@@ -93,11 +95,14 @@
 }
 
 @layer components {
+  /* Full pill + more padding, pulled from the "calm/trust" competitive camp
+     (FreeWill r=128px, Trust & Will r=50px) — reads friendlier and is an
+     easier hit target for older users. See docs/swipe-brand/BRANDING-SUMMARY.md. */
   .btn-cta {
     background-color: var(--color-cta);
     color: var(--color-cta-text);
-    padding: 0.875rem 1.5rem;
-    border-radius: 0.5rem;
+    padding: 1.125rem 2.25rem;
+    border-radius: 9999px;
     font-weight: 600;
     font-size: 1.125rem;
     transition: background-color 120ms ease;

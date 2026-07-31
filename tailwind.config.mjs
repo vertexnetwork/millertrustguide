@@ -12,7 +12,9 @@ export default {
           tint: '#ADEFE0',
         },
         surface: {
-          DEFAULT: '#FAFAF7',
+          // Warmed a touch toward the "calm/trust" competitive camp (FreeWill
+          // #f7f3ee, Trust & Will #fefdf2) — see docs/swipe-brand/BRANDING-SUMMARY.md.
+          DEFAULT: '#FAF7F0',
           elevated: '#FFFFFF',
         },
         border: {
