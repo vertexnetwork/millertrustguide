@@ -1,7 +1,19 @@
 ---
-// Mobile-only sticky bottom CTA. Appears after the primary buy panel
-// (#primary-buy-panel) scrolls out of view, disappears when it scrolls
-// back. Hidden on md+ (desktop already has a sticky aside).
+// Sticky bottom CTA, all devices. Appears once the primary buy panel
+// (#primary-buy-panel) is out of view, disappears once it's back in view.
+//
+// On desktop the primary panel is itself sticky within its grid row (the
+// intro section — delay-cost, what's-in-the-kit, income cap), so this bar
+// stays hidden through all of that. But that grid row ends roughly a third
+// of the way down the page — for everything after (PDF preview, testimonials,
+// comparison table, the bank-refusal story, denial reasons, FAQ) desktop
+// previously had NO persistent buy affordance at all once the aside scrolled
+// out of its containing row. This used to be `md:!hidden` on the assumption
+// "desktop already has a sticky aside" — true for the first third of the
+// page, not the rest of it. Mobile has no sticky aside at all (the grid
+// collapses to a single stacked column below `md`, so the panel is just a
+// static block buried after the intro content) — this bar has always been
+// its only persistent CTA.
 //
 // Click behavior: scroll back to the primary buy panel so the user
 // confirms the consent checkbox there. We deliberately do NOT include
@@ -20,7 +32,7 @@ const { stateName, price, agencyAbbreviation } = Astro.props;
 
 <div
   id="sticky-buy-bar"
-  class="no-print fixed bottom-0 left-0 right-0 z-40 hidden translate-y-full transform border-t border-border bg-surface-elevated shadow-lg transition-transform duration-200 ease-out md:!hidden"
+  class="no-print fixed bottom-0 left-0 right-0 z-40 hidden translate-y-full transform border-t border-border bg-surface-elevated shadow-lg transition-transform duration-200 ease-out"
   role="region"
   aria-label={`${stateName} kit — sticky purchase bar`}
   data-visible="false"
@@ -52,13 +64,20 @@ const { stateName, price, agencyAbbreviation } = Astro.props;
   if (bar && target) {
     // Default state: hidden, translated off-screen.
     bar.classList.remove('hidden');
+    // Now that this bar can be visible on desktop too, it can coincide with
+    // the bottom-right lead-capture slide-in. Publish its height as a CSS var
+    // so that surface can offset above it instead of overlapping — see
+    // LeadCaptureSlideIn.astro's sm:bottom-[calc(...)]. Falls back to 0px
+    // (via the var()'s default) on any page without this bar at all.
     const setVisible = (visible: boolean) => {
       if (visible) {
         bar.dataset.visible = 'true';
         bar.classList.remove('translate-y-full');
+        document.documentElement.style.setProperty('--mtg-sticky-bar-h', `${bar.offsetHeight}px`);
       } else {
         bar.dataset.visible = 'false';
         bar.classList.add('translate-y-full');
+        document.documentElement.style.setProperty('--mtg-sticky-bar-h', '0px');
       }
     };
     setVisible(false);

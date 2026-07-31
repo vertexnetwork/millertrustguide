@@ -27,7 +27,7 @@ const formId = `lead-slidein-${Math.random().toString(36).slice(2, 8)}`;
 
 <div
   id={formId}
-  class="lead-slidein fixed inset-x-0 bottom-0 z-50 hidden px-3 pb-3 sm:inset-x-auto sm:bottom-6 sm:right-6 sm:max-w-sm sm:px-0 sm:pb-0"
+  class="lead-slidein fixed inset-x-0 bottom-0 z-50 hidden px-3 pb-3 sm:inset-x-auto sm:bottom-[calc(1.5rem+var(--mtg-sticky-bar-h,0px))] sm:right-6 sm:max-w-sm sm:px-0 sm:pb-0"
   role="dialog"
   aria-labelledby={`${formId}-heading`}
   aria-modal="false"
