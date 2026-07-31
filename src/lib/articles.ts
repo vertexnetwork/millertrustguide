@@ -184,7 +184,7 @@ export function getArticleLede(state: StateData, topic: ArticleTopic): string {
 
 // HowTo steps for the pillar article. Single source of truth: rendered as the
 // visible numbered list AND fed to howToSchema so the schema matches the page.
-export function getHowToSteps(state: StateData): Array<{ name: string; text: string }> {
+export function getHowToSteps(state: StateData): Array<{ name: string; text: string; url?: string }> {
   const cap = fmt(state.incomeCap2026);
   const capCouple = fmt(state.incomeCapCouple2026);
   // Hybrid (HCB-waiver) states: in-home waiver, excess-only funding, required
@@ -198,6 +198,7 @@ export function getHowToSteps(state: StateData): Array<{ name: string; text: str
       {
         name: `Download the official ${state.agencyAbbreviation} form (886-4657)`,
         text: `Get the fill-in Qualified Income Trust form directly from ${state.agencyName} on its .gov site. ${firstSentence(state.officialTemplateNote!).lead} We never draft or host the trust text — you use the state's own published form.`,
+        url: state.officialTemplateUrl,
       },
       {
         name: 'Fill in the fields the form asks for',
@@ -263,6 +264,7 @@ export function getHowToSteps(state: StateData): Array<{ name: string; text: str
     {
       name: `Download the official ${state.agencyAbbreviation} QIT template`,
       text: `Get the model Qualified Income Trust instrument directly from ${state.agencyName} on its .gov site. ${firstSentence(state.officialTemplateNote!).lead} We never draft or host the trust text — you use the state's own published form.`,
+      url: state.officialTemplateUrl,
     },
     {
       name: 'Fill in the fields the template asks for',
@@ -370,7 +372,7 @@ export function getArticleJsonLd(state: StateData, topic: ArticleTopic): object[
         url: meta.url,
         name: meta.h1,
         description: meta.metaDescription,
-        steps: getHowToSteps(state).map((s) => ({ name: s.name, text: s.text })),
+        steps: getHowToSteps(state).map((s) => ({ name: s.name, text: s.text, url: s.url })),
       })
     );
   }

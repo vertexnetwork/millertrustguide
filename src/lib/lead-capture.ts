@@ -168,6 +168,13 @@ export function wireLeadForm(form: HTMLFormElement, opts: WireOpts): void {
       );
       button.disabled = false;
       button.textContent = buttonDefault;
+      // Without this, a silent /api/subscribe failure (bad Resend config, etc.)
+      // is indistinguishable from "nobody tried" in the analytics — 0 lead_submit
+      // could mean either. This closes that blind spot.
+      trackEvent('lead_submit_error', {
+        source: opts.source,
+        ...(stateSlug ? { state: stateSlug } : {}),
+      });
     }
   });
 }

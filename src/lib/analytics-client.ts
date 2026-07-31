@@ -7,14 +7,23 @@
 // throw or block the page (ad-blockers / local dev leave window.va undefined).
 //
 // Events we emit (the conversion funnel):
+//   lead_prompt_view  — an interruptive lead capture surface (exit-intent /
+//                       slide-in) was shown
 //   lead_submit       — email captured on the lead-magnet form
+//   lead_submit_error — /api/subscribe rejected or failed; distinguishes a
+//                       silent server-side failure from "nobody tried"
 //   buy_click         — consent given + buy button pressed
 //   checkout_redirect — Stripe Checkout URL returned, about to redirect
+//   checkout_error    — /api/create-checkout rejected or failed; same purpose
+//                       as lead_submit_error, for the buy path
 //   purchase          — payment confirmed on the thanks page (deduped per order)
 
 declare global {
   interface Window {
     va?: (event: 'event' | 'beforeSend' | 'pageview', properties?: unknown) => void;
+    // Google Ads gtag.js — defined by GoogleAdsTag.astro when PUBLIC_GOOGLE_ADS_ID
+    // is set. Loosely typed: it's a third-party vendor global, not ours to narrow.
+    gtag?: (...args: unknown[]) => void;
   }
 }
 

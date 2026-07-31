@@ -62,7 +62,13 @@ const faq = getArticleFaq(state, topic);
                 {i + 1}
               </span>
               <div>
-                <p class="font-semibold text-ink-heading">{s.name}</p>
+                <p class="font-semibold text-ink-heading">
+                  {s.url ? (
+                    <a href={s.url} rel="external nofollow">{s.name}</a>
+                  ) : (
+                    s.name
+                  )}
+                </p>
                 <p class="mt-1 text-ink">{s.text}</p>
               </div>
             </li>

@@ -145,7 +145,25 @@ const errorId = `${formId}-error`;
         const data = (await res.json()) as { url?: string };
         if (!data.url) throw new Error('No checkout URL returned.');
         trackEvent('checkout_redirect', { state: stateSlug });
-        window.location.href = data.url;
+
+        // Google Ads "Begin Checkout" secondary conversion — a faster feedback
+        // signal than Kit Purchase while sales are still too rare to steer
+        // bidding on (see docs/ad-campaign-playbook.md §0.5). event_callback
+        // defers the redirect just long enough for the beacon to send;
+        // event_timeout is the fallback so a blocked/slow ping never strands
+        // the buyer on this page.
+        const adsId = import.meta.env.PUBLIC_GOOGLE_ADS_ID;
+        const beginCheckoutLabel = import.meta.env.PUBLIC_GOOGLE_ADS_BEGIN_CHECKOUT_LABEL;
+        const redirectUrl = data.url;
+        if (window.gtag && adsId && beginCheckoutLabel) {
+          window.gtag('event', 'conversion', {
+            send_to: `${adsId}/${beginCheckoutLabel}`,
+            event_callback: () => { window.location.href = redirectUrl; },
+            event_timeout: 1000,
+          });
+        } else {
+          window.location.href = redirectUrl;
+        }
       } catch (err) {
         const message =
           err instanceof Error ? err.message : 'Something went wrong. Please try again or email support@millertrustguide.com.';
@@ -155,6 +173,10 @@ const errorId = `${formId}-error`;
         button.classList.add('is-ready');
         button.setAttribute('aria-disabled', 'false');
         button.textContent = 'Try again';
+        // Same blind spot as lead_submit_error: without this, a failed
+        // /api/create-checkout call (Stripe error, etc.) is invisible next to
+        // buy_click — it just looks like the visitor never clicked at all.
+        trackEvent('checkout_error', { state: stateSlug });
       }
     });
   });
