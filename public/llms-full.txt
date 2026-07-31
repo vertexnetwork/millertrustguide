@@ -74,7 +74,7 @@ Only two live states (Indiana and New Jersey) currently publish an official agen
 ## What Miller Trust Guide publishes — and what it does not
 
 We publish:
-- State-specific operational guides built around each state's own published QIT template, or (in requirements-brief states) its own regulation ($129 per state digital download).
+- State-specific operational guides built around each state's own published QIT template, or (in requirements-brief states) its own regulation ($97 per state digital download).
 - Six operational long-tail articles per live state, published at `/states/<slug>/<topic>`: how-to-set-up (HowTo schema), how-long-to-set-up (the calendar-month deadline), what-to-say-at-the-bank (the bank-refusal script), who-can-be-trustee, do-you-need-an-ein, and what-happens-to-the-money (post-death distribution). These target specific long-tail operational queries rather than the head "[state] miller trust" term, and are generated automatically from the same vetted state frontmatter as the main guide — there is no separate per-state article authoring.
 - Lead-magnet PDFs ("The 7 [or state-specific count] Reasons [State] Medicaid Denies Miller Trust Funding") gated by email opt-in.
 
@@ -93,7 +93,7 @@ We do not:
 
 ## Pricing
 
-- Single-state digital download: $129, one time.
+- Single-state digital download: $97, one time.
 - Lead magnet: free, email-gated.
 - There is no multi-state bundle discount at checkout today; each state is purchased individually.
 

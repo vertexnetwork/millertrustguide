@@ -161,7 +161,7 @@ const ASSETS = [
     path: 'og-default.png',
     svg: ogSvg({
       headlineLines: ['State-specific guides for', 'Medicaid Qualified', 'Income Trusts.'],
-      dataLine: '24 income-cap states  ·  2026 income cap: $2,982/mo  ·  $129 per state',
+      dataLine: '24 income-cap states  ·  2026 income cap: $2,982/mo  ·  $97 per state',
       footerLine: 'LAST REVIEWED 2026-05-20    ·    INFORMATIONAL ONLY    ·    NOT LEGAL ADVICE',
     }),
     width: 1200,
@@ -172,7 +172,7 @@ const ASSETS = [
     path: 'og/states/texas.png',
     svg: ogSvg({
       headlineLines: ['Texas Miller Trust', 'Setup Guide'],
-      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if HHSC rejects',
+      dataLine: '$97  ·  2026 income cap: $2,982/mo  ·  Money-back if HHSC rejects',
       footerLine: 'TEXAS HHSC  ·  APPENDIX XXXVI REV 26-1  ·  LAST REVIEWED 2026-05-21',
     }),
     width: 1200,
@@ -183,7 +183,7 @@ const ASSETS = [
     path: 'og/states/new-jersey.png',
     svg: ogSvg({
       headlineLines: ['New Jersey Miller', 'Trust Setup Guide'],
-      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if DMAHS rejects',
+      dataLine: '$97  ·  2026 income cap: $2,982/mo  ·  Money-back if DMAHS rejects',
       footerLine: 'NJ DMAHS  ·  QIT MODEL INSTRUMENT  ·  LAST REVIEWED 2026-06-01',
     }),
     width: 1200,
@@ -194,7 +194,7 @@ const ASSETS = [
     path: 'og/states/ohio.png',
     svg: ogSvg({
       headlineLines: ['Ohio Miller Trust', 'Setup Guide'],
-      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if ODM rejects',
+      dataLine: '$97  ·  2026 income cap: $2,982/mo  ·  Money-back if ODM rejects',
       footerLine: 'OHIO ODM  ·  OAC 5160:1-6-03.2  ·  LAST REVIEWED 2026-06-23',
     }),
     width: 1200,
@@ -205,7 +205,7 @@ const ASSETS = [
     path: 'og/states/georgia.png',
     svg: ogSvg({
       headlineLines: ['Georgia Qualified', 'Income Trust Guide'],
-      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if DCH rejects',
+      dataLine: '$97  ·  2026 income cap: $2,982/mo  ·  Money-back if DCH rejects',
       footerLine: 'GEORGIA DCH  ·  DFCS SECTION 2407 · FORM 948  ·  LAST REVIEWED 2026-06-23',
     }),
     width: 1200,
@@ -216,7 +216,7 @@ const ASSETS = [
     path: 'og/states/south-carolina.png',
     svg: ogSvg({
       headlineLines: ['South Carolina', 'Income Trust Guide'],
-      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if SCDHHS rejects',
+      dataLine: '$97  ·  2026 income cap: $2,982/mo  ·  Money-back if SCDHHS rejects',
       footerLine: 'SC SCDHHS  ·  DHHS FORM 905  ·  LAST REVIEWED 2026-06-24',
     }),
     width: 1200,
@@ -227,7 +227,7 @@ const ASSETS = [
     path: 'og/states/indiana.png',
     svg: ogSvg({
       headlineLines: ['Indiana Miller', 'Trust Setup Guide'],
-      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if FSSA rejects',
+      dataLine: '$97  ·  2026 income cap: $2,982/mo  ·  Money-back if FSSA rejects',
       footerLine: 'INDIANA FSSA  ·  405 IAC 2-3-29 · MILLER TRUST  ·  LAST REVIEWED 2026-06-26',
     }),
     width: 1200,
@@ -238,7 +238,7 @@ const ASSETS = [
     path: 'og/states/colorado.png',
     svg: ogSvg({
       headlineLines: ['Colorado Income', 'Trust Setup Guide'],
-      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if HCPF rejects',
+      dataLine: '$97  ·  2026 income cap: $2,982/mo  ·  Money-back if HCPF rejects',
       footerLine: 'COLORADO HCPF  ·  10 CCR 2505-10 §8.100.7  ·  LAST REVIEWED 2026-06-26',
     }),
     width: 1200,
@@ -249,7 +249,7 @@ const ASSETS = [
     path: 'og/states/alabama.png',
     svg: ogSvg({
       headlineLines: ['Alabama Qualifying', 'Income Trust Guide'],
-      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if Alabama Medicaid rejects',
+      dataLine: '$97  ·  2026 income cap: $2,982/mo  ·  Money-back if Alabama Medicaid rejects',
       footerLine: 'ALABAMA MEDICAID  ·  FORM 262 QIT  ·  LAST REVIEWED 2026-06-26',
     }),
     width: 1200,
@@ -260,7 +260,7 @@ const ASSETS = [
     path: 'og/states/mississippi.png',
     svg: ogSvg({
       headlineLines: ['Mississippi Income', 'Trust Setup Guide'],
-      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if Mississippi Medicaid rejects',
+      dataLine: '$97  ·  2026 income cap: $2,982/mo  ·  Money-back if Mississippi Medicaid rejects',
       footerLine: 'MISSISSIPPI DOM  ·  APPENDIX A-8-1  ·  LAST REVIEWED 2026-06-26',
     }),
     width: 1200,
@@ -271,7 +271,7 @@ const ASSETS = [
     path: 'og/states/arkansas.png',
     svg: ogSvg({
       headlineLines: ['Arkansas Income', 'Trust Setup Guide'],
-      dataLine: '$129  ·  2026 income cap: $2,982/mo  ·  Money-back if Arkansas DHS rejects',
+      dataLine: '$97  ·  2026 income cap: $2,982/mo  ·  Money-back if Arkansas DHS rejects',
       footerLine: 'ARKANSAS DHS  ·  FORM DCO-9938  ·  LAST REVIEWED 2026-07-10',
     }),
     width: 1200,
@@ -283,7 +283,7 @@ const ASSETS = [
     path: 'og/states/missouri.png',
     svg: ogSvg({
       headlineLines: ['Missouri Qualified', 'Income Trust Guide'],
-      dataLine: '$129  ·  HCB waiver income max: $1,737/mo  ·  Money-back if Missouri FSD rejects',
+      dataLine: '$97  ·  HCB waiver income max: $1,737/mo  ·  Money-back if Missouri FSD rejects',
       footerLine: 'MISSOURI FSD  ·  FORM 886-4657 · HCB WAIVER  ·  LAST REVIEWED 2026-07-23',
     }),
     width: 1200,
@@ -295,7 +295,7 @@ const ASSETS = [
     path: 'og/states/oklahoma.png',
     svg: ogSvg({
       headlineLines: ['Oklahoma Medicaid', 'Income Pension Trust'],
-      dataLine: '$129  ·  Requirements checklist — no official OHCA form  ·  Money-back if OHCA rejects',
+      dataLine: '$97  ·  Requirements checklist — no official OHCA form  ·  Money-back if OHCA rejects',
       footerLine: 'OKLAHOMA OHCA  ·  OAC 317:35-5-41.6  ·  LAST REVIEWED 2026-07-23',
     }),
     width: 1200,
