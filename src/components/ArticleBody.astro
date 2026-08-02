@@ -64,7 +64,7 @@ const faq = getArticleFaq(state, topic);
               <div>
                 <p class="font-semibold text-ink-heading">
                   {s.url ? (
-                    <a href={s.url} rel="external nofollow">{s.name}</a>
+                    <a href={s.url} target="_blank" rel="external nofollow noopener">{s.name}</a>
                   ) : (
                     s.name
                   )}
@@ -305,6 +305,7 @@ const faq = getArticleFaq(state, topic);
               An EIN (Employer Identification Number) costs nothing. Apply directly with the IRS at{' '}
               <a
                 href="https://www.irs.gov/businesses/small-businesses-self-employed/get-an-employer-identification-number"
+                target="_blank"
                 rel="external nofollow noopener"
               >
                 irs.gov
