@@ -1,0 +1,210 @@
+---
+slug: "arizona"
+name: "Arizona"
+abbreviation: "AZ"
+
+status: "live"
+
+# Arizona is the SECOND 'requirements-brief' state after Oklahoma. AHCCCS (the
+# Arizona Health Care Cost Containment System) publishes NO fill-in Income-Only
+# Trust template anywhere -- confirmed 2026-08-01: DE-819/DE-313/DE-312/DE-522/
+# DE-137 are all administrative notice/disbursement/acknowledgement forms, none
+# is the trust instrument itself. UPL posture is ordinary/unremarkable (Court
+# Rule 31 + an ACJA 7-208 Certified Legal Document Preparer carve-out that's
+# actually permissive toward nonlawyer form distribution; no on-point case or
+# advisory opinion on Medicaid-planning kits) -- so this uses the plain
+# 'requirements-brief' model, NOT Florida's stricter 'legal-guide' fork.
+medicaidStructure: "income-cap"
+productModel: "requirements-brief"
+personaLean: "balanced"
+primaryTerm: "Income-Only Trust"
+
+stripePriceId: "price_1U00QZBitfBHN1YuR1mrlF0o"
+pdfBlobKey: "kits/arizona/v1.pdf"
+price: 97
+multiStateBundleEligible: true
+
+agencyName: "Arizona Health Care Cost Containment System"
+agencyAbbreviation: "AHCCCS"
+policyManualUrl: "https://epm.azahcccs.gov/epmplus/Policy/Chapter_800_Trusts/803_Special_Treatment_Trusts/C_Income_Only_Trusts.htm"
+policyManualSection: "AHCCCS Eligibility Policy Manual (EPM) 803-C \"Income Only Trusts\" (a Special Treatment Trust subtype, with the general conditions at EPM 803-A) -- federal authority 42 U.S.C. § 1396p(d)(4)(B); state authority A.R.S. § 36-2934.01, A.A.C. R9-28-407.E, R9-28-408.F"
+policyCitationShort: "EPM 803-C"
+ltcProgramAbbrev: "ALTCS"
+ltcProgramName: "Arizona Long Term Care System (ALTCS) -- AHCCCS's long-term-care program covering nursing-facility vendor care, Home and Community-Based Services (HCBS), and hospice. All three routes are tested against the same 300% Federal Benefit Rate income standard on AHCCCS's own Eligibility Requirements table, and an Income-Only Trust can cure excess income under any of them"
+spousalCalcRef: "AHCCCS's Community Spouse Resource Allowance determination (EPM Chapter 800 community-spouse rules). The Income-Only Trust itself is an individual-income mechanism -- confirm current CSRA and any spousal diversion with AHCCCS or an attorney, since this kit does not compute them"
+residuaryPaymentNote: "AHCCCS is paid the funds left in the trust account when the customer dies or the trust is stopped, capped at the actual amount AHCCCS paid for the customer's medical care (DE-819). The trustee notifies AHCCCS's Division of Business & Finance (DBF) using the Notification of a Special Treatment Trust or ABLE Account (DE-137) form -- required for the customer's death, ALTCS benefit approval, benefit discontinuance, trust revocation or termination, and any post-approval purchase of real property by the trust. When the trust has already been reviewed and approved, the trustee also sends a copy of the trust document, the completed Anticipated Disbursements Form (DE-312/DE-313), and the signed Acknowledgement of Responsibilities as a Trustee (DE-522) if those were not already on file. Arizona does not publish a separate residuary remittance form or payment address beyond this DBF notification process."
+
+supplementalOfficialDocs:
+  - label: "EPM 803-A -- Special Treatment Trust Overview (general conditions every STT, including an IOT, must meet)"
+    url: "https://epm.azahcccs.gov/epmplus/Policy/Chapter_800_Trusts/803_Special_Treatment_Trusts/A_Special_Treatment_Trust_Overview.htm"
+    note: "Confirms the customer-as-beneficiary rule, the AHCCCS-as-remainder-beneficiary rule (which differs slightly depending on whether the trust is revocable or irrevocable -- Arizona permits either, unlike states that require irrevocability outright), the direct-deposit and account-titling requirements, and the disbursement/expense restrictions that apply on top of the Income-Only-Trust-specific conditions in EPM 803-C."
+  - label: "DE-819 -- ALTCS Policies on Special Treatment Trusts (rev. 04/2025)"
+    url: "https://www.azahcccs.gov/Members/Downloads/Publications/DE-819_english.pdf"
+    note: "AHCCCS's own consumer-facing summary of all three Special Treatment Trust types, in plain language -- the source for the remainder-beneficiary/payback description above and the trustee-reporting duties (45-day advance notice of income or disbursement changes)."
+  - label: "AHCCCS Eligibility Requirements table (eff. February 1, 2026)"
+    url: "https://www.azahcccs.gov/Members/Downloads/EligibilityRequirements.pdf"
+    note: "The current primary-source table for the $2,982/month Long Term Care income standard (300% FBR), the $2,000 resource limit, and the $32,532-$162,660 community-spouse resource allowance range -- the Long Term Care row shows an Individual figure only, unlike the SSI Cash row on the same page, confirming Arizona does not publish a distinct couple standard for this program."
+
+requiredTrustProvisions:
+  - title: "Customer named as beneficiary; AHCCCS as remainder beneficiary"
+    description: "The customer must be designated as the trust's beneficiary. AHCCCS (or \"the State Medicaid Agency\") must be named remainder beneficiary -- for an irrevocable trust, upon the customer's death; for a revocable trust, upon the trust being revoked or terminated, or upon the customer's death, whichever happens first. Arizona is one of the few states that permits either a revocable or an irrevocable Income-Only Trust, provided this remainder-beneficiary rule is met either way."
+    agencyCitation: "EPM 803-A"
+  - title: "Created by the customer, spouse, parent, or a legal representative"
+    description: "The trust must be created by the customer; the customer's parent, if the customer is a minor child; the customer's spouse; or a legal representative, including a court or administrative body with legal authority to act for the customer or spouse."
+    agencyCitation: "EPM 803-C"
+  - title: "Funded only with income -- no resources"
+    description: "The trust corpus can only be the customer's income. Resources (real or personal property, savings, or any other asset that isn't income) cannot be added to or used to fund the trust. If a resource is deposited, the trust loses its special treatment until the resource is removed -- so the trust language must make clear that only income may be added."
+    agencyCitation: "EPM 803-C"
+  - title: "The full gross amount of the assigned income source, deposited every month"
+    description: "This is a whole-source rule, not an excess-only rule: the full gross amount of any income source assigned to the trust must be deposited, in the month the customer receives it. The trust document (or an attached Schedule A) must list the customer's gross income from the assigned source -- it may state that \"gross\" income is assigned rather than listing the dollar amount. No tax withholding, union dues, or life/other-person insurance premiums may be deducted from that income before it reaches the trust; the customer must ask the income source directly to stop those deductions."
+    agencyCitation: "EPM 803-C"
+  - title: "Direct deposit into an account titled to the trust"
+    description: "Income assigned to the trust must be directly deposited, when legally allowed, into a financial account titled to show the trust holds it (for example, \"[Name] Income Only Trust -- [Name] Trustee\"). The account itself must be opened with a $0.00 balance before that first deposit."
+    agencyCitation: "EPM 803-A; EPM 803-C; DE-819"
+  - title: "Disbursements limited to what state law allows"
+    description: "Money can be spent only for the customer's benefit and only for the purposes listed in Arizona Revised Statutes § 36-2934.01. The trust cannot allow the trustee to make loans, gifts, or payments to anyone other than the customer -- even a clause generally authorizing the trustee to make \"loans\" is too vague to comply."
+    agencyCitation: "A.R.S. § 36-2934.01; EPM 803-A"
+  - title: "Trust expenses require AHCCCS or Probate Court approval"
+    description: "The trust must state that it allows disbursements for reasonable and necessary administrative expenses only as approved by AHCCCS, or by the Probate Court with advance notice to AHCCCS."
+    agencyCitation: "EPM 803-A"
+  - title: "References Arizona and the federal authority correctly"
+    description: "The trust cannot replace every reference to Arizona, ALTCS, or AHCCCS with a parallel reference to another state's Medicaid agency -- a real risk if a template drafted for a different state is reused. It must also reference 42 U.S.C. § 1396p(d) (or Section 1917(d)(4) of the Social Security Act) as its federal authority."
+    agencyCitation: "EPM 803-A"
+  - title: "Combined income can't exceed the local Private Pay Rate"
+    description: "For the trust to qualify for special treatment, the customer's counted income that is NOT assigned to the trust, plus the income that IS assigned, must together be at or below the private-pay rate for the geographic area where the customer lives. An undue-hardship exception can be requested case-by-case when the private-pay rate genuinely isn't enough to meet the customer's needs, but it is not automatic."
+    agencyCitation: "EPM 803-C"
+
+incomeCap2026: 2982
+# AHCCCS's own Eligibility Requirements table lists the Long Term Care row as
+# "Individual" only -- unlike the SSI Cash row directly above it, which shows
+# both Individual and Couple figures. There is no distinct published couple
+# standard; when both spouses are institutionalized each is tested individually
+# against the same $2,982 figure. Recorded here at 2x per the site convention
+# for states without a distinct couple standard (see Indiana, Missouri).
+incomeCapCouple2026: 5964
+personalNeedsAllowance: 149.10
+asOf: "effective February 2026 (income/resource standards); effective January 2026 (Personal Needs Allowance)"
+
+federalStatuteCitation: "42 U.S.C. § 1396p(d)(4)(B)"
+federalStatuteUrl: "https://www.law.cornell.edu/uscode/text/42/1396p"
+
+trusteeGuidanceNote: "Arizona's own policy (AHCCCS EPM Chapter 803) does not name who may or may not serve as trustee of an Income-Only Trust -- it defines the trustee's duties and reporting obligations (45-day advance notice of trust-income or disbursement changes, monthly disbursements, no loans or gifts to third parties) without restricting who can hold the role. DE-819 tells applicants they \"may be able to get help creating a Special Treatment Trust from your attorney\" and directs questions to the local ALTCS office, but does not state that the customer cannot self-trustee. In practice, many families use a third party -- a spouse or adult child -- rather than the customer, both because general trust law disfavors a sole beneficiary also serving as sole trustee (the \"merger\" doctrine) and because a separate trustee is the one who signs bank paperwork and handles the required AHCCCS notifications. Confirm the trustee question directly with the drafting attorney -- this kit does not treat self-trusteeship as either confirmed permitted or barred by Arizona's rule text."
+einRequired: false
+einRequiredNote: "AHCCCS's policy is silent on tax-ID treatment for an Income-Only Trust -- none of EPM 803-A, EPM 803-C, DE-819, or the Trusts and ALTCS Eligibility Quick Reference Guide mention an EIN. DE-819 only requires that \"a bank account must be set up that is titled to the trust and opened with a $0.00 balance.\" As a trust funded solely by the customer's own income, an Income-Only Trust is commonly opened using the beneficiary's Social Security number, consistent with how most 42 U.S.C. § 1396p(d)(4)(B) grantor trusts are banked nationally -- but this is ultimately a bank and tax question AHCCCS's own policy doesn't answer either way. Confirm titling with your attorney and the bank."
+stateBarLrsName: "State Bar of Arizona -- Search for a Legal Professional"
+stateBarLrsUrl: "https://www.azbar.org/for-legal-professionals/practice-tools-management/member-directory/"
+additionalLegalAidReferrals:
+  - "Community Legal Services (clsaz.org) -- statewide non-profit civil legal aid for low-income Arizonans"
+  - "Arizona Senior Citizens Law Project (asclp.org) -- free civil legal services for seniors 60 and older in Maricopa County"
+  - "Arizona Law Help (azlawhelp.org) -- statewide self-help legal information portal"
+  - "National Academy of Elder Law Attorneys (NAELA) -- Find a Lawyer directory (naela.org), including Arizona members"
+
+privatePayMonthlyLow: 7604
+privatePayMonthlyHigh: 10494
+
+requirementsIntroNote: "AHCCCS does not publish a fill-in Income-Only Trust form. Its own numbered publications -- DE-819, the Anticipated Disbursements Forms (DE-312/DE-313), and the Acknowledgement of Responsibilities as a Trustee (DE-522) -- are all administrative notice, disbursement-schedule, and reporting forms filed once a trust already exists; none of them is the trust instrument itself. Instead, the checklist below is drawn directly from AHCCCS's own required conditions in EPM 803-A (the conditions every Special Treatment Trust must meet) and EPM 803-C (the conditions specific to an Income-Only Trust) -- verbatim, clause by clause -- so you or your attorney can draft or verify a trust that actually satisfies what AHCCCS requires."
+
+attorneyRequiredNote: "AHCCCS's policy does not state whether an Income-Only Trust must be attorney-drafted, and Arizona's Certified Legal Document Preparer program (ACJA § 7-208) explicitly permits nonlawyers to make legal forms and documents available to the public and provide general legal information. But because AHCCCS publishes no fill-in instrument to complete, drafting an original trust from the requirements below is, in practice, a task most families have an attorney handle -- drafting an original legal document (as opposed to filling in an existing one) carries materially more risk of missing a required clause than completing a state-provided form would. Budget for an attorney; this kit is what keeps that engagement efficient."
+
+commonDenialReasons:
+  - title: "A resource, not just income, was deposited into the trust"
+    description: "The trust corpus can only be the customer's income. Depositing a resource -- real or personal property, savings, or any other non-income asset -- causes the trust to lose its special treatment until the resource is removed."
+    agencyCitation: "EPM 803-C"
+  - title: "The full gross income from a source wasn't assigned"
+    description: "Deducting taxes, union dues, or life/other-person insurance premiums from income before it reaches the trust, or assigning only part of a named income source instead of its full gross amount, breaks the whole-source rule."
+    agencyCitation: "EPM 803-C"
+  - title: "Missing or mismatched AHCCCS remainder-beneficiary clause"
+    description: "The trust must name AHCCCS or the State Medicaid Agency as remainder beneficiary in the way that matches the trust's own revocable-or-irrevocable status -- upon death for an irrevocable trust, or upon revocation/termination/death for a revocable one. A trust silent on this, or that names the wrong trigger event, fails."
+    agencyCitation: "EPM 803-A"
+  - title: "Disbursements outside what state law allows"
+    description: "Loans, gifts, or payments to someone other than the customer, or administrative expenses paid without AHCCCS or Probate Court approval, are outside the disbursements Arizona Revised Statutes § 36-2934.01 permits."
+    agencyCitation: "A.R.S. § 36-2934.01; EPM 803-A"
+  - title: "Combined income is above the local Private Pay Rate"
+    description: "Even a properly drafted Income-Only Trust does not restore eligibility if the customer's counted income outside the trust, plus the income assigned to it, together exceed the private-pay rate for the customer's geographic area. The undue-hardship exception is a case-by-case request, not automatic relief."
+    agencyCitation: "EPM 803-C"
+  - title: "Late or missing trustee notice to ALTCS"
+    description: "The trustee must notify the local ALTCS office of changes in trust income or anticipated disbursements at least 45 calendar days in advance (or within 30 days for an emergency payment). Missing this window can affect the customer's eligibility and Share of Cost."
+    agencyCitation: "DE-819"
+  - title: "Trust omits the required Arizona and federal references"
+    description: "A trust that swaps out every reference to Arizona, ALTCS, or AHCCCS for another state's Medicaid agency, or that fails to reference 42 U.S.C. § 1396p(d) (Social Security Act § 1917(d)(4)), does not meet Arizona's own drafting conditions."
+    agencyCitation: "EPM 803-A"
+
+bankRefusalNotes:
+  - refusalType: "Branch asks for a tax ID (EIN) for the trust"
+    response: "AHCCCS's policy doesn't address tax-ID treatment for an Income-Only Trust at all. A trust funded only by the customer's own income is generally opened under the customer's own Social Security number. If the branch insists on an EIN out of habit, confirm the account titling with your attorney and ask the branch to escalate to its trust department rather than forcing an identifier AHCCCS's policy doesn't call for."
+    documentNeeded: "The signed Income-Only Trust instrument"
+  - refusalType: "Branch is unsure what kind of account this is"
+    response: "It is a single, dedicated account, titled to the trust (for example, \"[Name] Income Only Trust -- [Name] Trustee\"), opened with a $0.00 balance and then funded going forward with the full gross amount of the customer's assigned income -- not just the amount above the cap. Show the branch the signed trust and, if needed, the EPM 803-C citation."
+    documentNeeded: "The signed Income-Only Trust instrument"
+  - refusalType: "Branch has never opened a Special Treatment Trust account"
+    response: "It is a routine dedicated account holding the customer's income and paid out under AHCCCS's disbursement rules. Ask for a full-service branch or the bank's trust department; community banks and credit unions are often more flexible than large retail branches."
+    documentNeeded: "The signed Income-Only Trust instrument"
+  - refusalType: "Branch wants to know who is authorized to sign"
+    response: "The trustee named in the trust instrument is the authorized signer -- not the customer. Bring the signed trust, which names the trustee (and any successor trustee), when you open the account."
+    documentNeeded: "The signed Income-Only Trust instrument (naming the trustee)"
+
+postDeathDistribution: "On the customer's death, the Income-Only Trust terminates. AHCCCS is paid the funds remaining in the account, capped at the actual amount AHCCCS paid for the customer's medical care -- not necessarily the entire remaining balance. The trustee notifies AHCCCS's Division of Business & Finance (DBF) using the Notification of a Special Treatment Trust or ABLE Account (DE-137) form, which also covers ALTCS benefit approval, benefit discontinuance, trust revocation or termination, and any post-approval real-property purchase by the trust. Arizona does not publish a separate residuary remittance form or payment address beyond this DBF notification process -- the trustee should resolve AHCCCS's claim before distributing any remaining balance and keep proof of the notification and payment in the trust file."
+
+metaTitle: "Arizona Income-Only Trust (Miller Trust) Requirements Guide — $97"
+metaDescription: "Arizona Income-Only Trust (Miller Trust / QIT) requirements guide. AHCCCS publishes no fill-in form — this guide gives the exact EPM-cited checklist your attorney's draft must satisfy, plus funding, banking, and denial-avoidance. Informational, not legal advice."
+
+primaryKeyword: "arizona income only trust"
+secondaryKeywords:
+  - "arizona miller trust"
+  - "miller trust arizona"
+  - "arizona qualified income trust"
+  - "altcs income only trust"
+  - "arizona income cap trust"
+  - "arizona qit"
+  - "arizona medicaid trust requirements"
+  - "altcs trust requirements"
+  - "arizona nursing home income trust"
+
+reviewedDate: "2026-08-01"
+uplNotes: "Arizona has no current standalone UPL statute -- Ariz. Rev. Stat. § 32-261 (the old criminal UPL provision) was repealed in 1985 after a political fight over realtors preparing purchase contracts (Jonathan Rose, Unauthorized Practice of Law in Arizona, 34 Ariz. St. L.J. 585 (2002)). UPL is instead governed by Arizona Supreme Court Rule 31, which defines \"practice of law\" as providing legal advice or services \"to or for another\" by preparing a document intended to affect legal rights \"for a specific person or entity,\" expressing legal opinions, representing another in a proceeding, or negotiating rights for a specific person -- verified verbatim from two State Bar of Arizona UPL Advisory Opinions (06-02, 12-01) that quote the rule in full. Rule 31 also operates alongside Arizona Code of Judicial Administration § 7-208, which affirmatively authorizes Certified Legal Document Preparers to make legal forms and documents available to the public and provide general legal information (not advice) -- a built-in, sanctioned lane for nonlawyer form/information distribution that most states don't have this explicitly. The seminal Arizona UPL case, State Bar of Arizona v. Arizona Land Title & Trust Co., 90 Ariz. 76, 366 P.2d 1 (1961), held that title companies and realtors could not draft instruments for parties to a transaction -- a \"preparing documents for another\" holding, not a self-help-kit or forms-publisher case, and the public backlash against it is part of what led to the 1985 statute repeal. No Arizona Supreme Court case, ethics opinion, or UPL Advisory Committee opinion addressing Medicaid planning, trust kits, or the Dacey forms-publishing fact pattern was found in this pass -- a search across the full list of published azbar.org UPL Advisory Opinions turned up HOA management, mechanic's liens, out-of-state attorneys, paralegal titles, and tax representatives, but nothing on trusts or estate/Medicaid planning. Net read: Arizona's UPL posture toward nonlawyer forms activity is ordinary-to-permissive, the opposite direction from Florida's SC14-211 advisory opinion (which specifically named \"Qualified Income Trust forms or kits\") -- this is the same 'no on-point adverse holding' posture as Oklahoma, not a unique advantage, and the product stays defensible by holding the same four hard rules regardless: explain what AHCCCS's policy requires, never draft or provide sample/model trust language, never select or tailor language to an individual's facts, and never review a customer's own drafted trust. Confirm Arizona UPL comfort before go-live; this search was not exhaustive."
+
+kitVersion: "v1.0"
+kitVersionDate: "2026-08-01"
+kitChangelog:
+  - version: "v1.0"
+    date: "2026-08-01"
+    changes:
+      - "Initial Arizona release -- the second 'requirements-brief' product after Oklahoma: AHCCCS publishes no fill-in Income-Only Trust form. DE-819 and the Anticipated Disbursements/Acknowledgement forms (DE-312/DE-313/DE-522) are all administrative notice/reporting forms, not the trust instrument. The kit instead gives the required-provisions checklist drawn directly from EPM 803-A and 803-C, for you to bring to an attorney or verify a draft against."
+      - "Program scope confirmed broad: an Income-Only Trust applies to nursing-facility, HCBS, and hospice ALTCS coverage alike, all tested against the same $2,982/month (300% FBR) standard on AHCCCS's own Eligibility Requirements table (eff. 2/1/2026). Not a narrow HCBS-only mechanism."
+      - "Distinctive Arizona feature: EPM 803-A permits an Income-Only Trust to be either revocable or irrevocable, provided AHCCCS is named remainder beneficiary either way -- unlike states that require irrevocability outright."
+      - "Whole-income-source funding: the full gross amount of any assigned income source is deposited every month (not excess-only). Personal Needs Allowance $149.10/month (2026, 15% of the FBR) for nursing-facility residents; 300% FBR applies instead for HCBS/community-setting recipients."
+      - "Trustee eligibility and EIN-vs-SSN are genuine, confirmed silences in AHCCCS's own policy (checked across EPM 803-A, 803-C, DE-819, and the Quick Reference Guide) -- flagged honestly rather than invented."
+      - "AHCCCS remainder-beneficiary payback capped at the actual amount AHCCCS paid for the customer's care; processed via the DE-137 notification to AHCCCS's Division of Business & Finance. No separate residuary remittance form."
+      - "UPL footing: no Arizona statute (repealed 1985) -- governed by Supreme Court Rule 31 plus an ACJA § 7-208 Certified Legal Document Preparer carve-out that's actually permissive toward nonlawyer form distribution. No on-point case or advisory opinion on Medicaid-planning kits, the same 'no adverse holding' posture as Oklahoma -- not Florida's stricter SC14-211 situation."
+      - "Private-pay nursing-home range from the Genworth/CareScout 2024 Cost of Care Survey (~$7,604 semi-private / ~$10,494 private per month, Arizona statewide)."
+
+faq:
+  - question: "Is the Arizona Income-Only Trust Guide legal advice?"
+    answer: "No. This guide is informational only and is not legal advice. We are not attorneys and we do not practice law. AHCCCS does not publish a fill-in trust form, so the guide teaches you exactly what AHCCCS's own policy requires a compliant trust to contain, so you can brief an attorney efficiently and verify what they draft. For advice on your specific situation, consult an Arizona-licensed elder-law attorney."
+  - question: "Does Arizona provide an official Income-Only Trust form?"
+    answer: "No. AHCCCS's own numbered publications -- DE-819, the Anticipated Disbursements Forms (DE-312/DE-313), and the Acknowledgement of Responsibilities as a Trustee (DE-522) -- are administrative notice and reporting forms filed once a trust already exists, not a fill-in trust instrument. The trust itself must be drafted -- by an attorney, or by you where Arizona law permits -- to meet the requirements this guide lays out."
+  - question: "What does the guide include?"
+    answer: "A requirements-and-operations guide: the required-provisions checklist derived from AHCCCS's own policy with a citation for each item, guidance on gathering what an attorney needs before your first meeting, the monthly funding worksheet, the bank-account walkthrough, the month-by-month funding process, and Arizona-specific denial-avoidance guidance. Delivered as a single PDF."
+  - question: "Do you provide the trust document itself?"
+    answer: "No. We never draft or provide sample or model trust language, generic or otherwise -- that would cross from explaining the law into practicing it. The guide tells you exactly what AHCCCS requires the finished trust to contain; drafting it is your attorney's work (or, where permitted, your own)."
+  - question: "Who needs an Income-Only Trust in Arizona?"
+    answer: "A person applying for ALTCS -- nursing-facility care, a Home and Community-Based Services waiver, or hospice -- whose gross monthly income is above $2,982/month (2026, 300% of the Federal Benefit Rate)."
+  - question: "How much of my income goes into the trust?"
+    answer: "All of it, from whichever income sources you assign. Arizona is a whole-income-source state: the full gross amount of an assigned income source is deposited every month, not just the amount above the cap. The guide walks through exactly which sources to assign and how to document the gross amount."
+  - question: "Can my Arizona Income-Only Trust be revocable?"
+    answer: "Arizona is unusual among the states we cover: AHCCCS policy permits either a revocable or an irrevocable Income-Only Trust, as long as AHCCCS is named remainder beneficiary either way -- upon revocation, termination, or death for a revocable trust, or upon death for an irrevocable one. Discuss which structure fits your situation with your attorney."
+  - question: "Can I be my own trustee in Arizona?"
+    answer: "AHCCCS's policy doesn't explicitly say. In practice, most families use a third-party trustee -- a spouse or adult child -- rather than the customer, both because general trust law disfavors a sole beneficiary also serving as sole trustee and because a separate trustee is the one who handles bank paperwork and the required AHCCCS notifications. Confirm this directly with your drafting attorney."
+  - question: "Does an Arizona Income-Only Trust need an EIN?"
+    answer: "Generally no. AHCCCS's policy doesn't address tax-ID treatment at all. A trust funded only by the customer's own income is usually opened under the customer's own Social Security number. If a bank asks for an EIN out of habit, confirm the titling with your attorney and the bank."
+  - question: "What if my bank refuses to open the trust account?"
+    answer: "Bank refusal is common on a first attempt. The signed trust instrument is your documentation: it is a single, dedicated account titled to the trust, holding only the customer's income, with the trustee (not the customer) as the authorized signer. The guide walks you through handling first-attempt refusals and escalating to the bank's trust department if needed."
+  - question: "Do you offer a refund?"
+    answer: "Yes -- money back if AHCCCS rejects the Income-Only Trust for any reason traceable to following the guide. Email support@millertrustguide.com with the agency's stated denial reason and we issue a full refund within one business day."
+  - question: "Will you talk to me on the phone about my situation?"
+    answer: "No. We do not offer phone support and we do not advise on individual situations. For advice on your specific situation, consult an Arizona-licensed elder-law attorney -- you can find one through the State Bar of Arizona's legal-professional search tool or Community Legal Services."
+---
+
+import StatePageLayout from '~/layouts/StatePageLayout.astro';
+
+This file's frontmatter is the canonical Arizona data source. The body is intentionally minimal — all conversion-surface rendering happens in `StatePageLayout.astro`, which reads from frontmatter. This keeps states homogeneous and prevents drift between states.

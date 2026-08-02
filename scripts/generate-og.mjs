@@ -300,6 +300,18 @@ const ASSETS = [
     }),
     width: 1200,
   },
+
+  // OG per-state — Arizona (requirements-brief: AHCCCS publishes no fill-in
+  // instrument, so this is a requirements checklist, not a template-linking kit)
+  {
+    path: 'og/states/arizona.png',
+    svg: ogSvg({
+      headlineLines: ['Arizona Income-Only', 'Trust Guide'],
+      dataLine: '$97  ·  Requirements checklist — no official AHCCCS form  ·  Money-back if AHCCCS rejects',
+      footerLine: 'ARIZONA AHCCCS  ·  EPM 803-C  ·  LAST REVIEWED 2026-08-01',
+    }),
+    width: 1200,
+  },
 ];
 
 async function renderOne({ path, svg, width }) {
