@@ -163,5 +163,22 @@ const ldBlocks = [organizationSchema(), websiteSchema(), personSchema(), ...json
       import { captureRef } from '~/lib/referral';
       captureRef();
     </script>
+
+    {/* Outbound source-link tracking — every citation/source link site-wide
+        carries rel="external", so one delegated listener covers all of them
+        (present and future) without per-page wiring. Answers "which citation
+        instances actually get clicked" before we plain-text more of them.
+        /checklist and /for/[facility] intentionally don't load BaseLayout
+        (self-contained print docs), so their links aren't covered here. */}
+    <script>
+      import { trackEvent } from '~/lib/analytics-client';
+      document.addEventListener('click', (e) => {
+        const target = e.target;
+        if (!(target instanceof Element)) return;
+        const link = target.closest('a[rel*="external"]');
+        if (!(link instanceof HTMLAnchorElement)) return;
+        trackEvent('source_link_click', { href: link.href, page: location.pathname });
+      });
+    </script>
   </body>
 </html>

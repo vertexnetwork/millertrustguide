@@ -17,6 +17,9 @@
 //   checkout_error    — /api/create-checkout rejected or failed; same purpose
 //                       as lead_submit_error, for the buy path
 //   purchase          — payment confirmed on the thanks page (deduped per order)
+//   source_link_click — an outbound citation/source link (rel="external") was
+//                       clicked; tells us which citation instances actually
+//                       get used vs. which are safe to plain-text
 
 declare global {
   interface Window {
