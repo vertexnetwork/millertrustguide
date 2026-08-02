@@ -295,12 +295,12 @@ const title = `The ${denialCount} most common reasons ${state.name} Medicaid den
           {state.officialTemplateUrl && (
             <li>
               Official {state.agencyAbbreviation} template —
-              <a href={state.officialTemplateUrl} rel="external nofollow noopener">{state.policyManualSection}</a>
+              <a href={state.officialTemplateUrl} target="_blank" rel="external nofollow noopener">{state.policyManualSection}</a>
             </li>
           )}
           <li>
             {state.agencyAbbreviation} policy manual —
-            <a href={state.policyManualUrl} rel="external nofollow noopener">{state.agencyName}</a>
+            <a href={state.policyManualUrl} target="_blank" rel="external nofollow noopener">{state.agencyName}</a>
           </li>
         </ul>
 
