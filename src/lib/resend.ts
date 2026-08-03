@@ -35,6 +35,25 @@ async function unwrap<T>(p: Promise<{ data: T | null; error: unknown }>): Promis
   return data;
 }
 
+// One retry after a short delay, for calls where a transient failure (a
+// dropped connection between Vercel and Resend, a momentary Resend 5xx/429 —
+// see RESEND_ERROR_CODES_BY_KEY in the SDK, which has no "duplicate contact"
+// code at all: creating a contact for an email that already exists in the
+// audience upserts rather than errors, per Resend's own docs) shouldn't cost
+// us the lead. Not used for email sends — those aren't safe to retry blind.
+async function withRetry<T>(fn: () => Promise<T>, attempts = 2, delayMs = 500): Promise<T> {
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      if (i < attempts - 1) await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+  throw lastErr;
+}
+
 const FROM_ADDRESS = import.meta.env.RESEND_FROM_ADDRESS || 'support@millertrustguide.com';
 const FROM_NAME = import.meta.env.RESEND_FROM_NAME || 'James Whitfield at Miller Trust Guide';
 const FROM = `${FROM_NAME} <${FROM_ADDRESS}>`;
@@ -328,12 +347,14 @@ ${DISCLAIMER_TEXT}
 export async function addSubscriberToAudience(email: string) {
   const audienceId = import.meta.env.RESEND_AUDIENCE_ID;
   if (!audienceId) throw new Error('RESEND_AUDIENCE_ID is not configured.');
-  return unwrap(
-    client().contacts.create({
-      email,
-      audienceId,
-      unsubscribed: false,
-    })
+  return withRetry(() =>
+    unwrap(
+      client().contacts.create({
+        email,
+        audienceId,
+        unsubscribed: false,
+      })
+    )
   );
 }
 

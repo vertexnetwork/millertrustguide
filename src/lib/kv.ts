@@ -1,10 +1,13 @@
-// Minimal KV (Upstash Redis) for the B2B tier.
+// Minimal KV (Upstash Redis). Originally the B2B tier's store; also backs the
+// free-checklist signup retry queue (src/lib/pending-subscribers.ts).
 //
 // This is NOT a system of record — Stripe is the source of truth for who has
-// an active subscription. KV holds only ephemeral plumbing, all TTL'd:
-//   - magic-link single-use nonces  (burn on first use)
-//   - login rate-limit counters     (stop email-bomb + enumeration)
-//   - short entitlement-status cache (decouple portal loads from Stripe)
+// an active B2B subscription, and Resend is the source of truth for who's on
+// the mailing list. KV holds only ephemeral/recoverable plumbing, all TTL'd:
+//   - magic-link single-use nonces      (burn on first use)
+//   - login rate-limit counters         (stop email-bomb + enumeration)
+//   - short entitlement-status cache    (decouple portal loads from Stripe)
+//   - pending-subscriber retry queue    (a failed Resend audience-add, to retry)
 //
 // Provisioned via Vercel → Storage → Marketplace → Upstash for Redis, which
 // injects KV_REST_API_URL / KV_REST_API_TOKEN (the standalone @upstash/redis

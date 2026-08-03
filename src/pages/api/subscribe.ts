@@ -11,6 +11,7 @@ import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { addSubscriberToAudience } from '~/lib/resend';
 import { sendNurtureEmail } from '~/lib/nurture';
+import { queuePendingSubscriber } from '~/lib/pending-subscribers';
 
 export const prerender = false;
 
@@ -61,12 +62,24 @@ export const POST: APIRoute = async ({ request }) => {
     }
   }
 
-  // Add to the audience. If this fails we stop — no point sending a welcome
-  // email to someone we couldn't record.
+  // Add to the audience (addSubscriberToAudience already retries once
+  // in-request for a transient blip). If it still fails, don't just drop the
+  // lead — queue it for the retry cron (src/pages/api/cron/retry-subscribers.ts)
+  // so a longer Resend outage doesn't cost us the email address permanently.
+  // The checklist itself is unaffected either way; the client shows it
+  // regardless of this call's outcome (see src/lib/lead-capture.ts).
   try {
     await addSubscriberToAudience(email);
   } catch (err) {
     console.error('[subscribe] failed to add contact to audience:', err);
+    await queuePendingSubscriber({
+      email,
+      stateName,
+      stateSlug: ctx.slug,
+      privatePayLow: ctx.privatePayLow,
+      privatePayHigh: ctx.privatePayHigh,
+      legalGuide: ctx.legalGuide,
+    });
     return json(
       { error: 'Something went wrong on our end. Please try again in a minute.' },
       502

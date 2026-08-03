@@ -162,8 +162,19 @@ export function wireLeadForm(form: HTMLFormElement, opts: WireOpts): void {
       document.dispatchEvent(new CustomEvent(SUBSCRIBED_EVENT));
       opts.onSuccess?.();
     } catch (err) {
+      // The checklist page is static and doesn't depend on the subscribe call
+      // succeeding — so a Resend/network failure here should never block the
+      // one thing the visitor actually asked for. Show the link regardless of
+      // the error, same as the success path, just with honest copy about the
+      // email-list part. True for every state, since it only needs stateSlug.
+      const link = stateSlug
+        ? ` <a class="underline font-semibold" href="/checklist/${encodeURIComponent(stateSlug)}">Open your checklist anyway →</a>`
+        : '';
+      const message = err instanceof Error ? err.message : 'Something went wrong.';
       setFeedback(
-        err instanceof Error ? err.message : 'Something went wrong. Please try again.',
+        stateSlug
+          ? `We couldn't add you to the email list just now, but your checklist is still ready.${link} Feel free to try the email again in a bit.`
+          : `${message} Please try again.`,
         false
       );
       button.disabled = false;
