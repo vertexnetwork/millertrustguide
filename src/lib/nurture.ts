@@ -55,15 +55,18 @@ function stateUrl(slug?: string): string {
   return slug ? `${SITE}/states/${slug}` : SITE;
 }
 
-// Styled button CTA — matches the kit-delivery email's button so the series
+// Styled button CTA — matches the delivery email's button so the series
 // has a real call-to-action instead of a bare inline link.
 function ctaButton(href: string, label: string): string {
   return `  <p style="margin:24px 0;"><a href="${href}" style="background:#B45309;color:#fff;padding:12px 22px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block;">${label}</a></p>`;
 }
 
-// One-line guarantee, reused across the series to de-risk the click.
+// One-line guarantee, reused across the series to de-risk the click. Kept
+// state-agnostic (emails 2-5 are sent by a daily cron with no per-contact
+// state on file — see cron/nurture.ts — so this can't say "kit" or "guide"
+// specifically; some live states are one, some states are the other).
 const GUARANTEE_LINE =
-  'Every kit is backed by a money-back guarantee — if the state rejects the trust for a reason traceable to following the kit, you get a full refund.';
+  'Every state guide is backed by a money-back guarantee — if the state rejects the trust for a reason traceable to following it, you get a full refund.';
 
 /** Wrap an HTML body fragment in the standard email shell. */
 function htmlShell(headingText: string, bodyHtml: string): string {
@@ -83,6 +86,9 @@ interface Email1Ctx {
   slug?: string;
   privatePayLow?: number;
   privatePayHigh?: number;
+  // 'legal-guide' states (e.g. Florida) are never branded "kit" — see
+  // config.ts's productModel comment.
+  legalGuide?: boolean;
 }
 
 function email1(stateName: string, ctx: Email1Ctx = {}): EmailContent {
@@ -125,17 +131,24 @@ ${ctaButton(checklistUrl, `Open your ${stateName} checklist`)}`
     ? `<p>Over the next three weeks you'll get four more short, plain-English emails about how ${stateName} Miller Trusts actually work — no sales pressure, unsubscribe anytime.</p>`
     : `<p>Over the next three weeks you'll get four more short, plain-English emails on how a Miller Trust actually works — the bank step, the paperwork traps, the trustee role — no sales pressure, unsubscribe anytime.</p>`;
   const kitPlugText = hasState
-    ? `If you'd rather not wait, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}
+    ? ctx.legalGuide
+      ? `If you'd rather not wait, the full ${stateName} Qualified Income Trust legal requirements guide explains every step — what the law requires the trust to contain, the funding math, and the denial-avoidance facts. ${GUARANTEE_LINE}
+
+See the ${stateName} guide: ${url}`
+      : `If you'd rather not wait, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}
 
 See the ${stateName} kit: ${url}`
-    : `If you'd rather not wait, every state's kit walks through the full operational step — the bank script, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}
+    : `If you'd rather not wait, every state's guide walks through the full operational picture — the bank-account facts, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}
 
-Find your state's kit: ${url}`;
+Find your state's guide: ${url}`;
   const kitPlugHtml = hasState
-    ? `<p>If you'd rather not wait, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}</p>
+    ? ctx.legalGuide
+      ? `<p>If you'd rather not wait, the full ${stateName} Qualified Income Trust legal requirements guide explains every step — what the law requires the trust to contain, the funding math, and the denial-avoidance facts. ${GUARANTEE_LINE}</p>
+${ctaButton(url, `See the ${stateName} guide`)}`
+      : `<p>If you'd rather not wait, the full ${stateName} Miller Trust Setup Kit walks through every operational step — the bank script, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}</p>
 ${ctaButton(url, `See the ${stateName} kit`)}`
-    : `<p>If you'd rather not wait, every state's kit walks through the full operational step — the bank script, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}</p>
-${ctaButton(url, `Find your state's kit`)}`;
+    : `<p>If you'd rather not wait, every state's guide walks through the full operational picture — the bank-account facts, the denial-avoidance checklist, the funding worksheet. ${GUARANTEE_LINE}</p>
+${ctaButton(url, `Find your state's guide`)}`;
   const text = `Hi,
 
 Thanks for joining the Miller Trust Guide email series.${checklistText}
@@ -200,13 +213,13 @@ Here's the reality. When you take the signed trust in to open the account, the f
 
 None of that is a Medicaid rule. It's a gap in the branch's training. And it's fixable.
 
-The families who get the account open on the first or second try are the ones who walk in knowing three things: the exact account they're asking for, the specific state policy section that authorizes it, and what to say when the branch pushes back. The families who don't can lose weeks going back and forth — and weeks matter, because of the funding-month rule from the last email.
+The families who get the account open on the first or second try are the ones who walk in knowing three things: the exact account they're asking for, the specific state policy section that authorizes it, and the facts that answer what the branch pushes back with. The families who don't can lose weeks going back and forth — and weeks matter, because of the funding-month rule from the last email.
 
-The kit's bank section is built entirely around this: a word-for-word script for the counter, the five most common refusals with the response to each, and a one-page letter you can hand the branch manager to escalate inside their own bank. It's the part buyers most often tell other families about.
+Every state guide's bank section is built entirely around this: what the account actually is, the state policy citation that authorizes it, and the five most common points of confusion with the fact that resolves each. It's the part buyers most often tell other families about.
 
 ${GUARANTEE_LINE}
 
-See the kits: ${SITE}
+See your state's guide: ${SITE}
 
 ${SIGNOFF_TEXT}`;
 
@@ -215,9 +228,9 @@ ${SIGNOFF_TEXT}`;
     `  <p>The single place families get stuck setting up a Miller Trust is not the trust document — it's the bank.</p>
   <p>Here's the reality. When you take the signed trust in to open the account, the first visit is usually refused. Not because anything is wrong with your trust. Most branch staff have simply never opened a Qualified Income Trust account — it isn't one of the account types on their screen. So they improvise: they ask for an EIN you don't need, or say you have to bring a lawyer, or tell you their system has no option for this kind of account.</p>
   <p><strong>None of that is a Medicaid rule.</strong> It's a gap in the branch's training. And it's fixable.</p>
-  <p>The families who get the account open on the first or second try are the ones who walk in knowing three things: the exact account they're asking for, the specific state policy section that authorizes it, and what to say when the branch pushes back. The families who don't can lose weeks going back and forth — and weeks matter, because of the funding-month rule from the last email.</p>
-  <p>The kit's bank section is built entirely around this: a word-for-word script for the counter, the five most common refusals with the response to each, and a one-page letter you can hand the branch manager to escalate inside their own bank. It's the part buyers most often tell other families about. ${GUARANTEE_LINE}</p>
-${ctaButton(SITE, 'See the kits')}`
+  <p>The families who get the account open on the first or second try are the ones who walk in knowing three things: the exact account they're asking for, the specific state policy section that authorizes it, and the facts that answer what the branch pushes back with. The families who don't can lose weeks going back and forth — and weeks matter, because of the funding-month rule from the last email.</p>
+  <p>Every state guide's bank section is built entirely around this: what the account actually is, the state policy citation that authorizes it, and the five most common points of confusion with the fact that resolves each. It's the part buyers most often tell other families about. ${GUARANTEE_LINE}</p>
+${ctaButton(SITE, "See your state's guide")}`
   );
 
   return { subject, text, html };
@@ -245,11 +258,11 @@ Notice what is NOT on that list: "your family member earns too much" or "they do
 
 The practical takeaway: if your family member's income is over the limit and they need long-term care, the QIT path almost certainly works. What determines whether it goes smoothly is getting the mechanical steps right, and in the right order — not luck, and not whether the state likes your application.
 
-The kit lists every common denial reason for your state with the exact policy citation behind it, plus a checklist to run the day before you file. That checklist exists for one reason: to catch a paperwork error while it's still free to fix, instead of after the denial letter arrives.
+Every state guide lists every common denial reason for your state with the exact policy citation behind it, plus a checklist to run the day before you file. That checklist exists for one reason: to catch a paperwork error while it's still free to fix, instead of after the denial letter arrives.
 
 ${GUARANTEE_LINE}
 
-See the kits: ${SITE}
+See your state's guide: ${SITE}
 
 ${SIGNOFF_TEXT}`;
 
@@ -266,8 +279,8 @@ ${SIGNOFF_TEXT}`;
   </ul>
   <p>Notice what is <em>not</em> on that list: "your family member earns too much" or "they don't need this level of care." Genuine eligibility is rarely the thing that fails.</p>
   <p>The practical takeaway: if your family member's income is over the limit and they need long-term care, the QIT path almost certainly works. What determines whether it goes smoothly is getting the mechanical steps right, and in the right order.</p>
-  <p>The kit lists every common denial reason for your state with the exact policy citation behind it, plus a checklist to run the day before you file — to catch a paperwork error while it's still free to fix. ${GUARANTEE_LINE}</p>
-${ctaButton(SITE, 'See the kits')}`
+  <p>Every state guide lists every common denial reason for your state with the exact policy citation behind it, plus a checklist to run the day before you file — to catch a paperwork error while it's still free to fix. ${GUARANTEE_LINE}</p>
+${ctaButton(SITE, "See your state's guide")}`
   );
 
   return { subject, text, html };
@@ -295,11 +308,11 @@ There is exactly one rule that matters: it has to happen every month, on time. A
 
 It is a routine, not a burden. But it is a routine someone has to own, and it's worth deciding who that person is before the trust is set up rather than after.
 
-The kit walks the trustee through the monthly rhythm step by step, and includes a record-keeping checklist so that if the state ever asks for documentation, it's already in one place.
+Every state guide explains the monthly rhythm step by step, and includes a record-keeping checklist so that if the state ever asks for documentation, it's already in one place.
 
 ${GUARANTEE_LINE}
 
-See the kits: ${SITE}
+See your state's guide: ${SITE}
 
 ${SIGNOFF_TEXT}`;
 
@@ -314,8 +327,8 @@ ${SIGNOFF_TEXT}`;
     <li>File the statement.</li>
   </ul>
   <p>There is exactly one rule that matters: it has to happen <strong>every month, on time</strong>. A missed month is a denied month of coverage. So the trustee's real job is not complexity — it's reliability. Most families set a recurring monthly reminder and treat it like paying a utility bill.</p>
-  <p>It is a routine, not a burden — but a routine someone has to own. The kit walks the trustee through the monthly rhythm and includes a record-keeping checklist. ${GUARANTEE_LINE}</p>
-${ctaButton(SITE, 'See the kits')}`
+  <p>It is a routine, not a burden — but a routine someone has to own. Every state guide explains the monthly rhythm and includes a record-keeping checklist. ${GUARANTEE_LINE}</p>
+${ctaButton(SITE, "See your state's guide")}`
   );
 
   return { subject, text, html };
@@ -341,13 +354,13 @@ A Miller Trust for a straightforward income situation is well within do-it-yours
 
 If any of those describe your situation, an attorney is the right call — and that is not a failure of the do-it-yourself approach. It's just matching the tool to the job. Plenty of families use a guide for the trust itself and an attorney for the one genuinely complex piece.
 
-If your situation is the straightforward kind — income over the limit, a clear need for care, no tangled assets — then a kit is very likely all you need.
+If your situation is the straightforward kind — income over the limit, a clear need for care, no tangled assets — then a state guide is very likely all you need.
 
-Either way, you now know enough to tell which situation you're in. That was the point of these emails. The kit's final section spells out exactly when to involve an attorney and how to find the right one; the rest of it handles everything else.
+Either way, you now know enough to tell which situation you're in. That was the point of these emails. Every state guide's final section spells out exactly when to involve an attorney and how to find the right one; the rest of it handles everything else.
 
-Thank you for reading. If a kit would help, the money-back guarantee means the only real risk is bounded.
+Thank you for reading. If a state guide would help, the money-back guarantee means the only real risk is bounded.
 
-See the kits: ${SITE}
+See your state's guide: ${SITE}
 
 ${SIGNOFF_TEXT}`;
 
@@ -363,9 +376,9 @@ ${SIGNOFF_TEXT}`;
     <li>A Medicaid application was already denied for a substantive reason.</li>
   </ul>
   <p>If any of those describe your situation, an attorney is the right call — and that is not a failure of the do-it-yourself approach. It's matching the tool to the job. Plenty of families use a guide for the trust and an attorney for the one genuinely complex piece.</p>
-  <p>If your situation is the straightforward kind — income over the limit, a clear need for care, no tangled assets — a kit is very likely all you need. Either way, you now know enough to tell which situation you're in.</p>
-  <p>Thank you for reading. If a kit would help, the money-back guarantee means the only real risk is bounded.</p>
-${ctaButton(SITE, 'See the kits')}`
+  <p>If your situation is the straightforward kind — income over the limit, a clear need for care, no tangled assets — a state guide is very likely all you need. Either way, you now know enough to tell which situation you're in.</p>
+  <p>Thank you for reading. If a state guide would help, the money-back guarantee means the only real risk is bounded.</p>
+${ctaButton(SITE, "See your state's guide")}`
   );
 
   return { subject, text, html };

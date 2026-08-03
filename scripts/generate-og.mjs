@@ -312,6 +312,21 @@ const ASSETS = [
     }),
     width: 1200,
   },
+
+  // OG per-state — Florida (legal-guide: DCF publishes no fill-in instrument
+  // AND a Florida Supreme Court advisory opinion, SC14-211, specifically
+  // addresses QIT "forms or kits" — the strictest UPL posture of any live
+  // state, hence the distinct productModel and the copy below staying in
+  // "legal requirements guide" register, never "kit")
+  {
+    path: 'og/states/florida.png',
+    svg: ogSvg({
+      headlineLines: ['Florida Qualified', 'Income Trust Guide'],
+      dataLine: '$97  ·  Legal requirements guide — no fill-in DCF form  ·  Money-back if DCF rejects',
+      footerLine: 'FLORIDA DCF  ·  ESS MANUAL 1840.0110 · SC14-211  ·  LAST REVIEWED 2026-08-02',
+    }),
+    width: 1200,
+  },
 ];
 
 async function renderOne({ path, svg, width }) {

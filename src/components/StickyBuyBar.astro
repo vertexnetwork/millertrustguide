@@ -25,22 +25,27 @@ interface Props {
   stateName: string;
   price: number;
   agencyAbbreviation: string;
+  // 'legal-guide' states (e.g. Florida) are never branded "Kit" — see
+  // config.ts's productModel comment.
+  legalGuide?: boolean;
 }
 
-const { stateName, price, agencyAbbreviation } = Astro.props;
+const { stateName, price, agencyAbbreviation, legalGuide = false } = Astro.props;
+const productNoun = legalGuide ? 'guide' : 'kit';
+const ProductNoun = legalGuide ? 'Guide' : 'Kit';
 ---
 
 <div
   id="sticky-buy-bar"
   class="no-print fixed bottom-0 left-0 right-0 z-40 hidden translate-y-full transform border-t border-border bg-surface-elevated shadow-lg transition-transform duration-200 ease-out"
   role="region"
-  aria-label={`${stateName} kit — sticky purchase bar`}
+  aria-label={`${stateName} ${productNoun} — sticky purchase bar`}
   data-visible="false"
 >
   <div class="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3" style="padding-bottom: max(0.75rem, env(safe-area-inset-bottom));">
     <div class="min-w-0">
       <p class="truncate text-sm font-semibold text-ink-heading">
-        {stateName} Kit — <span class="text-primary">${price}</span>
+        {stateName} {ProductNoun} — <span class="text-primary">${price}</span>
       </p>
       <p class="truncate text-xs text-ink-muted">
         Instant download &middot; Refund if {agencyAbbreviation} rejects
@@ -51,7 +56,7 @@ const { stateName, price, agencyAbbreviation } = Astro.props;
       class="flex-shrink-0 rounded-full bg-cta px-4 py-2.5 text-sm font-semibold text-white no-underline hover:bg-cta-hover"
       data-sticky-cta-link
     >
-      Get the kit
+      Get the {productNoun}
     </a>
   </div>
 </div>

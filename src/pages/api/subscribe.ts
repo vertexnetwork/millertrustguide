@@ -36,7 +36,12 @@ export const POST: APIRoute = async ({ request }) => {
   // deep-links back to the state page) and the state's private-pay range (so the
   // loss-frame figure matches the state page and kit — never a stale hardcode).
   let stateName = 'your state';
-  let ctx: { slug?: string; privatePayLow?: number; privatePayHigh?: number } = {};
+  let ctx: {
+    slug?: string;
+    privatePayLow?: number;
+    privatePayHigh?: number;
+    legalGuide?: boolean;
+  } = {};
   const slug = typeof payload.stateSlug === 'string' ? payload.stateSlug.toLowerCase() : '';
   if (slug) {
     const states = await getCollection('states');
@@ -47,6 +52,11 @@ export const POST: APIRoute = async ({ request }) => {
         slug,
         privatePayLow: entry.data.privatePayMonthlyLow,
         privatePayHigh: entry.data.privatePayMonthlyHigh,
+        // 'legal-guide' states (e.g. Florida) are never branded "kit" — see
+        // config.ts's productModel comment. Email 1 is sent synchronously at
+        // signup, so (unlike emails 2-5, sent by a state-agnostic daily cron)
+        // it can know and respect this.
+        legalGuide: entry.data.productModel === 'legal-guide',
       };
     }
   }

@@ -81,17 +81,26 @@ export function getArticleMeta(state: StateData, topic: ArticleTopic): ArticleMe
 
   switch (topic) {
     case 'how-to-set-up':
-      return {
-        ...base,
-        navLabel: 'How to set one up, step by step',
-        h1: `How to Set Up a Miller Trust in ${name}: Step by Step`,
-        metaTitle: `How to Set Up a Miller Trust in ${name} (Step by Step)`,
-        metaDescription:
-          state.productModel === 'requirements-brief'
-            ? `A plain-English walkthrough of ${name}'s Qualified Income Trust (Miller Trust) requirements, cited to ${state.agencyAbbreviation}'s own published policy — ${name} publishes no fill-in form, so this is what a compliant trust must contain. Informational, not legal advice.`
-            : `A plain-English, step-by-step walkthrough of setting up a Qualified Income Trust (Miller Trust) in ${name} using the official ${state.agencyAbbreviation} template. Informational, not legal advice.`,
-        primaryQuery: 'how to set up a miller trust',
-      };
+      return state.productModel === 'legal-guide'
+        ? {
+            ...base,
+            navLabel: 'What the law requires',
+            h1: `${name} Qualified Income Trust Requirements, Explained`,
+            metaTitle: `${name} Qualified Income Trust (Miller Trust) Requirements Explained`,
+            metaDescription: `A plain-language explanation of what ${name} law requires a Qualified Income Trust (Miller Trust) to contain, cited to ${state.agencyAbbreviation}'s own published policy. Informational only — not legal advice; we do not draft or execute a trust.`,
+            primaryQuery: 'miller trust requirements',
+          }
+        : {
+            ...base,
+            navLabel: 'How to set one up, step by step',
+            h1: `How to Set Up a Miller Trust in ${name}: Step by Step`,
+            metaTitle: `How to Set Up a Miller Trust in ${name} (Step by Step)`,
+            metaDescription:
+              state.productModel === 'requirements-brief'
+                ? `A plain-English walkthrough of ${name}'s Qualified Income Trust (Miller Trust) requirements, cited to ${state.agencyAbbreviation}'s own published policy — ${name} publishes no fill-in form, so this is what a compliant trust must contain. Informational, not legal advice.`
+                : `A plain-English, step-by-step walkthrough of setting up a Qualified Income Trust (Miller Trust) in ${name} using the official ${state.agencyAbbreviation} template. Informational, not legal advice.`,
+            primaryQuery: 'how to set up a miller trust',
+          };
     case 'how-long-to-set-up':
       return {
         ...base,
@@ -153,9 +162,13 @@ export function getArticleLede(state: StateData, topic: ArticleTopic): string {
   // Hybrid (HCB-waiver) states use the QIT for an in-home waiver, not a nursing
   // home, with excess-only funding and a required third-party trustee.
   const hcb = state.medicaidStructure === 'hybrid';
-  const reqBrief = state.productModel === 'requirements-brief';
+  const legalGuide = state.productModel === 'legal-guide';
+  const reqBrief = state.productModel === 'requirements-brief' || legalGuide;
   switch (topic) {
     case 'how-to-set-up':
+      if (legalGuide) {
+        return `${name} does not publish a fill-in Qualified Income Trust form, and the trust must be drafted by an attorney (or, where ${name} permits it, you). ${state.agencyAbbreviation}'s own published policy (${state.policyManualSection}) sets out exactly what a compliant trust must contain — this guide explains those requirements in plain language, cited clause by clause, so you can evaluate an attorney's engagement and read a drafted trust with informed eyes. This guide is informational only and is not legal advice — it does not determine your need for a trust, and it does not draft, execute, or gather information for one.`;
+      }
       if (reqBrief) {
         return `${name} does not publish a fill-in Qualified Income Trust form. To meet its requirements, an attorney (or, where permitted, you) drafts the trust to satisfy ${state.agencyAbbreviation}'s own published policy, names a trustee, opens a dedicated trust bank account, and funds it with the applicant's income in the same calendar month you want coverage to begin. The trust diverts income above ${name}'s $${cap}/month long-term-care Medicaid cap (${state.asOf}) so the applicant qualifies. For complex estates, consult ${article(name)} ${name}-licensed elder-law attorney. This guide is informational only and is not legal advice — we explain what ${state.agencyAbbreviation}'s policy requires; we do not draft the trust or provide sample trust language.`;
       }
@@ -170,7 +183,9 @@ export function getArticleLede(state: StateData, topic: ArticleTopic): string {
         ? `Setting up a Qualified Income Trust in ${name} is usually a few hours of paperwork plus opening one bank account — but the deadline that controls everything is the calendar month. ${article(name, true)} ${name} QIT only works in a month where it is signed, has a funded account, and receives enough of the applicant's over-the-limit income to drop remaining countable income below the HCB income maximum ($${cap}/month) — all within that same calendar month. ${state.agencyAbbreviation} does not back-date eligibility, and because the HCB limit is absolute there is no spend-down fallback, so every month of delay is another ${pay} of private-pay in-home or assisted-living care. The most common cause of delay is the bank, not the paperwork.`
         : `Setting up a Miller Trust in ${name} is usually a few hours of paperwork plus opening one bank account — but the deadline that controls everything is the calendar month. ${article(name, true)} ${name} Qualified Income Trust only diverts income in a month where it is signed, has a funded account, and receives enough of the applicant's income to drop countable income below the $${cap}/month cap — all within that same calendar month. ${state.agencyAbbreviation} does not back-date eligibility, so coverage begins the month funding is complete, and every month of delay is another ${pay} of private-pay care. The most common cause of delay is the bank, not the paperwork.`;
     case 'what-to-say-at-the-bank':
-      return `When you open a Miller Trust account in ${name}, expect the branch to hesitate — most have never opened a Qualified Income Trust account, and many ask for an attorney or a tax ID (EIN) you do not need. You do not need a lawyer to open the account, and ${article(name)} ${name} QIT is set up using the beneficiary's Social Security number, not an EIN. Below are the ${state.bankRefusalNotes.length} refusals ${name} families hit most often and exactly what to say to each — every response is backed by ${state.agencyAbbreviation}'s own published guidance.`;
+      return legalGuide
+        ? `When a Qualified Income Trust account is opened in ${name}, branches commonly hesitate — most have never opened one, and many ask for an attorney or a tax ID (EIN) that isn't actually required. A lawyer isn't required to open the account, and ${article(name)} ${name} QIT is generally set up using the beneficiary's Social Security number, not an EIN. Below are the ${state.bankRefusalNotes.length} points of confusion ${name} families run into most often, and the ${state.agencyAbbreviation}-sourced facts that resolve each one.`
+        : `When you open a Miller Trust account in ${name}, expect the branch to hesitate — most have never opened a Qualified Income Trust account, and many ask for an attorney or a tax ID (EIN) you do not need. You do not need a lawyer to open the account, and ${article(name)} ${name} QIT is set up using the beneficiary's Social Security number, not an EIN. Below are the ${state.bankRefusalNotes.length} refusals ${name} families hit most often and exactly what to say to each — every response is backed by ${state.agencyAbbreviation}'s own published guidance.`;
     case 'who-can-be-trustee':
       return `In ${name}, the trustee of a Miller Trust (Qualified Income Trust) is whoever manages the trust account — depositing the applicant's income each month and paying out only what ${state.agencyAbbreviation} allows. ${state.trusteeGuidanceNote} The trustee does not have to be a lawyer or a professional; for the core setup this is a role most families fill themselves. For a complex situation, consult ${article(name)} ${name}-licensed elder-law attorney. This guide is informational only and is not legal advice.`;
     case 'do-you-need-an-ein':
@@ -366,7 +381,10 @@ export function getArticleJsonLd(state: StateData, topic: ArticleTopic): object[
     }),
   ];
 
-  if (topic === 'how-to-set-up') {
+  // legal-guide states never emit HowTo schema — see the productModel comment
+  // in config.ts. A step-by-step "how to accomplish this legal task" block is
+  // exactly the execution-tool framing this product model avoids.
+  if (topic === 'how-to-set-up' && state.productModel !== 'legal-guide') {
     blocks.push(
       howToSchema({
         url: meta.url,

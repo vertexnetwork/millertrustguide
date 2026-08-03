@@ -43,7 +43,14 @@ const pdfHref = `/checklist/${state.slug}.pdf`;
 const kitHref = `/states/${state.slug}#primary-buy-panel`;
 
 const trustTerm = state.primaryTerm ?? 'Miller Trust';
-const kitNoun = state.productModel === 'requirements-brief' ? 'Requirements Guide' : 'Setup Kit';
+const kitNoun =
+  state.productModel === 'legal-guide'
+    ? 'Legal Requirements Guide'
+    : state.productModel === 'requirements-brief'
+      ? 'Requirements Guide'
+      : 'Setup Kit';
+// 'legal-guide' states are never branded "kit" anywhere user-facing.
+const productNoun = state.productModel === 'legal-guide' ? 'guide' : 'kit';
 const title = `The ${denialCount} most common reasons ${state.name} Medicaid denies a ${trustTerm}`;
 ---
 
@@ -273,14 +280,27 @@ const title = `The ${denialCount} most common reasons ${state.name} Medicaid den
         <div class="cta">
           <h2>How families get every step right the first time</h2>
           <p>
-            This checklist tells you <em>what</em> can go wrong. The full {state.name} {trustTerm} {kitNoun}
-            walks through avoiding each one in order — the word-for-word bank script for when the branch refuses
-            to open the account, the pre-filled funding worksheet using the {state.asOf} income cap of
-            ${fmt(state.incomeCap2026)}, and the day-before-you-file checklist. It's backed by a money-back
-            guarantee: if {state.agencyAbbreviation} rejects the trust for a reason traceable to following the
-            kit, you get a full refund.
+            {productNoun === 'guide' ? (
+              <Fragment>
+                This checklist tells you <em>what</em> can go wrong. The full {state.name} {trustTerm} {kitNoun}
+                explains each one in context — what {state.agencyAbbreviation}'s own policy requires a compliant
+                trust to contain, the funding math worked through with an example using the {state.asOf} income cap
+                of ${fmt(state.incomeCap2026)}, and the full denial-avoidance explanation. It's backed by a
+                money-back guarantee: if {state.agencyAbbreviation} rejects the trust for a reason traceable to
+                following the {productNoun}, you get a full refund.
+              </Fragment>
+            ) : (
+              <Fragment>
+                This checklist tells you <em>what</em> can go wrong. The full {state.name} {trustTerm} {kitNoun}
+                walks through avoiding each one in order — the word-for-word bank script for when the branch refuses
+                to open the account, the pre-filled funding worksheet using the {state.asOf} income cap of
+                ${fmt(state.incomeCap2026)}, and the day-before-you-file checklist. It's backed by a money-back
+                guarantee: if {state.agencyAbbreviation} rejects the trust for a reason traceable to following the
+                {productNoun}, you get a full refund.
+              </Fragment>
+            )}
           </p>
-          <a class="btn" href={kitHref}>See the {state.name} kit →</a>
+          <a class="btn" href={kitHref}>See the {state.name} {productNoun} →</a>
         </div>
 
         <h2>Verify the sources yourself</h2>

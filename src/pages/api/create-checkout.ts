@@ -51,8 +51,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return jsonError(
       403,
       state.status === 'blocked'
-        ? `We do not currently sell ${article(state.name)} ${state.name} kit.`
-        : `The ${state.name} kit is not yet available for purchase.`
+        ? `We do not currently publish ${article(state.name)} ${state.name} ${state.productModel === 'legal-guide' ? 'guide' : 'kit'}.`
+        : `The ${state.name} ${state.productModel === 'legal-guide' ? 'guide' : 'kit'} is not yet available for purchase.`
     );
   }
 
@@ -93,10 +93,14 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         // Trust" everywhere — several states' own terminology differs.
         // 'requirements-brief' states (no official form) get "Guide" instead
         // of "Kit" since there's no fill-in instrument to speak of.
+        // 'legal-guide' states (e.g. Florida) are never branded "Kit" at all —
+        // see config.ts's productModel comment.
         description:
-          state.productModel === 'requirements-brief'
-            ? `${state.name} ${state.primaryTerm ?? 'Miller Trust'} Requirements Guide (informational guide)`
-            : `${state.name} ${state.primaryTerm ?? 'Miller Trust'} Kit (informational guide)`,
+          state.productModel === 'legal-guide'
+            ? `${state.name} ${state.primaryTerm ?? 'Qualified Income Trust'} Legal Requirements Guide (informational guide)`
+            : state.productModel === 'requirements-brief'
+              ? `${state.name} ${state.primaryTerm ?? 'Miller Trust'} Requirements Guide (informational guide)`
+              : `${state.name} ${state.primaryTerm ?? 'Miller Trust'} Kit (informational guide)`,
         ...(referralFacility ? { metadata: { referral_facility: referralFacility } } : {}),
       },
       metadata: {

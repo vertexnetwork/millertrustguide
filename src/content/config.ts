@@ -41,7 +41,7 @@ const stateSchema = z.object({
   // citations accurate without leaking another state's section names.
   policyCitationShort: z.string(),
 
-  // ── Product model fork (added 2026-07, Oklahoma pilot) ──────────────────
+  // ── Product model fork (added 2026-07, Oklahoma pilot; extended 2026-08) ──
   // 'template' (default): the state publishes an official fill-in QIT/Miller
   //   Trust instrument — the original, only product model through 12 states.
   //   officialTemplateUrl/Note are required (enforced below).
@@ -56,7 +56,21 @@ const stateSchema = z.object({
   //   post-death) — positioned as what to bring to an attorney, and what to
   //   check the drafted trust against afterward. requiredTrustProvisions
   //   replaces officialTemplateUrl/Note as the Section-2 content source.
-  productModel: z.enum(['template', 'requirements-brief']).default('template'),
+  // 'legal-guide': like 'requirements-brief' (no template; requiredTrustProvisions
+  //   drives Section 2) but for a state whose own case law/bar opinion treats a
+  //   "Medicaid planning kit" as the thing at legal risk, not merely an
+  //   individualized-advice line (see Florida, SC14-211, 2026-08 — a Florida
+  //   Supreme Court advisory opinion naming "Qualified Income Trust forms or
+  //   kits" specifically). Every layout drops the "kit"/execution framing for
+  //   this mode: no HowTo schema, no "script to recite," no imperative
+  //   step-by-step manifest — descriptive/explanatory register throughout,
+  //   branded as a guide/report rather than a kit, with a materially stronger
+  //   disclaimer that this product does not determine need for, prepare, or
+  //   execute a trust. This is a mitigation, not a legal certification — the
+  //   state's own go-live checklist item (confirm UPL posture before shipping)
+  //   still applies, with extra weight: get real counsel review of the final
+  //   copy before flipping status to 'live' for any 'legal-guide' state.
+  productModel: z.enum(['template', 'requirements-brief', 'legal-guide']).default('template'),
   // The state's own published list of what a compliant trust must contain,
   // each entry cited to the actual regulation/policy clause — read the primary
   // source yourself before authoring this; do not trust a secondary summary,

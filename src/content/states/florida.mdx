@@ -1,0 +1,211 @@
+---
+slug: "florida"
+name: "Florida"
+abbreviation: "FL"
+
+status: "live"
+
+# Florida is the FIRST 'legal-guide' state: DCF publishes no fill-in
+# Qualified Income Trust instrument (Appendix A-22 confirms even DCF's own
+# internal review forms "are not available in the warehouse and must be
+# photocopied" -- there is no public instrument at all), AND Florida carries
+# a Florida Supreme Court advisory opinion (SC14-211, 2015) that specifically
+# names "Qualified Income Trust forms or kits" as something a nonlawyer
+# should not sell -- materially stricter than any other live state's UPL
+# posture, which all rest on general nonlawyer-forms precedent never tested
+# against this exact product. Every "kit"/execution-toned surface (HowTo
+# schema, bank scripts, pre-written letters, imperative checklists) is
+# stripped for this productModel across every render path. See
+# docs/state-sources/florida-source-documents.md for the full primary-source
+# record and docs/state-expansion-roadmap.md for the selection history.
+medicaidStructure: "income-cap"
+productModel: "legal-guide"
+personaLean: "balanced"
+primaryTerm: "Qualified Income Trust"
+
+stripePriceId: "price_1U0E7pBitfBHN1Yupspq4e3y"
+pdfBlobKey: "kits/florida/v1.pdf"
+price: 97
+multiStateBundleEligible: true
+
+agencyName: "Florida Department of Children and Families"
+agencyAbbreviation: "DCF"
+policyManualUrl: "https://ffic.myflfamilies.com/manual/1830.pdf"
+policyManualSection: "ESS Policy Manual 1840.0110 (\"Income Trusts\") and 1840.0111 (\"Transfer of Income\"); Fla. Admin. Code R. 65A-1.701(57) and 65A-1.702(13); federal authority 42 U.S.C. § 1396p(d)(4)(B)"
+policyCitationShort: "ESS Manual 1840.0110"
+ltcProgramAbbrev: "ICP"
+ltcProgramName: "Institutional Care Program (ICP) -- Florida Medicaid's nursing-facility long-term-care coverage. The same 1840.0110 income standard and Qualified Income Trust mechanism also cover institutional Hospice, the Program of All-Inclusive Care for the Elderly (PACE), and Home and Community-Based Services (HCBS) waivers -- all four routes are tested against the same standard (Appendix A-9; Appendix A-22)"
+spousalCalcRef: "DCF's Appendix A-9 spousal-impoverishment standards table (the Community Spouse Resource Allowance and Minimum Monthly Maintenance Needs Allowance) -- confirm current figures directly with DCF or an attorney, since this guide does not compute them"
+residuaryPaymentNote: "ESS Policy Manual 1840.0110 requires the trust to provide that the state receives the balance remaining in the trust upon the individual's death, up to the total Medicaid benefits paid on their behalf. Per DCF's own Appendix A-22.1 review guidance, the trust does not need to name \"State of Florida\" specifically -- generic \"state\" language is sufficient, since the same instrument may be used in other states. In practice, DCF's eligibility specialist forwards the approved trust to the AHCA Third Party Liability vendor using Form CF-ES 2356 (\"Third Party Recovery Transmittal\"); Florida's Medicaid Trust & Annuity Recovery Program (AHCA's recovery contractor) directs that any remaining trust balance at death be paid by check to \"Agency for Health Care Administration,\" accompanied by a copy of the month-of-death bank statement, the death certificate, and the trustee's mailing address. A Florida appellate court has confirmed this kind of payback provision is \"clear and unequivocal\" and must be satisfied before any other distribution (AHCA v. Spence, 3D23-0552 (Fla. 3d DCA 2024), addressing an analogous Medicaid trust payback clause). Florida does not publish a separate public residuary remittance form."
+
+supplementalOfficialDocs:
+  - label: "Fla. Admin. Code R. 65A-1.701 -- Definitions (see subsection (57), \"Qualified Income Trust\")"
+    url: "https://www.flrules.org/gateway/ruleNo.asp?id=65A-1.701"
+    note: "The Florida Department of State's own rule-text repository. Subsection (57) is the operative regulatory definition of a Qualified Income Trust, cross-confirming 1840.0110's four core requirements verbatim."
+  - label: "Fla. Admin. Code R. 65A-1.702 -- Special Provisions (see subsection (13), Trusts)"
+    url: "https://www.flrules.org/gateway/ruleNo.asp?id=65A-1.702"
+    note: "Subsection (13)(d) requires the trustee of a Qualified Income Trust to provide quarterly statements to DCF identifying all deposits and disbursements. Subsection (13)(e) describes DCF's undue-hardship exception."
+  - label: "Appendix A-22.1 -- Guidelines for Reviewing Income Trusts"
+    url: "https://ffic.myflfamilies.com/manual/essfiles/49226.pdf"
+    note: "DCF's own internal 8-step checklist for reviewing a submitted Qualified Income Trust -- the direct source for this guide's required-provisions explanation and denial-reason list."
+  - label: "Appendix A-9 -- SSI-Related Medicaid Coverage Groups Financial Eligibility Standards"
+    url: "https://ffic.myflfamilies.com/manual/essfiles/30451.pdf"
+    note: "The current (July 2026) table of every dollar figure used in this guide: the $2,982/$5,964 income limits, the $160 Personal Needs Allowance, the $2,000/$3,000 resource limits, and the spousal-impoverishment standards."
+  - label: "DCF Qualified Income Trust Information Sheet"
+    url: "https://www.myflfamilies.com/documents/27551.pdf"
+    note: "DCF's own plain-language overview, confirming professional help is not required to establish a QIT and that the completed trust is submitted to an eligibility specialist for DCF legal review."
+
+requiredTrustProvisions:
+  - title: "Established on or after October 1, 1993, for the individual's benefit"
+    description: "The trust must be established on or after October 1, 1993, for the benefit of the individual whose income exceeds the ICP standard. A trust signed before that date is handled under different, pre-1993 policy."
+    agencyCitation: "ESS Manual 1840.0110(1); Fla. Admin. Code R. 65A-1.701(57); 42 U.S.C. § 1396p(d)(4)(B)"
+  - title: "Irrevocable -- amendment is permitted, a power to revoke is not"
+    description: "The trust must be irrevocable. DCF's own review guidance draws a specific line here: a trust can still be treated as irrevocable if it contains a provision allowing amendment, as long as that amendment provision does not amount to a power to revoke."
+    agencyCitation: "ESS Manual 1840.0110(2); Appendix A-22.1, Steps 5-6; 42 C.F.R. § 435.236"
+  - title: "Composed only of the individual's income -- no assets, no one else's money"
+    description: "The trust may hold only the individual's own income (Social Security, pension, or other income sources) plus income the trust accumulates. Adding a resource, or income that belongs to someone else, disqualifies the trust."
+    agencyCitation: "ESS Manual 1840.0110(3); Appendix A-22.1, Step 3; 42 U.S.C. § 1396p(d)(4)(B)(i)"
+  - title: "Names the state as remainder beneficiary -- generic language is enough"
+    description: "The trust must provide that the state receives the balance remaining in the trust upon the individual's death, up to the total medical assistance paid on their behalf. DCF's own guidance says the trust does not need to name \"State of Florida\" specifically -- generic \"state\" language is sufficient, since the same instrument may be used across state lines."
+    agencyCitation: "ESS Manual 1840.0110(4); Appendix A-22.1, Step 6(b); Fla. Admin. Code R. 65A-1.701(57)"
+  - title: "Funded monthly with enough income to bring the individual under the standard"
+    description: "Each month, sufficient income must be deposited to reduce the individual's countable income (income outside the trust) to within the Institutional Care Program limit. The trust document doesn't have to state a fixed dollar amount -- but the deposit has to actually happen every month, and it cannot be made retroactively for a past month."
+    agencyCitation: "ESS Manual 1840.0110, ¶¶4-5; Appendix A-22.1, Step 2; 42 C.F.R. §§ 435.236, 435.1005; § 409.904(3), Fla. Stat."
+  - title: "Must allow monthly disbursement of all funds for the individual's benefit"
+    description: "A trust that restricts monthly disbursement of the funds it holds risks being treated as a transfer without fair compensation -- which can trigger a period of ineligibility separate from the income trust analysis itself. This is a distinct requirement from the income-only rule above."
+    agencyCitation: "ESS Manual 1840.0111"
+  - title: "Executed by someone with the authority to do so"
+    description: "The trust must be established by the individual, their spouse, a person with legal authority to act on the individual's or spouse's behalf (power of attorney, guardian, or court), a person acting at the individual's or spouse's direction, or an attorney licensed to practice in the state where the trust was set up."
+    agencyCitation: "Appendix A-22.1, Step 4; 42 U.S.C. § 1396p(d)(2)(A)"
+  - title: "Trustee provides quarterly statements to DCF"
+    description: "The trustee must provide DCF quarterly statements identifying every deposit to, and disbursement from, the trust for each month of the eligibility period."
+    agencyCitation: "Fla. Admin. Code R. 65A-1.702(13)(d); ESS Manual 1840.0110"
+
+incomeCap2026: 2982
+incomeCapCouple2026: 5964
+personalNeedsAllowance: 160
+asOf: "effective July 2026"
+
+federalStatuteCitation: "42 U.S.C. § 1396p(d)(4)(B)"
+federalStatuteUrl: "https://www.law.cornell.edu/uscode/text/42/1396p"
+
+trusteeGuidanceNote: "Florida's ESS Policy Manual and Fla. Admin. Code Ch. 65A-1 address who may EXECUTE (establish) a Qualified Income Trust -- the individual, their spouse, a person with legal authority to act on their behalf (power of attorney, guardian, or court), a person acting at their or their spouse's direction, or a licensed attorney (Appendix A-22.1, Step 4) -- but do not separately address who may serve as the trust's ongoing, day-to-day trustee. In practice, most families and attorneys name a third party (an adult child with power of attorney, or a spouse) rather than the individual themselves, both because general trust law disfavors a sole beneficiary also serving as sole trustee and because DCF's review process treats attorney-executed trusts as a streamlined path. Confirm the trustee question directly with your drafting attorney -- this guide does not treat self-trusteeship as either confirmed permitted or barred by Florida's rule text."
+einRequired: false
+einRequiredNote: "Florida's ESS Policy Manual and Fla. Admin. Code Ch. 65A-1 do not address tax-ID treatment for a Qualified Income Trust anywhere. As a trust composed only of the individual's own income under 42 U.S.C. § 1396p(d)(4)(B), it is generally opened using the individual's Social Security number rather than a separate EIN, consistent with how most (d)(4)(B) grantor trusts are banked nationally. If a branch asks for an EIN out of habit, confirm the account titling with your attorney and the bank; this is ultimately a banking and tax question, not something DCF's policy dictates either way."
+stateBarLrsName: "The Florida Bar -- Lawyer Referral Service"
+stateBarLrsUrl: "https://www.floridabar.org/public/lrs/"
+additionalLegalAidReferrals:
+  - "Florida Senior Legal Helpline (elderaffairs.org) -- free civil legal advice for eligible Florida residents 60 and older, funded by the Florida Department of Elder Affairs and operated by Bay Area Legal Services"
+  - "Florida Aging and Disability Resource Centers / Area Agency on Aging network (elderaffairs.org) -- 11 regional ADRCs serving every county in the state"
+  - "Academy of Florida Elder Law Attorneys (afela.org) -- Florida's NAELA chapter, Find a Lawyer directory"
+  - "National Academy of Elder Law Attorneys (NAELA) -- Find a Lawyer directory (naela.org)"
+
+privatePayMonthlyLow: 10342
+privatePayMonthlyHigh: 11558
+
+requirementsIntroNote: "Florida does not publish a fill-in Qualified Income Trust form. DCF's own \"Qualified Medicaid Trust Guidelines and Forms\" (Appendix A-22) confirms that even the Department's internal trust-review forms are not distributed publicly -- they \"are not available in the warehouse and must be photocopied\" by DCF's own Region and Circuit Program Offices. There is no current public instrument to link to, fill in, or complete. What follows instead is a plain-language explanation of what DCF's ESS Policy Manual (1840.0110) and Fla. Admin. Code R. 65A-1.701(57) require a compliant trust to contain, cited clause by clause to the actual policy text -- written so you can evaluate an attorney's engagement and read a drafted trust with informed eyes, not so you can draft one yourself."
+
+attorneyRequiredNote: "DCF's own Qualified Income Trust Information Sheet states plainly that \"you may obtain professional help to set up the QIT agreement, but it is not required,\" and Appendix A-22.1's review process allows the trust to be executed by the individual, their spouse, or a person with legal authority acting on their behalf -- not only by an attorney. Read against DCF's administrative posture alone, self-drafting might look permitted. But a Florida Supreme Court advisory opinion, The Florida Bar Re: Advisory Opinion -- Medicaid Planning Activities by Nonlawyers, SC14-211 (Fla. 2015), holds that a nonlawyer's determination of the need for, preparation, and execution of a Qualified Income Trust is the unauthorized practice of law -- a materially different and stricter conclusion than DCF's silence on the question would suggest. Because of that opinion, most families use a Florida-licensed attorney to draft the trust rather than draft it themselves, and DCF's own review process treats attorney-executed trusts as a streamlined path (Appendix A-22.1, Step 4: DCF \"will assume... proper authority\" when a licensed attorney is involved). This guide never drafts a trust, never provides sample or model trust language, and never reviews a document you or your attorney have drafted."
+
+commonDenialReasons:
+  - title: "Trust not signed and dated, or executed before the 10/1/1993 cutoff"
+    description: "DCF's review checklist starts here: if the document isn't signed and dated, there is no trust at all, and the eligibility specialist returns it. A trust dated before October 1, 1993 is handled under different, older policy."
+    agencyCitation: "Appendix A-22.1, Step 1; 42 U.S.C. § 1396p(d)"
+  - title: "Insufficient monthly funding to bring income under the standard"
+    description: "The trust must actually receive enough income each month to bring the individual's remaining countable income below the ICP limit -- and it cannot be funded retroactively for a past month. Underfunding, or funding after the fact, defeats the trust for that month."
+    agencyCitation: "Appendix A-22.1, Step 2; ESS Manual 1840.0110"
+  - title: "Trust holds a resource, or contains someone else's income or assets"
+    description: "The trust may consist only of the individual's own income. Placing a resource into it -- or income or assets belonging to someone else -- breaks the exemption, and DCF treats the trust under ordinary asset-trust policy instead."
+    agencyCitation: "Appendix A-22.1, Step 3; 42 U.S.C. § 1396p(d)(4)(B)(i)"
+  - title: "Trust executed by someone without the authority to do so"
+    description: "DCF checks who created the trust. Outside of an attorney, only the individual, their spouse, a person with legal authority to act for them, or a person acting at their direction may execute it -- and DCF requires supporting documentation (power of attorney or guardianship papers) when someone other than the individual or spouse signs."
+    agencyCitation: "Appendix A-22.1, Step 4; 42 U.S.C. § 1396p(d)(2)(A)"
+  - title: "Trust is revocable, or its amendment clause amounts to a power to revoke"
+    description: "District Legal Counsel specifically checks revocability. An amendment provision is fine; a power to revoke is not. A revocable trust is counted as an available asset under different policy, not treated as a Qualified Income Trust."
+    agencyCitation: "Appendix A-22.1, Steps 5-6; 42 C.F.R. § 435.236 (formerly 435.231); 20 C.F.R. § 416.1100 et seq."
+  - title: "Missing or defective state-payback clause"
+    description: "The trust must provide that the state receives everything remaining in the trust at death, up to the total Medicaid paid on the individual's behalf, before anything else is distributed. A missing or weakened version of this clause is a documented failure point in DCF's own checklist."
+    agencyCitation: "Appendix A-22.1, Step 6(b); ESS Manual 1840.0110(4)"
+  - title: "Trust doesn't allow monthly disbursement of all funds for the individual"
+    description: "If the trust document restricts the trustee from disbursing everything it holds each month for the individual's own benefit, DCF can treat the funding as a transfer made without fair compensation -- which risks a period of Medicaid ineligibility separate from the income-trust analysis itself."
+    agencyCitation: "ESS Manual 1840.0111"
+  - title: "Trustee fails to file the required quarterly statements"
+    description: "The trustee must send DCF quarterly statements identifying every deposit and disbursement for each month of the eligibility period. Missing statements are a documented compliance gap DCF's own reviewers check for."
+    agencyCitation: "Fla. Admin. Code R. 65A-1.702(13)(d)"
+
+bankRefusalNotes:
+  - refusalType: "Branch asks for a tax ID (EIN) for the trust"
+    response: "Florida's policy doesn't address tax-ID treatment for a Qualified Income Trust at all. A trust composed only of the individual's own income is generally opened under their Social Security number instead. If the branch insists on an EIN out of habit, ask them to escalate to the bank's trust department rather than forcing an identifier the rule doesn't call for."
+    documentNeeded: "The signed Qualified Income Trust instrument"
+  - refusalType: "Branch has never opened this type of account before"
+    response: "It is a single, dedicated checking account titled in the name of the trust, authorized under ESS Policy Manual 1840.0110 and Fla. Admin. Code R. 65A-1.701(57), holding only the individual's income kept separate from any account used for living expenses. Ask for a full-service branch or the bank's trust department -- community banks and credit unions are often more flexible than large retail branches."
+    documentNeeded: "The signed Qualified Income Trust instrument"
+  - refusalType: "Branch is unsure who is authorized to sign on the account"
+    response: "The trustee named in the trust instrument -- not the individual -- is the authorized signer. DCF's own review process confirms who may execute the trust (the individual, their spouse, a person with legal authority, or an attorney), but whoever the trust names as trustee is who manages the account day to day."
+    documentNeeded: "The signed Qualified Income Trust instrument (naming the trustee)"
+  - refusalType: "Branch expects the account to be emptied to zero every month"
+    response: "Florida's funding rule is excess-only, not whole-source: only enough of the individual's income needs to be deposited each month to bring their remaining countable income below the program standard. DCF's eligibility specialist confirms the exact required amount at the eligibility determination -- it isn't a fixed figure in the trust document itself, and the account isn't required to hit a specific balance."
+    documentNeeded: "The signed Qualified Income Trust instrument"
+
+postDeathDistribution: "On the individual's death, the Qualified Income Trust terminates. DCF's ESS Policy Manual (1840.0110) requires the trust to provide that the state receives the balance remaining in the trust, up to the total Medicaid benefits paid on the individual's behalf -- generic \"state\" language is sufficient; the trust does not need to name \"State of Florida\" specifically (Appendix A-22.1, Step 6). In practice, the eligibility specialist forwards the approved trust to the AHCA Third Party Liability vendor using Form CF-ES 2356 (\"Third Party Recovery Transmittal\"), and Florida's Medicaid Trust & Annuity Recovery Program (AHCA's recovery contractor) directs that any remaining balance be paid by check to \"Agency for Health Care Administration,\" sent with a copy of the month-of-death bank statement, the death certificate, and the trustee's mailing address. A Florida appellate court has confirmed this kind of payback provision is \"clear and unequivocal\" and must be satisfied before any other distribution (AHCA v. Spence, 3D23-0552 (Fla. 3d DCA 2024), addressing an analogous Medicaid trust payback clause). No checks should be written from the account after death until the trustee is notified the Medicaid debt is satisfied. Florida does not publish a separate public residuary remittance form."
+
+metaTitle: "Florida Qualified Income Trust (Miller Trust) Legal Requirements Guide — $97"
+metaDescription: "Florida Qualified Income Trust (QIT / Miller Trust) legal requirements guide. Florida publishes no fill-in form, and its Supreme Court specifically addresses this area -- this guide explains exactly what DCF's own published policy requires a compliant trust to contain, cited clause by clause. Informational only, not legal advice; we do not draft, execute, or review a trust."
+
+primaryKeyword: "florida qualified income trust"
+secondaryKeywords:
+  - "florida miller trust"
+  - "miller trust florida"
+  - "florida qit"
+  - "florida medicaid income trust"
+  - "qualified income trust florida requirements"
+  - "florida nursing home income trust"
+  - "dcf qualified income trust"
+  - "florida medicaid trust requirements"
+
+reviewedDate: "2026-08-02"
+uplNotes: "Florida regulates the unauthorized practice of law both criminally (Fla. Stat. § 454.23, a third-degree felony for practicing law without a license) and through the Florida Bar's Unlicensed Practice of Law program under Rule Regulating the Florida Bar 10-9.1, which lets the Bar's Standing Committee on the Unlicensed Practice of Law issue formal advisory opinions that, once approved by the Florida Supreme Court, have \"the force and effect of an order of th[e] Court\" (Rule 10-9.1(g)(4)). The controlling authority for this product specifically is The Florida Bar Re: Advisory Opinion -- Medicaid Planning Activities by Nonlawyers, 183 So.3d 276, No. SC14-211 (Fla. 2015) -- read in full, primary text (not a secondary summary). The Court held: \"it constitutes the unlicensed practice of law for a nonlawyer to draft a personal service contract and to determine the need for, prepare, and execute a Qualified Income Trust including gathering the information necessary to complete the trust. Moreover, a nonlawyer should not be authorized to sell personal service or Qualified Income Trust forms or kits in the area of Medicaid planning.\" Florida's general nonlawyer-forms doctrine, Florida Bar v. Brumbaugh, 355 So.2d 1186 (Fla. 1978) -- the same Dacey-line \"may sell legal kits and general information containing forms\" doctrine every other live state's UPL posture leans on -- is still good law generally, but SC14-211 expressly considered and rejected extending Brumbaugh's safe harbor to Qualified Income Trust forms or kits specifically, reasoning that Medicaid law's complexity, internet-era reliance on published materials, and documented real-world harm from botched QITs distinguish this category from Brumbaugh's general forms-publishing fact pattern. This is why Florida uses a materially different product model than every other live state (productModel: 'legal-guide'): no fill-in template or checklist framed as something to complete and act on, no HowTo-schema execution steps, no bank \"script,\" no pre-written letters -- this guide explains what DCF's and AHCA's own published policy requires a compliant trust to contain, in descriptive register, and nothing more. It does not determine an individual's need for a trust, does not prepare or execute one, does not gather personal or financial information, and does not review a document a customer or their attorney has drafted. This positioning is a good-faith mitigation built from public sources, not a legal opinion that the product is safe -- confirm real Florida-licensed-attorney comfort with this specific product's final copy before flipping status to live. Florida's UPL posture here is genuinely stricter than every other state in the current lineup, and is the reason the go-live gate carries extra weight for this state specifically."
+
+kitVersion: "v1.0"
+kitVersionDate: "2026-08-02"
+kitChangelog:
+  - version: "v1.0"
+    date: "2026-08-02"
+    changes:
+      - "Initial Florida release -- the first 'legal-guide' product. Florida DCF publishes no fill-in Qualified Income Trust form: confirmed both by the absence of one on DCF's own ESS Forms index, and by DCF's internal Appendix A-22, which states its own review forms \"are not available in the warehouse and must be photocopied.\" Florida also carries a Florida Supreme Court advisory opinion (SC14-211, 2015) specifically naming \"Qualified Income Trust forms or kits\" as something a nonlawyer should not sell -- materially stricter than any other live state's UPL posture, all of which rest on general nonlawyer-forms precedent never tested against this exact product. In response, Florida is the first state built on productModel: 'legal-guide', which strips all \"kit\"/execution framing (no HowTo schema, no bank script, no pre-written letters, no checklist framed as something to complete) across the state page, the PDF guide itself, the comparison table, auto-generated articles, the free denial checklist, Stripe checkout copy, and the nurture email sequence -- descriptive/explanatory register throughout."
+      - "8 required trust provisions and 8 common denial reasons drawn directly from DCF's ESS Policy Manual 1840.0110/1840.0111, Fla. Admin. Code R. 65A-1.701(57)/65A-1.702(13), and DCF's own internal 8-step \"Guidelines for Reviewing Income Trusts\" (Appendix A-22.1) -- as authoritative a denial-reason source as exists, since it is the literal document DCF's own reviewers use."
+      - "Program scope confirmed broad: the same $2,982/month (2026, 300% FBR) income standard and QIT mechanism cover Institutional Care Program (nursing facility), institutional Hospice, PACE, and HCBS waivers alike (Appendix A-9; Appendix A-22)."
+      - "Excess-only funding confirmed verbatim from 1840.0110 (\"deposit sufficient income... to reduce... countable income... to within the program income standard\") -- not a whole-source rule. A distinct, separately-cited requirement also surfaced: the trust must allow monthly disbursement of all funds for the individual's benefit, or risk being treated as an uncompensated transfer under 1840.0111."
+      - "AHCA (not DCF) confirmed as the remainder-beneficiary/payback recipient three independent ways: DCF's own 1840.0110 process (Form CF-ES 2356 to the AHCA Third Party Liability vendor), the Florida Medicaid Trust & Annuity Recovery Program's own published process (checks payable to \"Agency for Health Care Administration\"), and a 2024 Florida appellate decision (AHCA v. Spence, 3D23-0552) enforcing an analogous Medicaid trust payback clause as \"clear and unequivocal.\""
+      - "EIN posture: Florida's policy is silent on tax ID; generally opened under the individual's Social Security number (einRequired: false), based on general IRS (d)(4)(B)-grantor-trust practice rather than a Florida-specific statement."
+      - "UPL footing: The Florida Bar Re: Advisory Opinion -- Medicaid Planning Activities by Nonlawyers, SC14-211 (Fla. 2015) -- read in full, primary text. Holds that Qualified Income Trust \"forms or kits\" fall outside the general Brumbaugh nonlawyer-forms safe harbor. Go-live requires the operator's own Florida-counsel review of this product's final copy -- a stricter bar than any prior state."
+      - "Private-pay nursing-home range from the Genworth/CareScout 2024 Cost of Care Survey (≈$10,342/month semi-private / ≈$11,558/month private, Florida statewide)."
+
+faq:
+  - question: "Is the Florida Qualified Income Trust guide legal advice?"
+    answer: "No. This guide is informational only and is not legal advice. We are not attorneys and we do not practice law. Florida does not publish a fill-in Qualified Income Trust form, and a Florida Supreme Court advisory opinion (SC14-211) addresses this area specifically, so this guide explains what DCF's and AHCA's own published policy requires -- it does not determine your need for a trust, and it does not draft, execute, or review one. For advice on your specific situation, consult a Florida-licensed elder-law attorney."
+  - question: "Does Florida provide an official Qualified Income Trust form?"
+    answer: "No. DCF's own \"Qualified Medicaid Trust Guidelines and Forms\" (Appendix A-22) confirms that even the Department's internal review forms \"are not available in the warehouse and must be photocopied\" -- there is no public fill-in instrument. The trust must be drafted by an attorney to meet the requirements this guide explains."
+  - question: "Why doesn't this guide provide a Qualified Income Trust form or template?"
+    answer: "Because Florida law treats that differently than most states. A 2015 Florida Supreme Court advisory opinion (SC14-211) specifically holds that a nonlawyer should not sell \"Qualified Income Trust forms or kits\" -- a stricter rule than the general nonlawyer-forms doctrine most states rely on. This guide stays on the safe side of that line: it explains what Florida's published policy requires a compliant trust to contain, and nothing more. We never draft or provide sample trust language, generic or otherwise, and we never review a document you or your attorney have drafted."
+  - question: "What does the guide include?"
+    answer: "A plain-language explanation of Florida's Qualified Income Trust requirements: the required-provisions explanation derived from DCF's own regulation with a citation for each item, background on what an attorney will typically need to know before drafting, the funding math worked through with an illustrated example, what Florida banks typically ask when this kind of account is opened, and Florida-specific denial-avoidance information drawn from DCF's own internal review checklist. Delivered as a single PDF."
+  - question: "Who needs a Qualified Income Trust in Florida?"
+    answer: "A person applying for Florida Medicaid long-term-care coverage -- nursing facility (Institutional Care Program) care, institutional Hospice, PACE, or an HCBS waiver -- whose gross monthly income is above $2,982/month (2026, single applicant)."
+  - question: "How much of my income goes into the trust?"
+    answer: "Only enough. Florida's ESS Policy Manual (1840.0110) requires depositing sufficient income each month to bring remaining countable income below the $2,982/month standard -- not necessarily the entire income source. DCF's eligibility specialist confirms the exact required amount at the eligibility determination."
+  - question: "Can I be my own trustee in Florida?"
+    answer: "Florida's policy addresses who may execute (establish) the trust -- the individual, their spouse, a person with legal authority acting on their behalf, or an attorney -- but doesn't separately address who serves as the ongoing trustee. In practice, most families and attorneys name a third party. Confirm this directly with your drafting attorney."
+  - question: "Does a Florida Qualified Income Trust need an EIN?"
+    answer: "Generally no. Florida's policy doesn't address tax-ID treatment at all. A trust composed only of the individual's income is usually opened under their own Social Security number. If a bank asks for an EIN out of habit, confirm the titling with your attorney and the bank."
+  - question: "What if my bank refuses to open the trust account?"
+    answer: "Bank refusal on a first attempt is common. The signed trust instrument is your documentation: it is a single, dedicated account titled to the trust, holding only the individual's income, with the trustee as the authorized signer. This guide explains the points of confusion Florida families run into most, and when it makes sense to ask for a bank's trust department."
+  - question: "Do you offer a refund?"
+    answer: "Yes -- money back if DCF rejects the Qualified Income Trust for any reason traceable to following this guide. Email support@millertrustguide.com with the agency's stated denial reason and we issue a full refund within one business day."
+  - question: "Will you talk to me on the phone about my situation?"
+    answer: "No. We do not offer phone support and we do not advise on individual situations. For advice on your specific situation, consult a Florida-licensed elder-law attorney -- you can find one through The Florida Bar's Lawyer Referral Service or the Florida Senior Legal Helpline."
+---
+
+import StatePageLayout from '~/layouts/StatePageLayout.astro';
+
+This file's frontmatter is the canonical Florida data source. The body is intentionally minimal — all conversion-surface rendering happens in `StatePageLayout.astro`, which reads from frontmatter. This keeps states homogeneous and prevents drift between states.

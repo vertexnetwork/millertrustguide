@@ -22,6 +22,16 @@ const fmt = (n: number) => n.toLocaleString('en-US');
    other states ship, so their output is unchanged. */
 const hcb = state.medicaidStructure === 'hybrid';
 
+/* 'legal-guide' states (e.g. Florida) publish no fill-in QIT instrument AND
+   carry a state-specific legal reason to avoid the "kit"/execution framing
+   entirely — see config.ts for the full rationale (Florida: SC14-211, a
+   Florida Supreme Court opinion naming "Qualified Income Trust forms or
+   kits"). No script to recite, no imperative step-by-step framing, no
+   "verbatim" language, no worksheet framed as something to act on — every
+   section stays in a descriptive/explanatory register. This is a mitigation,
+   not a legal certification; confirm real counsel comfort before any
+   'legal-guide' state goes live. */
+const legalGuide = state.productModel === 'legal-guide';
 /* 'requirements-brief' states (e.g. Oklahoma) publish no fill-in QIT/Miller
    Trust instrument at all — either none exists, or the one the state's own
    regulation cites turns out to be the wrong document. We NEVER draft or
@@ -31,8 +41,13 @@ const hcb = state.medicaidStructure === 'hybrid';
    clause) and Section 3/9 are reframed around briefing and vetting an
    attorney rather than filling in a form. Every `reqBrief` branch below
    renders that model; the else branch is byte-identical to the
-   template-linking narrative all 'template'-model states ship. */
-const reqBrief = state.productModel === 'requirements-brief';
+   template-linking narrative all 'template'-model states ship. legalGuide
+   states share this same no-template structure, so they're folded in here;
+   spots that need DIFFERENT copy for legalGuide check that flag first. */
+const reqBrief = state.productModel === 'requirements-brief' || legalGuide;
+// Product noun — legalGuide states are never branded "kit" anywhere
+// user-facing, including inside the PDF itself.
+const productNoun = legalGuide ? 'guide' : 'kit';
 
 /* The kit content is structured as a single layout that renders the full
    PDF for any state by interpolating state-specific facts pulled from the
@@ -48,7 +63,7 @@ const reqBrief = state.productModel === 'requirements-brief';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{state.name} Miller Trust Setup Kit — {state.kitVersion}</title>
+    <title>{state.name} {legalGuide ? 'Qualified Income Trust Legal Requirements Guide' : 'Miller Trust Setup Kit'} — {state.kitVersion}</title>
     <meta name="robots" content="noindex,nofollow,noarchive" />
     <meta name="generator" content="Miller Trust Guide Kit Builder" />
     <link rel="preconnect" href="https://rsms.me" crossorigin />
@@ -120,13 +135,20 @@ const reqBrief = state.productModel === 'requirements-brief';
             <span>Miller Trust Guide</span>
           </div>
           <p style="margin-top: 90pt; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.18em; color: #6B7280;">
-            {state.abbreviation} &middot; Setup Kit
+            {state.abbreviation} &middot; {legalGuide ? 'Legal Requirements Guide' : 'Setup Kit'}
           </p>
           <h1 class="kit-cover-title">
-            {state.name} Miller Trust Setup Kit
+            {state.name} {legalGuide ? 'Qualified Income Trust Legal Requirements Guide' : 'Miller Trust Setup Kit'}
           </h1>
           <p class="kit-cover-subtitle">
-            {reqBrief ? (
+            {legalGuide ? (
+              <Fragment>
+                A plain-language legal reference guide to {state.name}'s Qualified Income Trust requirements —
+                cited clause by clause to {state.agencyAbbreviation}'s own published policy, so you can evaluate an
+                attorney's engagement and read a drafted trust with informed eyes. This guide does not determine
+                your need for a trust, and does not draft, execute, or gather information for one.
+              </Fragment>
+            ) : reqBrief ? (
               <Fragment>
                 A step-by-step guide to qualifying a family member for {state.name} Medicaid long-term care with a
                 Qualified Income Trust — the exact legal requirements your trust must meet, cited to
@@ -172,12 +194,24 @@ const reqBrief = state.productModel === 'requirements-brief';
       <h1>Disclaimer and consent acknowledgment</h1>
 
       <p>
-        <strong>This kit is informational only.</strong> It is not legal advice. It is not a substitute for
+        <strong>This {productNoun} is informational only.</strong> It is not legal advice. It is not a substitute for
         consultation with a licensed attorney. Miller Trust Guide is not a law firm and does not practice law.
         We do not draft legal documents. We do not host trust instrument text.
       </p>
 
-      {reqBrief ? (
+      {legalGuide ? (
+        <p>
+          {state.name} does not publish a fill-in Qualified Income Trust form. <strong>This guide does not determine
+          your need for a trust, does not draft or execute a trust, and does not gather your personal or financial
+          information.</strong> It explains, in plain language and cited clause by clause, exactly what
+          {' '}{state.agencyName}'s own published policy requires a compliant trust to contain, so you can evaluate
+          an attorney's engagement and read a drafted trust with informed eyes. It also explains general operational
+          facts — funding mechanics, bank-account considerations, and common denial reasons — again as published
+          {' '}{state.agencyAbbreviation} policy, not as instructions for you to carry out. <strong>We never apply
+          legal judgment to your family's specific situation, and we never review a document you or your attorney
+          have drafted.</strong>
+        </p>
+      ) : reqBrief ? (
         <p>
           {state.name} does not publish a fill-in Qualified Income Trust form. The kit teaches you exactly what
           {' '}{state.agencyName}'s own published policy requires a compliant trust to contain, how to brief an
@@ -195,21 +229,23 @@ const reqBrief = state.productModel === 'requirements-brief';
       )}
 
       <p>
-        State Medicaid rules vary and change. The figures, policy sections, and procedures cited in this kit reflect
+        State Medicaid rules vary and change. The figures, policy sections, and procedures cited in this {productNoun} reflect
         publicly-available {state.agencyAbbreviation} materials as of <strong>{state.kitVersionDate}</strong>.
         Verify all information directly with {state.agencyAbbreviation} and an attorney licensed in {state.name}
-        before acting on any step in this kit.
+        before acting on anything discussed in this {productNoun}.
       </p>
 
       <div class="kit-callout kit-callout--rule">
-        <p style="font-weight: 600;">By using this kit, you acknowledge:</p>
+        <p style="font-weight: 600;">By using this {productNoun}, you acknowledge:</p>
         <ul style="margin-bottom: 0;">
           <li>This is an informational guide, not legal advice.</li>
           <li>You will consult a licensed attorney in {state.name} for advice on your specific situation.</li>
           <li>
-            {reqBrief
-              ? `You are using a guide that explains ${state.agencyAbbreviation}'s published trust requirements — ${state.name} does not publish a fill-in form, so your trust will be drafted by an attorney (or by you, where permitted) to meet them.`
-              : `You are using a guide that explains how to use ${state.agencyAbbreviation}'s public Medicaid forms.`}
+            {legalGuide
+              ? `This guide explains ${state.agencyAbbreviation}'s published trust requirements in plain language — it does not determine your need for a trust, and does not draft, execute, or gather information for one. ${state.name} does not publish a fill-in form, so your trust will be drafted by an attorney (or by you, where ${state.name} permits it) to meet them.`
+              : reqBrief
+                ? `You are using a guide that explains ${state.agencyAbbreviation}'s published trust requirements — ${state.name} does not publish a fill-in form, so your trust will be drafted by an attorney (or by you, where permitted) to meet them.`
+                : `You are using a guide that explains how to use ${state.agencyAbbreviation}'s public Medicaid forms.`}
           </li>
           <li>Miller Trust Guide cannot and does not represent you in any matter.</li>
         </ul>
@@ -225,7 +261,7 @@ const reqBrief = state.productModel === 'requirements-brief';
 
       <h3>Refund</h3>
       <p>
-        If {state.agencyAbbreviation} rejects your QIT for any reason traceable to following this kit, email
+        If {state.agencyAbbreviation} rejects your QIT for any reason traceable to following this {productNoun}, email
         <strong> support@millertrustguide.com</strong> with the agency's stated denial reason and we issue a full
         refund within one business day. See the refund policy at
         <a href="https://millertrustguide.com/refund-policy">millertrustguide.com/refund-policy</a>.
@@ -235,9 +271,16 @@ const reqBrief = state.productModel === 'requirements-brief';
     {/* ============================ HOW TO USE =========================== */}
     <section id="how-to-use" class="kit-page-break kit-front-matter">
       <p class="kit-eyebrow">Orientation</p>
-      <h1>How to use this kit</h1>
+      <h1>How to use this {productNoun}</h1>
 
-      {reqBrief ? (
+      {legalGuide ? (
+        <p>
+          This guide is designed to be read in order the first time, then used as a reference. It does not walk you
+          through executing a trust — {state.name} requires the trust to be drafted by an attorney (Section 9 covers
+          whether self-drafting is an option here), and this guide's job is to make sure you understand what
+          {' '}{state.agencyAbbreviation} requires before that conversation, not to perform any step of it for you.
+        </p>
+      ) : reqBrief ? (
         <p>
           This kit is designed to be read in order the first time, then used as a reference throughout the process.
           Because {state.name} requires the trust itself to be drafted (Section 9 covers whether self-drafting is an
@@ -252,8 +295,16 @@ const reqBrief = state.productModel === 'requirements-brief';
         </p>
       )}
 
-      <h3>Recommended sequence</h3>
-      {reqBrief ? (
+      <h3>{legalGuide ? 'How the sections build on each other' : 'Recommended sequence'}</h3>
+      {legalGuide ? (
+        <ol>
+          <li><strong>Sections 1 and 2</strong> establish what a Qualified Income Trust is and exactly what {state.name} law requires yours to contain.</li>
+          <li><strong>Section 3</strong> explains what an attorney will typically need to know before drafting — useful to read before that first call.</li>
+          <li><strong>Section 4</strong> illustrates the funding math with a worked example, so the mechanics make sense before your attorney explains your own numbers.</li>
+          <li><strong>Section 5</strong> explains what a trust bank account is and the questions banks commonly ask.</li>
+          <li><strong>Section 7</strong> lists the most common {state.agencyAbbreviation} denial reasons — useful for verifying a drafted trust against, alongside Section 2's requirements.</li>
+        </ol>
+      ) : reqBrief ? (
         <ol>
           <li><strong>Read Sections 1 and 2 first.</strong> They establish what a Qualified Income Trust is and exactly what {state.name} requires yours to contain.</li>
           <li><strong>Gather the information in Section 3</strong> before you contact an attorney — walking in with this ready cuts billable research time.</li>
@@ -270,27 +321,50 @@ const reqBrief = state.productModel === 'requirements-brief';
         </ol>
       )}
 
-      <h3>What you'll need before you start</h3>
-      <ul>
-        <li>The applicant's Social Security card and a government-issued photo ID.</li>
-        <li>Documentation of every income source the applicant receives (most recent Social Security award letter, pension statement, annuity statement, etc.).</li>
-        <li>The trustee's photo ID. The trustee is the person who will manage the trust account — see Section 3 for who can serve.</li>
-        <li>Power of attorney documentation if the trustee is acting under POA.</li>
-        {reqBrief ? (
-          <li>A working email address you check daily — {state.agencyAbbreviation} and your bank will communicate by phone and mail, and your attorney's office will typically use email for drafts and scheduling.</li>
-        ) : (
-          <li>A working email address you check daily — {state.agencyAbbreviation} and your bank will communicate by phone and mail, but the {state.agencyAbbreviation} portal sends notices by email.</li>
-        )}
-      </ul>
+      {legalGuide ? (
+        <>
+          <h3>What an attorney will typically ask for</h3>
+          <ul>
+            <li>The applicant's Social Security card and a government-issued photo ID.</li>
+            <li>Documentation of every income source the applicant receives (most recent Social Security award letter, pension statement, annuity statement, etc.).</li>
+            <li>Identification for the person expected to serve as trustee — see Section 3 for who typically serves.</li>
+            <li>Power of attorney documentation if a family member is acting under POA.</li>
+          </ul>
 
-      <div class="kit-callout">
-        <p>
-          <strong>Time-sensitive:</strong> Medicaid eligibility in {state.name} begins the calendar month the QIT
-          is signed <em>and</em> funded — not earlier. There is no back-dating. If you start this process in the
-          last week of a month, plan to sign and fund the trust by the last business day of that month, or accept
-          that coverage starts the following month.
-        </p>
-      </div>
+          <div class="kit-callout">
+            <p>
+              <strong>Time-sensitive:</strong> Medicaid eligibility in {state.name} begins the calendar month the QIT
+              is signed <em>and</em> funded — not earlier. There is no back-dating. This is a fact about
+              {' '}{state.agencyAbbreviation}'s rules, worth raising early with an attorney so drafting and signing
+              aren't delayed past the month you need eligibility to begin.
+            </p>
+          </div>
+        </>
+      ) : (
+        <>
+          <h3>What you'll need before you start</h3>
+          <ul>
+            <li>The applicant's Social Security card and a government-issued photo ID.</li>
+            <li>Documentation of every income source the applicant receives (most recent Social Security award letter, pension statement, annuity statement, etc.).</li>
+            <li>The trustee's photo ID. The trustee is the person who will manage the trust account — see Section 3 for who can serve.</li>
+            <li>Power of attorney documentation if the trustee is acting under POA.</li>
+            {reqBrief ? (
+              <li>A working email address you check daily — {state.agencyAbbreviation} and your bank will communicate by phone and mail, and your attorney's office will typically use email for drafts and scheduling.</li>
+            ) : (
+              <li>A working email address you check daily — {state.agencyAbbreviation} and your bank will communicate by phone and mail, but the {state.agencyAbbreviation} portal sends notices by email.</li>
+            )}
+          </ul>
+
+          <div class="kit-callout">
+            <p>
+              <strong>Time-sensitive:</strong> Medicaid eligibility in {state.name} begins the calendar month the QIT
+              is signed <em>and</em> funded — not earlier. There is no back-dating. If you start this process in the
+              last week of a month, plan to sign and fund the trust by the last business day of that month, or accept
+              that coverage starts the following month.
+            </p>
+          </div>
+        </>
+      )}
     </section>
 
     {/* ============================= GLOSSARY ============================ */}
@@ -343,7 +417,7 @@ const reqBrief = state.productModel === 'requirements-brief';
         <dd>{state.agencyName}. The {state.name} state agency that administers Medicaid eligibility and publishes the QIT template referenced in Section 2.</dd>
 
         <dt><strong>{state.policyManualSection}</strong></dt>
-        <dd>The {state.agencyAbbreviation} policy manual section(s) that govern Qualified Income Trusts in {state.name}. Cited throughout this kit and indexed in Appendix A.</dd>
+        <dd>The {state.agencyAbbreviation} policy manual section(s) that govern Qualified Income Trusts in {state.name}. Cited throughout this {productNoun} and indexed in Appendix A.</dd>
 
         <dt><strong>{state.ltcProgramAbbrev}</strong></dt>
         <dd>{state.ltcProgramName} — the {state.agencyAbbreviation} program category that covers long-term-care Medicaid eligibility.</dd>
@@ -654,7 +728,7 @@ const reqBrief = state.productModel === 'requirements-brief';
           <p>
             Drafting a trust instrument for another specific person is the practice of law. Explaining what the law
             requires — generically, to the public, citing the state's own published policy — is not; that line is
-            the whole reason this kit can exist without a licensed attorney's involvement in writing it.
+            the whole reason this {productNoun} can exist without a licensed attorney's involvement in writing it.
             <strong> We never provide sample or model trust language, generic or otherwise, and we never review a
             document you or your attorney have drafted.</strong> The checklist above tells you what must be true of
             the finished trust; getting there is either your attorney's work or, where {state.name} permits it,
@@ -929,9 +1003,9 @@ const reqBrief = state.productModel === 'requirements-brief';
       <h1>The monthly funding worksheet</h1>
 
       <p>
-        Use this worksheet to determine exactly how much income to redirect into the QIT each month. The worksheet
-        is the same for every {state.name} buyer because the {state.agencyAbbreviation} math is the same; you fill
-        in your family's specific numbers in the right column.
+        {legalGuide
+          ? `The table below illustrates the ${state.agencyAbbreviation} funding math, step by step, using the applicant's own numbers as an example — it is for your own understanding, not a document you complete and submit anywhere. The underlying math is the same for every ${state.name} applicant.`
+          : `Use this worksheet to determine exactly how much income to redirect into the QIT each month. The worksheet is the same for every ${state.name} buyer because the ${state.agencyAbbreviation} math is the same; you fill in your family's specific numbers in the right column.`}
       </p>
 
       <table class="kit-worksheet">
@@ -1105,13 +1179,99 @@ const reqBrief = state.productModel === 'requirements-brief';
       <p>
         If line G is zero or negative — the applicant's total income is at or below ${fmt(state.incomeCap2026)}/month
         — the applicant is already income-eligible for {hcb ? `${state.name}'s HCB waiver` : `${state.name} long-term-care Medicaid`} without a QIT. You can
-        skip this kit and proceed directly to the Medicaid application. Most families who reach this kit are
+        skip the rest of this {productNoun} and proceed directly to the Medicaid application. Most families who reach this point are
         above the {hcb ? 'maximum' : 'cap'} (often only by a few hundred dollars per month from Social Security cost-of-living increases),
         but verify before you set up a trust you may not need.
       </p>
     </section>
 
     {/* ============================ SECTION 5 ============================ */}
+    {legalGuide ? (
+    <section id="section-5" class="kit-page-break">
+      <p class="kit-eyebrow kit-section-title">Section 5 &middot; Understanding the trust bank account</p>
+      <h1>Understanding the trust bank account</h1>
+
+      <p>
+        Most retail bank branches have never opened a Qualified Income Trust account. A branch manager opens the
+        same five or six account types every day; a QIT is not one of them. First-attempt hesitation is common —
+        not because anything is wrong with the trust, but because the branch's own account-opening system has no
+        matching template on file.
+      </p>
+
+      <p>
+        This section explains what the account actually is, in {state.agencyAbbreviation}'s own terms, and the
+        facts that tend to resolve a branch's most common questions. It is background for a conversation with your
+        attorney or trustee — it does not tell you what to say or hand anyone a document to sign.
+      </p>
+
+      <h3>What the account is</h3>
+      <p>
+        A Qualified Income Trust bank account is a dedicated checking account titled in the name of the trust —
+        authorized under {state.name} Medicaid policy ({state.policyManualSection}) and federal law at
+        {' '}{state.federalStatuteCitation} — with the trustee, not the applicant, as the authorized signer. Beyond
+        that, {state.agencyAbbreviation} generally treats it as an ordinary account: what makes it unfamiliar to a
+        branch is the account type, not any special legal complexity.
+      </p>
+
+      <h3>On the EIN question</h3>
+      {state.einRequired ? (
+        <div class="kit-callout kit-callout--warning">
+          <p>
+            <strong>{state.name}'s trust is set up to file its own fiduciary tax return, so it generally needs its
+            own EIN.</strong> {state.einRequiredNote} An EIN can be obtained online at the IRS (irs.gov) — the
+            process takes about ten minutes and is free.
+          </p>
+        </div>
+      ) : (
+        <div class="kit-callout">
+          <p>
+            <strong>No EIN is required.</strong> {state.einRequiredNote} If a branch insists on an EIN out of habit,
+            that is a bank-policy stance, not a {state.agencyAbbreviation} requirement — escalating to the bank's
+            trust department typically resolves it.
+          </p>
+        </div>
+      )}
+
+      <h3>Common points of confusion, and the facts that resolve them</h3>
+      <p>
+        Below are the points {state.name} families run into most often when this kind of account is opened, each
+        with the {state.agencyAbbreviation}-sourced fact behind it.
+      </p>
+
+      {state.bankRefusalNotes.map((note) => (
+        <div class="kit-callout kit-no-break" style="margin-top: 16pt;">
+          <p style="font-weight: 600;">{note.refusalType}</p>
+          <p style="margin-bottom: 0;">{note.response}</p>
+          {note.documentNeeded && (
+            <p style="margin-top: 6pt; font-size: 9pt; color: #6B7280;">
+              <strong>Relevant document:</strong> {note.documentNeeded}
+            </p>
+          )}
+        </div>
+      ))}
+
+      <h3>If a branch still won't open the account</h3>
+      <p>
+        A few facts worth knowing, in no particular order:
+      </p>
+      <ul>
+        <li>
+          <strong>Larger banks</strong> (Chase, Wells Fargo, Bank of America) generally have centralized trust
+          departments that handle non-standard account types; a branch manager can typically submit an internal
+          request.
+        </li>
+        <li>
+          <strong>Full-service branches</strong> (often a market's main branch) tend to open commercial and
+          trust-style accounts more routinely than a limited-service retail branch.
+        </li>
+        <li>
+          <strong>Community banks and credit unions</strong> are often more accommodating than large retail banks,
+          because their account-opening process tends to involve a human review rather than a screen-driven
+          template.
+        </li>
+      </ul>
+    </section>
+    ) : (
     <section id="section-5" class="kit-page-break">
       <p class="kit-eyebrow kit-section-title">Section 5 &middot; The bank-account walkthrough</p>
       <h1>The bank-account walkthrough</h1>
@@ -1303,6 +1463,7 @@ const reqBrief = state.productModel === 'requirements-brief';
         </p>
       </div>
     </section>
+    )}
 
     {/* ============================ SECTION 6 ============================ */}
     <section id="section-6" class="kit-page-break">
@@ -1628,7 +1789,7 @@ const reqBrief = state.productModel === 'requirements-brief';
 
         <div class="kit-callout kit-callout--warning">
           <p>
-            <strong>This kit does not address estate recovery beyond the QIT's own distribution clause.</strong>
+            <strong>This {productNoun} does not address estate recovery beyond the QIT's own distribution clause.</strong>
             If the applicant owns a home, has assets outside the QIT, or has a surviving spouse with potential
             estate interests, consult {article(state.name)} {state.name}-licensed elder-law attorney for the estate-recovery
             analysis. The State Bar of {state.name} referral service is below.
@@ -1645,11 +1806,11 @@ const reqBrief = state.productModel === 'requirements-brief';
       {reqBrief ? (
         <p>
           {state.name} does not publish a fill-in QIT form, so an attorney (or, where permitted, you) drafts the
-          trust itself — this isn't an optional escalation path, it's how the trust gets made here. This kit
-          handles everything around that: knowing exactly what the trust must contain (Section 2), what to gather
-          before the meeting (Section 3), funding and banking once it's signed, and denial-avoidance. The list
-          below covers situations that typically mean <em>more</em> than the baseline drafting engagement — where
-          the conversation needs to go beyond the required-provisions checklist.
+          trust itself — this isn't an optional escalation path, it's how the trust gets made here. This {productNoun}
+          explains everything around that: knowing exactly what the trust must contain (Section 2), what an attorney
+          will typically need to know (Section 3), funding and banking considerations once it's signed, and
+          denial-avoidance. The list below covers situations that typically mean <em>more</em> than the baseline
+          drafting engagement — where the conversation needs to go beyond the required-provisions explanation.
         </p>
       ) : (
         <p>
@@ -1709,18 +1870,20 @@ const reqBrief = state.productModel === 'requirements-brief';
       {hcb ? (
         <p>
           A common married-couple situation is one spouse needing Medicaid-funded care — here, in-home HCB services —
-          while the other, the <strong>community spouse</strong>, stays at home. The QIT in this kit solves the
-          applicant spouse's <em>income</em> problem. It does not, by itself, address the separate set of federal
-          protections built for the community spouse. Those protections are real money, and the kit cannot apply them
-          to your numbers — but it can make sure you walk into an attorney consultation already understanding them.
+          while the other, the <strong>community spouse</strong>, stays at home. The Qualified Income Trust this
+          {' '}{productNoun} explains addresses the applicant spouse's <em>income</em> problem. It does not, by
+          itself, address the separate set of federal protections built for the community spouse. Those protections
+          are real money, and this {productNoun} does not calculate them for your numbers — but it can make sure you
+          walk into an attorney consultation already understanding them.
         </p>
       ) : (
         <p>
           The most common married-couple situation is one spouse entering a nursing facility while the other — the
-          <strong> community spouse</strong> — stays at home. The QIT in this kit solves the institutionalized
-          spouse's <em>income</em> problem. It does not, by itself, address the separate set of federal protections
-          built for the community spouse. Those protections are real money, and the kit cannot apply them to your
-          numbers — but it can make sure you walk into an attorney consultation already understanding them.
+          <strong> community spouse</strong> — stays at home. The Qualified Income Trust this {productNoun} explains
+          addresses the institutionalized spouse's <em>income</em> problem. It does not, by itself, address the
+          separate set of federal protections built for the community spouse. Those protections are real money, and
+          this {productNoun} does not calculate them for your numbers — but it can make sure you walk into an
+          attorney consultation already understanding them.
         </p>
       )}
 
@@ -1759,13 +1922,32 @@ const reqBrief = state.productModel === 'requirements-brief';
 
       <p>
         With that information in hand, ask the attorney three questions: <em>what is our CSRA</em>, <em>does the
-        community spouse qualify for an MMMNA income diversion</em>, and <em>does the QIT in this kit still cover
-        the {hcb ? 'applicant' : 'institutionalized'} spouse's income side</em> (it does — the community-spouse rules sit alongside the
-        QIT, they do not replace it). You will typically leave that consultation knowing exactly what to protect
-        and exactly which parts you can still handle yourself with this kit.
+        community spouse qualify for an MMMNA income diversion</em>, and <em>does the Qualified Income Trust this
+        {' '}{productNoun} explains still cover the {hcb ? 'applicant' : 'institutionalized'} spouse's income side</em> (it does — the
+        community-spouse rules sit alongside the QIT, they do not replace it). You will typically leave that
+        consultation knowing exactly what to protect and exactly what {productNoun === 'guide' ? 'this guide already explained' : 'you can still handle yourself with this kit'}.
       </p>
 
-      {reqBrief && (
+      {legalGuide ? (
+        <Fragment>
+          <h3>Making the engagement efficient</h3>
+          <p>
+            Attorneys typically bill by the hour for research time — understanding what {state.name} requires
+            before they can even begin drafting. This {productNoun} does that research and explains it to you, so
+            you (not the attorney, on your bill) already understand {state.agencyAbbreviation}'s requirements
+            before the first meeting. It does not collect your family's specific facts for you — that conversation
+            is still the attorney's, and still yours to have directly with them.
+          </p>
+          <div class="kit-callout">
+            <p style="font-weight: 600; margin-bottom: 6pt;">Questions worth asking before you hire</p>
+            <ul style="margin-bottom: 0;">
+              <li>"Does your standard Qualified Income Trust language already satisfy every item on {state.policyManualSection}?" (a firm that regularly does this work answers immediately)</li>
+              <li>"Can you quote a flat fee for drafting, now that I understand what {state.agencyAbbreviation} requires?"</li>
+              <li>"Will the trust name {state.name} as the remainder beneficiary and include the required payback language by default?"</li>
+            </ul>
+          </div>
+        </Fragment>
+      ) : reqBrief && (
         <Fragment>
           <h3>Making the engagement efficient</h3>
           <p>
@@ -1823,7 +2005,14 @@ const reqBrief = state.productModel === 'requirements-brief';
       )}
 
       <p>
-        {reqBrief ? (
+        {legalGuide ? (
+          <Fragment>
+            For the first meeting, this {productNoun} — specifically Section 2's explanation of what
+            {' '}{state.agencyAbbreviation} requires — is useful background to have read beforehand, along with your
+            own notes on the applicant's actual income sources and amounts. The attorney can confirm scope quickly
+            and focus the meeting on drafting, or on whatever is actually complex about your situation.
+          </Fragment>
+        ) : reqBrief ? (
           <Fragment>
             For the first meeting, bring this kit — specifically the Section 2 checklist and the information you
             gathered in Section 3 — along with the worksheet in Section 4 filled in with the applicant's actual
@@ -1870,7 +2059,7 @@ const reqBrief = state.productModel === 'requirements-brief';
           <ol>
             <li>
               <strong>The guide doesn't replace the attorney — it makes the attorney cheaper and faster.</strong>
-              {' '}{state.name} requires the trust be drafted; nothing in this kit changes that. What it removes is
+              {' '}{state.name} requires the trust be drafted; nothing in this {productNoun} changes that. What it removes is
               the billable time attorneys spend explaining the basics and gathering facts before they draft anything.
             </li>
             <li>
@@ -1882,7 +2071,7 @@ const reqBrief = state.productModel === 'requirements-brief';
             <li>
               <strong>There is a safety net.</strong> The guide was bought with a money-back guarantee tied to the
               one outcome that matters: if {state.agencyAbbreviation} rejects the trust for a reason traceable to
-              following the kit, the purchase is refunded. The downside is bounded.
+              following the {productNoun}, the purchase is refunded. The downside is bounded.
             </li>
           </ol>
 
@@ -1891,8 +2080,9 @@ const reqBrief = state.productModel === 'requirements-brief';
             Family disagreements about money during a health crisis are rarely about the dollars. If the conversation
             gets heated, it is usually fear talking. The most useful thing you can say is often the simplest:
             <em> "We are all trying to do right by [name]. Here is what I've done, here is why, and here is where
-            an attorney is handling the rest. Look it over with me."</em> Handing a skeptical relative this kit to
-            read is frequently more persuasive than any argument — it lets them see the work for themselves.
+            an attorney is handling the rest. Look it over with me."</em> Sharing this {productNoun} with a
+            skeptical relative is frequently more persuasive than any argument — it lets them see the reasoning for
+            themselves.
           </p>
         </Fragment>
       ) : (
@@ -1971,11 +2161,11 @@ const reqBrief = state.productModel === 'requirements-brief';
       <h1>Appendix A — {state.agencyAbbreviation} citations index</h1>
 
       <p>
-        Every operational claim in this kit cites a primary source. The list below is the deduplicated index of
-        every citation used in the kit. Verify directly if anything in the kit conflicts with what
+        Every operational claim in this {productNoun} cites a primary source. The list below is the deduplicated index of
+        every citation used in the {productNoun}. Verify directly if anything in the {productNoun} conflicts with what
         {' '}{state.agencyAbbreviation} publishes — and email <strong>support@millertrustguide.com</strong> if
-        you find a discrepancy. We correct verified discrepancies within five business days and update the kit's
-        version number accordingly.
+        you find a discrepancy. We correct verified discrepancies within five business days and update the
+        {' '}{productNoun}'s version number accordingly.
       </p>
 
       <h3>Primary state agency sources</h3>
@@ -1991,7 +2181,7 @@ const reqBrief = state.productModel === 'requirements-brief';
           <strong>{state.agencyAbbreviation} — {state.policyManualSection}</strong><br />
           <a href={state.policyManualUrl}>{state.policyManualUrl}</a><br />
           <span class="kit-cite">Operational rules for Qualified Income Trusts in {state.name}. The exact text of
-          this kit's source-controlling claims (irrevocability, reversion clause, opening-deposit allowance,
+          this {productNoun}'s source-controlling claims (irrevocability, reversion clause, opening-deposit allowance,
           distribution timing, transfer-of-assets risk for late distribution) lives in this Appendix.</span>
         </li>
         {state.supplementalOfficialDocs.map((doc) => (
@@ -2022,7 +2212,7 @@ const reqBrief = state.productModel === 'requirements-brief';
           <li>
             <strong>{state.agencyAbbreviation} — HCB income maximum</strong><br />
             <a href={state.policyManualUrl}>{state.policyManualUrl}</a><br />
-            <span class="kit-cite">Source for the ${fmt(state.incomeCap2026)}/month HCB income maximum used in this kit ({state.asOf}). This is an FPL-based figure {state.name} publishes for its Home and Community-Based waiver — not the 300%-of-SSI cap used by nursing-facility income-cap states.</span>
+            <span class="kit-cite">Source for the ${fmt(state.incomeCap2026)}/month HCB income maximum used in this {productNoun} ({state.asOf}). This is an FPL-based figure {state.name} publishes for its Home and Community-Based waiver — not the 300%-of-SSI cap used by nursing-facility income-cap states.</span>
           </li>
         ) : (
           <Fragment>
@@ -2107,7 +2297,7 @@ const reqBrief = state.productModel === 'requirements-brief';
         <li>Original bank-account opening documents.</li>
         <li>Power of attorney documentation (if applicable).</li>
         <li>Copy of the applicant's Medicaid approval letter.</li>
-        <li>Copy of this kit (for the citation chain at the time of setup).</li>
+        <li>Copy of this {productNoun} (for the citation chain at the time of setup).</li>
       </ul>
 
       <p class="kit-cite">
@@ -2122,17 +2312,17 @@ const reqBrief = state.productModel === 'requirements-brief';
       <h1>Appendix C — Version history</h1>
 
       <p>
-        The current edition of this kit is <strong>{state.kitVersion}</strong>, last reviewed
+        The current edition of this {productNoun} is <strong>{state.kitVersion}</strong>, last reviewed
         {' '}<strong>{state.kitVersionDate}</strong>. We email past buyers when a new edition is released. If you
-        purchased this kit and have not received the current edition, email <strong>support@millertrustguide.com</strong>
+        purchased this {productNoun} and have not received the current edition, email <strong>support@millertrustguide.com</strong>
         from the email address you used at checkout and we will resend.
       </p>
 
       <h3>Annual update cadence</h3>
       <p>
-        We refresh this kit on a fixed annual cadence (typically January, immediately after CMS publishes the
+        We refresh this {productNoun} on a fixed annual cadence (typically January, immediately after CMS publishes the
         new Federal Benefit Rate) and on an ad-hoc basis whenever {state.agencyAbbreviation} updates the QIT
-        template, policy section, or operational requirements cited in this kit.
+        {legalGuide ? ' requirements' : ' template'}, policy section, or operational requirements cited in this {productNoun}.
       </p>
 
       <h3>Changelog</h3>
@@ -2148,7 +2338,7 @@ const reqBrief = state.productModel === 'requirements-brief';
       <div class="kit-keep">
         <h3>Reporting an error</h3>
         <p>
-          If you find anything in this kit that does not match what {state.agencyAbbreviation} or CMS currently
+          If you find anything in this {productNoun} that does not match what {state.agencyAbbreviation} or CMS currently
           publishes, email <strong>support@millertrustguide.com</strong> with the page reference and the source you
           believe is authoritative. We correct verified discrepancies within five business days, ship a new edition,
           and email past buyers the updated version at no charge.

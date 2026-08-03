@@ -38,7 +38,12 @@ const RENDER_TIMEOUT_MS = 60_000;
 // regardless of where it lands as content shifts. TOC listings won't match
 // because we look at heading elements, not body links.
 const PREVIEWS = [
-  { file: '01-cover.png', match: 'setup kit' },
+  // Match the brand mark, not the H1 — the H1 text varies by productModel
+  // ("Miller Trust Setup Kit" for template/requirements-brief states,
+  // "... Legal Requirements Guide" for legal-guide states like Florida),
+  // but the "Miller Trust Guide" brand span in .kit-cover-mark is
+  // unconditional on every state's cover page regardless of model.
+  { file: '01-cover.png', match: 'miller trust guide' },
   { file: '02-toc.png', match: 'table of contents' },
   { file: '03-glossary.png', match: 'key terms' },
   { file: '04-section5-intro.png', match: 'bank-account walkthrough' },

@@ -19,9 +19,14 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 // Hybrid (HCB-waiver) states: in-home waiver, excess-only funding, no
 // nursing-facility PNA / patient-liability. Flexes the copy below.
 const hcb = state.medicaidStructure === 'hybrid';
+// 'legal-guide' states (e.g. Florida) additionally drop the "kit"/script/
+// step-by-step framing entirely — see KitPdfLayout for the full explanation.
+const legalGuide = state.productModel === 'legal-guide';
 // 'requirements-brief' states (e.g. Oklahoma) publish no fill-in QIT
-// instrument — see KitPdfLayout for the full explanation.
-const reqBrief = state.productModel === 'requirements-brief';
+// instrument — see KitPdfLayout for the full explanation. legalGuide states
+// share this no-template structure, so they're folded in here.
+const reqBrief = state.productModel === 'requirements-brief' || legalGuide;
+const productNoun = legalGuide ? 'guide' : 'kit';
 
 const statePath = `/states/${state.slug}`;
 const bankPath = articlePath(state.slug, 'what-to-say-at-the-bank');
@@ -34,7 +39,47 @@ const faq = getArticleFaq(state, topic);
 
 <div class="prose-content">
   {
-    topic === 'how-to-set-up' && (
+    topic === 'how-to-set-up' && legalGuide && (
+      <>
+        <p>
+          {state.name} does not publish a fill-in Qualified Income Trust form, so the trust is drafted — by an
+          attorney, or by you where {state.name} permits it — to meet {state.agencyName}'s own published
+          requirements. This is not a step-by-step execution guide: it explains what the law requires, so you can
+          evaluate an attorney's engagement and read a drafted trust with informed eyes. We do not draft, provide
+          sample language for, or review a trust.
+        </p>
+
+        <h2>What a compliant {state.name} trust must contain</h2>
+        <p>{state.requirementsIntroNote}</p>
+        <ol class="not-prose mt-6 space-y-5">
+          {state.requiredTrustProvisions.map((p) => (
+            <li class="flex gap-4">
+              <span
+                aria-hidden="true"
+                class="mt-0.5 h-2 w-2 flex-none translate-y-2 rounded-full bg-primary"
+              ></span>
+              <div>
+                <p class="font-semibold text-ink-heading">{p.title}</p>
+                <p class="mt-1 text-ink">{p.description}</p>
+                <p class="mt-1 text-xs text-ink-muted">{p.agencyCitation}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <div class="mt-6 rounded-lg border border-border bg-surface-elevated p-4 text-sm">
+          <p class="!mt-0">
+            The two questions families ask most after this are about{' '}
+            <a href={bankPath}>opening the bank account in {state.name}</a> and the funding timeline — see{' '}
+            <a href={howLongPath}>how long setting up {article(state.name)} {state.name} Miller Trust takes</a>.
+          </p>
+        </div>
+      </>
+    )
+  }
+
+  {
+    topic === 'how-to-set-up' && !legalGuide && (
       <>
         <p>
           {reqBrief ? (
@@ -169,7 +214,48 @@ const faq = getArticleFaq(state, topic);
   }
 
   {
-    topic === 'what-to-say-at-the-bank' && (
+    topic === 'what-to-say-at-the-bank' && legalGuide && (
+      <>
+        <h2>Why the bank hesitates</h2>
+        <p>
+          Opening {article(state.name)} {state.name} Miller Trust account is not legally complicated, but it is
+          unfamiliar to most branch staff — they rarely see a Qualified Income Trust, so the default reaction is
+          caution. What typically resolves it: the account is authorized under {state.name} Medicaid policy
+          ({state.policyManualSection}) and federal law at {state.federalStatuteCitation}, it is titled to the
+          trust with the trustee (not the beneficiary) as the authorized signer, and it generally uses the
+          {' '}{state.einRequired ? "trust's own EIN" : "applicant's Social Security number"} for IRS reporting.
+        </p>
+
+        <h3>The {state.bankRefusalNotes.length} points of confusion families run into most</h3>
+        <p>Below is what's actually true about each, backed by {state.agencyAbbreviation}'s own published guidance.</p>
+
+        <div class="not-prose mt-6 space-y-4">
+          {state.bankRefusalNotes.map((b, i) => (
+            <div class="rounded-lg border border-border bg-surface-elevated p-4">
+              <p class="text-sm font-semibold uppercase tracking-wide text-primary">Point {i + 1}</p>
+              <p class="mt-1 font-semibold text-ink-heading">{b.refusalType}</p>
+              <p class="mt-2 text-ink">{b.response}</p>
+              {b.documentNeeded && (
+                <p class="mt-2 text-sm text-ink-muted">
+                  <strong>Relevant document:</strong> {b.documentNeeded}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <h2>If a branch still won't open the account</h2>
+        <p>
+          A bank's trust department, or a community bank or credit union, tends to involve a human review rather
+          than a screen-driven template, so they accommodate unusual account types more readily than a standard
+          retail branch. The account itself is ordinary: a dedicated checking account titled to the trust.
+        </p>
+      </>
+    )
+  }
+
+  {
+    topic === 'what-to-say-at-the-bank' && !legalGuide && (
       <>
         <h2>Why the bank says no</h2>
         <p>
@@ -379,7 +465,7 @@ const faq = getArticleFaq(state, topic);
           This is a deferral, not a permanent exemption: once the surviving spouse (and any protected child) has
           also died, the state may then pursue recovery from what remains of the estate, which can include the home.
           Couples who want to plan specifically for the home beyond that point should raise it with an elder-law
-          attorney — that's a separate question from the Miller Trust this kit covers.
+          attorney — that's a separate question from the Miller Trust this {productNoun} covers.
         </p>
       </>
     )
@@ -408,25 +494,42 @@ const faq = getArticleFaq(state, topic);
     )
   }
 
-  {/* CTA back to the purchasable state kit (the buy flow lives there, not
-      here). Value-stacked: price anchor against attorney cost, and a one-line
-      echo of the author's story already told in full on the state page — no
-      new claims. */}
+  {/* CTA back to the purchasable state guide/kit (the buy flow lives there,
+      not here). Value-stacked: price anchor against attorney cost, and a
+      one-line echo of the author's story already told in full on the state
+      page — no new claims. */}
   <aside class="mt-10 rounded-lg border border-primary/30 bg-primary-tint/20 p-6">
-    <p class="!mt-0 text-xs font-semibold uppercase tracking-wider text-primary">The {state.name} kit does this for you</p>
+    <p class="!mt-0 text-xs font-semibold uppercase tracking-wider text-primary">The {state.name} {productNoun} covers this</p>
     <h2 class="!mt-1 !text-xl">Everything above, plus the parts that actually trip families up</h2>
     <ul class="mt-3 space-y-1.5 text-sm text-ink">
-      <li>The verbatim bank-refusal script and a printable resolution letter for the branch manager</li>
-      <li>A pre-filled monthly funding worksheet using {state.name}'s {state.asOf} income {hcb ? 'maximum' : 'cap'}</li>
-      <li>All {state.commonDenialReasons.length} {state.agencyAbbreviation} denial traps, each with the policy citation</li>
-      {reqBrief ? (
-        <li>The {state.requiredTrustProvisions.length}-item required-provisions checklist, cited to {state.agencyAbbreviation}'s own policy</li>
+      {legalGuide ? (
+        <>
+          <li>What {state.agencyAbbreviation} banks typically ask, and the facts that answer each question</li>
+          <li>An illustrated funding example using {state.name}'s {state.asOf} income cap</li>
+          <li>All {state.commonDenialReasons.length} {state.agencyAbbreviation} denial reasons, each with the policy citation</li>
+          <li>The {state.requiredTrustProvisions.length}-item required-provisions explanation, cited to {state.agencyAbbreviation}'s own policy</li>
+        </>
       ) : (
-        <li>The direct link to the official {state.agencyAbbreviation} template, already built in</li>
+        <>
+          <li>The verbatim bank-refusal script and a printable resolution letter for the branch manager</li>
+          <li>A pre-filled monthly funding worksheet using {state.name}'s {state.asOf} income {hcb ? 'maximum' : 'cap'}</li>
+          <li>All {state.commonDenialReasons.length} {state.agencyAbbreviation} denial traps, each with the policy citation</li>
+          {reqBrief ? (
+            <li>The {state.requiredTrustProvisions.length}-item required-provisions checklist, cited to {state.agencyAbbreviation}'s own policy</li>
+          ) : (
+            <li>The direct link to the official {state.agencyAbbreviation} template, already built in</li>
+          )}
+        </>
       )}
     </ul>
     <p class="mt-3 text-ink">
-      {reqBrief ? (
+      {legalGuide ? (
+        <Fragment>
+          An elder-law attorney typically charges $1,000&ndash;$2,500 to research {state.name}'s requirements
+          {' '}<em>and</em> draft the trust; this guide is the research part, so the attorney's fee should reflect
+          drafting alone.{' '}
+        </Fragment>
+      ) : reqBrief ? (
         <Fragment>
           An elder-law attorney typically charges $1,000&ndash;$2,500 to research {state.name}'s requirements
           {' '}<em>and</em> draft the trust; this kit does the research part, so the attorney's fee should reflect
@@ -435,19 +538,20 @@ const faq = getArticleFaq(state, topic);
       ) : (
         <Fragment>An elder-law attorney typically charges $1,000&ndash;$2,500 for this.{' '}</Fragment>
       )}
-      The kit is <strong>${state.price}</strong>, one time.{' '}
+      The {productNoun} is <strong>${state.price}</strong>, one time.{' '}
       Instant download. <strong>Informational only — not legal advice.</strong>
     </p>
     <p class="mt-3 text-sm text-ink-muted">
-      &mdash; James Whitfield, who built this kit after two attorneys quoted $1,500 and $2,200, and his own bank
-      refused the account twice.
+      {legalGuide
+        ? `— James Whitfield, who wrote this guide after two attorneys quoted $1,500 and $2,200 for research he could have handed them himself.`
+        : '— James Whitfield, who built this kit after two attorneys quoted $1,500 and $2,200, and his own bank refused the account twice.'}
     </p>
     <p class="mt-4">
       <a
         href={statePath}
         class="inline-flex items-center rounded-full bg-primary px-5 py-2.5 font-semibold text-white no-underline hover:bg-primary-dark"
       >
-        See the {state.name} kit &rarr;
+        See the {state.name} {productNoun} &rarr;
       </a>
     </p>
   </aside>

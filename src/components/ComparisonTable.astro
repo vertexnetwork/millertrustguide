@@ -12,19 +12,39 @@ interface Props {
   // path either way. The table's whole shape flexes: "this kit" is the guide
   // PLUS a (cheaper, faster) attorney engagement, not a full substitute for one.
   reqBrief?: boolean;
+  // 'legal-guide' states (e.g. Florida) additionally drop the "kit"/script
+  // framing entirely — no "bank-refusal script" row, no "this kit" language.
+  // Implies reqBrief's no-template shape; pass both from the caller.
+  legalGuide?: boolean;
 }
 
-const { stateName, price, privatePayMonthlyLow, privatePayMonthlyHigh, hcb = false, reqBrief = false } = Astro.props;
+const {
+  stateName,
+  price,
+  privatePayMonthlyLow,
+  privatePayMonthlyHigh,
+  hcb = false,
+  reqBrief = false,
+  legalGuide = false,
+} = Astro.props;
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 // State-specific private-pay range, kept in sync with the state page + kit so
 // the figure can never contradict them.
 const privatePayRange = `$${fmt(privatePayMonthlyLow)}–$${fmt(privatePayMonthlyHigh)}`;
+const productNoun = legalGuide ? 'guide' : 'kit';
 ---
 
 <section aria-labelledby="comparison-heading" class="my-12">
   <h2 id="comparison-heading">How this compares</h2>
-  {reqBrief ? (
+  {legalGuide ? (
+    <p class="mt-2 text-ink">
+      {stateName} doesn't publish a fill-in QIT form, so an attorney drafts the trust either way. The ${price}{' '}
+      is for the guide — the plain-language explanation of what {stateName} law requires, cited clause by
+      clause — that turns your first attorney meeting into a focused conversation instead of an introduction to
+      Medicaid trust law.
+    </p>
+  ) : reqBrief ? (
     <p class="mt-2 text-ink">
       {stateName} doesn't publish a fill-in QIT form, so an attorney drafts the trust either way. The ${price}{' '}
       is for the guide — the requirements checklist and everything around it — that turns the attorney's job into
@@ -44,13 +64,58 @@ const privatePayRange = `$${fmt(privatePayMonthlyLow)}–$${fmt(privatePayMonthl
       <thead>
         <tr class="border-b border-border-strong text-ink-heading">
           <th class="py-3 pr-4 font-semibold"></th>
-          <th class="py-3 pr-4 font-semibold">This kit</th>
+          <th class="py-3 pr-4 font-semibold">This {productNoun}</th>
           <th class="py-3 pr-4 font-semibold">{reqBrief ? 'Attorney alone (no prep)' : 'Elder-law attorney'}</th>
-          <th class="py-3 pr-4 font-semibold">{reqBrief ? 'DIY research, no guide' : 'Free state PDF'}</th>
+          <th class="py-3 pr-4 font-semibold">{legalGuide ? 'DIY research, unverified' : reqBrief ? 'DIY research, no guide' : 'Free state PDF'}</th>
           <th class="py-3 pr-4 font-semibold">Doing nothing</th>
         </tr>
       </thead>
-      {reqBrief ? (
+      {legalGuide ? (
+        <tbody class="divide-y divide-border">
+          <tr>
+            <th scope="row" class="py-3 pr-4 font-medium">Cost</th>
+            <td class="py-3 pr-4">${price} + attorney's drafting fee</td>
+            <td class="py-3 pr-4">$1,000–2,500 (research + drafting)</td>
+            <td class="py-3 pr-4">$0 upfront — real risk of a rejected trust</td>
+            <td class="py-3 pr-4">$0, then {privatePayRange}/mo private-pay</td>
+          </tr>
+          <tr>
+            <th scope="row" class="py-3 pr-4 font-medium">Time to qualified</th>
+            <td class="py-3 pr-4">Faster — drafting only</td>
+            <td class="py-3 pr-4">2–6 weeks (research + drafting)</td>
+            <td class="py-3 pr-4">Unpredictable</td>
+            <td class="py-3 pr-4">Not until you act</td>
+          </tr>
+          <tr>
+            <th scope="row" class="py-3 pr-4 font-medium">Bank-account explanation</th>
+            <td class="py-3 pr-4">Yes</td>
+            <td class="py-3 pr-4">Sometimes</td>
+            <td class="py-3 pr-4">No</td>
+            <td class="py-3 pr-4">n/a</td>
+          </tr>
+          <tr>
+            <th scope="row" class="py-3 pr-4 font-medium">State agency citations</th>
+            <td class="py-3 pr-4">Yes</td>
+            <td class="py-3 pr-4">n/a</td>
+            <td class="py-3 pr-4">If you find them yourself</td>
+            <td class="py-3 pr-4">n/a</td>
+          </tr>
+          <tr>
+            <th scope="row" class="py-3 pr-4 font-medium">Updated for the current income cap</th>
+            <td class="py-3 pr-4">Yes</td>
+            <td class="py-3 pr-4">Yes</td>
+            <td class="py-3 pr-4">If you catch the update</td>
+            <td class="py-3 pr-4">n/a</td>
+          </tr>
+          <tr>
+            <th scope="row" class="py-3 pr-4 font-medium">Delivery time</th>
+            <td class="py-3 pr-4">Instant (guide); attorney schedules separately</td>
+            <td class="py-3 pr-4">After consult + retainer</td>
+            <td class="py-3 pr-4">Instant, but unverified</td>
+            <td class="py-3 pr-4">n/a</td>
+          </tr>
+        </tbody>
+      ) : reqBrief ? (
         <tbody class="divide-y divide-border">
           <tr>
             <th scope="row" class="py-3 pr-4 font-medium">Cost</th>

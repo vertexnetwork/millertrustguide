@@ -78,14 +78,16 @@ for (const file of walk(CONTENT, ['.mdx', '.md'])) {
 }
 
 // 2. Every state file's officialTemplateUrl must be on a .gov / .us domain.
-// 'requirements-brief' states (productModel) have no official fill-in
-// instrument by design — no state publishes one — so they legitimately omit
-// officialTemplateUrl entirely; skip the requirement for those only.
+// 'requirements-brief' and 'legal-guide' states (productModel) have no
+// official fill-in instrument by design — no state publishes one — so they
+// legitimately omit officialTemplateUrl entirely; skip the requirement for
+// those only. Mirrors the Zod .refine() in src/content/config.ts
+// (`productModel !== 'template'`) — keep both in sync.
 for (const file of walk(join(CONTENT, 'states'), ['.mdx', '.md'])) {
   const text = readFileSync(file, 'utf8');
   const productModelMatch = text.match(/productModel:\s*["']?([a-z-]+)["']?/);
   const productModel = productModelMatch ? productModelMatch[1] : 'template';
-  if (productModel === 'requirements-brief') continue;
+  if (productModel === 'requirements-brief' || productModel === 'legal-guide') continue;
 
   const match = text.match(/officialTemplateUrl:\s*["']?([^"'\n\r]+)["']?/);
   if (!match) {
