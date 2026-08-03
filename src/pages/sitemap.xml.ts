@@ -37,6 +37,7 @@ const BUILD_DATE = new Date().toISOString().slice(0, 10);
 // those are intentionally not in the sitemap.
 const STATIC_ROUTES: Omit<SitemapEntry, 'lastmod'>[] = [
   { path: '/', priority: 1.0, changefreq: 'weekly', images: [`${SITE}/og-default.png`] },
+  { path: '/what-is-a-miller-trust', priority: 0.8, changefreq: 'monthly', images: [`${SITE}/og-default.png`] },
   { path: '/about', priority: 0.6, changefreq: 'monthly' },
   { path: '/editorial-process', priority: 0.6, changefreq: 'monthly' },
   { path: '/authors/james-whitfield', priority: 0.6, changefreq: 'monthly' },

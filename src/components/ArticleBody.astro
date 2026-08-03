@@ -214,6 +214,43 @@ const faq = getArticleFaq(state, topic);
   }
 
   {
+    topic === 'how-much-does-it-cost' && (
+      <>
+        <h2>What an attorney typically charges</h2>
+        <p>
+          An elder-law attorney typically charges <strong>$1,000–$2,500</strong>{' '}
+          {reqBrief
+            ? `to research ${state.name}'s requirements and draft the trust — and because ${state.name} publishes no fill-in form, that research-and-draft work happens either way.`
+            : `to set up a Miller Trust in ${state.name} — work that is, in practice, filling in ${state.agencyName}'s own free template and opening one bank account.`}
+        </p>
+
+        <h2>What the ${state.price} {productNoun} covers instead</h2>
+        <p>
+          {reqBrief
+            ? `This ${productNoun} is the research part of that engagement: ${state.agencyAbbreviation}'s own requirements, explained clause by clause and cited to ${state.policyManualSection}, so an attorney's fee reflects drafting alone instead of research plus drafting.`
+            : `This ${productNoun} covers the same template walkthrough, the bank-refusal script, and the ${state.commonDenialReasons.length} ${state.agencyAbbreviation} denial traps to avoid — the parts of the process most families handle themselves.`}
+        </p>
+
+        <div class="mt-6 rounded-lg border-l-4 border-primary bg-primary-tint/30 p-5">
+          <p class="!mt-0">
+            <strong>When the attorney's fee is worth it anyway:</strong> significant assets, prior gifting, a second
+            marriage, or multi-state property. Those are fact-specific questions this {productNoun} does not answer —
+            for them, consult {article(state.name)} {state.name}-licensed elder-law attorney regardless of which
+            route you take on the trust itself.
+          </p>
+        </div>
+
+        <h2>The trust's money and the {productNoun}'s price are separate</h2>
+        <p>
+          {article(state.name, true)} {state.name} Miller Trust holds only the applicant's income and pays only for
+          the applicant's own care — it is never used to pay this {productNoun}'s price or an attorney's fee.
+          Whatever you spend to set the trust up happens outside the trust.
+        </p>
+      </>
+    )
+  }
+
+  {
     topic === 'what-to-say-at-the-bank' && legalGuide && (
       <>
         <h2>Why the bank hesitates</h2>

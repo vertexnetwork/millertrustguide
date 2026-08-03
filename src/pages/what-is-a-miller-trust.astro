@@ -1,0 +1,222 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import IncomeCapCheck from '~/components/IncomeCapCheck.astro';
+import { articleSchema, breadcrumbSchema, faqPageSchemaFromPairs } from '~/lib/schema';
+import { firstSentence } from '~/lib/text';
+
+export const prerender = true;
+
+const SITE_URL = 'https://millertrustguide.com';
+const canonical = `${SITE_URL}/what-is-a-miller-trust`;
+
+const states = (await getCollection('states'))
+  .map((s) => ({ ...s.data, slug: s.slug }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+const live = states.filter((s) => s.status === 'live');
+
+// This page is the deep, single-topic explainer the homepage's compact FAQ
+// answer links out to — it does not duplicate the homepage (a transactional
+// index + short answer). This page goes long on the definitional/comparison
+// questions that don't need a state picked yet: what the trust does, how state
+// naming differs, which states use one at all, and — the recurring point of
+// confusion in real search queries — how a Miller Trust differs from a
+// Medicaid Asset Protection Trust and the 5-year look-back rule.
+const faq = [
+  {
+    question: 'What is a Miller Trust?',
+    answer:
+      'A Miller Trust — also called a Qualified Income Trust (QIT) or Income Trust, depending on the state — is an irrevocable trust used in income-cap states to qualify a Medicaid long-term-care applicant whose monthly income is over the state\'s limit. Income deposited into the trust is not counted toward that limit, so an applicant who would otherwise be denied for having too much income can still qualify.',
+  },
+  {
+    question: 'Why do states use three different names for the same thing?',
+    answer:
+      'The trust is named after Miller v. Ibarra, the 1990 federal case that established it, and federal law (42 U.S.C. § 1396p(d)(4)(B)) calls it a "qualifying trust." States picked their own label when they wrote it into policy — Texas and Ohio call it a Miller Trust, most call it a Qualified Income Trust, and a handful (Arkansas, Colorado, Mississippi, South Carolina) call it a plain Income Trust. It is the same legal mechanism under every name.',
+  },
+  {
+    question: 'Which states use a Miller Trust?',
+    answer:
+      'Income-cap states require one whenever an applicant\'s income exceeds the limit; "medically needy" spend-down states (Louisiana is the clearest example) do not use one at all, because they qualify over-income applicants a different way. A few states are hybrids — Missouri\'s trust exists only for its in-home Home and Community-Based waiver, not for nursing-facility Medicaid, which uses a spend-down instead.',
+  },
+  {
+    question: 'Is a Miller Trust the same thing as a Medicaid Asset Protection Trust?',
+    answer:
+      'No. A Miller Trust fixes an income problem — it exists so a real-time paycheck or pension that\'s too large doesn\'t disqualify someone who needs care now. A Medicaid Asset Protection Trust fixes a different problem entirely: it\'s set up years in advance, holds savings or property (not monthly income), and is meant to shield those assets from Medicaid\'s five-year look-back and estate recovery. They\'re both irrevocable trusts used in Medicaid planning, which is why the two get confused, but one answers "my income is too high right now" and the other answers "I want to protect assets before I ever need care."',
+  },
+  {
+    question: "What's the 5-year look-back, and does it apply to a Miller Trust?",
+    answer:
+      "The look-back is Medicaid's rule that examines the 60 months before an application for gifts or below-market asset transfers, and penalizes ones it finds. It governs assets given away — it has nothing to do with funding a Miller Trust, because a Miller Trust holds the applicant's own current income, not a gift of past assets. Confusing the two is common because both come up in the same Medicaid-planning conversation; they're answered by different rules.",
+  },
+  {
+    question: 'How much does a Miller Trust cost to set up?',
+    answer:
+      'An elder-law attorney typically charges $1,000–$2,500 to handle it. For the core setup — completing the state\'s own published template (where one exists) and opening a dedicated bank account — many families handle it themselves; each state guide on this site walks through that process and what it costs either way.',
+  },
+];
+
+const jsonLd = [
+  articleSchema({
+    headline: 'What Is a Miller Trust? The Complete Guide',
+    description:
+      'What a Miller Trust (Qualified Income Trust) is, why states use different names for it, which states require one, and how it differs from a Medicaid Asset Protection Trust and the 5-year look-back rule. Informational, not legal advice.',
+    url: canonical,
+    dateModified: '2026-08-03',
+    lastReviewed: '2026-08-03',
+    speakableCssSelectors: ['#tldr'],
+  }),
+  faqPageSchemaFromPairs(faq),
+  breadcrumbSchema([
+    { name: 'Home', url: SITE_URL + '/' },
+    { name: 'What Is a Miller Trust?', url: canonical },
+  ]),
+];
+---
+
+<BaseLayout
+  title="What Is a Miller Trust? The Complete Guide (Qualified Income Trust)"
+  description="What a Miller Trust (Qualified Income Trust) is, why states call it different names, which states require one, and how it differs from a Medicaid Asset Protection Trust and the 5-year look-back. Informational, not legal advice."
+  canonical={canonical}
+  jsonLd={jsonLd}
+  ogType="article"
+  ogImage={`${SITE_URL}/og-default.png`}
+  ogImageAlt="What Is a Miller Trust? The complete guide."
+  modifiedTime="2026-08-03"
+  publishedTime="2026-08-03"
+  speakableSelector="#tldr"
+>
+  <article class="prose-content mx-auto max-w-3xl px-4 pb-16 pt-6 md:pt-10">
+    <nav aria-label="Breadcrumb" class="mb-3 text-sm text-ink-muted">
+      <ol class="flex flex-wrap items-center gap-x-2">
+        <li><a href="/" class="no-underline hover:underline">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li aria-current="page" class="text-ink">What Is a Miller Trust?</li>
+      </ol>
+    </nav>
+
+    <p class="text-sm font-medium uppercase tracking-wide text-ink-muted">The complete guide</p>
+    <h1 class="mt-2 !text-3xl md:!text-5xl">What Is a Miller Trust?</h1>
+
+    <p id="tldr" class="mt-5 rounded-lg border border-primary/20 bg-primary-tint/30 p-4 text-base leading-relaxed text-ink">
+      A Miller Trust — also called a Qualified Income Trust (QIT) or, in a few states, a plain Income Trust — is an
+      irrevocable trust that lets someone qualify for long-term-care Medicaid despite having monthly income over the
+      state's limit. Income deposited into the trust each month is not counted toward that limit. It's required only
+      in "income-cap" states, is unrelated to the 5-year look-back, and is a different tool from a Medicaid Asset
+      Protection Trust — the sections below explain each distinction.
+    </p>
+    <p class="mt-4 text-sm text-ink-muted">Last reviewed <time datetime="2026-08-03">2026-08-03</time>.</p>
+
+    <h2>The problem it solves</h2>
+    <p>
+      Long-term-care Medicaid caps how much monthly income an applicant can have and still qualify. For 2026, that
+      cap is $2,982/month for a single applicant in most income-cap states (each state guide on this site has the
+      exact figure). Someone whose Social Security and pension add up to more than that isn't too wealthy to need
+      help paying for a nursing home — they're just over a specific eligibility line. A Miller Trust exists to move
+      the excess income into an irrevocable trust account, so what Medicaid counts drops back under the cap.
+    </p>
+
+    <h2>Why the name changes state to state</h2>
+    <p>
+      The trust takes its informal name from <em>Miller v. Ibarra</em>, the 1990 federal case that established it,
+      and federal law (42 U.S.C. § 1396p(d)(4)(B)) refers to it as a "qualifying trust." Each state then wrote its
+      own label into policy when it adopted the mechanism — Texas and Ohio still call it a Miller Trust, most states
+      call it a Qualified Income Trust, and Arkansas, Colorado, Mississippi, and South Carolina call it a plain
+      Income Trust. Same legal tool, different label. If you're not sure what your state calls it, that's exactly
+      what each state guide on this site opens with.
+    </p>
+
+    <h2>Not every state uses one</h2>
+    <p>
+      A Miller Trust only matters in "income-cap" states — states where exceeding the income limit is an automatic
+      disqualification with no other path around it. States that instead use a "medically needy" spend-down (a
+      different mechanism where an applicant reduces countable income by incurring medical expenses) don't need a
+      Miller Trust at all; Louisiana is the clearest example. A few states are hybrids: Missouri's trust exists only
+      to meet the income maximum of its in-home Home and Community-Based waiver — its nursing-facility Medicaid uses
+      a spend-down instead, so a trust isn't part of that path.
+    </p>
+
+    <IncomeCapCheck
+      states={live.map((s) => ({
+        slug: s.slug,
+        name: s.name,
+        incomeCap2026: s.incomeCap2026,
+        incomeCapCouple2026: s.incomeCapCouple2026,
+        incomeCeiling2026: s.incomeCeiling2026,
+      }))}
+    />
+
+    <h2 id="not-the-same-thing">Not the same thing: Asset Protection Trusts and the 5-year look-back</h2>
+    <p>
+      These three terms all come up in the same Medicaid-planning conversation, which is exactly why they get
+      confused. They answer three different questions:
+    </p>
+    <ul>
+      <li>
+        <strong>Miller Trust / Qualified Income Trust</strong> — answers "my current monthly income is over the
+        limit." It holds ongoing income (Social Security, a pension), not a lump sum, and it's set up at the point
+        someone actually needs care.
+      </li>
+      <li>
+        <strong>Medicaid Asset Protection Trust</strong> — answers "I want to protect savings or property before I
+        ever need care." It's a different, separately-drafted irrevocable trust, set up years in advance, that holds
+        assets (not income) with the goal of keeping them out of Medicaid's reach later.
+      </li>
+      <li>
+        <strong>The 5-year look-back</strong> — isn't a trust at all. It's Medicaid's rule examining the 60 months
+        before an application for gifts and below-market transfers, and penalizing the ones it finds. It governs
+        assets given away in the past; it has no bearing on funding a Miller Trust with current income.
+      </li>
+    </ul>
+    <p>
+      If your situation is "income is too high right now, care is needed soon," a Miller Trust is the tool, and it's
+      what every state guide on this site covers. If it's "I want to plan ahead to protect assets," or a past gift or
+      transfer is in the picture, that's an asset-protection and look-back question — a licensed elder-law attorney
+      is the right next step, not this site.
+    </p>
+
+    <h2>What it costs</h2>
+    <p>
+      An elder-law attorney typically charges $1,000–$2,500 to handle a Miller Trust from research through drafting.
+      Where a state publishes its own fill-in template, the core setup — completing that template and opening a
+      dedicated bank account — is a task many families handle themselves; where no fill-in template exists, an
+      attorney typically drafts it regardless, and the state guide is written to make that engagement shorter and
+      cheaper. Each state guide below breaks down the exact cost comparison for that state.
+    </p>
+
+    <h2>Start with your state</h2>
+    <p>Every state does this a little differently — the income cap, the exact form, and the bank-account process all vary. Pick your state to see the specifics:</p>
+    <ul>
+      {live.map((s) => (
+        <li><a href={`/states/${s.slug}`}>{s.name} — {s.primaryTerm ?? 'Miller Trust'} guide</a></li>
+      ))}
+    </ul>
+
+    <section class="mt-12" aria-labelledby="pillar-faq-heading">
+      <h2 id="pillar-faq-heading">Frequently asked questions</h2>
+      <dl class="mt-4 divide-y divide-border">
+        {faq.map((f, i) => {
+          const { lead, rest } = firstSentence(f.answer);
+          return (
+            <details class="group py-4" open={i === 0}>
+              <summary class="faq-question cursor-pointer list-none font-semibold text-ink-heading marker:hidden">
+                <span class="inline-block transition-transform group-open:rotate-90" aria-hidden="true">▸</span>{' '}
+                {f.question}
+              </summary>
+              <div class="faq-answer mt-2 pl-5 leading-relaxed text-ink">
+                <span class="faq-answer__lead">{lead}</span>
+                {rest && <> {rest}</>}
+              </div>
+            </details>
+          );
+        })}
+      </dl>
+    </section>
+
+    <p class="mt-8 text-sm text-ink-muted">
+      Miller Trust Guide is an informational publisher, not a law firm — we do not draft trust instruments or advise
+      on individual situations. For advice on your specific situation, consult a licensed elder-law attorney in your
+      state. See the <a href="/editorial-process">editorial process</a> and{' '}
+      <a href="/authors/james-whitfield">about the author</a>.
+    </p>
+  </article>
+</BaseLayout>

@@ -29,18 +29,24 @@ const ARTICLE_PUBLISHED = '2026-06-17';
 export type ArticleTopic =
   | 'how-to-set-up'
   | 'how-long-to-set-up'
+  | 'how-much-does-it-cost'
   | 'what-to-say-at-the-bank'
   | 'who-can-be-trustee'
   | 'do-you-need-an-ein'
   | 'what-happens-to-the-money';
 
 // Order matters: this is the order articles appear in "Related guides" lists.
+// 'how-much-does-it-cost' (added 2026-08) reuses the $1,000-$2,500 attorney-fee
+// comparison already published elsewhere on every state page (hero prose,
+// derivedFaq, the ArticleBody CTA aside) — no new figure, just its own
+// keyword-targeted page (confirmed 500/mo, Low competition on the head term).
 // The last three (T9) are long-tail question doorways, each backed by a single
 // already-vetted frontmatter field (trusteeGuidanceNote / einRequiredNote /
 // postDeathDistribution) so they add no new legal claim.
 export const ARTICLE_TOPICS: ArticleTopic[] = [
   'how-to-set-up',
   'how-long-to-set-up',
+  'how-much-does-it-cost',
   'what-to-say-at-the-bank',
   'who-can-be-trustee',
   'do-you-need-an-ein',
@@ -69,6 +75,8 @@ export function articlePath(stateSlug: string, topic: ArticleTopic): string {
 
 export function getArticleMeta(state: StateData, topic: ArticleTopic): ArticleMeta {
   const name = state.name;
+  const legalGuideMeta = state.productModel === 'legal-guide';
+  const reqBriefMeta = state.productModel === 'requirements-brief' || legalGuideMeta;
   const path = articlePath(state.slug, topic);
   const base = {
     topic,
@@ -110,6 +118,24 @@ export function getArticleMeta(state: StateData, topic: ArticleTopic): ArticleMe
         metaDescription: `How long it takes to set up ${article(name)} ${name} Miller Trust (Qualified Income Trust), the one calendar-month deadline that controls eligibility, and what slows families down. Informational, not legal advice.`,
         primaryQuery: 'how long does it take to set up a miller trust',
       };
+    case 'how-much-does-it-cost':
+      return reqBriefMeta
+        ? {
+            ...base,
+            navLabel: 'What it costs vs. an attorney',
+            h1: `How Much Does It Cost to Set Up a Miller Trust in ${name}?`,
+            metaTitle: `${name} Miller Trust Cost: Attorney Fees vs. This ${legalGuideMeta ? 'Guide' : 'Kit'}`,
+            metaDescription: `${name} doesn't publish a fill-in Miller Trust form, so an attorney drafts it either way — what that typically costs, and what this $${state.price} ${legalGuideMeta ? 'guide' : 'kit'} covers instead. Informational only — not legal advice.`,
+            primaryQuery: 'how much does it cost to set up a miller trust',
+          }
+        : {
+            ...base,
+            navLabel: 'What it costs vs. an attorney',
+            h1: `How Much Does It Cost to Set Up a Miller Trust in ${name}?`,
+            metaTitle: `${name} Miller Trust Cost: $${state.price} Kit vs. an Attorney`,
+            metaDescription: `What a ${name} elder-law attorney typically charges to set up a Miller Trust (Qualified Income Trust), and what this $${state.price} kit covers instead using the official ${state.agencyAbbreviation} template. Informational, not legal advice.`,
+            primaryQuery: 'how much does it cost to set up a miller trust',
+          };
     case 'what-to-say-at-the-bank':
       return {
         ...base,
@@ -182,6 +208,10 @@ export function getArticleLede(state: StateData, topic: ArticleTopic): string {
       return hcb
         ? `Setting up a Qualified Income Trust in ${name} is usually a few hours of paperwork plus opening one bank account — but the deadline that controls everything is the calendar month. ${article(name, true)} ${name} QIT only works in a month where it is signed, has a funded account, and receives enough of the applicant's over-the-limit income to drop remaining countable income below the HCB income maximum ($${cap}/month) — all within that same calendar month. ${state.agencyAbbreviation} does not back-date eligibility, and because the HCB limit is absolute there is no spend-down fallback, so every month of delay is another ${pay} of private-pay in-home or assisted-living care. The most common cause of delay is the bank, not the paperwork.`
         : `Setting up a Miller Trust in ${name} is usually a few hours of paperwork plus opening one bank account — but the deadline that controls everything is the calendar month. ${article(name, true)} ${name} Qualified Income Trust only diverts income in a month where it is signed, has a funded account, and receives enough of the applicant's income to drop countable income below the $${cap}/month cap — all within that same calendar month. ${state.agencyAbbreviation} does not back-date eligibility, so coverage begins the month funding is complete, and every month of delay is another ${pay} of private-pay care. The most common cause of delay is the bank, not the paperwork.`;
+    case 'how-much-does-it-cost':
+      return reqBrief
+        ? `An elder-law attorney typically charges $1,000–$2,500 to research ${name}'s Qualified Income Trust requirements and draft the trust — ${name} publishes no fill-in form, so drafting happens either way. This $${state.price} ${legalGuide ? 'guide' : 'kit'} is the research part: ${state.agencyAbbreviation}'s own requirements, cited clause by clause, so the attorney's fee reflects drafting alone. This ${legalGuide ? 'guide' : 'kit'} does not draft the trust or advise on your specific situation — it is informational only, not legal advice.`
+        : `An elder-law attorney typically charges $1,000–$2,500 to set up a Miller Trust in ${name} — in practice, a few hours of paperwork using ${state.agencyAbbreviation}'s own free template and one trip to the bank. This $${state.price} kit covers that same process yourself: the template walkthrough, the bank-refusal script, and the ${state.commonDenialReasons.length} ${state.agencyAbbreviation} denial traps to avoid. For complex estates, an attorney is worth the fee regardless — this kit does not draft the trust or advise on your specific situation.`;
     case 'what-to-say-at-the-bank':
       return legalGuide
         ? `When a Qualified Income Trust account is opened in ${name}, branches commonly hesitate — most have never opened one, and many ask for an attorney or a tax ID (EIN) that isn't actually required. A lawyer isn't required to open the account, and ${article(name)} ${name} QIT is generally set up using the beneficiary's Social Security number, not an EIN. Below are the ${state.bankRefusalNotes.length} points of confusion ${name} families run into most often, and the ${state.agencyAbbreviation}-sourced facts that resolve each one.`
@@ -332,6 +362,17 @@ function getArticleFaq(state: StateData, topic: ArticleTopic): Array<{ question:
       ];
     case 'how-to-set-up':
       return [];
+    case 'how-much-does-it-cost':
+      return [
+        {
+          question: `Is a Miller Trust cheaper than hiring a lawyer in ${state.name}?`,
+          answer: `Usually, yes, for the core setup. An elder-law attorney typically charges $1,000–$2,500 for the same work — for complex estates (significant assets, prior gifting, a second marriage, multi-state property), the attorney's fee is worth it regardless of how the trust itself gets set up.`,
+        },
+        {
+          question: `Does setting up the trust cost money out of the trust itself?`,
+          answer: `No. ${article(state.name)} ${state.name} Miller Trust holds only the applicant's own income and pays only for the applicant's own care. Whatever it costs to set the trust up — an attorney's fee or anything else — is separate from the money that flows through the trust each month.`,
+        },
+      ];
     case 'who-can-be-trustee':
       return [
         {
