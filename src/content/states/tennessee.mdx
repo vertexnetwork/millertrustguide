@@ -1,0 +1,200 @@
+---
+slug: "tennessee"
+name: "Tennessee"
+abbreviation: "TN"
+
+status: "live"
+
+# Tennessee is the THIRD 'requirements-brief' state (after Oklahoma, Arizona):
+# TennCare publishes no fill-in Qualified Income Trust instrument. Its own ABD
+# Trusts policy (110.055, Chapter: ABD Trusts) instead sets out a detailed,
+# self-contained set of validity criteria in Section 4.h -- irrevocability, a
+# monthly distribution process, a defined list of allowable payments, an
+# explicit bar on trustee/attorney/accountant fees and other debts, and a
+# State-of-Tennessee payback clause. requiredTrustProvisions below is drawn
+# directly from that section, clause by clause, read in full from the primary
+# source (not a secondary summary).
+medicaidStructure: "income-cap"
+productModel: "requirements-brief"
+personaLean: "balanced"
+primaryTerm: "Qualified Income Trust"
+
+stripePriceId: "price_1U2C1rBitfBHN1YuaxoqciWQ"
+pdfBlobKey: "kits/tennessee/v1.pdf"
+price: 97
+multiStateBundleEligible: true
+
+agencyName: "TennCare (Division of TennCare, Tennessee Department of Finance and Administration)"
+agencyAbbreviation: "TennCare"
+policyManualUrl: "https://www.tn.gov/content/dam/tn/tenncare/documents/ABDTrusts.pdf"
+policyManualSection: "TennCare ABD Manual, Policy No. 110.055, Chapter \"ABD Trusts,\" Section 4.h (\"Qualified Income Trust (QIT) or Miller Trust\"), effective 05/01/2026; Tenn. Comp. R. & Regs. 1200-13-20-.06(h) (\"Qualifying Income Trusts (QIT) for Institutional and ECF CHOICES Applicants\"); cross-referenced by 1200-13-20-.08(5) (Aged, Blind or Disabled Categories) and by Policy No. 115.015, \"Institutional Medicaid\" (revised 01/05/2026), which states the Medicaid Income Cap (MIC) directly: \"The MIC is $2,982 effective 01/01/2026\"; federal authority 42 U.S.C. § 1396p(d)(4)(B)"
+policyCitationShort: "ABD Trusts Policy 110.055 §4.h"
+ltcProgramAbbrev: "TennCare CHOICES"
+ltcProgramName: "TennCare CHOICES in Long-Term Services and Supports -- covers Nursing Facility care (Group 1) and Home and Community Based Services (HCBS, Groups 2-3), plus Employment and Community First (ECF) CHOICES for individuals with intellectual/developmental disabilities. All groups are tested against the same QIT/income-cap standard under ABD Trusts Policy 110.055 and Tenn. Comp. R. & Regs. 1200-13-20-.06(h)/.08(5) -- not a nursing-home-only mechanism."
+spousalCalcRef: "TennCare's Community Spouse Income Maintenance Allowance / Dependent Income Maintenance Allowance (CSIMA/DIMA), an allowable QIT deduction under ABD Trusts Policy 110.055 §4.h.v.3 -- confirm current CSIMA/DIMA figures directly with TennCare or an attorney, since this kit does not compute them."
+residuaryPaymentNote: "The Trust must provide that upon the individual's death or the Trust's termination -- whichever occurs first -- the State of Tennessee receives all amounts remaining in the Trust, up to the total TennCare medical assistance paid on the individual's behalf, along with a full accounting of the Trust's payments (ABD Trusts Policy 110.055 §4.h.iv). TennCare's policy names a dedicated Estate Recovery Unit for Special Needs and Pooled Trusts elsewhere in the same manual chapter, but does not state in the QIT subsection itself which office processes a QIT's final payback -- confirm the correct unit and any required paperwork with TennCare or your attorney when the Trust terminates. TennCare does not publish a separate QIT residuary remittance form."
+
+supplementalOfficialDocs:
+  - label: "Institutional Medicaid -- Categories of Eligibility (Policy 115.015)"
+    url: "https://www.tn.gov/content/dam/tn/tenncare/documents/InstitutionalMedicaid.pdf"
+    note: "Defines the Aged/Blind/Disabled institutional-eligibility categories a QIT applicant must also satisfy -- nursing facility care, or a CHOICES/ECF CHOICES Home and Community Based Services waiver -- and confirms LTSS payments require an approved Pre-Admission Evaluation (PAE). States the Medicaid Income Cap directly, by TennCare's own acronym: 'The MIC is $2,982 effective 01/01/2026.' Confirms QIT applicants are drawn from this same institutional-eligibility population, not a separate track, and that QIT deductions don't apply to the separate 'Institutional Medicaid Hospital' subcategory (no LTSS/CHOICES eligibility there)."
+  - label: "TennCare CHOICES in Long-Term Services and Supports (Policy 130.005)"
+    url: "https://www.tn.gov/content/dam/tn/tenncare/documents/CHOICES.pdf"
+    note: "Describes the CHOICES program groups by care setting and Level of Care -- Group 1 (nursing facility) and Groups 2-3 (HCBS) -- confirming the QIT applies across both settings under one LTSS delivery structure administered by TennCare's LTSS Unit."
+  - label: "ABD Countable and Excluded Resources (Policy 110.050)"
+    url: "https://www.tn.gov/content/dam/tn/tenncare/documents/ABDCountableAndExcludedResources.pdf"
+    note: "Governs how trust principal is treated as a resource generally, cross-referenced by the ABD Trusts chapter's own accessibility rules for revocable and irrevocable trusts other than a valid QIT."
+
+requiredTrustProvisions:
+  - title: "Irrevocable, modifiable only by the trustee or a court"
+    description: "The grantor cannot modify or amend the Trust, in whole or in part, at any time. Only the trustee or a court of competent jurisdiction may modify a provision, and only to the extent necessary to maintain the grantor's Medicaid eligibility."
+    agencyCitation: "ABD Trusts Policy 110.055 §4.h.iv"
+  - title: "Sole beneficiaries: the individual and the State of Tennessee"
+    description: "The Trust names only two beneficiaries -- the individual for whose benefit it is established, and the State of Tennessee. It terminates on the individual's death, when the Trust is no longer required for TennCare Medicaid eligibility, when nursing facility or HCBS care is no longer medically necessary, or when the individual is no longer receiving those services."
+    agencyCitation: "ABD Trusts Policy 110.055 §4.h.iv"
+  - title: "State-of-Tennessee payback clause"
+    description: "On the individual's death or the Trust's termination, whichever occurs first, the Trust must direct that the State of Tennessee receive all amounts remaining in the Trust -- up to the total TennCare medical assistance paid on the individual's behalf -- along with a full accounting of the Trust's payments."
+    agencyCitation: "ABD Trusts Policy 110.055 §4.h.iv"
+  - title: "Enough income diverted to bring outside-Trust income at or below the cap"
+    description: "The individual's gross monthly income must exceed TennCare's income limit before a Trust is valid. Whatever remains outside the Trust must be at or below that limit -- if it isn't, the individual is not eligible no matter how much is placed in the Trust. The individual may direct some or all of their income into the Trust, provided this minimum is met."
+    agencyCitation: "ABD Trusts Policy 110.055 §4.h.ii"
+  - title: "Monthly distribution of trust income, minus a small trust-expense allowance"
+    description: "Each month, the trustee must distribute essentially the entire amount of income transferred into the Trust that month, keeping only up to $20 (or another TennCare-verified amount) to cover the Trust's own expenses."
+    agencyCitation: "ABD Trusts Policy 110.055 §4.h.iv"
+  - title: "Only a defined list of expenses may be paid from the Trust"
+    description: "Allowable monthly payments are limited to the individual's Personal Needs Allowance, the trust-expense deduction, the Community Spouse/Dependent Income Maintenance Allowance if applicable, health-insurance premiums other than TennCare, and specific non-covered medical or remedial care (\"Item D\") expenses."
+    agencyCitation: "ABD Trusts Policy 110.055 §4.h.v"
+  - title: "Trustee fees, attorney fees, and most other costs are barred outright"
+    description: "The Trust may not pay trustee fees, attorney fees or costs (including the cost of establishing the Trust), accountant fees, court fees or costs, guardian ad litem fees, funeral expenses, past-due medical bills, or other debts -- these are explicitly excluded, not merely uncommon."
+    agencyCitation: "ABD Trusts Policy 110.055 §4.h.vii"
+  - title: "Excess income pays the facility or HCBS cost of care, up to the Medicaid rate"
+    description: "Income not placed in the Trust, plus Trust income remaining after the allowable deductions above, must be paid monthly toward the individual's nursing facility or HCBS cost of care, up to the Medicaid reimbursement rate. Anything beyond that accumulates in the Trust."
+    agencyCitation: "ABD Trusts Policy 110.055 §4.h.vi"
+
+incomeCap2026: 2982
+incomeCapCouple2026: 5964
+personalNeedsAllowance: 70
+asOf: "effective May 1, 2026 (TennCare ABD Trusts Policy 110.055 revision)"
+
+federalStatuteCitation: "42 U.S.C. § 1396p(d)(4)(B)"
+federalStatuteUrl: "https://www.law.cornell.edu/uscode/text/42/1396p"
+
+trusteeGuidanceNote: "TennCare's ABD Trusts policy (110.055) never explicitly states that the trustee must be someone other than the individual -- it consistently treats \"trustee\" and \"individual\"/\"grantor\" as separate roles throughout (\"the trustee shall distribute,\" \"the trustee or a court... shall have the right to modify\"), but doesn't spell out a bar on self-trusteeship in so many words. A Tennessee legal-aid resource (help4tn.org, a program of the Tennessee Alliance for Legal Services) states directly that the Trustee must be someone other than the applicant -- consistent with general trust law's caution against a sole beneficiary also serving as sole trustee (the \"merger\" doctrine, which can collapse a trust back into an ordinary asset), but this is not TennCare's own primary-source language. Confirm the trustee question directly with your drafting attorney -- this kit does not treat self-trusteeship as either explicitly permitted or explicitly barred by the state's own policy text."
+einRequired: false
+einRequiredNote: "TennCare's ABD Trusts policy is silent on tax-ID treatment -- it does not mention an EIN anywhere in Policy 110.055. As a trust composed of the individual's own income under 42 U.S.C. § 1396p(d)(4)(B), a Tennessee QIT is generally described by practitioner sources as opened using the beneficiary's Social Security number rather than a separate EIN, consistent with how most (d)(4)(B) grantor trusts are banked nationally -- but this isn't confirmed by TennCare's own policy either way. If a branch asks for an EIN out of habit, confirm the account titling with your attorney and the bank."
+stateBarLrsName: "Board of Professional Responsibility of the Supreme Court of Tennessee -- Lawyer Referral Services"
+stateBarLrsUrl: "https://www.tbpr.org/for-the-public/lawyer-referral-services"
+additionalLegalAidReferrals:
+  - "Legal Aid of East Tennessee (laet.org) -- free civil legal help for older adults, families, and abuse victims across East Tennessee, including Chattanooga and Knoxville"
+  - "Memphis Area Legal Services (malsi.org) -- free legal advice and representation for low-income, disabled, and elderly clients in Fayette, Lauderdale, Shelby, and Tipton counties"
+  - "West Tennessee Legal Services (wtls.org) -- free civil legal aid across West Tennessee"
+  - "Tennessee Alliance for Legal Services -- Free Senior Legal Helpline (tals.org) -- confidential legal advice for Tennesseans aged 60+ regardless of income or assets, including Medicaid/TennCare questions"
+  - "Tennessee Area Agencies on Aging and Disability (tn.gov/disability-and-aging) -- the state's regional AAAD/ADRC network, a starting point for local long-term-care and Medicaid options counseling"
+  - "National Academy of Elder Law Attorneys (NAELA) -- Find a Lawyer directory (naela.org)"
+
+requirementsIntroNote: "TennCare does not publish a fill-in Qualified Income Trust form. Its own ABD Trusts policy (110.055, Chapter: ABD Trusts) sets out in detail what a compliant trust must do -- irrevocable, a defined monthly distribution process, a specific list of allowable payments, an explicit bar on trustee/attorney/accountant fees and other debts, and a State-of-Tennessee payback clause -- but does not attach a sample or fill-in instrument for applicants to complete. The checklist below is drawn directly from that policy's own criteria for a valid trust (Section 4.h.ii and 4.h.iv-vii), clause by clause, so you or your attorney can draft -- or verify a draft against -- a trust that actually satisfies what TennCare requires."
+
+attorneyRequiredNote: "TennCare's ABD Trusts policy does not state whether a Qualified Income Trust must be attorney-drafted, and no Tennessee case or bar opinion specifically addresses QIT kits (see the UPL notes). But because TennCare publishes no fill-in instrument, drafting an original trust from the requirements below is, in practice, an attorney task for most families -- self-drafting an original legal instrument carries materially more risk of missing a required clause than filling in an existing state form would. Budget for an attorney; this kit is what keeps that engagement efficient."
+
+commonDenialReasons:
+  - title: "Trust is revocable, or the grantor retains modification power"
+    description: "TennCare's policy requires the Trust be irrevocable, modifiable only by the trustee or a court, and only to preserve eligibility. A Trust the grantor can amend or revoke fails outright."
+    agencyCitation: "ABD Trusts Policy 110.055 §4.h.iv"
+  - title: "Income outside the Trust still exceeds the income limit"
+    description: "The amount NOT placed in the Trust must be at or below TennCare's income limit. If it isn't, the individual is ineligible regardless of how much income the Trust holds -- a common mistake when a source is only partially diverted."
+    agencyCitation: "ABD Trusts Policy 110.055 §4.h.ii"
+  - title: "Missing or defective State-of-Tennessee payback clause"
+    description: "The Trust must direct that, on death or termination, the State receive all remaining funds up to the total TennCare benefits paid on the individual's behalf, with an accounting. A missing, weakened, or capped payback clause fails this requirement."
+    agencyCitation: "ABD Trusts Policy 110.055 §4.h.iv"
+  - title: "Trust pays a disallowed expense"
+    description: "TennCare's policy explicitly bars the Trust from paying trustee fees, attorney fees or costs, accountant fees, court fees or costs, guardian ad litem fees, funeral expenses, past-due medical bills, or other debts. Paying any of these out of the Trust is a documented compliance failure, not a gray area."
+    agencyCitation: "ABD Trusts Policy 110.055 §4.h.vii"
+  - title: "Trust income isn't distributed under the required monthly process"
+    description: "The trustee must distribute essentially all Trust income each month (minus the small trust-expense allowance) through the allowable-payment categories. Letting income sit unspent outside that process, or applying it to something outside the defined list, is a failure point."
+    agencyCitation: "ABD Trusts Policy 110.055 §4.h.iv-v"
+  - title: "Trust benefits someone other than the individual and the State"
+    description: "The Trust's sole beneficiaries must be the individual and the State of Tennessee. Naming any other beneficiary, or structuring payments to benefit a third party outside the allowable list, breaks the Trust's validity."
+    agencyCitation: "ABD Trusts Policy 110.055 §4.h.iv"
+
+bankRefusalNotes:
+  - refusalType: "Branch asks for a tax ID (EIN) for the trust account"
+    response: "TennCare's ABD Trusts policy doesn't address tax-ID treatment for a QIT. Secondary/practitioner sources describe TN QITs as typically opened under the beneficiary's own Social Security number, consistent with how most 42 U.S.C. § 1396p(d)(4)(B) grantor trusts are banked nationally -- but this isn't stated in TennCare's own policy either way. If a branch insists on an EIN, confirm the titling with your attorney and ask the branch to escalate to its trust department."
+    documentNeeded: "The signed Qualified Income Trust document"
+  - refusalType: "Branch is unsure what kind of account this is"
+    response: "It is a single, dedicated account, titled in the name of the Trust, that holds the individual's diverted income and pays it out each month through TennCare's defined list of allowable expenses (Personal Needs Allowance, trust-expense allowance, spousal allocation, health-insurance premiums, and approved non-covered medical costs) toward the nursing facility or HCBS cost of care. Show the branch the signed Trust and, if needed, cite ABD Trusts Policy 110.055."
+    documentNeeded: "The signed Qualified Income Trust document"
+  - refusalType: "Branch has never opened a Qualified Income Trust account before"
+    response: "It is a routine dedicated trust account holding diverted income and paid out under TennCare's rules -- not an unusual product. Ask for a full-service branch or the bank's trust department; community banks and credit unions are often more flexible than large retail branches on trust accounts they haven't seen before."
+    documentNeeded: "The signed Qualified Income Trust document"
+  - refusalType: "Branch wants to know who is authorized to sign"
+    response: "The trustee -- not the individual -- is the account's authorized signer under the Trust document. TennCare's process contemplates the individual (or their agent under a Power of Attorney) signing the Trust instrument itself alongside the trustee, but day-to-day account authority rests with the trustee named in that document."
+    documentNeeded: "The signed Qualified Income Trust document (naming the trustee)"
+  - refusalType: "Branch questions why certain fees can't be deducted from the account"
+    response: "TennCare's policy explicitly bars trustee fees, attorney fees, accountant fees, and several other costs from being paid out of the Trust itself -- this isn't a bank policy, it's a state Medicaid eligibility rule. Fees the bank itself charges for standard account maintenance fall under the Trust's separate $20/month expense allowance; anything beyond that needs its own resolution with TennCare or your attorney."
+    documentNeeded: "The signed Qualified Income Trust document"
+
+postDeathDistribution: "On the individual's death, or whenever the Trust is no longer required to establish or maintain TennCare Medicaid eligibility (including when nursing facility or HCBS care is no longer medically necessary or being received), the Trust terminates. The trustee must then pay the State of Tennessee all amounts remaining in the Trust, up to the total TennCare medical assistance paid on the individual's behalf, along with a full accounting of the Trust's payments. TennCare's ABD Trusts policy names a dedicated Estate Recovery Unit for Special Needs and Pooled Trusts elsewhere in the same manual chapter, but does not state in the QIT subsection itself which office processes a QIT's final payback -- confirm the correct unit and any required paperwork with TennCare or your attorney before distributing any remaining balance, and keep proof of payment in the Trust file. TennCare does not publish a separate residuary remittance form for QITs."
+
+metaTitle: "Tennessee Qualified Income Trust (Miller Trust) Requirements Guide — $97"
+metaDescription: "Tennessee Qualified Income Trust (QIT / Miller Trust) requirements guide. TennCare publishes no fill-in form — this kit gives the exact ABD Trusts Policy 110.055 checklist your attorney's draft must satisfy, plus funding, banking, and denial-avoidance. Informational, not legal advice."
+
+primaryKeyword: "tennessee qualified income trust"
+secondaryKeywords:
+  - "miller trust tennessee"
+  - "tennessee miller trust"
+  - "tenncare qualified income trust"
+  - "tenncare miller trust"
+  - "tennessee qit"
+  - "tennessee income cap trust"
+  - "qualifying income trust tennessee"
+  - "tennessee medicaid income trust requirements"
+
+reviewedDate: "2026-08-08"
+uplNotes: "Tennessee regulates the unauthorized practice of law through Tenn. Code Ann. § 23-3-101 et seq. (Title 23, Chapter 3). \"Practice of law\" is defined at § 23-3-101(2) around court/representative-capacity conduct, and \"law business\" at § 23-3-101(1) around advising, or drawing/procuring documents, \"for valuable consideration\" -- not a clean \"for a specific person only\" carve-out on its face. The controlling case-law gloss is In re Petition of Burson, 909 S.W.2d 768, 776 (Tenn. 1995): the Tennessee Supreme Court held that conduct within the \"law business\" definition is unauthorized only if it requires \"the professional judgment of a lawyer\" applied to another's specific facts -- a standard later applied to nonlawyer document preparation in AG Opinion 07-88 (2007, real-estate documents). No Tennessee case, bar ethics opinion, AG opinion, or licensing-board opinion specifically addresses Qualified Income Trusts, Miller Trusts, or Medicaid-planning kits -- an extensive search found nothing on point in either direction. One third-party financial-services blog inferred Tennessee would restrict individualized Medicaid-eligibility advice for pay, but cited only the bare statute, not any case or opinion -- unlike its citations for Florida (SC14-211) and Ohio (UPL 11-01), which name actual authorities. Tennessee has no legal-document-preparer certification scheme (no Arizona-ACJA-style carve-out). Net read: Tennessee sits in the same \"no adverse holding\" posture as Oklahoma and Arizona, not Florida's -- the product stays defensible by holding the same four hard rules with extra discipline given there is no state-published instrument as a backstop: we explain what TennCare's policy requires, we never draft or provide sample/model trust language, we never select or tailor language to an individual's facts, and we never review a customer's own drafted trust. Confirm Tennessee UPL comfort before go-live; this was not an exhaustive search of every unpublished ethics inquiry."
+
+privatePayMonthlyLow: 9429
+privatePayMonthlyHigh: 10038
+
+faq:
+  - question: "Is the Tennessee Qualified Income Trust Kit legal advice?"
+    answer: "No. This kit is informational only and is not legal advice. We are not attorneys and we do not practice law. TennCare does not publish a fill-in trust form, so the kit teaches you exactly what TennCare's own ABD Trusts policy requires a compliant trust to contain, so you can brief an attorney efficiently and verify what they draft. For advice on your specific situation, consult a Tennessee-licensed elder-law attorney."
+  - question: "Does TennCare provide an official Qualified Income Trust form?"
+    answer: "No. TennCare's ABD Trusts policy (110.055) spells out in detail what a compliant trust must do -- irrevocable, a defined distribution and payment process, and a State-of-Tennessee payback clause -- but does not attach a sample or fill-in instrument. The trust must be drafted, by an attorney or by you where Tennessee law permits, to meet the requirements this kit lays out."
+  - question: "What does the kit include?"
+    answer: "A requirements-and-operations guide: the required-provisions checklist derived from TennCare's own ABD Trusts policy with a citation for each item, guidance on gathering the information an attorney needs before your first meeting, the monthly funding and distribution worksheet, the bank-account walkthrough, and Tennessee-specific denial-avoidance guidance. Delivered as a single PDF."
+  - question: "Do you provide the trust document itself?"
+    answer: "No. We never draft or provide sample or model trust language, generic or otherwise -- that would cross from explaining the law into practicing it. The kit tells you exactly what TennCare requires the finished trust to contain; drafting it is your attorney's work (or, where permitted, your own)."
+  - question: "Who needs a Qualified Income Trust in Tennessee?"
+    answer: "A person applying for TennCare Medicaid long-term services and supports -- nursing facility care, or a CHOICES/ECF CHOICES home and community-based services waiver -- whose gross monthly income is above the 2026 income limit of $2,982/month (single) but who would otherwise qualify. Both nursing-facility and HCBS applicants are tested against the same income standard."
+  - question: "How much of my income goes into the trust?"
+    answer: "Enough to bring the income you keep outside the trust to at or below TennCare's income limit. You may direct some or all of your income into the trust, but the amount left outside it must be at or below the limit, or you remain ineligible regardless of what's in the trust."
+  - question: "Can I be my own trustee in Tennessee?"
+    answer: "TennCare's own policy doesn't explicitly say. A Tennessee legal-aid resource states the trustee must be someone other than the applicant, consistent with general trust law's caution against a sole beneficiary also serving as sole trustee. Confirm this directly with your drafting attorney."
+  - question: "Does a Tennessee Qualified Income Trust need an EIN?"
+    answer: "TennCare's policy doesn't address this. Practitioner sources describe Tennessee QITs as generally opened under the beneficiary's own Social Security number. If a bank asks for an EIN out of habit, confirm the titling with your attorney and the bank."
+  - question: "What can the trust actually pay for?"
+    answer: "TennCare's policy limits Trust payments to a defined list: the individual's Personal Needs Allowance, a small trust-expense deduction, spousal/dependent allowance if applicable, non-TennCare health insurance premiums, and specific approved non-covered medical costs. It explicitly bars trustee fees, attorney fees, accountant fees, court costs, funeral expenses, and other debts from being paid out of the Trust."
+  - question: "Do you offer a refund?"
+    answer: "Yes -- money back if TennCare rejects the Qualified Income Trust for any reason traceable to following the kit. Email support@millertrustguide.com with the agency's stated denial reason and we issue a full refund within one business day."
+  - question: "Will you talk to me on the phone about my situation?"
+    answer: "No. We do not offer phone support and we do not advise on individual situations. For advice on your specific situation, consult a Tennessee-licensed elder-law attorney -- you can find one through the Board of Professional Responsibility's Lawyer Referral Services listing, or through Legal Aid of East Tennessee, Memphis Area Legal Services, or West Tennessee Legal Services."
+
+kitVersion: "v1.0"
+kitVersionDate: "2026-08-08"
+kitChangelog:
+  - version: "v1.0"
+    date: "2026-08-08"
+    changes:
+      - "Initial Tennessee release -- the third 'requirements-brief' product: TennCare publishes no fill-in Qualified Income Trust form. Its ABD Trusts policy (110.055) instead sets out a detailed, self-contained set of validity criteria -- irrevocability, a monthly distribution process, a defined list of allowable payments, an explicit bar on trustee/attorney/accountant fees and other debts, and a State-of-Tennessee payback clause. The kit's checklist is drawn directly from that policy, clause by clause, read in full from the primary source."
+      - "Program scope confirmed broad: TennCare's QIT policy applies equally to nursing-facility (CHOICES Group 1) and HCBS waiver (CHOICES Groups 2-3, ECF CHOICES) applicants under the same income test -- not a narrow nursing-home-only mechanism."
+      - "Income cap $2,982/month single, $5,964/month couple (300% of the 2026 SSI Federal Benefit Rate), per Tenn. Comp. R. & Regs. 1200-13-20-.08(5)(e). Funding is directed-not-whole-source: the individual must bring their outside-trust income to at or below the cap, but may choose to divert more."
+      - "Personal Needs Allowance $70/month for nursing facility residents (raised from $50 effective 1/1/2025, Public Chapter 986 of 2024 / TCA § 71-5-147); HCBS/CHOICES waiver enrollees keep a materially higher $2,982/month Community PNA (300% FBR) instead."
+      - "Distinctive and unusually strict: TennCare's policy explicitly bars the trust from paying trustee fees, attorney fees or costs, accountant fees, court fees, guardian ad litem fees, funeral expenses, or past-due medical bills -- a more extensive negative list than most states we cover, several of which merely cap a trustee fee rather than barring it outright."
+      - "Trustee posture: TennCare's own policy doesn't explicitly bar self-trusteeship, but a Tennessee legal-aid resource states the trustee must be someone other than the applicant. EIN posture: TennCare's policy is silent; practitioner sources describe Tennessee QITs as generally opened under the beneficiary's SSN (einRequired: false)."
+      - "UPL footing: In re Petition of Burson, 909 S.W.2d 768 (Tenn. 1995) sets the general 'professional judgment of a lawyer' standard; no Tennessee case, AG opinion, or bar ethics opinion specifically addresses QIT/Miller Trust kits. Same 'no adverse holding' posture as Oklahoma and Arizona -- not Florida's."
+      - "Private-pay nursing-home range from the CareScout 2025/2026 Cost of Care Survey (~$9,429 semi-private / ~$10,038 private per month, Tennessee statewide, sourced via Brevy Care's TN cost-of-care guide since CareScout's primary Tennessee press release is bot-blocked to automated verification)."
+---
+
+import StatePageLayout from '~/layouts/StatePageLayout.astro';
+
+This file's frontmatter is the canonical Tennessee data source. The body is intentionally minimal — all conversion-surface rendering happens in `StatePageLayout.astro`, which reads from frontmatter. This keeps states homogeneous and prevents drift between states.

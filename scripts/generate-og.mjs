@@ -327,6 +327,18 @@ const ASSETS = [
     }),
     width: 1200,
   },
+
+  // OG per-state — Tennessee (requirements-brief: TennCare publishes no
+  // fill-in QIT instrument; ABD Trusts Policy 110.055 sets the requirements)
+  {
+    path: 'og/states/tennessee.png',
+    svg: ogSvg({
+      headlineLines: ['Tennessee Qualified', 'Income Trust Guide'],
+      dataLine: '$97  ·  Requirements checklist — no official TennCare form  ·  Money-back if TennCare rejects',
+      footerLine: 'TENNESSEE TENNCARE  ·  ABD TRUSTS POLICY 110.055  ·  LAST REVIEWED 2026-08-08',
+    }),
+    width: 1200,
+  },
 ];
 
 async function renderOne({ path, svg, width }) {
